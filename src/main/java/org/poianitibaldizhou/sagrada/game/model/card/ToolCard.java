@@ -18,4 +18,7 @@ public class ToolCard extends Card{
         }
     }
 
+    public int getTokens() {
+        return tokens;
+    }
 }
