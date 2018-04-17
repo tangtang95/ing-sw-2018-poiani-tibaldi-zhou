@@ -1,8 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.card;
+package org.poianitibaldizhou.sagrada.game.model.card.toolcards;
+
+import org.poianitibaldizhou.sagrada.game.model.card.Card;
 
 import java.util.List;
 
-public class ToolCard extends Card{
+public class ToolCard extends Card {
 
     private int tokens;
     private List<ICommand> commands;
