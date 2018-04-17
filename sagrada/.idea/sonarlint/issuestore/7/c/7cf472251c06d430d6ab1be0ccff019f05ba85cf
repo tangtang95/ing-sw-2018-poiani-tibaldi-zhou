@@ -1,0 +1,10 @@
+
+=squid:S1068"(Remove this unused "name" private field.(Ë¥¼
+>squid:S1068")Remove this unused "users" private field.(ƒÎµı
+–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(³ö
+Jsquid:S1068"0Remove this unused "numPlayerMax" private field.(±ºªşÿÿÿÿ
+Csquid:S1068")Remove this unused "admin" private field.(Íœ“Îüÿÿÿÿ
+–squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(ùÿÅı
+Fsquid:S1068",Remove this unused "observer" private field.(û‘Ìíıÿÿÿÿ
+œsquid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(â¤ö78Èı‡ù¬,
+¢squid:S1186"€Add a nested comment explaining why this method is empty, throw an UnsupportedOperationException or complete the implementation.(°‰Ğşÿÿÿÿ8Èı‡ù¬,
