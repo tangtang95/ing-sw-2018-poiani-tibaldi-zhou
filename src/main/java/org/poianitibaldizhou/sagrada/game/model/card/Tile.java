@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.card;
 
 import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.TileFilledException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
@@ -20,9 +21,14 @@ public class Tile{
         this.constraint = constraint;
     }
 
-    public void setDice(Dice dice) throws TileFilledException {
-        if(dice != null)
-            throw new TileFilledException("");
+    public Tile(Tile tile) {
+        dice = tile.dice;
+        constraint = tile.constraint;
+    }
+
+    public void setDice(Dice dice) throws TileFilledException{
+        if(this.dice != null)
+            throw new TileFilledException("A dice is already occupying the tile");
         this.dice = dice;
     }
 
@@ -31,9 +37,21 @@ public class Tile{
     }
 
     public Dice removeDice() {
-        Dice clone = dice;
+        Dice removedDice = dice;
         dice = null;
-        return clone;
+        return removedDice;
+    }
+
+    public boolean isDicePositionable(Dice dice) throws RuleViolationException, MismatchingTypeOfConstraintException {
+        if(this.dice == null) {
+            if (constraint == null)
+                return true;
+            else if (constraint != null){
+                if(checkConstraint(dice.getNumberConstraint()) || checkConstraint(dice.getColorConstraint()))
+                    return true;
+            }
+        }
+        throw new RuleViolationException("There is already a dice on that tile");
     }
 
     public IConstraint getConstraint() {

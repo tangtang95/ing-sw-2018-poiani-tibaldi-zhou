@@ -4,4 +4,5 @@ import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintExcept
 
 public interface IConstraint {
     public boolean matches(IConstraint other) throws MismatchingTypeOfConstraintException;
+    public int getValue();
 }

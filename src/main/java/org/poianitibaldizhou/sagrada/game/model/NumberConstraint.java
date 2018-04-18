@@ -3,10 +3,10 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
 
 public class NumberConstraint implements IConstraint {
-    private int num;
+    private int number;
 
-    public NumberConstraint(int x) {
-        this.num = x;
+    public NumberConstraint(int number) {
+        this.number = number;
     }
 
     @Override
@@ -20,7 +20,12 @@ public class NumberConstraint implements IConstraint {
         return false;
     }
 
+    @Override
+    public int getValue() {
+        return number;
+    }
+
     public int getNumber() {
-        return num;
+        return number;
     }
 }

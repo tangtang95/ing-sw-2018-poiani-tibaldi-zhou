@@ -24,4 +24,9 @@ public class ColorConstraint implements IConstraint {
         return false;
 
     }
+
+    @Override
+    public int getValue() {
+        return color;
+    }
 }

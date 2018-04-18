@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
