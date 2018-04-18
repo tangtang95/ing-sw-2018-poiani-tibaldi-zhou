@@ -32,4 +32,9 @@ public class DraftPool {
         }
         throw new DiceNotFoundException("DrafPool.useDice failed due to non existance of the draft in the pool");
     }
+
+    @Override
+    public String toString() {
+        return dices.toString();
+    }
 }

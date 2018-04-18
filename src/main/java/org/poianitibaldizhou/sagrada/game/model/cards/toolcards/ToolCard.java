@@ -1,10 +1,11 @@
-package org.poianitibaldizhou.sagrada.game.model.card.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.card.Card;
+import org.poianitibaldizhou.sagrada.game.model.cards.Card;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
 import java.util.ArrayList;
 import java.util.List;

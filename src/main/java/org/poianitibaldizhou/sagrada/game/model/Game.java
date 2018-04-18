@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.game.model.card.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.util.LinkedList;
 import java.util.List;

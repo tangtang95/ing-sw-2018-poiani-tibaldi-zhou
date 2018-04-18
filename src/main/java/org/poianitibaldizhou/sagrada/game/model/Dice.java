@@ -50,4 +50,18 @@ public class Dice {
             return true;
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "Dice("+numberConstraint.getNumber()+","+colorConstraint.getColor()+")";
+    }
+
+    public Dice pourOverDice() {
+        try {
+            return new Dice(7 - this.numberConstraint.getNumber(), this.colorConstraint.getColor());
+        } catch(DiceInvalidNumberException dine) {
+            dine.printStackTrace();
+        }
+        return null;
+    }
 }

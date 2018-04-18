@@ -1,6 +1,5 @@
-package org.poianitibaldizhou.sagrada.game.model.card.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 
 public class ChooseDice implements ICommand {

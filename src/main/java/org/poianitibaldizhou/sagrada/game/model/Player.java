@@ -1,9 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.*;
-import org.poianitibaldizhou.sagrada.game.model.card.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.card.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 public class Player {
     private ICoin coins;

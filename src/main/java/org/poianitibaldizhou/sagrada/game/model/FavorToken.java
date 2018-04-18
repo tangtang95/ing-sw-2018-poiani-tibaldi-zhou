@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
-import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 public class FavorToken implements ICoin {
     private int numberOfFavorToken;

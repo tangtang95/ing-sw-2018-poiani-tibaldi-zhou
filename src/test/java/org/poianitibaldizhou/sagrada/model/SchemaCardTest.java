@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.game.model.card.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
 import java.util.ArrayList;
 import java.util.List;

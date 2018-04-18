@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model.card;
+package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
