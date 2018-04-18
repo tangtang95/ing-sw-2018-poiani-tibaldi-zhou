@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.card;
 
+import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
 import org.poianitibaldizhou.sagrada.exception.TileFilledException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
@@ -21,7 +22,7 @@ public class Tile{
 
     public void setDice(Dice dice) throws TileFilledException {
         if(dice != null)
-            throw new TileFilledException();
+            throw new TileFilledException("");
         this.dice = dice;
     }
 
@@ -39,7 +40,7 @@ public class Tile{
         return constraint;
     }
 
-    public boolean checkConstraint(IConstraint other){
+    public boolean checkConstraint(IConstraint other) throws MismatchingTypeOfConstraintException {
         return constraint.matches(other);
     }
 
