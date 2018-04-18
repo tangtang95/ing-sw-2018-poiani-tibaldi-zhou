@@ -31,4 +31,8 @@ public class Dice {
             return true;
         return false;
     }
+
+    public ColorConstraint getCc() {
+        return cc;
+    }
 }

@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.game.model.card.ToolCard;
+
+import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
+import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
 
 public class FavorToken implements ICoin {
     private int numberOfFavorToken;
@@ -10,20 +12,18 @@ public class FavorToken implements ICoin {
     }
 
     @Override
-    public void upDate() {
-
-    }
+    public void upDate(DraftPool draftPool) { }
 
     @Override
-    public void use(ToolCard toolCard) {
-        this.numberOfFavorToken = numberOfFavorToken - toolCard.getTokens();
-    }
-
-    @Override
-    public boolean checkCoin(ToolCard toolCard) {
-        if (numberOfFavorToken >= toolCard.getTokens() )
-            return true;
+    public void use(ToolCard toolCard) throws NoCoinsExpendableException{
+        if (numberOfFavorToken < toolCard.getTokens())
+            throw new NoCoinsExpendableException("FavorToken.use() failed, you haven't enough FavorTokens");
         else
-            return false;
+            this.numberOfFavorToken = numberOfFavorToken - toolCard.getTokens();
+    }
+
+    @Override
+    public int getCoins() {
+        return numberOfFavorToken;
     }
 }
