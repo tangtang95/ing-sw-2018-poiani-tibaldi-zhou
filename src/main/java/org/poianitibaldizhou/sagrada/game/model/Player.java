@@ -1,8 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
-import org.poianitibaldizhou.sagrada.exception.TileFilledException;
+import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.card.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.card.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
@@ -37,9 +35,9 @@ public class Player {
         return coins.getCoins();
     }
 
-    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException {
+    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException, EmptyCollectionException, MismatchingTypeOfConstraintException {
         coins.use(toolCard);
-        toolCard.invokeCommands();
+        toolCard.invokeCommands(this);
     }
 
     public void endTurn() {

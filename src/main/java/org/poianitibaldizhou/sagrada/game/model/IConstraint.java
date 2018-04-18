@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
+
 public interface IConstraint {
-    boolean matches(IConstraint other);
+    public boolean matches(IConstraint other) throws MismatchingTypeOfConstraintException;
 }

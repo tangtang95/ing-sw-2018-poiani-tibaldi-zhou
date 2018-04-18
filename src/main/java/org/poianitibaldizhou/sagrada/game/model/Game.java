@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Game {
+
     private final boolean isSinglePlayer;
     private List<Player> players;
     private RoundTrack roundTrack;
@@ -48,6 +49,5 @@ public class Game {
     public DraftPool getDraftPool() {
         return draftPool;
     }
-
 
 }

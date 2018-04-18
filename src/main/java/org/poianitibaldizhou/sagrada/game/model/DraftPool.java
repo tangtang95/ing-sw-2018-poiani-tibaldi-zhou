@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import java.util.ArrayList;
 import java.util.List;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 
 public class DraftPool {
     private List<Dice> dices;
@@ -15,7 +16,14 @@ public class DraftPool {
         return new ArrayList<Dice>(dices);
     }
 
-    public void useDice(Dice d) throws DiceNotFoundException {
+    public void addDices(List<Dice> dices) {
+        this.dices.addAll(dices);
+    }
+
+    public void useDice(Dice d) throws DiceNotFoundException, EmptyCollectionException {
+        if(dices.size() == 0)  {
+            throw new EmptyCollectionException();
+        }
         for(int i = 0; i < dices.size(); i++) {
             if(dices.get(i).equals(d)) {
                 dices.remove(i);
