@@ -10,5 +10,16 @@ public class RoundTrack {
     public RoundTrack() {
         this.roundTrack = new List[NUMBER_OF_TRACK];
     }
-    
+
+    public void addDice(List<Dice> dices, int round){
+        roundTrack[round] = dices;
+    }
+
+    public List<Dice>[] getRoundTrack() {
+        return roundTrack;
+    }
+
+    public List<Dice> getDices(int round){
+        return roundTrack[round];
+    }
 }

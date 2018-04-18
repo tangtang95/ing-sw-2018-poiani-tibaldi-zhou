@@ -12,9 +12,6 @@ public class FavorToken implements ICoin {
     }
 
     @Override
-    public void upDate(DraftPool draftPool) { }
-
-    @Override
     public void use(ToolCard toolCard) throws NoCoinsExpendableException{
         if (numberOfFavorToken < toolCard.getTokens())
             throw new NoCoinsExpendableException("FavorToken.use() failed, you haven't enough FavorTokens");

@@ -4,18 +4,10 @@ import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class ExpendableDice implements ICoin {
     private DraftPool draftPool;
 
     public ExpendableDice(DraftPool draftPool) {
-        this.draftPool = draftPool;
-    }
-
-    @Override
-    public void upDate(DraftPool draftPool) {
         this.draftPool = draftPool;
     }
 
