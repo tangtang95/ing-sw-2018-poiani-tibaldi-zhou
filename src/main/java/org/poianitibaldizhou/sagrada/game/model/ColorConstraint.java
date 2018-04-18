@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
-
 public class ColorConstraint implements IConstraint {
     Color color;
 
@@ -14,19 +12,17 @@ public class ColorConstraint implements IConstraint {
     }
 
     @Override
-    public boolean matches(IConstraint other) throws MismatchingTypeOfConstraintException {
+    public boolean matches(IConstraint other) {
         if(!(other instanceof ColorConstraint)) {
-            throw new MismatchingTypeOfConstraintException();
+            return false;
         }
         ColorConstraint cc = (ColorConstraint) other;
-        if(cc.getColor() == this.color)
-            return true;
-        return false;
+        return color == cc.getColor();
 
     }
 
     @Override
     public int getValue() {
-        return color;
+        return color.ordinal();
     }
 }

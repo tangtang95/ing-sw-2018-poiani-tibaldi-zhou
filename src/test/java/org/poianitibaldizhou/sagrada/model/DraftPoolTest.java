@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.model;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -27,7 +28,7 @@ public class DraftPoolTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws DiceInvalidNumberException {
         dices.add(new Dice(5, Color.BLUE));
         dices.add(new Dice(2, Color.BLUE));
         dices.add(new Dice(1, Color.PURPLE));

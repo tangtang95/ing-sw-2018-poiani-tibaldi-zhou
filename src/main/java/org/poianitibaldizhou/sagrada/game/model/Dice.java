@@ -1,44 +1,44 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.DiceNumberException;
+import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 
 public class Dice {
-    NumberConstraint nc;
-    ColorConstraint cc;
+    private NumberConstraint numberConstraint;
+    private ColorConstraint colorConstraint;
 
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = 6;
 
-    public Dice(NumberConstraint nc, ColorConstraint cc) throws DiceNumberException {
-        setNumber(nc.getNumber());
-        this.cc = cc;
+    public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) throws DiceInvalidNumberException {
+        setNumber(numberConstraint.getNumber());
+        this.colorConstraint = colorConstraint;
     }
 
-    public Dice(int number, Color color) throws DiceNumberException {
+    public Dice(int number, Color color) throws DiceInvalidNumberException {
         setNumber(number);
-        cc = new ColorConstraint(color);
+        colorConstraint = new ColorConstraint(color);
     }
 
-    private void setNumber(int number) throws DiceNumberException {
+    private void setNumber(int number) throws DiceInvalidNumberException {
         if(number < 1 || number > 6)
-            throw new DiceNumberException();
-        nc = new NumberConstraint(number);
+            throw new DiceInvalidNumberException();
+        numberConstraint = new NumberConstraint(number);
     }
 
     public int getNumber() {
-        return nc.getNumber();
+        return numberConstraint.getNumber();
     }
 
     public Color getColor() {
-        return cc.getColor();
+        return colorConstraint.getColor();
     }
 
     public NumberConstraint getNumberConstraint() {
-        return nc;
+        return numberConstraint;
     }
 
     public ColorConstraint getColorConstraint() {
-        return cc;
+        return colorConstraint;
     }
 
     @Override
@@ -49,9 +49,5 @@ public class Dice {
         if(o.getColor() == this.getColor() && o.getNumber() == this.getNumber())
             return true;
         return false;
-    }
-
-    public ColorConstraint getCc() {
-        return cc;
     }
 }

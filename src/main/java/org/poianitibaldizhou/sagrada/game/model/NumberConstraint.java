@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
-
 public class NumberConstraint implements IConstraint {
     private int number;
 
@@ -10,19 +8,17 @@ public class NumberConstraint implements IConstraint {
     }
 
     @Override
-    public boolean matches(IConstraint other) throws MismatchingTypeOfConstraintException {
+    public boolean matches(IConstraint other) {
         if(!(other instanceof NumberConstraint)) {
-            throw new MismatchingTypeOfConstraintException();
+            return false;
         }
         NumberConstraint nc = (NumberConstraint) other;
-        if(nc.getNumber() == this.num)
-            return true;
-        return false;
+        return number == nc.getNumber();
     }
 
     @Override
     public int getValue() {
-        return number;
+        return number - 1;
     }
 
     public int getNumber() {

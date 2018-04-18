@@ -35,11 +35,11 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
         return scorePoints;
     }
 
-    public int containsConstraint(IConstraint other){
+    public int containsConstraint(IConstraint other) {
         TreeSet set = (TreeSet) constraints;
         Iterator it = set.iterator();
         while(it.hasNext()){
-            if(((IConstraint)it.next()).matches(other))
+            if (((IConstraint) it.next()).matches(other))
                 return other.getValue();
         }
         return -1;

@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.model.card;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
 
-import java.util.Iterator;
 
 public class PrivateObjectiveCard extends Card implements IScore {
 

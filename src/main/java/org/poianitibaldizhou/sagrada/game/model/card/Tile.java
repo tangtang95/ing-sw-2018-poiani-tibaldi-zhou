@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.card;
 
-import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.TileFilledException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -42,7 +41,7 @@ public class Tile{
         return removedDice;
     }
 
-    public boolean isDicePositionable(Dice dice) throws RuleViolationException, MismatchingTypeOfConstraintException {
+    public boolean isDicePositionable(Dice dice) throws RuleViolationException {
         if(this.dice == null) {
             if (constraint == null)
                 return true;
@@ -58,7 +57,7 @@ public class Tile{
         return constraint;
     }
 
-    public boolean checkConstraint(IConstraint other) throws MismatchingTypeOfConstraintException {
+    public boolean checkConstraint(IConstraint other) {
         return constraint.matches(other);
     }
 

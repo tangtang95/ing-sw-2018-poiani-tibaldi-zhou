@@ -1,13 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.card;
 
-import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.TileFilledException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 public class SchemaCard {
     private String name;
@@ -36,7 +31,7 @@ public class SchemaCard {
         return difficulty;
     }
 
-    public void setDice(Dice dice, int row, int column) throws TileFilledException, RuleViolationException, MismatchingTypeOfConstraintException {
+    public void setDice(Dice dice, int row, int column) throws TileFilledException, RuleViolationException {
         if (isDicePositionable(dice, row, column))
             tileMatrix[row][column].setDice(dice);
     }
@@ -49,7 +44,7 @@ public class SchemaCard {
         return tileMatrix[row][column].removeDice();
     }
 
-    public boolean isDicePositionable(Dice dice, int row, int column) throws RuleViolationException, MismatchingTypeOfConstraintException {
+    public boolean isDicePositionable(Dice dice, int row, int column) throws RuleViolationException{
         if (isEmpty()) {
             if (row == NUMBER_OF_ROWS - 1 || column == NUMBER_OF_COLUMNS - 1) {
                 return tileMatrix[row][column].isDicePositionable(dice);
@@ -60,7 +55,7 @@ public class SchemaCard {
             return tileMatrix[row][column].isDicePositionable(dice) && isAdjacentDicesRulesValid(dice, row, column);
     }
 
-    private boolean isAdjacentDicesRulesValid(Dice dice, int row, int column) throws RuleViolationException, MismatchingTypeOfConstraintException {
+    private boolean isAdjacentDicesRulesValid(Dice dice, int row, int column) throws RuleViolationException {
         int numberOfAdjacentDice = 0;
         for (int deltaX = -1; deltaX <= 1; deltaX++) {
             for (int deltaY = -1; deltaY <= 1; deltaY++) {

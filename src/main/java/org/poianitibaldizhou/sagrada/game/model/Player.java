@@ -35,7 +35,7 @@ public class Player {
         return coins.getCoins();
     }
 
-    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException, EmptyCollectionException, MismatchingTypeOfConstraintException {
+    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException, EmptyCollectionException {
         coins.use(toolCard);
         toolCard.invokeCommands(this);
     }
@@ -44,7 +44,7 @@ public class Player {
 
     }
 
-    public void placeDice(Dice dice, int row, int column) throws TileFilledException {
+    public void placeDice(Dice dice, int row, int column) throws TileFilledException, RuleViolationException {
         schemaCard.setDice(dice, row, column);
     }
 }
