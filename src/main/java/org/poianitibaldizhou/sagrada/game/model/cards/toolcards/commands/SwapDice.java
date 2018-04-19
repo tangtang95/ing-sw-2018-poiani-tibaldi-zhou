@@ -7,4 +7,11 @@ public class SwapDice implements ICommand {
     public void executeCommand(Player player) {
 
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof SwapDice))
+            return false;
+        return true;
+    }
 }

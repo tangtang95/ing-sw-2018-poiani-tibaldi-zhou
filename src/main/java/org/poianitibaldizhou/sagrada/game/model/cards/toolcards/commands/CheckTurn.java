@@ -3,11 +3,30 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 
 public class CheckTurn implements ICommand {
-    public CheckTurn(int i) {
+    private final int turn;
+
+    public CheckTurn(int turn) {
+        this.turn = turn;
     }
 
     @Override
     public void executeCommand(Player player) {
+
+    }
+
+    public int getTurn() {
+        return turn;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof CheckTurn))
+            return false;
+        CheckTurn obj = (CheckTurn) object;
+        if(turn == obj.getTurn())
+            return true;
+        else
+            return false;
 
     }
 }

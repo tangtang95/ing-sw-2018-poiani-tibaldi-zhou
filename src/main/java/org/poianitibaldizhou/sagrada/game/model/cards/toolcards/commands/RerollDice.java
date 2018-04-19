@@ -7,4 +7,11 @@ public class RerollDice implements ICommand {
     public void executeCommand(Player player) {
 
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof RerollDice))
+            return false;
+        return true;
+    }
 }

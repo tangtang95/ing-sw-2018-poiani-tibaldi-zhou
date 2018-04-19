@@ -7,4 +7,11 @@ public class CheckBeforeDiceChose implements ICommand {
     public void executeCommand(Player player) {
 
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof CheckBeforeDiceChose))
+            return false;
+        return true;
+    }
 }

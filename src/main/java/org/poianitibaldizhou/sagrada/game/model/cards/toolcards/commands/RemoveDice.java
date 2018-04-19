@@ -5,7 +5,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
 
 public class RemoveDice implements ICommand {
 
-    private ConstraintType constraintType;
+    public ConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    private final ConstraintType constraintType;
 
     public RemoveDice(ConstraintType type) {
         this.constraintType = type;
@@ -14,5 +18,16 @@ public class RemoveDice implements ICommand {
     @Override
     public void executeCommand(Player player) {
 
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof RemoveDice))
+            return false;
+
+        RemoveDice obj = (RemoveDice)object;
+        if(obj.getConstraintType() == this.constraintType)
+            return true;
+        return false;
     }
 }

@@ -7,4 +7,11 @@ public class ChooseColorFromRoundTrack implements ICommand {
     public void executeCommand(Player player) {
 
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof ChooseColorFromRoundTrack))
+            return false;
+        return true;
+    }
 }

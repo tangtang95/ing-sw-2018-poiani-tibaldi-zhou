@@ -4,11 +4,31 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
 
 public class PlaceDice implements ICommand {
-    public PlaceDice(ConstraintType none) {
+
+    public final ConstraintType constraintType;
+
+    public ConstraintType getConstraintType() {
+        return constraintType;
+    }
+
+    public PlaceDice(ConstraintType constraintType) {
+        this.constraintType = constraintType;
+
     }
 
     @Override
     public void executeCommand(Player player) {
 
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof PlaceDice))
+            return false;
+
+        PlaceDice obj = (PlaceDice) object;
+        if(obj.getConstraintType() == this.constraintType)
+            return true;
+        return false;
     }
 }

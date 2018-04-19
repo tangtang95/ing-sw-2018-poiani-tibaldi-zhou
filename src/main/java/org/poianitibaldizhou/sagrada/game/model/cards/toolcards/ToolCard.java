@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
@@ -18,7 +19,7 @@ public class ToolCard extends Card {
     private List<IToolCardObserver> observers;
     private ToolCardLanguageParser tclp;
 
-    protected ToolCard(String name, String description, Game game) {
+    public ToolCard(String name, String description, Game game) throws CommandNotFoundException {
         super(name, description);
         this.tokens = 0;
         this.game = game;

@@ -7,4 +7,11 @@ public class ChooseDiceValue implements ICommand {
     public void executeCommand(Player player) {
 
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof ChooseDiceValue))
+            return false;
+        return true;
+    }
 }

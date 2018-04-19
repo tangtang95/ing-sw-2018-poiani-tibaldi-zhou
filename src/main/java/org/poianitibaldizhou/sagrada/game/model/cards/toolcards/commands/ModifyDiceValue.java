@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 
 public class ModifyDiceValue implements ICommand {
 
-    private int value;
+    private final int value;
 
     public ModifyDiceValue(int value) {
         this.value = value;
@@ -14,5 +14,20 @@ public class ModifyDiceValue implements ICommand {
     @Override
     public void executeCommand(Player player) {
 
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(!(object instanceof ModifyDiceValue))
+            return false;
+
+        ModifyDiceValue obj = (ModifyDiceValue) object;
+        if(this.value == obj.getValue())
+            return true;
+        return false;
     }
 }
