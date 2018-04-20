@@ -1,8 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCardPoint;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 public class Player {
@@ -44,7 +46,7 @@ public class Player {
 
     }
 
-    public void placeDice(Dice dice, int row, int column) throws TileFilledException, RuleViolationException {
-        schemaCard.setDice(dice, row, column);
+    public void placeDice(Dice dice, SchemaCardPoint point, ConstraintType type) throws TileFilledException, RuleViolationException, ConstraintTypeException {
+        schemaCard.setDice(dice, point, type);
     }
 }

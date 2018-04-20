@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 public class ColorConstraint implements IConstraint {
-    Color color;
+    private final Color color;
 
     public ColorConstraint(Color color) {
         this.color = color;
@@ -13,8 +13,10 @@ public class ColorConstraint implements IConstraint {
 
     @Override
     public boolean matches(IConstraint other) {
+        if(other instanceof NoConstraint)
+            return true;
         if(!(other instanceof ColorConstraint)) {
-            return false;
+            return true;
         }
         ColorConstraint cc = (ColorConstraint) other;
         return color == cc.getColor();
@@ -22,7 +24,7 @@ public class ColorConstraint implements IConstraint {
     }
 
     @Override
-    public int getValue() {
+    public int getIndexValue() {
         return color.ordinal();
     }
 }

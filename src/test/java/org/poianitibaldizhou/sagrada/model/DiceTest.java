@@ -1,25 +1,13 @@
 package org.poianitibaldizhou.sagrada.model;
 
-import jdk.nashorn.internal.parser.JSONParser;
-import org.junit.*;
+import org.junit.Test;
 import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
-import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.Dice;
 
 import static org.junit.Assert.*;
 
 public class DiceTest {
-
-
-    @Before
-    public void setUp()  {
-
-    }
-
-    @After
-    public void tearDown() {
-
-    }
-
 
     @Test
     public void testDiceConstructor() {

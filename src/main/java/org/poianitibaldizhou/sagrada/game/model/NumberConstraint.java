@@ -9,15 +9,17 @@ public class NumberConstraint implements IConstraint {
 
     @Override
     public boolean matches(IConstraint other) {
+        if(other instanceof NoConstraint)
+            return true;
         if(!(other instanceof NumberConstraint)) {
-            return false;
+            return true;
         }
         NumberConstraint nc = (NumberConstraint) other;
         return number == nc.getNumber();
     }
 
     @Override
-    public int getValue() {
+    public int getIndexValue() {
         return number - 1;
     }
 

@@ -3,26 +3,25 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 
 public class Dice {
-    private NumberConstraint numberConstraint;
-    private ColorConstraint colorConstraint;
+    private final NumberConstraint numberConstraint;
+    private final ColorConstraint colorConstraint;
 
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = 6;
 
     public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) throws DiceInvalidNumberException {
-        setNumber(numberConstraint.getNumber());
+        int number = numberConstraint.getNumber();
+        if(number < MIN_VALUE || number > MAX_VALUE)
+            throw new DiceInvalidNumberException();
+        this.numberConstraint = new NumberConstraint(number);
         this.colorConstraint = colorConstraint;
     }
 
     public Dice(int number, Color color) throws DiceInvalidNumberException {
-        setNumber(number);
-        colorConstraint = new ColorConstraint(color);
-    }
-
-    private void setNumber(int number) throws DiceInvalidNumberException {
-        if(number < 1 || number > 6)
+        if(number < MIN_VALUE || number > MAX_VALUE)
             throw new DiceInvalidNumberException();
         numberConstraint = new NumberConstraint(number);
+        colorConstraint = new ColorConstraint(color);
     }
 
     public int getNumber() {

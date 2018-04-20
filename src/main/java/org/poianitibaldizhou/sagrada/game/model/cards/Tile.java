@@ -1,22 +1,21 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
+import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
 import org.poianitibaldizhou.sagrada.exception.TileFilledException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.NoConstraint;
 
 public class Tile{
 
-    private IConstraint constraint;
-    private Dice dice;
+    private final IConstraint constraint;
+    private Dice dice = null;
 
     public Tile(){
-        constraint = null;
-        dice = null;
+        constraint = new NoConstraint();
     }
 
     public Tile(IConstraint constraint){
-        dice = null;
         this.constraint = constraint;
     }
 
@@ -25,10 +24,18 @@ public class Tile{
         constraint = tile.constraint;
     }
 
-    public void setDice(Dice dice) throws TileFilledException{
+    public void setDice(Dice dice) throws ConstraintTypeException, TileFilledException {
         if(this.dice != null)
             throw new TileFilledException("A dice is already occupying the tile");
-        this.dice = dice;
+        if(isDicePositionable(dice, ConstraintType.NUMBERCOLOR))
+            this.dice = dice;
+    }
+
+    public void setDice(Dice dice, ConstraintType type) throws TileFilledException, ConstraintTypeException {
+        if(this.dice != null)
+            throw new TileFilledException("A dice is already occupying the tile");
+        if(isDicePositionable(dice, type))
+            this.dice = dice;
     }
 
     public Dice getDice() {
@@ -41,17 +48,28 @@ public class Tile{
         return removedDice;
     }
 
-    public boolean isDicePositionable(Dice dice) throws RuleViolationException {
+    public boolean isDicePositionable(Dice dice) throws ConstraintTypeException {
+        return isDicePositionable(dice, ConstraintType.NUMBERCOLOR);
+    }
+
+    public boolean isDicePositionable(Dice dice, ConstraintType type) throws ConstraintTypeException {
         if(this.dice == null) {
-            if (constraint == null)
-                return true;
-            else if (constraint != null){
-                if(checkConstraint(dice.getNumberConstraint()) || checkConstraint(dice.getColorConstraint()))
+            switch (type){
+                case NUMBER:
+                    return checkConstraint(dice.getNumberConstraint());
+                case COLOR:
+                    return checkConstraint(dice.getColorConstraint());
+                case NUMBERCOLOR:
+                    return (checkConstraint(dice.getNumberConstraint()) && checkConstraint(dice.getColorConstraint()));
+                case NONE:
                     return true;
+                case ISOLATED:
+                    throw new ConstraintTypeException("Invalid constraint type");
             }
         }
-        throw new RuleViolationException("There is already a dice on that tile");
+        return false;
     }
+
 
     public IConstraint getConstraint() {
         return constraint;
