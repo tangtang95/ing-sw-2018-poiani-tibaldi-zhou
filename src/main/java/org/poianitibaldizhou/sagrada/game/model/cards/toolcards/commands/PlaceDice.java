@@ -27,8 +27,6 @@ public class PlaceDice implements ICommand {
             return false;
 
         PlaceDice obj = (PlaceDice) object;
-        if(obj.getConstraintType() == this.constraintType)
-            return true;
-        return false;
+        return obj.getConstraintType() == this.constraintType? true:false;
     }
 }

@@ -10,8 +10,6 @@ public class CheckBeforeDiceChose implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof CheckBeforeDiceChose))
-            return false;
-        return true;
+        return object instanceof CheckBeforeDiceChose?true:false;
     }
 }

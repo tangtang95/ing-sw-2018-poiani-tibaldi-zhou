@@ -10,8 +10,6 @@ public class RerollDraftPool implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof RerollDraftPool))
-            return false;
-        return true;
+        return !(object instanceof RerollDraftPool)? false:true;
     }
 }

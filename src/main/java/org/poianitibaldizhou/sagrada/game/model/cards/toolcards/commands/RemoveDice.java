@@ -26,8 +26,6 @@ public class RemoveDice implements ICommand {
             return false;
 
         RemoveDice obj = (RemoveDice)object;
-        if(obj.getConstraintType() == this.constraintType)
-            return true;
-        return false;
+        return obj.getConstraintType() == this.constraintType ? true:false;
     }
 }

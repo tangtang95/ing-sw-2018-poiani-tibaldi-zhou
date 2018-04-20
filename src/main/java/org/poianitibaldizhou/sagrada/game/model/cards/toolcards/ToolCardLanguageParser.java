@@ -9,12 +9,30 @@ import java.util.*;
 public class ToolCardLanguageParser {
     private static Map<String, ICommand> grammar;
 
+    /**
+     * Constructor.
+     * Creates an object needed for parsing the tool cards language.
+     */
     public ToolCardLanguageParser(){
         setGrammar();
     }
 
+    /**
+     * Given a string that contains the description of the effects of a tool card, returns
+     * the list of the commands associated with it.
+     * Each command needs to be separated with ";" and no additional spaces have to be present.
+     * Example
+     * "Reroll dice;Add dice to Dicebag"
+     *
+     * Wrong Example
+     * "Reroll dice; Add dice to Dicebag"
+     *
+     * @param description effects of a tool card
+     * @return list of commands triggered by description
+     * @throws CommandNotFoundException if a string isn't matching with any of the avaible commands.
+     */
     public List<ICommand> parseToolCard(String description) throws CommandNotFoundException {
-        List<ICommand> commands = new ArrayList<ICommand>();
+        List<ICommand> commands = new ArrayList<>();
         ArrayList<String> processedText=  preprocessing(description);
         for(String s: processedText) {
             if(grammar.get(s) != null)
@@ -26,12 +44,21 @@ public class ToolCardLanguageParser {
         return commands;
     }
 
+    /**
+     * Preprocesses the string, dividing sentences separeted with ";".
+     *
+     * @param text string that needs to be preprocessed
+     * @return a list of string contained in text separeted by ";"
+     */
     private ArrayList<String> preprocessing(String text){
-        return new ArrayList<String>(Arrays.asList(text.split(";")));
+        return new ArrayList<>(Arrays.asList(text.split(";")));
     }
 
-    private void setGrammar(){
-        grammar = new HashMap<String, ICommand>();
+    /**
+     * Sets the grammar of the language
+     */
+    private static void setGrammar(){
+        grammar = new HashMap<>();
         grammar.put("Choose dice", new ChooseDice());
         grammar.put("Modify dice value by 1", new ModifyDiceValue(1));
         grammar.put("Remove dice from schema", new RemoveDice(ConstraintType.NONE));

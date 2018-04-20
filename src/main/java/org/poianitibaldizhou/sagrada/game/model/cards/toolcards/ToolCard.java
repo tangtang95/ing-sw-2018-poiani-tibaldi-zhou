@@ -23,7 +23,7 @@ public class ToolCard extends Card {
         super(name, description);
         this.tokens = 0;
         this.game = game;
-        observers = new ArrayList<IToolCardObserver>();
+        observers = new ArrayList<>();
         tclp = new ToolCardLanguageParser();
         commands = tclp.parseToolCard(this.getDescription());
     }

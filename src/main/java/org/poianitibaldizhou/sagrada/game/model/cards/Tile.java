@@ -53,8 +53,8 @@ public class Tile{
     }
 
     public boolean isDicePositionable(Dice dice, ConstraintType type) throws ConstraintTypeException {
-        if(this.dice == null) {
-            switch (type){
+        if (this.dice == null) {
+            switch (type) {
                 case NUMBER:
                     return checkConstraint(dice.getNumberConstraint());
                 case COLOR:
@@ -69,7 +69,6 @@ public class Tile{
         }
         return false;
     }
-
 
     public IConstraint getConstraint() {
         return constraint;

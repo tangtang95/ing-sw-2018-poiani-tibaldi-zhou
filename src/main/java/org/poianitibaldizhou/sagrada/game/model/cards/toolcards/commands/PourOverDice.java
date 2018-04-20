@@ -10,8 +10,6 @@ public class PourOverDice implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof PourOverDice))
-            return false;
-        return true;
+        return !(object instanceof  PourOverDice)? false:true;
     }
 }

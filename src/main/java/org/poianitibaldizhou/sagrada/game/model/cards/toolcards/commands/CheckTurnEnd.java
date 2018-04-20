@@ -10,8 +10,6 @@ public class CheckTurnEnd implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof CheckTurnEnd))
-            return false;
-        return true;
+        return object instanceof CheckTurn? true:false;
     }
 }

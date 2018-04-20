@@ -40,8 +40,22 @@ public class DiceTest {
             assertTrue(d1.equals(d1));
             assertTrue(d1.equals(d4));
         } catch(Exception e) {
-            fail("no exception excepted");
+            fail("No exception expected");
         }
     }
 
+    @Test
+    public void testDicePourOver() {
+        Dice d1, pourOver;
+        try {
+            for (int i = 1; i <= 6; i++) {
+                d1 = new Dice(i, Color.BLUE);
+                pourOver = d1.pourOverDice();
+                assertEquals(d1.getColor(), pourOver.getColor());
+                assertEquals(7-i, pourOver.getNumber());
+            }
+        } catch(Exception e) {
+            fail("No exception expected");
+        }
+    }
 }

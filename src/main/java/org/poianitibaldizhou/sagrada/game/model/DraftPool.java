@@ -8,20 +8,41 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 public class DraftPool {
     private List<Dice> dices;
 
+    /**
+     * Constructor.
+     * Creates the DraftPool of the game.
+     */
     public DraftPool() {
-        dices = new ArrayList<Dice>();
+        dices = new ArrayList<>();
     }
 
+    /**
+     * Returns the current dices present in DraftPool.
+     *
+     * @return list of dices present in the DraftPool of the game
+     */
     public List<Dice> getDices() {
-        return new ArrayList<Dice>(dices);
+        return new ArrayList<>(dices);
     }
 
+    /**
+     * Adds a list of dices to the DraftPool
+     *
+     * @param dices the list of dices that needs to be added
+     */
     public void addDices(List<Dice> dices) {
         this.dices.addAll(dices);
     }
 
+    /**
+     * Uses a dice presents in the DrafPool thus removing it.
+     *
+     * @param d
+     * @throws DiceNotFoundException if d is not presente in the DraftPool
+     * @throws EmptyCollectionException if the DraftPool is empty
+     */
     public void useDice(Dice d) throws DiceNotFoundException, EmptyCollectionException {
-        if(dices.size() == 0)  {
+        if(dices.isEmpty())  {
             throw new EmptyCollectionException();
         }
         for(int i = 0; i < dices.size(); i++) {
@@ -30,7 +51,7 @@ public class DraftPool {
                 return;
             }
         }
-        throw new DiceNotFoundException("DrafPool.useDice failed due to non existance of the draft in the pool");
+        throw new DiceNotFoundException("DrafPool.useDice() failed due to non existence of the dice in the pool");
     }
 
     @Override

@@ -10,8 +10,6 @@ public class AddDiceToDraftPool implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof AddDiceToDraftPool))
-            return false;
-        return true;
+        return object instanceof AddDiceToDraftPool?true:false;
     }
 }

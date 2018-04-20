@@ -9,6 +9,15 @@ public class Dice {
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = 6;
 
+    /**
+     * Constructor.
+     * Creates a Dice with a certain NumberConstraint and ColorConstraint.
+     * @param numberConstraint dice's number contraint
+     * @param colorConstraint dice's color constraint
+     * @throws DiceInvalidNumberException if number contraints represents a number greater then MAX_VALUE
+     *                                    or lesser then MIN_VALUE
+     *
+     */
     public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) throws DiceInvalidNumberException {
         int number = numberConstraint.getNumber();
         if(number < MIN_VALUE || number > MAX_VALUE)
@@ -17,11 +26,16 @@ public class Dice {
         this.colorConstraint = colorConstraint;
     }
 
+    /**
+     * Constructor.
+     * Creates a Dice of a certain number and color.
+     *
+     * @param number dice's number
+     * @param color dice's color
+     * @throws DiceInvalidNumberException if number if greater then MAX_VALUE or lesser then MIN_VALUE
+     */
     public Dice(int number, Color color) throws DiceInvalidNumberException {
-        if(number < MIN_VALUE || number > MAX_VALUE)
-            throw new DiceInvalidNumberException();
-        numberConstraint = new NumberConstraint(number);
-        colorConstraint = new ColorConstraint(color);
+        this(new NumberConstraint(number), new ColorConstraint(color));
     }
 
     public int getNumber() {
@@ -45,9 +59,7 @@ public class Dice {
         if(!(oth instanceof Dice))
             return false;
         Dice o = (Dice)oth;
-        if(o.getColor() == this.getColor() && o.getNumber() == this.getNumber())
-            return true;
-        return false;
+        return (o.getColorConstraint() == this.getColorConstraint() && o.getNumber() == this.getNumber())? true:false;
     }
 
     @Override
@@ -55,9 +67,15 @@ public class Dice {
         return "Dice("+numberConstraint.getNumber()+","+colorConstraint.getColor()+")";
     }
 
+    /**
+     * Returns a dice of the same color of this, but the number is the one at the opposite
+     * of the current face.
+     *
+     * @return the current dice inverted
+     */
     public Dice pourOverDice() {
         try {
-            return new Dice(7 - this.numberConstraint.getNumber(), this.colorConstraint.getColor());
+            return new Dice(MAX_VALUE + 1 - this.numberConstraint.getNumber(), this.colorConstraint.getColor());
         } catch(DiceInvalidNumberException dine) {
             dine.printStackTrace();
         }
