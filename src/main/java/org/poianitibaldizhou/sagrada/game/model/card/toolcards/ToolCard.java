@@ -13,17 +13,18 @@ public class ToolCard extends Card {
     private Color color;
     private int tokens;
     private List<ICommand> commands;
-    private Game game;
+    private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
     private ToolCardLanguageParser tclp;
 
-    protected ToolCard(String name, String description, Game game) {
+    public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
         this.tokens = 0;
-        this.game = game;
+        this.color = color;
+        this.isSinglePlayer = isSinglePlayer;
         observers = new ArrayList<IToolCardObserver>();
         tclp = new ToolCardLanguageParser();
-        commands = tclp.parseToolCard(this.getDescription());
+        commands = tclp.parseToolCard(action);
     }
 
     public void invokeCommands(Player player){
@@ -31,7 +32,7 @@ public class ToolCard extends Card {
             command.executeCommand(player);
         }
 
-        if(game.isSinglePlayer())
+        if(isSinglePlayer)
             for(IToolCardObserver obs : observers)
                 obs.onCardDestroy();
         else

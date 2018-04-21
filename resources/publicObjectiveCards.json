@@ -1,0 +1,51 @@
+[{
+  "cardName": "Colori diversi - Riga",
+  "cardDescription": "Righe senza colori ripetuti",
+  "victoryPoints": 6,
+  "action": ""
+}, {
+  "cardName": "Colori diversi - Colonna",
+  "cardDescription": "Colonne senza colori ripetuti",
+  "victoryPoints": 5,
+  "action": ""
+  }, {
+  "cardName": "Sfumature diverse - Riga",
+  "cardDescription": "Righe senza sfumature ripetute",
+  "victoryPoints": 5,
+  "action": ""
+  }, {
+  "cardName": "Sfumature diverse - Colonna",
+  "cardDescription": "Colonne senza colori ripetuti",
+  "victoryPoints": 4,
+  "action": ""
+  }, {
+  "cardName": "Sfumature Chiare",
+  "cardDescription": "Set di 1 & 2 ovunque",
+  "victoryPoints": 2,
+  "action": ""
+}, {
+  "cardName": "Sfumature Medie",
+  "cardDescription": "Set di 3 & 4 ovunque",
+  "victoryPoints": 2,
+  "action": ""
+}, {
+  "cardName": "Sfumature Scure",
+  "cardDescription": "Set di 5 & 6 ovunque",
+  "victoryPoints": 2,
+  "action": ""
+}, {
+  "cardName": "Sfumature Diverse",
+  "cardDescription": "Set di dadi di ogni valore ovunque",
+  "victoryPoints": 5,
+  "action": ""
+}, {
+  "cardName": "Diagonali Colorate",
+  "cardDescription": "Numero di dadi dello stesso colore diagonalmente adiacenti",
+  "victoryPoints": 1,
+  "action": ""
+}, {
+  "cardName": "Varietà di Colore",
+  "cardDescription": "Set di dadi di ogni colore ovunque",
+  "victoryPoints": 4,
+  "action": ""
+}]

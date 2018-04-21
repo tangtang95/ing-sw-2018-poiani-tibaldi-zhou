@@ -1,0 +1,21 @@
+[{
+  "cardName": "Sfumature Rosse - Privata",
+  "cardDescription": "Somma dei valori su tutti i dadi rossi",
+  "action": ""
+}, {
+  "cardName": "Sfumature Gialle - Privata",
+  "cardDescription": "Somma dei valori su tutti i dadi gialli",
+  "action": ""
+}, {
+  "cardName": "Sfumature Verdi - Privata",
+  "cardDescription": "Somma dei valori su tutti i dadi verdi",
+  "action": ""
+}, {
+  "cardName": "Sfumature Blu - Privata",
+  "cardDescription": "Somma dei valori su tutti i dadi blu",
+  "action": ""
+}, {
+  "cardName": "Sfumature Viola - Privata",
+  "cardDescription": "Somma dei valori su tutti i dadi viola",
+  "action": ""
+}]

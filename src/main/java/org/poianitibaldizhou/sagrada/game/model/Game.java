@@ -13,7 +13,7 @@ public class Game {
     private RoundTrack roundTrack;
     private List<ToolCard> toolCards;
     private List<PublicObjectiveCard> publicObjectiveCards;
-    private List<Dice> diceBag;
+    private DrawableCollection<Dice> diceBag;
     private DraftPool draftPool;
 
     public Game(boolean isSinglePlayer) {
@@ -21,7 +21,7 @@ public class Game {
         this.players = new LinkedList<>();
         this.toolCards= new LinkedList<>();
         this.publicObjectiveCards = new LinkedList<>();
-        this.diceBag = new LinkedList<>();
+        this.diceBag = new DrawableCollection();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
     }
