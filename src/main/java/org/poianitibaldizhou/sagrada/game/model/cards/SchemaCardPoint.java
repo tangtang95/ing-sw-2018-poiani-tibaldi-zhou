@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.SchemaCardPointOutOfBoundsException;
 
 @Immutable
 public final class SchemaCardPoint {
@@ -14,9 +13,9 @@ public final class SchemaCardPoint {
         return row < 0 || row > SchemaCard.NUMBER_OF_ROWS -1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS -1;
     }
 
-    public SchemaCardPoint(int row, int column) throws SchemaCardPointOutOfBoundsException {
+    public SchemaCardPoint(int row, int column) {
         if(isOutOfBounds(row,column))
-            throw new SchemaCardPointOutOfBoundsException("schema card point out of bounds");
+            throw new IllegalArgumentException("schema card point out of bounds");
         this.row = row;
         this.column = column;
     }

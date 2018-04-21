@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 
 @Immutable
 public class Dice {
@@ -11,18 +10,17 @@ public class Dice {
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = 6;
 
+
     /**
      * Constructor.
      * Creates a Dice with a certain NumberConstraint and ColorConstraint.
      * @param numberConstraint dice's number constraint
      * @param colorConstraint dice's color constraint
-     * @throws DiceInvalidNumberException if number constraints represents a number greater then MAX_VALUE
-     *                                    or lesser then MIN_VALUE
      *
      */
-    public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) throws DiceInvalidNumberException {
+    public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) {
         if(numberConstraint.getNumber() < MIN_VALUE || numberConstraint.getNumber() > MAX_VALUE)
-            throw new DiceInvalidNumberException();
+            throw new IllegalArgumentException("Invalid number: number must be in range [1,6]");
         this.numberConstraint = numberConstraint;
         this.colorConstraint = colorConstraint;
     }
@@ -33,9 +31,8 @@ public class Dice {
      *
      * @param number dice's number
      * @param color dice's color
-     * @throws DiceInvalidNumberException if number if greater then MAX_VALUE or lesser then MIN_VALUE
      */
-    public Dice(int number, Color color) throws DiceInvalidNumberException {
+    public Dice(int number, Color color)  {
         this(new NumberConstraint(number), new ColorConstraint(color));
     }
 
@@ -75,11 +72,6 @@ public class Dice {
      * @return the current dice inverted
      */
     public Dice pourOverDice() {
-        try {
-            return new Dice(MAX_VALUE + 1 - this.numberConstraint.getNumber(), this.colorConstraint.getColor());
-        } catch(DiceInvalidNumberException dine) {
-            dine.printStackTrace();
-        }
-        return null;
+        return new Dice(MAX_VALUE + 1 - this.numberConstraint.getNumber(), this.colorConstraint.getColor());
     }
 }

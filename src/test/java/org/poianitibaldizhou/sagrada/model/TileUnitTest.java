@@ -1,11 +1,6 @@
 package org.poianitibaldizhou.sagrada.model;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 

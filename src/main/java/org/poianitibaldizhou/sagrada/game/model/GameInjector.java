@@ -4,12 +4,10 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.io.FileReader;
@@ -40,11 +38,11 @@ public class GameInjector {
         for (Object object : jsonArray) {
             JSONObject toolCard = (JSONObject) object;
             allToolCards.add(new ToolCard(  Color.valueOf((String)toolCard.get("cardColour")),
-                                            (String)toolCard.get("cardName"),
-                                            (String)toolCard.get("cardDescription"),
-                                            (String)toolCard.get("action"),
-                                            isSinglePlayer
-                                         ));
+                    (String)toolCard.get("cardName"),
+                    (String)toolCard.get("cardDescription"),
+                    (String)toolCard.get("action"),
+                    isSinglePlayer
+            ));
 
         }
         toolCardDrawableCollection = new DrawableCollection<>(allToolCards);
@@ -68,13 +66,10 @@ public class GameInjector {
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
-                try {
-                    diceBag.addElement(new Dice(new NumberConstraint(random.nextInt(6) + 1),
-                                                new ColorConstraint(Color.values()[j])
-                                                ));
-                } catch (DiceInvalidNumberException e) {
-                    e.printStackTrace();
-                }
+                diceBag.addElement(new Dice(new NumberConstraint(random.nextInt(6) + 1),
+                        new ColorConstraint(Color.values()[j])
+                ));
+
 
     }
 

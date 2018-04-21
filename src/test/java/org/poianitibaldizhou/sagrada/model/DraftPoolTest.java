@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.model;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -28,7 +27,7 @@ public class DraftPoolTest {
     }
 
     @Before
-    public void setUp() throws DiceInvalidNumberException {
+    public void setUp()  {
         dices.add(new Dice(5, Color.BLUE));
         dices.add(new Dice(2, Color.BLUE));
         dices.add(new Dice(1, Color.PURPLE));
@@ -72,7 +71,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testEmptyException() throws DiceInvalidNumberException {
+    public void testEmptyException() {
         dp = new DraftPool();
         try {
             dp.useDice(new Dice(4,Color.BLUE));
@@ -85,7 +84,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testDiceNotFoundException() throws DiceInvalidNumberException {
+    public void testDiceNotFoundException() {
         try {
             dp.useDice(new Dice(1, Color.GREEN));
             fail("NotFoundException expected");
@@ -93,8 +92,6 @@ public class DraftPoolTest {
             assertTrue(!dp.getDices().contains(new Dice(1, Color.GREEN)));
         } catch (EmptyCollectionException e) {
             fail("Not expected exception");
-        } catch (DiceInvalidNumberException e) {
-            e.printStackTrace();
         }
     }
 }

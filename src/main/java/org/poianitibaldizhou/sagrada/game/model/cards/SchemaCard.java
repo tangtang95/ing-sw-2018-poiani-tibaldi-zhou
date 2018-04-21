@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
-import org.poianitibaldizhou.sagrada.exception.SchemaCardPointOutOfBoundsException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
 
@@ -16,7 +15,7 @@ public class SchemaCard {
     public static final int NUMBER_OF_ROWS = 4;
 
     /**
-     * Constructor: create a SchemaCard without any dice on it
+     * Constructor: creates a SchemaCard without any dice on it
      * @param name the name of the schema card
      * @param difficulty the difficulty of the schema card
      * @param constraints a matrix of the constraints of the tile (NUMBER_OF_ROWS x NUMBER_OF_COLUMNS)
@@ -159,21 +158,18 @@ public class SchemaCard {
             for (int deltaColumn = -1; deltaColumn <= 1; deltaColumn++) {
                 if (deltaRow == 0 && deltaColumn == 0) continue;
                 if (!SchemaCardPoint.isOutOfBounds(point.row + deltaRow, point.column + deltaColumn)) {
-                    try {
-                        Dice tileDice = getDice(new SchemaCardPoint(point.row + deltaRow, point.column + deltaColumn));
-                        if (tileDice != null) {
-                            numberOfAdjacentDice++;
-                            if (Math.abs(deltaRow) + Math.abs(deltaColumn) == 1) {
-                                //Orthogonal direction
-                                
-                                if (tileDice.getColorConstraint().equals(dice.getColorConstraint()) ||
-                                        tileDice.getNumberConstraint().equals(dice.getNumberConstraint()))
-                                    throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
-                            }
+                    Dice tileDice = getDice(new SchemaCardPoint(point.row + deltaRow, point.column + deltaColumn));
+                    if (tileDice != null) {
+                        numberOfAdjacentDice++;
+                        if (Math.abs(deltaRow) + Math.abs(deltaColumn) == 1) {
+                            //Orthogonal direction
+
+                            if (tileDice.getColorConstraint().equals(dice.getColorConstraint()) ||
+                                    tileDice.getNumberConstraint().equals(dice.getNumberConstraint()))
+                                throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
                         }
-                    } catch (SchemaCardPointOutOfBoundsException e) {
-                        e.printStackTrace();
                     }
+
                 }
             }
         }
@@ -188,12 +184,9 @@ public class SchemaCard {
     public boolean isEmpty() {
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                try {
-                    if (getDice(new SchemaCardPoint(i,j)) != null)
+                if (getDice(new SchemaCardPoint(i,j)) != null)
                         return false;
-                } catch (SchemaCardPointOutOfBoundsException e) {
-                    e.printStackTrace();
-                }
+
             }
         }
         return true;
@@ -216,12 +209,9 @@ public class SchemaCard {
         boolean hasSameTiles = true;
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                try {
-                    if(!getTile(new SchemaCardPoint(i,j)).equals(other.getTile(new SchemaCardPoint(i,j))))
-                        hasSameTiles = false;
-                } catch (SchemaCardPointOutOfBoundsException e) {
-                    e.printStackTrace();
-                }
+                if(!getTile(new SchemaCardPoint(i,j)).equals(other.getTile(new SchemaCardPoint(i,j))))
+                    hasSameTiles = false;
+
             }
         }
         return hasSameTiles && this.getName().equals(other.getName()) && this.getDifficulty() == other.getDifficulty();

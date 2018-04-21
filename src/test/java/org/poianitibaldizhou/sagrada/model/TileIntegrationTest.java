@@ -1,14 +1,10 @@
 package org.poianitibaldizhou.sagrada.model;
 
 import org.junit.Test;
-import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.NumberConstraint;
-import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 
@@ -23,12 +19,9 @@ public class TileIntegrationTest {
         Tile tile3 = new Tile(new NumberConstraint(3));
         Dice dice5blue = null;
         Dice dice3purple = null;
-        try {
-            dice5blue = new Dice(5, Color.BLUE);
-            dice3purple = new Dice(3, Color.PURPLE);
-        } catch (DiceInvalidNumberException e) {
-            fail("no exception excepted");
-        }
+        dice5blue = new Dice(5, Color.BLUE);
+        dice3purple = new Dice(3, Color.PURPLE);
+
         try {
             assertTrue(tile.isDicePositionable(dice5blue));
             assertFalse(tilePurple.isDicePositionable(dice5blue));

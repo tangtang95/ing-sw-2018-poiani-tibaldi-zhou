@@ -1,12 +1,9 @@
 package org.poianitibaldizhou.sagrada.model;
 
-import com.sun.jdi.InvalidLineNumberException;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -33,11 +30,7 @@ public class DiceUnitTest {
         MockitoAnnotations.initMocks(this);
         when(colorConstraint.getColor()).thenReturn(Color.BLUE);
         when(numberConstraint.getNumber()).thenReturn(5);
-        try {
-            dice = new Dice(numberConstraint, colorConstraint);
-        } catch (DiceInvalidNumberException e) {
-            fail("no exception expected");
-        }
+        dice = new Dice(numberConstraint, colorConstraint);
     }
 
     @Test
@@ -57,7 +50,7 @@ public class DiceUnitTest {
             dice = new Dice(numberConstraint, colorConstraint);
 
             fail("no exception launched");
-        } catch (DiceInvalidNumberException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals("Excepted dice is null", null, dice);
         }
     }

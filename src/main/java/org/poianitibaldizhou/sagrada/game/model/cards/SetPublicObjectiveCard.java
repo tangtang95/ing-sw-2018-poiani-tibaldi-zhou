@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
-import org.poianitibaldizhou.sagrada.exception.SchemaCardPointOutOfBoundsException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
@@ -20,20 +19,17 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
         int[] counts = new int[Math.max(Dice.MAX_VALUE, Color.values().length)];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                try {
-                    Dice dice = schema.getDice(new SchemaCardPoint(i,j));
-                    if(dice != null) {
-                        int indexValue;
-                        if(getType() == TileConstraintType.COLOR)
-                            indexValue = containsConstraint(dice.getColorConstraint());
-                        else
-                            indexValue = containsConstraint(dice.getNumberConstraint());
-                        if (indexValue != -1)
-                            counts[indexValue]++;
-                    }
-                } catch (SchemaCardPointOutOfBoundsException e) {
-                    e.printStackTrace();
+                Dice dice = schema.getDice(new SchemaCardPoint(i,j));
+                if(dice != null) {
+                    int indexValue;
+                    if(getType() == TileConstraintType.COLOR)
+                        indexValue = containsConstraint(dice.getColorConstraint());
+                    else
+                        indexValue = containsConstraint(dice.getNumberConstraint());
+                    if (indexValue != -1)
+                        counts[indexValue]++;
                 }
+
             }
         }
         int minValue = Integer.MAX_VALUE;

@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.model;
 
 import org.junit.Test;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 
@@ -17,13 +16,13 @@ public class DiceIntegrationTest {
             assertEquals("Error dice number", d1.getNumber(), d1.getNumberConstraint().getNumber());
             assertEquals("Error dice color", Color.BLUE, d1.getColor());
             assertEquals("Error dice color", d1.getColor(), d1.getColorConstraint().getColor());
-        } catch (DiceInvalidNumberException e) {
+        } catch (IllegalArgumentException e) {
             fail("no exception excepted");
         }
         Dice d2 = null;
         try {
             d2 = new Dice(7, Color.GREEN);
-        } catch (DiceInvalidNumberException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals("Excepted dice is null", null, d2);
         }
     }
