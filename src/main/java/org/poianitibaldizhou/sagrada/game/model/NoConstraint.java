@@ -16,4 +16,9 @@ public class NoConstraint implements IConstraint{
     public int getIndexValue() {
         return -1;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        return obj instanceof NoConstraint;
+    }
 }

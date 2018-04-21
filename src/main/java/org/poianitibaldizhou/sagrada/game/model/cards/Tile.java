@@ -132,4 +132,12 @@ public class Tile{
         return constraint.matches(other);
     }
 
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof Tile))
+            return false;
+        Tile other = (Tile) obj;
+        return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
+    }
+
 }

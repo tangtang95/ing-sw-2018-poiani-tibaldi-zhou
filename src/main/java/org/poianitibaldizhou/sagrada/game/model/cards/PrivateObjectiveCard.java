@@ -8,7 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.IConstraint;
 
 public class PrivateObjectiveCard extends Card implements IScore {
 
-    private IConstraint colorConstraint;
+    private ColorConstraint colorConstraint;
 
     protected PrivateObjectiveCard(String name, String description, ColorConstraint colorConstraint) {
         super(name, description);
@@ -22,8 +22,10 @@ public class PrivateObjectiveCard extends Card implements IScore {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 try {
                     Dice dice = schema.getDice(new SchemaCardPoint(i,j));
-                    if(dice.getColorConstraint().matches(colorConstraint))
-                        score += dice.getNumber();
+                    if(dice != null) {
+                        if (dice.getColorConstraint().equals(colorConstraint))
+                            score += dice.getNumber();
+                    }
                 } catch (SchemaCardPointOutOfBoundsException e) {
                     e.printStackTrace();
                 }

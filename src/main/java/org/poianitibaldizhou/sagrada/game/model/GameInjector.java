@@ -6,7 +6,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
@@ -26,13 +28,18 @@ public class GameInjector {
         jsonParser = new JSONParser();
     }
 
-    public void toolCardInjector(List<ToolCard> toolCards, boolean isSinglePlayer, int difficulty) throws IOException, ParseException, EmptyCollectionException {
-        List<ToolCard> allToolcards = new LinkedList<>();
-        JSONArray jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/toolCards.json"));
+    public void injectToolCards(List<ToolCard> toolCards, boolean isSinglePlayer, int difficulty) {
+        List<ToolCard> allToolCards = new LinkedList<>();
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/toolCards.json"));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
 
         for (Object object : jsonArray) {
             JSONObject toolCard = (JSONObject) object;
-            allToolcards.add(new ToolCard(  Color.valueOf((String)toolCard.get("cardColour")),
+            allToolCards.add(new ToolCard(  Color.valueOf((String)toolCard.get("cardColour")),
                                             (String)toolCard.get("cardName"),
                                             (String)toolCard.get("cardDescription"),
                                             (String)toolCard.get("action"),
@@ -40,32 +47,55 @@ public class GameInjector {
                                          ));
 
         }
-        toolCardDrawableCollection = new DrawableCollection<>(allToolcards);
+        toolCardDrawableCollection = new DrawableCollection<>(allToolCards);
         if (isSinglePlayer)
             for(int i = 0; i < difficulty; i++)
-                toolCards.add(toolCardDrawableCollection.draw());
+                try {
+                    toolCards.add(toolCardDrawableCollection.draw());
+                } catch (EmptyCollectionException e) {
+                    e.printStackTrace();
+                }
         else
             for(int i = 0; i < 3; i++)
-                toolCards.add(toolCardDrawableCollection.draw());
+                try {
+                    toolCards.add(toolCardDrawableCollection.draw());
+                } catch (EmptyCollectionException e) {
+                    e.printStackTrace();
+                }
     }
 
-    public void diceBagInjector(DrawableCollection<Dice> diceBag) throws DiceInvalidNumberException {
+    public void injectDiceBag(DrawableCollection<Dice> diceBag){
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
-                diceBag.addElement(new Dice(new NumberConstraint(random.nextInt(6) + 1),
-                                            new ColorConstraint(Color.values()[j])
-                                            ));
+                try {
+                    diceBag.addElement(new Dice(new NumberConstraint(random.nextInt(6) + 1),
+                                                new ColorConstraint(Color.values()[j])
+                                                ));
+                } catch (DiceInvalidNumberException e) {
+                    e.printStackTrace();
+                }
 
     }
 
-    public void publicObjectiveCardInjector(List<PublicObjectiveCard> publicObjectiveCards) throws IOException, ParseException {
+    public void injectPublicObjectiveCards(List<PublicObjectiveCard> publicObjectiveCards)  {
         List<PublicObjectiveCard> allPublicObjectiveCards = new LinkedList<>();
-        JSONArray jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/publicObjectiveCards.json"));
+        JSONArray jsonArray = null;
+        try {
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/publicObjectiveCards.json"));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
 
         for (Object object : jsonArray) {
             JSONObject toolCard = (JSONObject) object;
 
         }
+    }
+
+    public void injectPrivateObjectiveCard(DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
+    }
+
+    public void injectSchemaCards(DrawableCollection<SchemaCard> schemaCards) {
     }
 }

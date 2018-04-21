@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
 public abstract class IStateGame {
 
@@ -13,7 +15,10 @@ public abstract class IStateGame {
     public void nextRound(){
 
     }
-    public void ready(){
+    public void ready(Player player, SchemaCard schemaCard){
+
+    }
+    public void readyGame(){
 
     }
     public void throwDices(){

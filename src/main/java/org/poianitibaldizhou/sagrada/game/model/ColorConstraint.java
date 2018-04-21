@@ -30,4 +30,12 @@ public class ColorConstraint implements IConstraint {
     public int getIndexValue() {
         return color.ordinal();
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof ColorConstraint))
+            return false;
+        return this.getColor() == ((ColorConstraint) obj).getColor();
+    }
+
 }

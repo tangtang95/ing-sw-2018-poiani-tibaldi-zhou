@@ -147,8 +147,8 @@ public class SchemaCard {
 
     /**
      *
-     * @param dice
-     * @param point
+     * @param dice the dice to check if positionable
+     * @param point the position to check
      * @return true if there is at least one adjacent dice
      * @throws RuleViolationException if there are rule violation for a similar orthogonal adjacent dice (same color or same number)
      */
@@ -166,8 +166,8 @@ public class SchemaCard {
                             if (Math.abs(deltaRow) + Math.abs(deltaColumn) == 1) {
                                 //Orthogonal direction
                                 
-                                if (tileDice.getColorConstraint().matches(dice.getColorConstraint()) ||
-                                        tileDice.getNumberConstraint().matches(dice.getNumberConstraint()))
+                                if (tileDice.getColorConstraint().equals(dice.getColorConstraint()) ||
+                                        tileDice.getNumberConstraint().equals(dice.getNumberConstraint()))
                                     throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
                             }
                         }
@@ -206,6 +206,25 @@ public class SchemaCard {
      */
     public Tile getTile(SchemaCardPoint point){
         return new Tile(tileMatrix[point.row][point.column]);
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof SchemaCard))
+            return false;
+        SchemaCard other = (SchemaCard) obj;
+        boolean hasSameTiles = true;
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                try {
+                    if(!getTile(new SchemaCardPoint(i,j)).equals(other.getTile(new SchemaCardPoint(i,j))))
+                        hasSameTiles = false;
+                } catch (SchemaCardPointOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return hasSameTiles && this.getName().equals(other.getName()) && this.getDifficulty() == other.getDifficulty();
     }
 
 }

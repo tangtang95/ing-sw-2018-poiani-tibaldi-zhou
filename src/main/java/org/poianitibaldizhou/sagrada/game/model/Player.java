@@ -10,13 +10,13 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 public class Player {
     private ICoin coins;
     private final String token;
-    private final SchemaCard schemaCard;
-    private final PrivateObjectiveCard privateObjectiveCard;
+    private SchemaCard schemaCard;
+    private PrivateObjectiveCard privateObjectiveCard;
 
-    public Player(ICoin coins, SchemaCard schemaCard, PrivateObjectiveCard privateObjectiveCard, String token) {
-        this.coins = coins;
-        this.schemaCard = schemaCard;
-        this.privateObjectiveCard = privateObjectiveCard;
+    public Player(String token) {
+        this.coins = null;
+        this.schemaCard = null;
+        this.privateObjectiveCard = null;
         this.token = token;
     }
 
@@ -48,5 +48,18 @@ public class Player {
 
     public void placeDice(Dice dice, SchemaCardPoint point, ConstraintType type) throws RuleViolationException, ConstraintTypeException {
         schemaCard.setDice(dice, point, type);
+    }
+
+    public void setCoins(ICoin coins) {
+        this.coins = coins;
+    }
+
+    public void setSchemaCard(SchemaCard schemaCard) {
+        //TODO deep copy
+        this.schemaCard = schemaCard;
+    }
+
+    public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
+        this.privateObjectiveCard = privateObjectiveCard;
     }
 }

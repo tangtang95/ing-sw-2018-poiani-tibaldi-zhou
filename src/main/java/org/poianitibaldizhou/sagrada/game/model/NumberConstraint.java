@@ -29,4 +29,11 @@ public class NumberConstraint implements IConstraint {
     public int getNumber() {
         return number;
     }
+
+    @Override
+    public boolean equals(Object obj){
+        if(!(obj instanceof NumberConstraint))
+            return false;
+        return this.getNumber() == ((NumberConstraint) obj).getNumber();
+    }
 }
