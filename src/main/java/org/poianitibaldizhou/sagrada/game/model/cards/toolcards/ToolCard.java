@@ -1,10 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.card.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.card.Card;
+import org.poianitibaldizhou.sagrada.game.model.cards.Card;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,6 @@ public class ToolCard extends Card {
     private List<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
-    private ToolCardLanguageParser tclp;
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
@@ -23,8 +22,6 @@ public class ToolCard extends Card {
         this.color = color;
         this.isSinglePlayer = isSinglePlayer;
         observers = new ArrayList<IToolCardObserver>();
-        tclp = new ToolCardLanguageParser();
-        commands = tclp.parseToolCard(action);
     }
 
     public void invokeCommands(Player player){

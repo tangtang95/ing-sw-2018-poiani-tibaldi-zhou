@@ -4,12 +4,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.card.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.card.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
@@ -49,7 +49,7 @@ public class GameInjector {
                 toolCards.add(toolCardDrawableCollection.draw());
     }
 
-    public void diceBagInjector(DrawableCollection<Dice> diceBag){
+    public void diceBagInjector(DrawableCollection<Dice> diceBag) throws DiceInvalidNumberException {
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
@@ -65,11 +65,6 @@ public class GameInjector {
 
         for (Object object : jsonArray) {
             JSONObject toolCard = (JSONObject) object;
-            allPublicObjectiveCards.add(new setPublicObjectiveCard( (String) toolCard.get("cardName"),
-                                                                    (String) toolCard.get("cardDescription"),
-                                                                    (String) toolCard.get("action")
-                                                                ));
-            }
 
         }
     }

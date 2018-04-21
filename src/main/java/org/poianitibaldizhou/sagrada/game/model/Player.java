@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.*;
-import org.poianitibaldizhou.sagrada.game.model.card.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.card.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCardPoint;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 public class Player {
     private ICoin coins;
@@ -35,7 +37,7 @@ public class Player {
         return coins.getCoins();
     }
 
-    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException, EmptyCollectionException, MismatchingTypeOfConstraintException {
+    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException, EmptyCollectionException {
         coins.use(toolCard);
         toolCard.invokeCommands(this);
     }
@@ -44,7 +46,7 @@ public class Player {
 
     }
 
-    public void placeDice(Dice dice, int row, int column) throws TileFilledException {
-        schemaCard.setDice(dice, row, column);
+    public void placeDice(Dice dice, SchemaCardPoint point, ConstraintType type) throws TileFilledException, RuleViolationException, ConstraintTypeException {
+        schemaCard.setDice(dice, point, type);
     }
 }

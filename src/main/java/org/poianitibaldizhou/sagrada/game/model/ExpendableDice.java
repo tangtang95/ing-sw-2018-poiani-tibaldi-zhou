@@ -2,9 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.MismatchingTypeOfConstraintException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
-import org.poianitibaldizhou.sagrada.game.model.card.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 public class ExpendableDice implements ICoin {
     private DraftPool draftPool;
@@ -14,7 +13,7 @@ public class ExpendableDice implements ICoin {
     }
 
     @Override
-    public void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException, MismatchingTypeOfConstraintException, EmptyCollectionException {
+    public void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException, EmptyCollectionException {
         draftPool.useDice(searchDice(toolCard.getColor()));
     }
 
@@ -23,10 +22,10 @@ public class ExpendableDice implements ICoin {
         return draftPool.getDices().size();
     }
 
-    private Dice searchDice(Color color) throws NoCoinsExpendableException, MismatchingTypeOfConstraintException {
+    private Dice searchDice(Color color) throws NoCoinsExpendableException{
         ColorConstraint colorConstraint = new ColorConstraint(color);
         for (Dice dice: draftPool.getDices()) {
-            if (colorConstraint.matches(dice.getCc()))
+            if (colorConstraint.matches(dice.getColorConstraint()))
                 return dice;
         }
         throw new NoCoinsExpendableException("ExpendableDice.use() failed, there aren't dices to spend");
