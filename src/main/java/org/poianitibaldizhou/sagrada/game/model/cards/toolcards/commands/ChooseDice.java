@@ -11,6 +11,6 @@ public class ChooseDice implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return !(object instanceof ChooseDice)? false:true;
+        return object instanceof ChooseDice;
     }
 }

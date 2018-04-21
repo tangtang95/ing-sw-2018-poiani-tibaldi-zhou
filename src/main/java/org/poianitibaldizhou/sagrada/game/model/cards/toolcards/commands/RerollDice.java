@@ -10,6 +10,6 @@ public class RerollDice implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return !(object instanceof RerollDice)? false : true;
+        return object instanceof RerollDice;
     }
 }

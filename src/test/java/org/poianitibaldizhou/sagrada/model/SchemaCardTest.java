@@ -2,15 +2,9 @@ package org.poianitibaldizhou.sagrada.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
-import org.poianitibaldizhou.sagrada.exception.SchemaCardPointOutOfBoundsException;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.NoConstraint;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCardPoint;
-import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
+import org.poianitibaldizhou.sagrada.exception.*;
+import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.*;
 
 import static org.junit.Assert.*;
 
@@ -21,17 +15,15 @@ public class SchemaCardTest {
     @DataPoint
     public static SchemaCard schemaCard;
 
+    @DataPoint
+    public static SchemaCard fullSchemaCard;
 
-    @BeforeClass
-    public static void setUpClass() {
-
-    }
 
     @Before
-    public void setUp()  {
+    public void setUp() {
         Dice d1 = null;
         try {
-            d1 = new Dice(5, Color.YELLOW);
+            d1 = new Dice(4, Color.YELLOW);
         } catch (DiceInvalidNumberException e) {
             fail("No exception expected");
         }
@@ -44,21 +36,21 @@ public class SchemaCardTest {
         emptySchemaCard = new SchemaCard("test1", 1, constraints);
         schemaCard = new SchemaCard("test2", 1, constraints);
         try {
-            schemaCard.setDice(d1, new SchemaCardPoint(0,3));
+            schemaCard.setDice(d1, new SchemaCardPoint(0, 2));
         } catch (Exception e) {
             fail("No exception expected");
         }
+        constraints[0][2] = new ColorConstraint(Color.YELLOW);
+        constraints[1][3] = new NumberConstraint(4);
+        constraints[2][4] = new ColorConstraint(Color.RED);
+        constraints[0][1] = new NumberConstraint(2);
+        fullSchemaCard = new SchemaCard("test3", 2, constraints);
     }
 
     @After
     public void tearDown() {
         emptySchemaCard = null;
         schemaCard = null;
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-
     }
 
     @Test
@@ -68,16 +60,16 @@ public class SchemaCardTest {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice d1 = null, d2 = null;
                 try {
-                    d1 = schemaCard.getDice(new SchemaCardPoint(i,j));
-                    d2 = emptySchemaCard.getDice(new SchemaCardPoint(i,j));
+                    d1 = schemaCard.getDice(new SchemaCardPoint(i, j));
+                    d2 = emptySchemaCard.getDice(new SchemaCardPoint(i, j));
                 } catch (SchemaCardPointOutOfBoundsException e) {
                     fail("no exception expected");
                 }
-                if(d1 != null && d2 == null)
+                if (d1 != null && d2 == null)
                     isDifferent = true;
-                else if(d1 == null && d2 != null)
+                else if (d1 == null && d2 != null)
                     isDifferent = true;
-                else if(d1 != null && d2 != null && !d1.equals(d2))
+                else if (d1 != null && d2 != null && !d1.equals(d2))
                     isDifferent = true;
             }
         }
@@ -85,28 +77,125 @@ public class SchemaCardTest {
     }
 
     @Test
-    public void testIsEmpty(){
+    public void testIsEmpty() {
         assertFalse(schemaCard.isEmpty());
         assertTrue(emptySchemaCard.isEmpty());
     }
 
     @Test
-    public void testGetTile(){
+    public void testSetGetRemoveDice() {
+        Dice d1 = null;
+        try {
+            d1 = new Dice(4, Color.YELLOW);
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try {
+            emptySchemaCard.setDice(d1, new SchemaCardPoint(0,1));
+            assertEquals(d1, emptySchemaCard.getDice(new SchemaCardPoint(0,1)));
+            emptySchemaCard.removeDice(new SchemaCardPoint(0,1));
+            assertEquals(null, emptySchemaCard.getDice(new SchemaCardPoint(0,1)));
+        } catch (Exception e){
+            fail("no exception expected");
+        }
 
     }
 
     @Test
     public void testIsDicePositionable() {
-        Dice d1, d2, d3;
+        Dice d1 = null, d2 = null, d3 = null, d4 = null, d5 = null;
         try {
             d1 = new Dice(4, Color.YELLOW);
             d2 = new Dice(3, Color.RED);
             d3 = new Dice(2, Color.BLUE);
-            emptySchemaCard.setDice(d1, new SchemaCardPoint(0, 2));
-            assertTrue(emptySchemaCard.isDicePositionable(d2, new SchemaCardPoint(0,3)));
+            d4 = new Dice(3, Color.YELLOW);
+            d5 = new Dice(4, Color.PURPLE);
         } catch (Exception e) {
             fail("no exception expected");
         }
+
+        try {
+            emptySchemaCard.isDicePositionable(d1, new SchemaCardPoint(1, 1));
+            fail("no exception launched");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.NOT_BORDER_TILE, e.getViolationType());
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try {
+            schemaCard.isDicePositionable(d2, new SchemaCardPoint(0, 3));
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try {
+            schemaCard.isDicePositionable(d3, new SchemaCardPoint(0, 4));
+            fail("no exception launched");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.NO_DICE_NEAR, e.getViolationType());
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try {
+            schemaCard.isDicePositionable(d4, new SchemaCardPoint(0, 3));
+            fail("no exception launched");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.SIMILAR_DICE_NEAR, e.getViolationType());
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try{
+            schemaCard.isDicePositionable(d5, new SchemaCardPoint(0, 1));
+            fail("no exception launched");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.SIMILAR_DICE_NEAR, e.getViolationType());
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try{
+            schemaCard.isDicePositionable(d3, new SchemaCardPoint(0,2));
+            fail("no exception launched");
+        } catch(RuleViolationException e){
+            assertEquals(RuleViolationType.TILE_FILLED, e.getViolationType());
+        } catch(Exception e){
+            fail("no exception expected");
+        }
+
+        try {
+            assertTrue(fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(0, 2)));
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try {
+            fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(2, 4));
+            fail("no exception launched");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.TILE_UNMATCHED, e.getViolationType());
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try {
+            assertTrue(fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(2,4), new ConstraintType(TileConstraintType.NUMBER, DiceConstraintType.NORMAL)));
+            assertTrue(fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(2, 4), new ConstraintType(TileConstraintType.NONE, DiceConstraintType.NORMAL)));
+            assertTrue(fullSchemaCard.isDicePositionable(d3, new SchemaCardPoint(0,1), new ConstraintType(TileConstraintType.COLOR, DiceConstraintType.NORMAL)));
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+        try{
+            fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(0,2), new ConstraintType(TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED));
+        } catch (Exception e) {
+            fail("no exception expected");
+        }
+
+
     }
 
 }

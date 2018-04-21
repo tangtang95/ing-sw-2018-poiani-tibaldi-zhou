@@ -4,6 +4,8 @@ import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardLanguageParser;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 
@@ -27,7 +29,7 @@ public class ToolCardLanguageParserTest {
 
     @Before
     public void setUp() {
-        actualCommands = new ArrayList<ICommand>();
+        actualCommands = new ArrayList<>();
     }
 
     @After
@@ -44,18 +46,18 @@ public class ToolCardLanguageParserTest {
 
     @Test
     public void testEveryPresentCommand() {
-        List<ICommand> commands = new ArrayList<ICommand>();
+        List<ICommand> commands = new ArrayList<>();
 
         commands.add(new ChooseDice());
         commands.add(new ModifyDiceValue(1));
-        commands.add( new RemoveDice(ConstraintType.NONE));
-        commands.add(new RemoveDice(ConstraintType.COLOR));
+        commands.add(new RemoveDice(TileConstraintType.NONE));
+        commands.add(new RemoveDice(TileConstraintType.COLOR));
         commands.add(new SwapDice());
         commands.add(new RerollDice());
-        commands.add(new PlaceDice(ConstraintType.NONE));
-        commands.add(new PlaceDice(ConstraintType.NUMBER));
-        commands.add(new PlaceDice(ConstraintType.COLOR));
-        commands.add(new PlaceDice(ConstraintType.ISOLATED));
+        commands.add(new PlaceDice(new ConstraintType(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL)));
+        commands.add(new PlaceDice(new ConstraintType(TileConstraintType.COLOR, DiceConstraintType.NORMAL)));
+        commands.add(new PlaceDice(new ConstraintType(TileConstraintType.NUMBER, DiceConstraintType.NORMAL)));
+        commands.add(new PlaceDice(new ConstraintType(TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED)));
         commands.add(new AddDiceToDraftPool());
         commands.add(new AddDiceToDiceBag());
         commands.add(new DrawDiceFromDicebag());
@@ -108,7 +110,7 @@ public class ToolCardLanguageParserTest {
     @Test
     public void testSingleCommand() {
         String command = new String("Reroll dice");
-        List<ICommand> commands = new ArrayList<ICommand>();
+        List<ICommand> commands = new ArrayList<>();
         commands.add(new RerollDice());
         try {
             List<ICommand> actualCommands = toolCardLanguageParser.parseToolCard(command);

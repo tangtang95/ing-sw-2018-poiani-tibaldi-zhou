@@ -10,6 +10,6 @@ public class ChooseColorFromRoundTrack implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return !(object instanceof ChooseColorFromRoundTrack)?false:true;
+        return object instanceof ChooseColorFromRoundTrack;
     }
 }

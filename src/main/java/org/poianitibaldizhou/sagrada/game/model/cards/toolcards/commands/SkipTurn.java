@@ -25,6 +25,6 @@ public class SkipTurn implements ICommand {
             return false;
 
         SkipTurn obj = (SkipTurn) object;
-        return obj.getValue() == this.value? true:false;
+        return obj.getValue() == this.value;
     }
 }

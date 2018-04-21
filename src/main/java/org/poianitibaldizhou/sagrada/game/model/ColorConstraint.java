@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
+@Immutable
 public class ColorConstraint implements IConstraint {
     private final Color color;
 

@@ -26,6 +26,6 @@ public class ModifyDiceValue implements ICommand {
             return false;
 
         ModifyDiceValue obj = (ModifyDiceValue) object;
-        return this.value == obj.getValue()?true:false;
+        return this.value == obj.getValue();
     }
 }

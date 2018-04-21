@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
+@Immutable
 public class NumberConstraint implements IConstraint {
     private int number;
 

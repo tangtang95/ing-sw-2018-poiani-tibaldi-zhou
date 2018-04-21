@@ -7,7 +7,7 @@ import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class ConstraintTest {
+public class ConstraintUnitTest {
 
     @Test
     public void testConstraintGetValue(){

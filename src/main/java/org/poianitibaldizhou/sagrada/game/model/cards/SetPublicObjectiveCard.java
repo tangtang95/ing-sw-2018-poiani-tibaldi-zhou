@@ -11,7 +11,7 @@ import java.util.List;
 
 public class SetPublicObjectiveCard extends PublicObjectiveCard {
 
-    protected SetPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, ConstraintType type) throws ConstraintTypeException {
+    protected SetPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) throws ConstraintTypeException {
         super(name, description, cardPoints, constraints, type);
     }
 
@@ -24,7 +24,7 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
                     Dice dice = schema.getDice(new SchemaCardPoint(i,j));
                     if(dice != null) {
                         int indexValue;
-                        if(getType() == ConstraintType.COLOR)
+                        if(getType() == TileConstraintType.COLOR)
                             indexValue = containsConstraint(dice.getColorConstraint());
                         else
                             indexValue = containsConstraint(dice.getNumberConstraint());

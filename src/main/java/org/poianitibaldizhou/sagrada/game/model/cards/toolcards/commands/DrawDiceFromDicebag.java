@@ -10,6 +10,6 @@ public class DrawDiceFromDicebag implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return !(object instanceof DrawDiceFromDicebag)?false:true;
+        return object instanceof DrawDiceFromDicebag;
     }
 }

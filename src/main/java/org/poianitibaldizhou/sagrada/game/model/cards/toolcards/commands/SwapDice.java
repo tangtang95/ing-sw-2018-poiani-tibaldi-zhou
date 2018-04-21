@@ -10,6 +10,6 @@ public class SwapDice implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return !(object instanceof SwapDice)?true:false;
+        return object instanceof SwapDice;
     }
 }

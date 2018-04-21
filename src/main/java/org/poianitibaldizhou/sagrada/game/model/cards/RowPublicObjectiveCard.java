@@ -11,7 +11,7 @@ import java.util.TreeSet;
 
 public class RowPublicObjectiveCard extends PublicObjectiveCard{
 
-    protected RowPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, ConstraintType type) throws ConstraintTypeException {
+    protected RowPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) throws ConstraintTypeException {
         super(name, description, cardPoints, constraints, type);
     }
 
@@ -24,7 +24,7 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
                 try {
                     Dice dice = schema.getDice(new SchemaCardPoint(i, j));
                     if (dice != null) {
-                        if (getType() == ConstraintType.COLOR)
+                        if (getType() == TileConstraintType.COLOR)
                             valueSet.add(dice.getColorConstraint().getIndexValue());
                         else
                             valueSet.add(dice.getNumberConstraint().getIndexValue());

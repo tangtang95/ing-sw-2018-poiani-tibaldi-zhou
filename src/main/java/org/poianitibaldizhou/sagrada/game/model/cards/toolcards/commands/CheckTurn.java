@@ -23,6 +23,6 @@ public class CheckTurn implements ICommand {
         if(!(object instanceof CheckTurn))
             return false;
         CheckTurn obj = (CheckTurn) object;
-        return this.turn == obj.getTurn()? true:false;
+        return this.turn == obj.getTurn();
     }
 }

@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 
 import static org.junit.Assert.*;
 
-public class DiceTest {
+public class DiceIntegrationTest {
 
     @Test
     public void testDiceConstructor() {
@@ -51,7 +51,7 @@ public class DiceTest {
             for (int i = 1; i <= 6; i++) {
                 d1 = new Dice(i, Color.BLUE);
                 pourOver = d1.pourOverDice();
-                assertEquals(d1.getColor(), pourOver.getColor());
+                assertEquals(Color.BLUE, pourOver.getColor());
                 assertEquals(7-i, pourOver.getNumber());
             }
         } catch(Exception e) {

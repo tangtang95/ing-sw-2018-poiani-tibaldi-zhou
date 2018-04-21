@@ -51,7 +51,7 @@ public class DraftPool {
                 return;
             }
         }
-        throw new DiceNotFoundException("DrafPool.useDice() failed due to non existence of the dice in the pool");
+        throw new DiceNotFoundException("DraftPool.useDice() failed due to non existence of the dice in the pool");
     }
 
     @Override

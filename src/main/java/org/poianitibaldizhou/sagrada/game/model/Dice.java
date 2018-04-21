@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.exception.DiceInvalidNumberException;
 
+@Immutable
 public class Dice {
     private final NumberConstraint numberConstraint;
     private final ColorConstraint colorConstraint;
@@ -12,17 +14,16 @@ public class Dice {
     /**
      * Constructor.
      * Creates a Dice with a certain NumberConstraint and ColorConstraint.
-     * @param numberConstraint dice's number contraint
+     * @param numberConstraint dice's number constraint
      * @param colorConstraint dice's color constraint
-     * @throws DiceInvalidNumberException if number contraints represents a number greater then MAX_VALUE
+     * @throws DiceInvalidNumberException if number constraints represents a number greater then MAX_VALUE
      *                                    or lesser then MIN_VALUE
      *
      */
     public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) throws DiceInvalidNumberException {
-        int number = numberConstraint.getNumber();
-        if(number < MIN_VALUE || number > MAX_VALUE)
+        if(numberConstraint.getNumber() < MIN_VALUE || numberConstraint.getNumber() > MAX_VALUE)
             throw new DiceInvalidNumberException();
-        this.numberConstraint = new NumberConstraint(number);
+        this.numberConstraint = numberConstraint;
         this.colorConstraint = colorConstraint;
     }
 
@@ -59,7 +60,7 @@ public class Dice {
         if(!(oth instanceof Dice))
             return false;
         Dice o = (Dice)oth;
-        return (o.getColorConstraint() == this.getColorConstraint() && o.getNumber() == this.getNumber())? true:false;
+        return o.getColor() == this.getColor() && o.getNumber() == this.getNumber();
     }
 
     @Override

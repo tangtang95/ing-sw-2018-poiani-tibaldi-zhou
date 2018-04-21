@@ -2,16 +2,17 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 
 public class RemoveDice implements ICommand {
 
-    public ConstraintType getConstraintType() {
+    public TileConstraintType getConstraintType() {
         return constraintType;
     }
 
-    private final ConstraintType constraintType;
+    private final TileConstraintType constraintType;
 
-    public RemoveDice(ConstraintType type) {
+    public RemoveDice(TileConstraintType type) {
         this.constraintType = type;
     }
 
@@ -26,6 +27,6 @@ public class RemoveDice implements ICommand {
             return false;
 
         RemoveDice obj = (RemoveDice)object;
-        return obj.getConstraintType() == this.constraintType ? true:false;
+        return obj.getConstraintType() == this.constraintType;
     }
 }
