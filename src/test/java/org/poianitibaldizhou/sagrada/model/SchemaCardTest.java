@@ -33,7 +33,7 @@ public class SchemaCardTest {
         emptySchemaCard = new SchemaCard("test1", 1, constraints);
         schemaCard = new SchemaCard("test2", 1, constraints);
         try {
-            schemaCard.setDice(d1, new SchemaCardPoint(0, 2));
+            schemaCard.setDice(d1,0, 2);
         } catch (Exception e) {
             fail("No exception expected");
         }
@@ -56,8 +56,8 @@ public class SchemaCardTest {
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice d1 = null, d2 = null;
-                d1 = schemaCard.getDice(new SchemaCardPoint(i, j));
-                d2 = emptySchemaCard.getDice(new SchemaCardPoint(i, j));
+                d1 = schemaCard.getDice(i, j);
+                d2 = emptySchemaCard.getDice(i, j);
 
                 if (d1 != null && d2 == null)
                     isDifferent = true;
@@ -86,10 +86,10 @@ public class SchemaCardTest {
         }
 
         try {
-            emptySchemaCard.setDice(d1, new SchemaCardPoint(0,1));
-            assertEquals(d1, emptySchemaCard.getDice(new SchemaCardPoint(0,1)));
-            emptySchemaCard.removeDice(new SchemaCardPoint(0,1));
-            assertEquals(null, emptySchemaCard.getDice(new SchemaCardPoint(0,1)));
+            emptySchemaCard.setDice(d1,0,1);
+            assertEquals(d1, emptySchemaCard.getDice(0,1));
+            emptySchemaCard.removeDice(0,1);
+            assertEquals(null, emptySchemaCard.getDice(0,1));
         } catch (Exception e){
             fail("no exception expected");
         }
@@ -110,7 +110,7 @@ public class SchemaCardTest {
         }
 
         try {
-            emptySchemaCard.isDicePositionable(d1, new SchemaCardPoint(1, 1));
+            emptySchemaCard.isDicePositionable(d1,1, 1);
             fail("no exception launched");
         } catch (RuleViolationException e) {
             assertEquals(RuleViolationType.NOT_BORDER_TILE, e.getViolationType());
@@ -119,13 +119,13 @@ public class SchemaCardTest {
         }
 
         try {
-            schemaCard.isDicePositionable(d2, new SchemaCardPoint(0, 3));
+            schemaCard.isDicePositionable(d2,0, 3);
         } catch (Exception e) {
             fail("no exception expected");
         }
 
         try {
-            schemaCard.isDicePositionable(d3, new SchemaCardPoint(0, 4));
+            schemaCard.isDicePositionable(d3,0, 4);
             fail("no exception launched");
         } catch (RuleViolationException e) {
             assertEquals(RuleViolationType.NO_DICE_NEAR, e.getViolationType());
@@ -134,7 +134,7 @@ public class SchemaCardTest {
         }
 
         try {
-            schemaCard.isDicePositionable(d4, new SchemaCardPoint(0, 3));
+            schemaCard.isDicePositionable(d4,0, 3);
             fail("no exception launched");
         } catch (RuleViolationException e) {
             assertEquals(RuleViolationType.SIMILAR_DICE_NEAR, e.getViolationType());
@@ -143,7 +143,7 @@ public class SchemaCardTest {
         }
 
         try{
-            schemaCard.isDicePositionable(d5, new SchemaCardPoint(0, 1));
+            schemaCard.isDicePositionable(d5,0, 1);
             fail("no exception launched");
         } catch (RuleViolationException e) {
             assertEquals(RuleViolationType.SIMILAR_DICE_NEAR, e.getViolationType());
@@ -152,7 +152,7 @@ public class SchemaCardTest {
         }
 
         try{
-            schemaCard.isDicePositionable(d3, new SchemaCardPoint(0,2));
+            schemaCard.isDicePositionable(d3,0,2);
             fail("no exception launched");
         } catch(RuleViolationException e){
             assertEquals(RuleViolationType.TILE_FILLED, e.getViolationType());
@@ -161,13 +161,13 @@ public class SchemaCardTest {
         }
 
         try {
-            assertTrue(fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(0, 2)));
+            assertTrue(fullSchemaCard.isDicePositionable(d4,0, 2));
         } catch (Exception e) {
             fail("no exception expected");
         }
 
         try {
-            fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(2, 4));
+            fullSchemaCard.isDicePositionable(d4,2, 4);
             fail("no exception launched");
         } catch (RuleViolationException e) {
             assertEquals(RuleViolationType.TILE_UNMATCHED, e.getViolationType());
@@ -176,15 +176,15 @@ public class SchemaCardTest {
         }
 
         try {
-            assertTrue(fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(2,4), new ConstraintType(TileConstraintType.NUMBER, DiceConstraintType.NORMAL)));
-            assertTrue(fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(2, 4), new ConstraintType(TileConstraintType.NONE, DiceConstraintType.NORMAL)));
-            assertTrue(fullSchemaCard.isDicePositionable(d3, new SchemaCardPoint(0,1), new ConstraintType(TileConstraintType.COLOR, DiceConstraintType.NORMAL)));
+            assertTrue(fullSchemaCard.isDicePositionable(d4,2,4, TileConstraintType.NUMBER, DiceConstraintType.NORMAL));
+            assertTrue(fullSchemaCard.isDicePositionable(d4,2, 4, TileConstraintType.NONE, DiceConstraintType.NORMAL));
+            assertTrue(fullSchemaCard.isDicePositionable(d3,0,1, TileConstraintType.COLOR, DiceConstraintType.NORMAL));
         } catch (Exception e) {
             fail("no exception expected");
         }
 
         try{
-            fullSchemaCard.isDicePositionable(d4, new SchemaCardPoint(0,2), new ConstraintType(TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED));
+            fullSchemaCard.isDicePositionable(d4,0,2, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
         } catch (Exception e) {
             fail("no exception expected");
         }

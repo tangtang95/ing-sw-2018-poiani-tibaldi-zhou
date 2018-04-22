@@ -52,6 +52,16 @@ public class Dice {
         return colorConstraint;
     }
 
+    /**
+     * Check if this dice is similar to another dice; in other words, if the dices have same color or same number
+     * @param other the other dice to compare
+     * @return true if the dices have same color or same number
+     */
+    public boolean isSimilar(Dice other){
+        return this.getColorConstraint().equals(other.getColorConstraint()) ||
+                this.getNumberConstraint().equals(other.getNumberConstraint());
+    }
+
     @Override
     public boolean equals(Object oth){
         if(!(oth instanceof Dice))

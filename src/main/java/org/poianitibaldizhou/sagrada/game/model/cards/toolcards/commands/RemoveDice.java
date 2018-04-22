@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 
 public class RemoveDice implements ICommand {

@@ -22,7 +22,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
     protected PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) throws ConstraintTypeException {
         super(name, description);
 
-        //Check if Collection<IConstraint> has only one type of class and coincide with ConstraintType
+        //Check if Collection<IConstraint> has only one type of class and coincide with TileConstraintType
         IConstraint[] array = (IConstraint[]) constraints.toArray();
 
         for (int i = 1; i < array.length; i++) {

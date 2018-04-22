@@ -19,7 +19,7 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
         int[] counts = new int[Math.max(Dice.MAX_VALUE, Color.values().length)];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                Dice dice = schema.getDice(new SchemaCardPoint(i,j));
+                Dice dice = schema.getDice(i,j);
                 if(dice != null) {
                     int indexValue;
                     if(getType() == TileConstraintType.COLOR)

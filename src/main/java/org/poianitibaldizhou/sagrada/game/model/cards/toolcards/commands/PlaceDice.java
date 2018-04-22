@@ -1,19 +1,26 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 
 public class PlaceDice implements ICommand {
 
-    public final ConstraintType constraintType;
+    public final TileConstraintType tileConstraint;
+    public final DiceConstraintType diceConstraint;
 
-    public ConstraintType getConstraintType() {
-        return constraintType;
+    public PlaceDice(TileConstraintType tileConstraint, DiceConstraintType diceConstraint) {
+        this.tileConstraint = tileConstraint;
+        this.diceConstraint = diceConstraint;
+
     }
 
-    public PlaceDice(ConstraintType constraintType) {
-        this.constraintType = constraintType;
+    public TileConstraintType getTileConstraint() {
+        return tileConstraint;
+    }
 
+    public DiceConstraintType getDiceConstraint() {
+        return diceConstraint;
     }
 
     @Override
@@ -27,6 +34,7 @@ public class PlaceDice implements ICommand {
             return false;
 
         PlaceDice obj = (PlaceDice) object;
-        return obj.getConstraintType().equals(this.constraintType);
+        return obj.getTileConstraint() == this.getTileConstraint()
+                && obj.getDiceConstraint() == this.getDiceConstraint();
     }
 }

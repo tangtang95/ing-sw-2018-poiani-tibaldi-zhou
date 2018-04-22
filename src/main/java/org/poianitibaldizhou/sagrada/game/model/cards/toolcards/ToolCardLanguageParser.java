@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
-import org.poianitibaldizhou.sagrada.game.model.cards.ConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
@@ -67,10 +66,10 @@ public class ToolCardLanguageParser {
         grammar.put("Remove dice of a certain color from schema", new RemoveDice(TileConstraintType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDice());
         grammar.put("Reroll dice", new RerollDice());
-        grammar.put("Place dice", new PlaceDice(new ConstraintType(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL)));
-        grammar.put("Place dice ignoring number constraints", new PlaceDice(new ConstraintType(TileConstraintType.COLOR, DiceConstraintType.NORMAL)));
-        grammar.put("Place dice ignoring color constraints", new PlaceDice(new ConstraintType(TileConstraintType.NUMBER, DiceConstraintType.NORMAL)));
-        grammar.put("Place isolated dice", new PlaceDice(new ConstraintType(TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED)));
+        grammar.put("Place dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL));
+        grammar.put("Place dice ignoring number constraints", new PlaceDice(TileConstraintType.COLOR, DiceConstraintType.NORMAL));
+        grammar.put("Place dice ignoring color constraints", new PlaceDice(TileConstraintType.NUMBER, DiceConstraintType.NORMAL));
+        grammar.put("Place isolated dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED));
         grammar.put("Add dice to DraftPool", new AddDiceToDraftPool());
         grammar.put("Add dice to Dicebag", new AddDiceToDiceBag());
         grammar.put("Draw dice from Dicebag", new DrawDiceFromDicebag());

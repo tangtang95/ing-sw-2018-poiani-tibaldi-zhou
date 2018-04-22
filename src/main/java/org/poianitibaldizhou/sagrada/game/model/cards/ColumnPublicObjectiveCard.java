@@ -21,7 +21,7 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
         for (int i = 0; i < SchemaCard.NUMBER_OF_COLUMNS; i++) {
             Set<Integer> valueSet = new TreeSet();
             for (int j = 0; j < SchemaCard.NUMBER_OF_ROWS; j++) {
-                Dice dice = schema.getDice(new SchemaCardPoint(j,i));
+                Dice dice = schema.getDice(j,i);
                 if(dice != null) {
                     if (getType() == TileConstraintType.COLOR)
                         valueSet.add(dice.getColorConstraint().getIndexValue());
