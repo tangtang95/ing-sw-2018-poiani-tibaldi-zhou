@@ -21,13 +21,13 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice dice = schema.getDice(i,j);
                 if(dice != null) {
-                    int indexValue;
-                    if(getType() == TileConstraintType.COLOR)
-                        indexValue = containsConstraint(dice.getColorConstraint());
-                    else
-                        indexValue = containsConstraint(dice.getNumberConstraint());
-                    if (indexValue != -1)
-                        counts[indexValue]++;
+                    if(getType() == TileConstraintType.COLOR) {
+                        if(containsConstraint(dice.getColorConstraint())) {
+                            counts[dice.getColorConstraint().getIndexValue()]++;
+                        }
+                    } else
+                        if(containsConstraint(dice.getNumberConstraint()))
+                            counts[dice.getNumberConstraint().getIndexValue()]++;
                 }
 
             }

@@ -13,33 +13,51 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
     private Set<IConstraint> constraints;
     private final int cardPoints;
 
-    protected PublicObjectiveCard(String name, String description, int cardPoints) {
+    /**
+     * Constructor.
+     * Creates a PublicObjectiveCard with a certain name, description and points.
+     *
+     * @param name card's name
+     * @param description card's description
+     * @param cardPoints card's point
+     */
+    public PublicObjectiveCard(String name, String description, int cardPoints) {
         super(name, description);
         type = TileConstraintType.NONE;
         this.cardPoints = cardPoints;
     }
 
-    protected PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) throws ConstraintTypeException {
+    /**
+     * Constructor.
+     * Creates a PublicObjectiveCard with a name, description and points.
+     * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
+     * with a single TileConstraintType.
+     *
+     * @param name card's name
+     * @param description card's description
+     * @param cardPoints card's point
+     * @param constraints set of constraint to apply
+     * @param type type of tile constraint on which the card operates
+     * @throws ConstraintTypeException if constraints contains more than a single type of tile constraint
+     */
+    public PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) {
         super(name, description);
 
-        //Check if Collection<IConstraint> has only one type of class and coincide with TileConstraintType
-        IConstraint[] array = (IConstraint[]) constraints.toArray();
-
-        for (int i = 1; i < array.length; i++) {
+        for(IConstraint constraint: constraints) {
             if(type == TileConstraintType.COLOR) {
-                if (!(array[i] instanceof ColorConstraint))
-                    throw new ConstraintTypeException("Color constraint type error");
-            }
-            else if(type == TileConstraintType.NUMBER) {
-                if (!(array[i] instanceof NumberConstraint))
-                    throw new ConstraintTypeException("Number constraint type error");
-            }
+                if(!(constraint instanceof ColorConstraint))
+                    throw new IllegalArgumentException();
+            } else if(type == TileConstraintType.NUMBER)
+                if(!(constraint instanceof NumberConstraint))
+                    throw new IllegalArgumentException();
             else
-                throw new ConstraintTypeException("Constraint type not available");
+                throw new IllegalArgumentException();
+
         }
+
         this.type = type;
         this.cardPoints = cardPoints;
-        this.constraints = new TreeSet();
+        this.constraints = new HashSet<>();
         this.constraints.addAll(constraints);
     }
 
@@ -56,15 +74,18 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
         return cardPoints;
     }
 
-    public int containsConstraint(IConstraint other) {
-        TreeSet set = (TreeSet) constraints;
-        Iterator it = set.iterator();
-        while(it.hasNext()){
-            if (((IConstraint) it.next()).matches(other)) {
-                return other.getIndexValue();
+    /**
+     * Checks if other is present in constraints.
+     *
+     * @param other IConstraint to check
+     * @return if constraints contains other true, false otherwise
+     */
+    public boolean containsConstraint(IConstraint other) {
+        for(IConstraint constraint: constraints) {
+            if (constraint.equals(other)) {
+                return true;
             }
         }
-        return -1;
+        return false;
     }
-
 }

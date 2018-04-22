@@ -16,11 +16,8 @@ public class ColorConstraint implements IConstraint {
 
     @Override
     public boolean matches(IConstraint other) {
-        if(other instanceof NoConstraint)
+        if(other instanceof NoConstraint || !(other instanceof ColorConstraint))
             return true;
-        if(!(other instanceof ColorConstraint)) {
-            return true;
-        }
         ColorConstraint cc = (ColorConstraint) other;
         return color == cc.getColor();
 
