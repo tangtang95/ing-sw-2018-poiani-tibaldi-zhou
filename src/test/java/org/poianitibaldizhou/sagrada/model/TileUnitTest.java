@@ -42,29 +42,25 @@ public class TileUnitTest {
         when(dice3purple.getColorConstraint()).thenReturn(cc3);
         when(dice3purple.getNumberConstraint()).thenReturn(nc3);
 
-        try {
-            when(noc.matches(cc2)).thenReturn(true);
-            when(noc.matches(nc2)).thenReturn(true);
-            assertTrue(noConstraintTile.isDicePositionable(dice5blue));
+        when(noc.matches(cc2)).thenReturn(true);
+        when(noc.matches(nc2)).thenReturn(true);
+        assertTrue(noConstraintTile.isDicePositionable(dice5blue));
 
-            when(cc1.matches(cc2)).thenReturn(false);
-            when(cc1.matches(nc2)).thenReturn(true);
-            assertFalse(tilePurple.isDicePositionable(dice5blue));
+        when(cc1.matches(cc2)).thenReturn(false);
+        when(cc1.matches(nc2)).thenReturn(true);
+        assertFalse(tilePurple.isDicePositionable(dice5blue));
 
-            when(cc1.matches(cc3)).thenReturn(true);
-            when(cc1.matches(nc3)).thenReturn(true);
-            assertTrue(tilePurple.isDicePositionable(dice3purple));
+        when(cc1.matches(cc3)).thenReturn(true);
+        when(cc1.matches(nc3)).thenReturn(true);
+        assertTrue(tilePurple.isDicePositionable(dice3purple));
 
-            when(nc1.matches(nc2)).thenReturn(false);
-            when(nc1.matches(cc2)).thenReturn(true);
-            assertFalse(tile3.isDicePositionable(dice5blue));
+        when(nc1.matches(nc2)).thenReturn(false);
+        when(nc1.matches(cc2)).thenReturn(true);
+        assertFalse(tile3.isDicePositionable(dice5blue));
 
-            when(nc1.matches(nc3)).thenReturn(true);
-            when(nc1.matches(cc3)).thenReturn(true);
-            assertTrue(tile3.isDicePositionable(dice3purple));
-        } catch (Exception e) {
-            fail("Error not excepted");
-        }
+        when(nc1.matches(nc3)).thenReturn(true);
+        when(nc1.matches(cc3)).thenReturn(true);
+        assertTrue(tile3.isDicePositionable(dice3purple));
     }
 
     @Test

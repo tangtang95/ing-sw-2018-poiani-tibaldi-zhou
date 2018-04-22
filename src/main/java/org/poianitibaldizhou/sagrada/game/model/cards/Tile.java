@@ -85,7 +85,7 @@ public class Tile{
      * @throws RuleViolationException if this.getDice() != null
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice) throws RuleViolationException {
+    public boolean isDicePositionable(Dice dice) {
         return isDicePositionable(dice, TileConstraintType.NUMBER_COLOR);
     }
 
@@ -94,12 +94,9 @@ public class Tile{
      * @param dice the dice to check if positionable
      * @param type the constraint to check when placing the dice
      * @return true if the dice can be placed with number and color constraint
-     * @throws RuleViolationException if this.getDice() != null
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, TileConstraintType type) throws RuleViolationException {
-        if(this.dice != null)
-            throw new RuleViolationException(RuleViolationType.TILE_FILLED);
+    public boolean isDicePositionable(Dice dice, TileConstraintType type) {
         switch (type){
             case NUMBER:
                 return checkConstraint(dice.getNumberConstraint());

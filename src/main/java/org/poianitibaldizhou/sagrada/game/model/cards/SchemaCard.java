@@ -78,8 +78,29 @@ public class SchemaCard {
      */
     public void setDice(Dice dice, int row, int column, TileConstraintType tileConstraint,
                         DiceConstraintType diceConstraint) throws RuleViolationException {
-        if (isDicePositionable(dice, row, column, tileConstraint, diceConstraint))
-            tileMatrix[row][column].setDice(dice, tileConstraint);
+        if (isEmpty()) {
+            if (!isBorderPosition(row, column)) {
+                throw new RuleViolationException(RuleViolationType.NOT_BORDER_TILE);
+            }
+            if (!tileMatrix[row][column].isDicePositionable(dice, tileConstraint)) {
+                throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
+            }
+        } else {
+            if (!tileMatrix[row][column].isDicePositionable(dice, tileConstraint)) {
+                throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
+            }
+            if (hasOrthogonalDicesSimilar(dice, row, column)) {
+                throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
+            }
+            int numberOfAdjacentDices = getNumberOfAdjacentDices(row, column);
+            if (numberOfAdjacentDices == 0 && diceConstraint == DiceConstraintType.NORMAL) {
+                throw new RuleViolationException(RuleViolationType.NO_DICE_NEAR);
+            }
+            if (numberOfAdjacentDices > 0 && diceConstraint == DiceConstraintType.ISOLATED) {
+                throw new RuleViolationException(RuleViolationType.HAS_DICE_NEAR);
+            }
+        }
+        tileMatrix[row][column].setDice(dice, tileConstraint);
     }
 
     /**
@@ -113,13 +134,9 @@ public class SchemaCard {
      * @param row    the row of the tile
      * @param column the column of the tile
      * @return true if the dice can be placed on the point
-     * @throws RuleViolationException if getDice(row, column) != null ||
-     *                                hasOrthogonalDicesSimilar() ||
-     *                                this.isEmpty() && !this.isOutOfBounds(row,column) ||
-     *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, int row, int column) throws RuleViolationException {
+    public boolean isDicePositionable(Dice dice, int row, int column) {
         return isDicePositionable(dice, row, column, TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL);
     }
 
@@ -132,38 +149,22 @@ public class SchemaCard {
      * @param diceConstraint the constraint to check on the placement of dice
      * @param tileConstraint the constraint to check on the tile
      * @return true if the dice can be placed on the point
-     * @throws RuleViolationException if getDice(row, column) != null ||
-     *                                hasOrthogonalDicesSimilar() ||
-     *                                (this.isEmpty() && !this.isOutOfBounds(row,column)) ||
-     *                                (diceConstraint == NORMAL && !this.isEmpty() &&
-     *                                getNumberOfAdjacentDices() == 0 ||
-     *                                (diceConstraint == ISOLATED &&
-     *                                getNumberOfAdjacentDices() > 0
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice, int row, int column, TileConstraintType tileConstraint,
-                                      DiceConstraintType diceConstraint) throws RuleViolationException {
+                                      DiceConstraintType diceConstraint) {
         if (isEmpty()) {
-            if (!isBorderPosition(row, column)) {
-                throw new RuleViolationException(RuleViolationType.NOT_BORDER_TILE);
-            }
-            if (!tileMatrix[row][column].isDicePositionable(dice, tileConstraint)) {
-                throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
-            }
-            return true;
+            return isBorderPosition(row, column) && tileMatrix[row][column].isDicePositionable(dice, tileConstraint);
         } else {
-            if (!tileMatrix[row][column].isDicePositionable(dice, tileConstraint)) {
-                throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
-            }
-            if (hasOrthogonalDicesSimilar(dice, row, column)) {
-                throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
-            }
-            int numberOfAdjacentDices = getNumberOfAdjacentDices(row, column);
-            if (numberOfAdjacentDices == 0 && diceConstraint == DiceConstraintType.NORMAL) {
-                throw new RuleViolationException(RuleViolationType.NO_DICE_NEAR);
-            }
-            if (numberOfAdjacentDices > 0 && diceConstraint == DiceConstraintType.ISOLATED) {
-                throw new RuleViolationException(RuleViolationType.HAS_DICE_NEAR);
+            switch(diceConstraint){
+                case NORMAL:
+                    return tileMatrix[row][column].isDicePositionable(dice, tileConstraint) &&
+                            !hasOrthogonalDicesSimilar(dice, row, column) &&
+                            getNumberOfAdjacentDices(row, column) > 0;
+                case ISOLATED:
+                    return tileMatrix[row][column].isDicePositionable(dice, tileConstraint) &&
+                            !hasOrthogonalDicesSimilar(dice, row, column) &&
+                            getNumberOfAdjacentDices(row, column) == 0;
             }
             return true;
         }
