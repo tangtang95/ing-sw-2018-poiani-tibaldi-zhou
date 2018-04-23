@@ -8,10 +8,7 @@ public class SetupGameState extends IStateGame {
     protected SetupGameState(Game game) {
         super(game);
 
-        GameInjector gameInjector = new GameInjector();
-        gameInjector.injectToolCards(game.getToolCards(), game.isSinglePlayer(), game.getDifficulty());
-        gameInjector.injectPublicObjectiveCards(game.getPublicObjectiveCards());
-        gameInjector.injectDiceBag(game.getDiceBag());
+
     }
 
     @Override

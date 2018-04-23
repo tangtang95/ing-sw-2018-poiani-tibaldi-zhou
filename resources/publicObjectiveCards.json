@@ -3,25 +3,21 @@
     "cardName": "Colori diversi - Riga",
     "cardDescription": "Righe senza colori ripetuti",
     "cardPoints": 6,
-    "values": [
+    "values":
       {
         "cardType": "row",
-        "constraintType" : "color",
-        "constraints": ["BLUE", "RED", "GREEN", "YELLOW", "PURPLE"]
+        "constraintType" : "color"
       }
-    ]
   },
   {
     "cardName": "Colori diversi - Colonna",
     "cardDescription": "Colonne senza colori ripetuti",
     "cardPoints": 5,
-    "values": [
+    "values":
       {
         "cardType": "column",
-        "constraintType" : "color",
-        "constraints": ["BLUE", "RED", "GREEN", "YELLOW", "PURPLE"]
+        "constraintType" : "color"
       }
-    ]
   },
   {
     "cardName": "Sfumature diverse - Riga",

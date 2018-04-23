@@ -13,7 +13,8 @@ public class ExpendableDice implements ICoin {
     }
 
     @Override
-    public void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException, EmptyCollectionException {
+    public void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException,
+            EmptyCollectionException {
         draftPool.useDice(searchDice(toolCard.getColor()));
     }
 

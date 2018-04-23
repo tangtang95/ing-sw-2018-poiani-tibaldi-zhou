@@ -1,0 +1,217 @@
+[{
+  "cardName": "Kaleidoscopic Dream",
+  "difficulty": 4,
+  "cardMatrix": [
+    ["YELLOW","BLUE",null,null,1],
+    ["GREEN",null,5,null,4],
+    [3,null,"RED",null,"GREEN"],
+    [2,null,null,"BLUE","YELLOW"]
+  ]
+  }, {
+  "cardName": "Virtus",
+  "difficulty": 5,
+  "cardMatrix": [
+    [4,null,2,5,"GREEN"],
+    [null,null,6,"GREEN",2],
+    [null,3,"GREEN",4,null],
+    [5,"GREEN",1,null,null]
+  ]
+}, {
+  "cardName": "Aurorae Magnificus",
+  "difficulty": 5,
+  "cardMatrix": [
+    [5,"GREEN","BLUE","PURPLE",2],
+    ["PURPLE",null,null,null,"YELLOW"],
+    ["YELLOW",null,6,null,"PURPLE"],
+    [1,null,null,"GREEN",4]
+  ]
+}, {
+  "cardName": "Via Lux",
+  "difficulty": 4,
+  "cardMatrix": [
+    ["YELLOW",null,6,null,null],
+    [null,1,5,null,2],
+    [3,"YELLOW","RED","PURPLE",null],
+    [null,null,4,3,"RED"]
+  ]
+}, {
+  "cardName": "Sun Catcher",
+  "difficulty": 3,
+  "cardMatrix": [
+    [null,"BLUE",2,null,"YELLOW"],
+    [null,4,null,"RED",null],
+    [null,null,5,"YELLOW",null],
+    ["GREEN",3,null,null,"PURPLE"]
+  ]
+}, {
+  "cardName": "Bellesguard",
+  "difficulty": 3,
+  "cardMatrix": [
+    ["BLUE",6,null,null,"YELLOW"],
+    [null,3,"BLUE",null,null],
+    [null,5,6,2,null],
+    [null,4,null,1,"GREEN"]
+  ]
+}, {
+  "cardName": "Firmitas",
+  "difficulty": 5,
+  "cardMatrix": [
+    ["PURPLE",6,null,null,3],
+    [5,"PURPLE",3,null,null],
+    [null,2,"PURPLE",1,null],
+    [null,1,5,"PURPLE",4]
+  ]
+}, {
+  "cardName": "Symphony of Light",
+  "difficulty": 6,
+  "cardMatrix": [
+    [2,null,5,null,1],
+    ["YELLOW",6,"PURPLE",2,"RED"],
+    [null,"BLUE",4,"GREEN",null],
+    [null,3,null,5,null]
+  ]
+}, {
+  "cardName": "Aurora Sagradis",
+  "difficulty": 4,
+  "cardMatrix": [
+    ["RED",null,"BLUE",null,"YELLOW"],
+    [4,"PURPLE",3,"GREEN",2],
+    [null,1,null,5,null],
+    [null,null,6,null,null]
+  ]
+}, {
+  "cardName": "Industria",
+  "difficulty": 5,
+  "cardMatrix": [
+    [1,"RED",3,null,6],
+    [5,4,"RED",2,null],
+    [null,null,5,"RED",1],
+    [null,null,null,3,"RED"]
+  ]
+}, {
+  "cardName": "Shadow Thief",
+  "difficulty": 5,
+  "cardMatrix": [
+    [6,"PURPLE",null,null,5],
+    [5,null,"PURPLE",null,null],
+    ["RED",6,null,"PURPLE",null],
+    ["YELLOW","RED",5,4,3]
+  ]
+}, {
+  "cardName": "Batllo",
+  "difficulty": 5,
+  "cardMatrix": [
+    [null,null,6,null,null],
+    [null,5,"BLUE",4,null],
+    [3,"GREEN","YELLOW","PURPLE",2],
+    [1,4,"RED",5,3]
+  ]
+}, {
+  "cardName": "Gravitas",
+  "difficulty": 5,
+  "cardMatrix": [
+    [1,null,3,"BLUE",null],
+    [null,2,"BLUE",null,null],
+    [6,"BLUE",null,4,null],
+    ["BLUE",5,2,null,1]
+  ]
+}, {
+  "cardName": "Fractal Drops",
+  "difficulty": 3,
+  "cardMatrix": [
+    [null,4,null,"YELLOW",6],
+    ["RED",null,2,null,null],
+    [null,null,"RED","PURPLE",1],
+    ["BLUE","YELLOW",null,null,null]
+  ]
+}, {
+  "cardName": "Lux Astram",
+  "difficulty": 5,
+  "cardMatrix": [
+    [null,1,"GREEN","PURPLE",4],
+    [6,"PURPLE",2,5,"GREEN"],
+    [1,"GREEN",5,3,"PURPLE"],
+    [null,null,null,null,null]
+  ]
+}, {
+  "cardName": "Chromatic Splendor",
+  "difficulty": 4,
+  "cardMatrix": [
+    [null,null,"GREEN",null,null],
+    [2,"YELLOW",5,"BLUE",1],
+    [null,"RED",3,"PURPLE",null],
+    [1,null,6,null,4]
+  ]
+}, {
+  "cardName": "Firelight",
+  "difficulty": 5,
+  "cardMatrix": [
+    [3,4,1,5,null],
+    [null,6,2,null,"YELLOW"],
+    [null,null,null,"YELLOW","RED"],
+    [5,null,"YELLOW","RED",6]
+  ]
+}, {
+  "cardName": "Luz Celestial",
+  "difficulty": 3,
+  "cardMatrix": [
+    [null,null,"RED",5,null],
+    ["PURPLE",4,null,"GREEN",3],
+    [6,null,null,"BLUE",null],
+    [null,2,"YELLOW",null,null]
+  ]
+}, {
+  "cardName": "Water of Life",
+  "difficulty": 6,
+  "cardMatrix": [
+    [6,"BLUE",null,null,1],
+    [null,5,"BLUE",null,null],
+    [4,"RED",2,"BLUE",null],
+    ["GREEN",6,"YELLOW",3,"PURPLE"]
+  ]
+}, {
+  "cardName": "Ripples of Light",
+  "difficulty": 5,
+  "cardMatrix": [
+    [null,null,null,"RED",5],
+    [null,null,"PURPLE",4,"BLUE"],
+    [null,"BLUE",3,"YELLOW",6],
+    ["YELLOW",2,"GREEN",1,"RED"]
+  ]
+}, {
+  "cardName": "Lux Mundi",
+  "difficulty": 6,
+  "cardMatrix": [
+    [null,null,1,null,null],
+    [1,"GREEN",3,"BLUE",2],
+    ["BLUE",5,4,6,"GREEN"],
+    [null,"BLUE",5,"GREEN",null]
+  ]
+}, {
+  "cardName": "Comitas",
+  "difficulty": 5,
+  "cardMatrix": [
+    ["YELLOW",null,2,null,6],
+    [null,4,null,5,"YELLOW"],
+    [null,null,null,"YELLOW",5],
+    [1,2,"YELLOW",3,null]
+  ]
+}, {
+  "cardName": "Sun's Glory",
+  "difficulty": 6,
+  "cardMatrix": [
+    [1,"PURPLE","YELLOW",null,4],
+    ["PURPLE","YELLOW",null,null,6],
+    ["YELLOW",null,null,5,3],
+    [null,5,4,2,1]
+  ]
+}, {
+  "cardName": "Fulgor del Cielo",
+  "difficulty": 5,
+  "cardMatrix": [
+    [null,"BLUE","RED",null,null],
+    [null,4,5,null,"BLUE"],
+    ["BLUE",2,null,"RED",5],
+    [6,"RED",3,1,null]
+  ]
+}]

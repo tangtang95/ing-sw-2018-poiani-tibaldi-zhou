@@ -10,7 +10,7 @@ import java.util.TreeSet;
 
 public class RowPublicObjectiveCard extends PublicObjectiveCard{
 
-    protected RowPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) throws ConstraintTypeException {
+    public RowPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) throws ConstraintTypeException {
         super(name, description, cardPoints, constraints, type);
     }
 
