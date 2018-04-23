@@ -1,11 +1,13 @@
 package org.poianitibaldizhou.sagrada.model;
 
+import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.junit.Test;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ConstraintUnitTest {
 
@@ -33,5 +35,16 @@ public class ConstraintUnitTest {
         assertTrue(c1.matches(c4));
         assertTrue(c5.matches(c2));
         assertTrue(c1.matches(c5));
+    }
+
+    @Test
+    public void testInvalidNumberConstraint(){
+        IConstraint c1 = null;
+        try{
+            c1 = new NumberConstraint(10);
+            fail("no exception launched");
+        }catch(Exception e){
+            assertEquals(null, c1);
+        }
     }
 }

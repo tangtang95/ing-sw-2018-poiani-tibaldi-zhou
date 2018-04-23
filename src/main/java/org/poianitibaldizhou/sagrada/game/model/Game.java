@@ -20,6 +20,7 @@ public class Game {
     private IStateGame state;
     private int actualRound;
 
+
     public Game(List<String> tokens, boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
         this.players = new LinkedList<>();

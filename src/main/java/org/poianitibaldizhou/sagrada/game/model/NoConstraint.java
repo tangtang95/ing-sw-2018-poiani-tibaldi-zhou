@@ -6,7 +6,12 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
  * This class is a NullObject Pattern to avoid the check of null value
  */
 @Immutable
-public class NoConstraint implements IConstraint{
+public class NoConstraint implements IConstraint {
+
+    /**
+     * @param other another constraint to match
+     * @return return always true because it has no constraint
+     */
     @Override
     public boolean matches(IConstraint other) {
         return true;
@@ -17,8 +22,14 @@ public class NoConstraint implements IConstraint{
         return -1;
     }
 
+    /**
+     * Return true if obj is a NoConstraint
+     *
+     * @param obj the other object to compare
+     * @return true if obj is a NoConstraint
+     */
     @Override
-    public boolean equals(Object obj){
+    public boolean equals(Object obj) {
         return obj instanceof NoConstraint;
     }
 }

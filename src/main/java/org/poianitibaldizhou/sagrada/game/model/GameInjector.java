@@ -26,7 +26,7 @@ public class GameInjector {
         jsonParser = new JSONParser();
     }
 
-    public void injectToolCards(List<ToolCard> toolCards, boolean isSinglePlayer, int difficulty) {
+    public void injectToolCards(DrawableCollection<ToolCard> toolCards, boolean isSinglePlayer, int difficulty) {
         List<ToolCard> allToolCards = new LinkedList<>();
         JSONArray jsonArray = null;
         try {
@@ -46,20 +46,6 @@ public class GameInjector {
 
         }
         toolCardDrawableCollection = new DrawableCollection<>(allToolCards);
-        if (isSinglePlayer)
-            for(int i = 0; i < difficulty; i++)
-                try {
-                    toolCards.add(toolCardDrawableCollection.draw());
-                } catch (EmptyCollectionException e) {
-                    e.printStackTrace();
-                }
-        else
-            for(int i = 0; i < 3; i++)
-                try {
-                    toolCards.add(toolCardDrawableCollection.draw());
-                } catch (EmptyCollectionException e) {
-                    e.printStackTrace();
-                }
     }
 
     public void injectDiceBag(DrawableCollection<Dice> diceBag){

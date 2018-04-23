@@ -8,8 +8,8 @@ import java.util.*;
 
 public abstract class PublicObjectiveCard extends Card implements IScore {
 
-    private final TileConstraintType type;
-    private Set<IConstraint> constraints;
+    protected final TileConstraintType type;
+    protected Set<IConstraint> constraints;
     private final int cardPoints;
 
     /**
@@ -20,9 +20,10 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * @param description card's description
      * @param cardPoints  card's point
      */
-    public PublicObjectiveCard(String name, String description, int cardPoints) {
+    PublicObjectiveCard(String name, String description, int cardPoints, TileConstraintType type) {
         super(name, description);
-        type = TileConstraintType.NONE;
+
+        this.type = type;
         this.cardPoints = cardPoints;
     }
 
@@ -38,30 +39,30 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * @param constraints set of constraint to apply
      * @param type        type of tile constraint on which the card operates
      */
-    public PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) {
-        super(name, description);
+    PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) {
+        this(name, description, cardPoints, type);
 
         for (IConstraint constraint : constraints) {
             if (type == TileConstraintType.COLOR) {
                 if (!(constraint instanceof ColorConstraint))
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("constraints has different type than TileConstraintType given");
             } else if (type == TileConstraintType.NUMBER) {
                 if (!(constraint instanceof NumberConstraint))
-                    throw new IllegalArgumentException();
+                    throw new IllegalArgumentException("constraints has different type than TileConstraintType given");
             } else {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("cannot instantiate publicObjectiveCard with this TileConstraintType");
             }
         }
 
-        this.type = type;
-        this.cardPoints = cardPoints;
         this.constraints = new HashSet<>();
         this.constraints.addAll(constraints);
     }
 
 
     public List<IConstraint> getConstraint() {
-        return new ArrayList(constraints);
+        List<IConstraint> constraints = new ArrayList<>();
+        constraints.addAll(this.constraints);
+        return constraints;
     }
 
     public TileConstraintType getType() {

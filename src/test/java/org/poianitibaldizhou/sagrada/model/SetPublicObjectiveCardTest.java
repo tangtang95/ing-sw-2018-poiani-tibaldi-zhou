@@ -29,8 +29,8 @@ public class SetPublicObjectiveCardTest {
     @BeforeClass
     public static void setUpClass() {
         allNumberConstraint = new ArrayList<>();
-        for (int i = 0; i < Dice.MAX_VALUE + 1; i++)
-            allNumberConstraint.add(new NumberConstraint(i + 1));
+        for (int i = 1; i <= Dice.MAX_VALUE; i++)
+            allNumberConstraint.add(new NumberConstraint(i));
 
         allColorConstraint = new ArrayList<>();
         for (Color c : Color.values())

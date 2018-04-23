@@ -21,7 +21,8 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
      * @param constraints set of constraint to apply
      * @param type type of tile constraint on which the card operates
      */
-    public SetPublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) {
+    public SetPublicObjectiveCard(String name, String description, int cardPoints,
+                                  Collection<IConstraint> constraints, TileConstraintType type) {
         super(name, description, cardPoints, constraints, type);
     }
 

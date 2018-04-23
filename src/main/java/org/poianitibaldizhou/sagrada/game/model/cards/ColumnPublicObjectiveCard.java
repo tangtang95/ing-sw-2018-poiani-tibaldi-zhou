@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
+import org.poianitibaldizhou.sagrada.game.model.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.NumberConstraint;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -18,12 +20,14 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
      * @param name card's name
      * @param description card's description
      * @param cardPoints card's point
-     * @param constraints set of constraint to apply
      * @param type type of tile constraint on which the card operates
      */
-    public ColumnPublicObjectiveCard(String name, String description, int cardPoints,
-                                        Collection<IConstraint> constraints, TileConstraintType type) throws IllegalArgumentException {
-        super(name, description, cardPoints, constraints, type);
+    public ColumnPublicObjectiveCard(String name, String description, int cardPoints, TileConstraintType type) {
+        super(name, description, cardPoints, type);
+
+        constraints = new HashSet<>();
+        constraints.addAll((type == TileConstraintType.COLOR) ?
+                ColorConstraint.getAllColorConstraints() : NumberConstraint.getAllNumberConstraint());
     }
 
     /**

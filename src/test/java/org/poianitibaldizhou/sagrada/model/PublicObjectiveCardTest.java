@@ -7,6 +7,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.ColumnPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 
 import java.util.ArrayList;
@@ -42,8 +43,8 @@ public class PublicObjectiveCardTest {
         constraints.add(new ColorConstraint(Color.GREEN));
         constraints.add(new NoConstraint());
         try {
-            publicObjectiveCard = new ColumnPublicObjectiveCard("test", "test", 2,
-                    constraints, TileConstraintType.NUMBER);
+            publicObjectiveCard = new SetPublicObjectiveCard("test", "test", 2, constraints,
+                    TileConstraintType.NUMBER);
             fail("Exception expected");
         } catch (Exception e) {
 
@@ -52,13 +53,11 @@ public class PublicObjectiveCardTest {
         constraints.clear();
 
         // Test constraints containing only only a single type of constraint except one
-        for (int i = 0; i <= 6; i++) {
-            constraints.add(new NumberConstraint(i));
-        }
+        constraints.addAll(NumberConstraint.getAllNumberConstraint());
         constraints.add(new ColorConstraint(Color.YELLOW));
         try {
-            publicObjectiveCard = new ColumnPublicObjectiveCard("test", "test", 2,
-                    constraints, TileConstraintType.NUMBER);
+            publicObjectiveCard = new SetPublicObjectiveCard("test", "test", 2, constraints,
+                    TileConstraintType.NUMBER);
             fail("Exception expected");
         } catch (Exception e) {
 
@@ -66,7 +65,7 @@ public class PublicObjectiveCardTest {
     }
 
     /**
-     * Test PublicObjectiveCard.containstConstraint()
+     * Test PublicObjectiveCard.containsConstraint()
      */
     @Test
     public void testContainsConstraint() {
@@ -76,7 +75,7 @@ public class PublicObjectiveCardTest {
 
         try {
             publicObjectiveCard = new ColumnPublicObjectiveCard("Test", "Test",
-                    5, constraints, TileConstraintType.COLOR);
+                    5, TileConstraintType.COLOR);
 
             for (int i = 1; i <= 6; i++) {
                 assertEquals("No NumberConstraint expected",false,
