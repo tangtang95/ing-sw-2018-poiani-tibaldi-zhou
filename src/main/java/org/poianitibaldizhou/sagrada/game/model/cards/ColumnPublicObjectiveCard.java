@@ -1,13 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
 
@@ -22,7 +20,6 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
      * @param cardPoints card's point
      * @param constraints set of constraint to apply
      * @param type type of tile constraint on which the card operates
-     * @throws ConstraintTypeException if constraints contains more than a single type of tile constraint
      */
     public ColumnPublicObjectiveCard(String name, String description, int cardPoints,
                                         Collection<IConstraint> constraints, TileConstraintType type) throws IllegalArgumentException {

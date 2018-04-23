@@ -44,7 +44,7 @@ public class Player {
     }
 
     public void placeDice(Dice dice, int row , int column, TileConstraintType tileConstraint,
-                          DiceConstraintType diceConstraint) throws RuleViolationException, ConstraintTypeException {
+                          DiceConstraintType diceConstraint) throws RuleViolationException {
         schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
     }
 

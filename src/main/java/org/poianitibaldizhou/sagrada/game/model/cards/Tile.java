@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -21,11 +20,12 @@ public class Tile{
     }
 
     /**
-     * Constructor: create a tile with the constraint passed
+     * Constructor: create a tile with the constraint passed.
+     * If constraint is null, constraint is set to NoConstraint.
      * @param constraint the constraint of the tile
      */
     public Tile(IConstraint constraint){
-        this.constraint = constraint;
+        this.constraint = constraint == null ? new NoConstraint(): constraint;
     }
 
     /**

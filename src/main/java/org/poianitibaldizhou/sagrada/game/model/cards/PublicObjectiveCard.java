@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import org.poianitibaldizhou.sagrada.exception.ConstraintTypeException;
 import org.poianitibaldizhou.sagrada.game.model.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.NumberConstraint;
@@ -17,9 +16,9 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * Constructor.
      * Creates a PublicObjectiveCard with a certain name, description and points.
      *
-     * @param name card's name
+     * @param name        card's name
      * @param description card's description
-     * @param cardPoints card's point
+     * @param cardPoints  card's point
      */
     public PublicObjectiveCard(String name, String description, int cardPoints) {
         super(name, description);
@@ -33,26 +32,25 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
      * with a single TileConstraintType.
      *
-     * @param name card's name
+     * @param name        card's name
      * @param description card's description
-     * @param cardPoints card's point
+     * @param cardPoints  card's point
      * @param constraints set of constraint to apply
-     * @param type type of tile constraint on which the card operates
-     * @throws ConstraintTypeException if constraints contains more than a single type of tile constraint
+     * @param type        type of tile constraint on which the card operates
      */
     public PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) {
         super(name, description);
 
-        for(IConstraint constraint: constraints) {
-            if(type == TileConstraintType.COLOR) {
-                if(!(constraint instanceof ColorConstraint))
+        for (IConstraint constraint : constraints) {
+            if (type == TileConstraintType.COLOR) {
+                if (!(constraint instanceof ColorConstraint))
                     throw new IllegalArgumentException();
-            } else if(type == TileConstraintType.NUMBER)
-                if(!(constraint instanceof NumberConstraint))
+            } else if (type == TileConstraintType.NUMBER) {
+                if (!(constraint instanceof NumberConstraint))
                     throw new IllegalArgumentException();
-            else
+            } else {
                 throw new IllegalArgumentException();
-
+            }
         }
 
         this.type = type;
@@ -81,7 +79,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * @return if constraints contains other true, false otherwise
      */
     public boolean containsConstraint(IConstraint other) {
-        for(IConstraint constraint: constraints) {
+        for (IConstraint constraint : constraints) {
             if (constraint.equals(other)) {
                 return true;
             }
