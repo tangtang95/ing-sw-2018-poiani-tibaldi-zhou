@@ -53,7 +53,6 @@ public class GameInjector {
                     (String) toolCard.get("action"),
                     isSinglePlayer
             ));
-
         }
         return new DrawableCollection<>(allToolCards);
     }
@@ -77,7 +76,8 @@ public class GameInjector {
 
     }
 
-    public void injectPublicObjectiveCards() {
+    public DrawableCollection<PublicObjectiveCard> injectPublicObjectiveCards(
+            DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection) {
         List<PublicObjectiveCard> allPublicObjectiveCards = new LinkedList<>();
         JSONArray jsonArray = null;
         try {
@@ -100,6 +100,8 @@ public class GameInjector {
                     break;
             }
         }
+        //TODO
+        return publicObjectiveCardDrawableCollection;
     }
 
     /**

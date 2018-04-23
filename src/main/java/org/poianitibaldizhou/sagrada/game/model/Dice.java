@@ -14,13 +14,14 @@ public class Dice {
     /**
      * Constructor.
      * Creates a Dice with a certain NumberConstraint and ColorConstraint.
-     * @param numberConstraint dice's number constraint
-     * @param colorConstraint dice's color constraint
      *
+     * @param numberConstraint dice's number constraint
+     * @param colorConstraint  dice's color constraint
      */
     public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) {
-        if(numberConstraint.getNumber() < MIN_VALUE || numberConstraint.getNumber() > MAX_VALUE)
-            throw new IllegalArgumentException("Invalid number: number must be in range [1,6]");
+        if (numberConstraint.getNumber() < MIN_VALUE || numberConstraint.getNumber() > MAX_VALUE)
+            throw new IllegalArgumentException("Invalid number: number must be in range [" +
+                    MIN_VALUE + "," + MAX_VALUE + "]");
         this.numberConstraint = numberConstraint;
         this.colorConstraint = colorConstraint;
     }
@@ -30,9 +31,9 @@ public class Dice {
      * Creates a Dice of a certain number and color.
      *
      * @param number dice's number
-     * @param color dice's color
+     * @param color  dice's color
      */
-    public Dice(int number, Color color)  {
+    public Dice(int number, Color color) {
         this(new NumberConstraint(number), new ColorConstraint(color));
     }
 
@@ -54,25 +55,26 @@ public class Dice {
 
     /**
      * Check if this dice is similar to another dice; in other words, if the dices have same color or same number
+     *
      * @param other the other dice to compare
      * @return true if the dices have same color or same number
      */
-    public boolean isSimilar(Dice other){
+    public boolean isSimilar(Dice other) {
         return this.getColorConstraint().equals(other.getColorConstraint()) ||
                 this.getNumberConstraint().equals(other.getNumberConstraint());
     }
 
     @Override
-    public boolean equals(Object oth){
-        if(!(oth instanceof Dice))
+    public boolean equals(Object oth) {
+        if (!(oth instanceof Dice))
             return false;
-        Dice o = (Dice)oth;
+        Dice o = (Dice) oth;
         return o.getColor() == this.getColor() && o.getNumber() == this.getNumber();
     }
 
     @Override
     public String toString() {
-        return "Dice("+numberConstraint.getNumber()+","+colorConstraint.getColor()+")";
+        return "Dice(" + numberConstraint.getNumber() + "," + colorConstraint.getColor() + ")";
     }
 
     /**

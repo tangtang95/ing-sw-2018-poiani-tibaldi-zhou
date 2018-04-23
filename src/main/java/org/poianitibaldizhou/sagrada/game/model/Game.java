@@ -20,12 +20,13 @@ public class Game {
     private IStateGame state;
     private int actualRound;
 
+
     public Game(List<String> tokens, boolean isSinglePlayer) {
         this.isSinglePlayer = isSinglePlayer;
         this.players = new LinkedList<>();
-        this.toolCards= new LinkedList<>();
+        this.diceBag = null;
+        this.toolCards = new LinkedList<>();
         this.publicObjectiveCards = new LinkedList<>();
-        this.diceBag = new DrawableCollection<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
         this.actualRound = 0;
