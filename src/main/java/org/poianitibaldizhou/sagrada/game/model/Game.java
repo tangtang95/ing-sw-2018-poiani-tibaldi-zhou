@@ -11,30 +11,61 @@ import java.util.List;
 public class Game {
 
     private final boolean isSinglePlayer;
-    private List<Player> players;
-    private RoundTrack roundTrack;
-    private List<ToolCard> toolCards;
-    private List<PublicObjectiveCard> publicObjectiveCards;
-    private DrawableCollection<Dice> diceBag;
-    private DraftPool draftPool;
+    private final List<Player> players;
+    private final RoundTrack roundTrack;
+    private final List<ToolCard> toolCards;
+    private final List<PublicObjectiveCard> publicObjectiveCards;
+    private final DrawableCollection<Dice> diceBag;
+    private final DraftPool draftPool;
+
+    private Player currentPlayerRound;
     private IStateGame state;
-    private int actualRound;
+    private int difficulty;
 
 
-    public Game(List<String> tokens, boolean isSinglePlayer) {
-        this.isSinglePlayer = isSinglePlayer;
+    /**
+     * Constructor for Multi player.
+     * Create the Game with all the attributes initialized, create also all the player from the given tokens and
+     * set the state to SetupPlayerState
+     *
+     * @param tokens the list of String token of the players
+     */
+    public Game(List<String> tokens) {
+        this.isSinglePlayer = false;
         this.players = new LinkedList<>();
-        this.diceBag = null;
+        this.diceBag = new DrawableCollection<>();
         this.toolCards = new LinkedList<>();
         this.publicObjectiveCards = new LinkedList<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
-        this.actualRound = 0;
 
-        for (String token: tokens) {
+        for (String token : tokens) {
             players.add(new Player(token));
         }
         setState(new SetupPlayerState(this));
+    }
+
+    /**
+     * Constructor of Single Player.
+     * Create the Game for the single player with all the attributes intialized
+     * @param singlePlayerToken the token of the single player
+     * @param difficulty the difficulty of the game chosen by the user
+     */
+    public Game(String singlePlayerToken, int difficulty){
+        this.isSinglePlayer = true;
+        this.players = new LinkedList<>();
+        this.diceBag = new DrawableCollection<>();
+        this.toolCards = new LinkedList<>();
+        this.publicObjectiveCards = new LinkedList<>();
+        this.roundTrack = new RoundTrack();
+        this.draftPool = new DraftPool();
+        this.difficulty = difficulty;
+
+        players.add(new Player(singlePlayerToken));
+        setState(new SetupPlayerState(this));
+
+
+
     }
 
     public boolean isSinglePlayer() {
@@ -65,8 +96,8 @@ public class Game {
         this.state = state;
     }
 
-    public int getNumberOfActualRound() {
-        return actualRound;
+    public int getCurrentRound() {
+        return roundTrack.getCurrentRound();
     }
 
     public int getNumberOfRounds() {
@@ -78,11 +109,56 @@ public class Game {
     }
 
     public int getDifficulty() {
-        //TODO
-        return 0;
+        if(!isSinglePlayer)
+            throw new IllegalArgumentException("shouldn't call this method if it is a multi player game");
+        return difficulty;
     }
 
     public DrawableCollection<Dice> getDiceBag() {
         return diceBag;
+    }
+
+    /**
+     * Set the turn of the player to the passed playerTurn as parameter
+     *
+     * @param player the player
+     */
+    public void setCurrentPlayerRound(Player player) {
+        if(getIndexOfPlayer(player) != -1)
+            currentPlayerRound = player;
+    }
+
+    /**
+     * Return the Player who has the control of the round game (who has the diceBag)
+     *
+     * @return the player who has the control of the round game
+     */
+    public Player getCurrentPlayerRound() {
+        return currentPlayerRound;
+    }
+
+    /**
+     * Rotate the DiceBag to another player in clockwise direction
+     */
+    public void rotateCurrentPlayerRound() {
+        Player newCurrentPlayer = players.get((getIndexOfPlayer(getCurrentPlayerRound()) + 1) % players.size());
+        setCurrentPlayerRound(newCurrentPlayer);
+    }
+
+    /**
+     * Return the index of the list of players about the given player
+     *
+     * @param player the player to find in the list of players
+     * @return the index of the list of players about the given player
+     */
+    public int getIndexOfPlayer(Player player){
+        int indexOfCurrentPlayer = -1;
+        for (int i = 0; i < players.size(); i++) {
+            if (players.get(i).equals(player))
+                indexOfCurrentPlayer = i;
+        }
+        if (indexOfCurrentPlayer == -1)
+            throw new IllegalArgumentException("cannot find the current player in the list of players");
+        return indexOfCurrentPlayer;
     }
 }

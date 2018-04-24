@@ -31,7 +31,7 @@ public class GameInjector {
      * Create and inject all ToolCard in a DrawableCollection of ToolCard, getting cards from
      * a json file resources/toolCards.json
      *
-     * @param toolCardDrawableCollection DrawableCollection of ToolCard which null value
+     * @param toolCardDrawableCollection DrawableCollection of ToolCard
      * @param isSinglePlayer Game parameter for choosing the game mode (single player or multilayer)
      * @return a DrawableCollection of ToolCard
      */

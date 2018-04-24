@@ -34,6 +34,16 @@ public class DraftPool {
         this.dices.addAll(dices);
     }
 
+
+    /**
+     * Add one dice to the DraftPool
+     *
+     * @param dice the dice that needs to be added
+     */
+    public void addDice(Dice dice) {
+        this.dices.add(dice);
+    }
+
     /**
      * Uses a dice presents in the DrafPool thus removing it.
      *
@@ -54,8 +64,19 @@ public class DraftPool {
         throw new DiceNotFoundException("DraftPool.useDice() failed due to non existence of the dice in the pool");
     }
 
+    /**
+     * Remove every dices in the draftPool
+     *
+     */
+    public void clearPool() {
+        dices.clear();
+    }
+
     @Override
     public String toString() {
         return dices.toString();
     }
+
+
+
 }

@@ -4,13 +4,31 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 
 public class RoundEndState extends IStateGame {
 
-    protected RoundEndState(Game game) {
+    /**
+     * Constructor.
+     * Create a RoundEndState: when the current round is ending there are some operations to do written in the
+     * nextRound method
+     *
+     * @param game the game needed for changing state and other things to do
+     */
+    public RoundEndState(Game game) {
         super(game);
     }
 
+    /**
+     * Add all the remaining dices of the DraftPool to the RoundTrack and clear all dices of DraftPool;
+     * Then if the current round is less than the numberOfRounds the game will set a new RoundStartState, otherwise
+     * it will set a EndGameState
+     *
+     */
     @Override
     public void nextRound() {
-        if(game.getNumberOfActualRound() < game.getNumberOfRounds())
+        game.getRoundTrack().addDicesToCurrentRound(game.getDraftPool().getDices());
+        game.getDraftPool().clearPool();
+        game.getRoundTrack().nextRound();
+        game.rotateCurrentPlayerRound();
+
+        if(game.getCurrentRound() < game.getNumberOfRounds())
             game.setState(new RoundStartState(game));
         else
             game.setState(new EndGameState(game));

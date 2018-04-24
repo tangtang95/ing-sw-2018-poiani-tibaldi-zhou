@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-public enum OutCome {
+public enum Outcome {
     WIN,
     LOSE,
-    UNDEFINED
+    INGAME
 }

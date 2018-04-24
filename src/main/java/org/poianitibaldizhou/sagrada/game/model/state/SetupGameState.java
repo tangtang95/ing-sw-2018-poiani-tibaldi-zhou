@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
+import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
@@ -22,7 +23,7 @@ public class SetupGameState extends IStateGame {
      *
      * @param game the current game
      */
-    protected SetupGameState(Game game) {
+    public SetupGameState(Game game) {
         super(game);
 
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
@@ -35,6 +36,10 @@ public class SetupGameState extends IStateGame {
 
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
+
+        game.setCurrentPlayerRound(getRandomStartPlayer(game.getPlayers()));
+
+        readyGame();
     }
 
     /**
@@ -76,6 +81,25 @@ public class SetupGameState extends IStateGame {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * When the game starts, it should choose a random player from where to start the game so this method
+     * return
+     *
+     * @param players all the players of the game
+     * @return return a random player from the list of players given by parameter
+     */
+    private Player getRandomStartPlayer(List<Player> players){
+        DrawableCollection<Player> drawablePlayers = new DrawableCollection<>();
+        drawablePlayers.addElements(players);
+        Player player = null;
+        try {
+            player = drawablePlayers.draw();
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
+        return player;
     }
 
 }

@@ -179,6 +179,10 @@ public class SchemaCardTest {
 
         try{
             fullSchemaCard.setDice(d4,0,2, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+            fullSchemaCard.removeDice(0,2);
+            fullSchemaCard.setDice(d4,2,4, TileConstraintType.NUMBER, DiceConstraintType.NORMAL);
+            fullSchemaCard.removeDice(2,4);
+            fullSchemaCard.setDice(d3,0,1, TileConstraintType.COLOR, DiceConstraintType.NORMAL);
         } catch (Exception e) {
             fail("no exception expected");
         }
@@ -198,6 +202,14 @@ public class SchemaCardTest {
         } catch (Exception e) {
             fail("no exception expected");
         }
+        assertFalse(emptySchemaCard.isDicePositionable(d1,1, 1));
+        assertFalse(schemaCard.isDicePositionable(d3,0, 4));
+        assertFalse(schemaCard.isDicePositionable(d5,0, 1));
+        assertFalse(schemaCard.isDicePositionable(d4,0, 3));
+        assertFalse(schemaCard.isDicePositionable(d3,0,2));
+        assertFalse(schemaCard.isDicePositionable(d5,0, 1));
+        assertFalse(schemaCard.isDicePositionable(d3,0,2));
+        assertFalse(fullSchemaCard.isDicePositionable(d4,2, 4));
 
         assertTrue(fullSchemaCard.isDicePositionable(d4,2,4, TileConstraintType.NUMBER, DiceConstraintType.NORMAL));
         assertTrue(fullSchemaCard.isDicePositionable(d4,2, 4, TileConstraintType.NONE, DiceConstraintType.NORMAL));
