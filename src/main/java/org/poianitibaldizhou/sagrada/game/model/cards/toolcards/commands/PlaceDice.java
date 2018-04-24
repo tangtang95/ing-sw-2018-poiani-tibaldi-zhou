@@ -3,6 +3,9 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
+
+import java.util.List;
 
 public class PlaceDice implements ICommand {
 
@@ -24,7 +27,7 @@ public class PlaceDice implements ICommand {
     }
 
     @Override
-    public void executeCommand(Player player) {
+    public void executeCommand(Player player, List<IToolCardObserver> observers) {
 
     }
 

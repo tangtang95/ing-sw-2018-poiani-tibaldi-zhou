@@ -1,0 +1,102 @@
+package org.poianitibaldizhou.sagrada.lobby.model;
+
+import java.rmi.RemoteException;
+import java.util.*;
+
+public class LobbyDatabase {
+    private static LobbyDatabase database;
+
+    private LobbyDatabase(){
+
+    }
+
+    public synchronized static LobbyDatabase getInstance(){
+        if(database == null)
+            database = new LobbyDatabase();
+        return database;
+    }
+
+    private final Collection<User> users = new ArrayList<>();
+    private Lobby lobby;
+
+    /**
+     * Returns an user with a specified token.
+     *
+     * @param token user's token
+     * @return User with specified token
+     * @throws RemoteException if no such user with specified token exists
+     */
+    public User getUserByToken(String token) throws RemoteException {
+        for(User u: users)
+            if(u.getToken() == token)
+                return u;
+        throw new RemoteException("No such user with specified token exists.");
+    }
+
+    /**
+     * An user join the lobby.
+     * If the lobby is full after the player join, a new lobby is created.
+     *
+     * @param lobbyObserver observing the lobby for the client
+     * @param user user joining
+     */
+    public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) {
+        lobby.observeLobby(lobbyObserver);
+        if(lobby.join(user)) {
+            lobby = new Lobby(UUID.randomUUID().toString());
+        }
+    }
+
+    /**
+     * An user leave the lobby
+     *
+     * @param user user leaving
+     */
+    public synchronized void userLeaveLobby(User user) {
+        lobby.leave(user);
+    }
+
+    /**
+     * Creates the current lobby that need to be filled.
+     *
+     * @param name lobby's name
+     */
+    public void createLobby(String name) {
+        lobby = new Lobby(name);
+    }
+
+    /**
+     * Implements user login on server.
+     *
+     * @param username user's name
+     * @return user's token
+     * @throws RemoteException if an user with username is already logged
+     */
+    public synchronized String login(String username) throws RemoteException {
+        for(User u: users) {
+            if(u.getName() == username) {
+                throw new RemoteException("User already logged: " + username);
+            }
+        }
+        String token = UUID.randomUUID().toString();
+        User user = new User(username, token);
+        users.add(user);
+        return token;
+    }
+
+    /**
+     * Implements user logout on server via login.
+     *
+     * @param token
+     */
+    public synchronized void logout(String token) throws RemoteException {
+        for(User u : users) {
+            if(u.getToken() == token) {
+                users.remove(u);
+                return;
+            }
+        }
+
+        throw new RemoteException("No user with this token exists. Impossible to logout");
+    }
+}
