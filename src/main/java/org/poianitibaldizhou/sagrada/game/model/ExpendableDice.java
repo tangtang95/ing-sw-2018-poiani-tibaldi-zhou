@@ -12,6 +12,14 @@ public class ExpendableDice implements ICoin {
         this.draftPool = draftPool;
     }
 
+    /**
+     * if there's a dice expendable for the ToolCard is deleted from the DraftPoll
+     *
+     * @param toolCard the card which the player would use
+     * @throws NoCoinsExpendableException if there aren't any expandable dice in the DraftPool
+     * @throws DiceNotFoundException if there isn't the selected dice in the DraftPool
+     * @throws EmptyCollectionException if the DraftPool is empty
+     */
     @Override
     public void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException,
             EmptyCollectionException {
@@ -23,6 +31,14 @@ public class ExpendableDice implements ICoin {
         return draftPool.getDices().size();
     }
 
+
+    /**
+     * search a dice in the DraftPool with the color chosen
+     *
+     * @param color color of the chosen dice
+     * @return a dice with the color chosen from the DraftPoll
+     * @throws NoCoinsExpendableException if there aren't any expandable dice in the DraftPool
+     */
     private Dice searchDice(Color color) throws NoCoinsExpendableException{
         ColorConstraint colorConstraint = new ColorConstraint(color);
         for (Dice dice: draftPool.getDices()) {

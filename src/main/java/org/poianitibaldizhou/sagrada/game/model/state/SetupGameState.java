@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
@@ -22,15 +23,17 @@ public class SetupGameState extends IStateGame {
      *
      * @param game the current game
      */
-    protected SetupGameState(Game game) {
+    protected SetupGameState(Game game){
         super(game);
 
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
         GameInjector gameInjector = new GameInjector();
-        toolCards = gameInjector.injectToolCards(toolCards, game.isSinglePlayer());
-        publicObjectiveCards = gameInjector.injectPublicObjectiveCards(publicObjectiveCards);
+        gameInjector.injectToolCards(toolCards, game.isSinglePlayer());
+        try {
+            gameInjector.injectPublicObjectiveCards(publicObjectiveCards);
+        }catch (WrongCardInJsonFileException e){}
         gameInjector.injectDiceBag(game.getDiceBag());
 
         this.injectToolCards(toolCards);

@@ -87,4 +87,8 @@ public class DrawableCollection<T> {
     public String toString() {
         return collection.toString();
     }
+
+    public List<T> getCollection() {
+        return collection;
+    }
 }

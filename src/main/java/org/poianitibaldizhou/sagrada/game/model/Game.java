@@ -32,7 +32,7 @@ public class Game {
         this.actualRound = 0;
 
         for (String token: tokens) {
-            players.add(new Player(token));
+            players.add(new Player(token, isSinglePlayer ? new ExpendableDice(draftPool) : new FavorToken()));
         }
         setState(new SetupPlayerState(this));
     }

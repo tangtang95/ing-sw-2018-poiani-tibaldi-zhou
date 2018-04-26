@@ -11,6 +11,12 @@ public class RoundTrack {
         this.roundTrack = new List[NUMBER_OF_TRACK];
     }
 
+    /**
+     * place the remainder dice of the DraftPool in the correct position of the roundTrack
+     *
+     * @param dices the dices which will be placed in the roundTrack
+     * @param round current round
+     */
     public void addDice(List<Dice> dices, int round){
         roundTrack[round] = dices;
     }

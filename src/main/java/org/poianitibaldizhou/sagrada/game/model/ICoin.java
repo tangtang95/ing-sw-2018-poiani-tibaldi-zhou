@@ -18,8 +18,6 @@ public interface ICoin {
     void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException,
             EmptyCollectionException, IllegalNumberOfTokensOnToolCardException;
 
-    /**
-     * @return number of favor Tokens or the size of DraftPool
-     */
     int getCoins();
+
 }

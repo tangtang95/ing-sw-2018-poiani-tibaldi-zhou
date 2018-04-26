@@ -6,7 +6,7 @@
     "values":
       {
         "cardType": "row",
-        "constraintType" : "color"
+        "constraintType" : "COLOR"
       }
   },
   {
@@ -16,55 +16,92 @@
     "values":
       {
         "cardType": "column",
-        "constraintType" : "color"
+        "constraintType" : "COLOR"
       }
   },
   {
     "cardName": "Sfumature diverse - Riga",
     "cardDescription": "Righe senza sfumature ripetute",
     "cardPoints": 5,
-    "values": ""
+    "values":
+    {
+      "cardType": "row",
+      "constraintType" : "NUMBER"
+    }
   },
   {
     "cardName": "Sfumature diverse - Colonna",
     "cardDescription": "Colonne senza sfumature ripetute",
     "cardPoints": 4,
-    "values": ""
+    "values":
+    {
+      "cardType": "column",
+      "constraintType" : "NUMBER"
+    }
   },
   {
     "cardName": "Sfumature Chiare",
     "cardDescription": "Set di 1 & 2 ovunque",
     "cardPoints": 2,
-    "values": ""
+    "values":
+    {
+      "cardType": "set",
+      "constraintType" : "NUMBER",
+      "constrainCollection": [1,2]
+    }
   },
   {
     "cardName": "Sfumature Medie",
     "cardDescription": "Set di 3 & 4 ovunque",
     "cardPoints": 2,
-    "values": ""
+    "values":
+    {
+      "cardType": "set",
+      "constraintType" : "NUMBER",
+      "constrainCollection": [3,4]
+    }
   },
   {
     "cardName": "Sfumature Scure",
     "cardDescription": "Set di 5 & 6 ovunque",
     "cardPoints": 2,
-    "values": ""
+    "values":
+    {
+      "cardType": "set",
+      "constraintType" : "NUMBER",
+      "constrainCollection": [5,6]
+    }
   },
   {
     "cardName": "Sfumature Diverse",
     "cardDescription": "Set di dadi di ogni valore ovunque",
     "cardPoints": 5,
-    "values": ""
+    "values":
+    {
+      "cardType": "set",
+      "constraintType" : "NUMBER",
+      "constrainCollection": [1,2,3,4,5,6]
+    }
   },
   {
     "cardName": "Diagonali Colorate",
     "cardDescription": "Numero di dadi dello stesso colore diagonalmente adiacenti",
     "cardPoints": 1,
-    "values": ""
+    "values":
+    {
+      "cardType": "diagonal",
+      "constraintType" : "COLOR"
+    }
   },
   {
     "cardName": "Varietà di Colore",
     "cardDescription": "Set di dadi di ogni colore ovunque",
     "cardPoints": 4,
-    "values": ""
+    "values":
+    {
+      "cardType": "set",
+      "constraintType" : "COLOR",
+      "constrainCollection": ["BLUE", "RED", "GREEN", "YELLOW", "PURPLE"]
+    }
   }
 ]

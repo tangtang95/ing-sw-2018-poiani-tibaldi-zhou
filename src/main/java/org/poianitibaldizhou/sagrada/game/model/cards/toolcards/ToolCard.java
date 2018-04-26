@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ToolCard extends Card {
     private Color color;
@@ -61,5 +62,24 @@ public class ToolCard extends Card {
 
     public void detachToolCardObserver(IToolCardObserver observer) {
         observers.remove(observer);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ToolCard toolCard = (ToolCard) o;
+        return tokens == toolCard.tokens &&
+                isSinglePlayer == toolCard.isSinglePlayer &&
+                color == toolCard.color &&
+                Objects.equals(commands, toolCard.commands)&&
+                this.getName().equals(toolCard.getName()) &&
+                this.getDescription().equals(toolCard.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
 }
