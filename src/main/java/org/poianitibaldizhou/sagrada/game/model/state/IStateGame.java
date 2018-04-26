@@ -21,7 +21,7 @@ public abstract class IStateGame {
     public void readyGame(){
 
     }
-    public void throwDices(){
+    public void throwDices(Player player){
 
     }
     public void nextTurn(){

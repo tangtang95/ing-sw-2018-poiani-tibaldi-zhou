@@ -291,4 +291,19 @@ public class SchemaCard {
     }
 
 
+    /**
+     * Return the number of empty spaces inside the tileMatrix
+     *
+     * @return
+     */
+    public int getNumberOfEmptySpaces() {
+        int numberOfEmptySpaces = 0;
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if(getDice(i,j) == null)
+                    numberOfEmptySpaces++;
+            }
+        }
+        return numberOfEmptySpaces;
+    }
 }

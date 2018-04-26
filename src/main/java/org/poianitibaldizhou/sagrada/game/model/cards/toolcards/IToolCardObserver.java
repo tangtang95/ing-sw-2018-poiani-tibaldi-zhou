@@ -4,4 +4,6 @@ public interface IToolCardObserver {
 
     public void onTokenChange(int tokens);
     public void onCardDestroy();
+
+    public void notifyNeedDice();
 }
