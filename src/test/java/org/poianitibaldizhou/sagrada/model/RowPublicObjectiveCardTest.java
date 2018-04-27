@@ -8,9 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.ColumnPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.RowPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
-
-import java.util.ArrayList;
-import java.util.Collection;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import static org.junit.Assert.assertEquals;
 

@@ -22,12 +22,12 @@ public class ToolCard extends Card {
         this.tokens = 0;
         this.color = color;
         this.isSinglePlayer = isSinglePlayer;
-        observers = new ArrayList<IToolCardObserver>();
+        observers = new ArrayList<>();
     }
 
     public void invokeCommands(Player player){
         for (ICommand command : commands) {
-            command.executeCommand(player,observers );
+            command.executeCommand(player, observers);
         }
 
         if(isSinglePlayer)

@@ -36,7 +36,6 @@ public class RoundStartState extends IStateGame{
                     e.printStackTrace();
                 }
             }
-            //For Tang Tang possible error in isFirstTurn (I set this value to true for compiling)
             game.setState(new TurnState(game, player,true));
         }
     }

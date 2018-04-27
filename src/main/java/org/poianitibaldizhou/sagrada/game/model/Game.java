@@ -43,6 +43,29 @@ public class Game {
             players.add(new Player(token, isSinglePlayer ? new ExpendableDice(draftPool) : new FavorToken()));
             setState(new SetupPlayerState(this));
         }
+        setState(new SetupPlayerState(this));
+    }
+
+    /**
+     * Constructor of Single Player.
+     * Create the Game for the single player with all the attributes intialized
+     *
+     * @param singlePlayerToken the token of the single player
+     * @param difficulty        the difficulty of the game chosen by the user
+     */
+    public Game(String singlePlayerToken, int difficulty) {
+        this.isSinglePlayer = true;
+        this.players = new LinkedList<>();
+        this.diceBag = new DrawableCollection<>();
+        this.toolCards = new LinkedList<>();
+        this.publicObjectiveCards = new LinkedList<>();
+        this.roundTrack = new RoundTrack();
+        this.draftPool = new DraftPool();
+        this.difficulty = difficulty;
+
+        players.add(new Player(singlePlayerToken, new ExpendableDice(draftPool)));
+        setState(new SetupPlayerState(this));
+
     }
 
     public boolean isSinglePlayer() {
@@ -86,7 +109,7 @@ public class Game {
     }
 
     public int getDifficulty() {
-        if(!isSinglePlayer)
+        if (!isSinglePlayer)
             throw new IllegalArgumentException("shouldn't call this method if it is a multi player game");
         return difficulty;
     }
@@ -101,7 +124,7 @@ public class Game {
      * @param player the player
      */
     public void setCurrentPlayerRound(Player player) {
-        if(getIndexOfPlayer(player) != -1)
+        if (getIndexOfPlayer(player) != -1)
             currentPlayerRound = player;
     }
 
@@ -118,24 +141,37 @@ public class Game {
      * Rotate the DiceBag to another player in clockwise direction
      */
     public void rotateCurrentPlayerRound() {
-        Player newCurrentPlayer = players.get((getIndexOfPlayer(getCurrentPlayerRound()) + 1) % players.size());
+        Player newCurrentPlayer = players.get(getNextIndexOfPlayer(getCurrentPlayerRound(), Direction.CLOCKWISE));
         setCurrentPlayerRound(newCurrentPlayer);
     }
 
     /**
-     * Return the index of the list of players about the given player
+     * Return the index of the player given based on the list of players
      *
      * @param player the player to find in the list of players
      * @return the index of the list of players about the given player
      */
-    public int getIndexOfPlayer(Player player){
-        int indexOfCurrentPlayer = -1;
+    public int getIndexOfPlayer(Player player) {
+        int indexOfPlayer = -1;
         for (int i = 0; i < players.size(); i++) {
             if (players.get(i).equals(player))
-                indexOfCurrentPlayer = i;
+                indexOfPlayer = i;
         }
-        if (indexOfCurrentPlayer == -1)
+        if (indexOfPlayer == -1)
             throw new IllegalArgumentException("cannot find the current player in the list of players");
-        return indexOfCurrentPlayer;
+        return indexOfPlayer;
     }
+
+    /**
+     * Return the next index of the player for the list of players
+     *
+     * @param player    the current player
+     * @param direction the direction of the next player (clockwise or counterclockwise)
+     * @return the index of the next player
+     */
+    public int getNextIndexOfPlayer(Player player, Direction direction) {
+        int indexOfPlayer = getIndexOfPlayer(player);
+        return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
+    }
+
 }

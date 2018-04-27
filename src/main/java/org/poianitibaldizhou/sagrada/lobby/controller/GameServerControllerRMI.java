@@ -4,17 +4,22 @@ import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyDatabase;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.lobby.socket.HandleClient;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameServerControllerRMI extends UnicastRemoteObject implements ILobbyServerController{
     private final Map<String, ILobbyView> viewMap = new HashMap<>();
 
     private transient final LobbyDatabase database;
+
+    private static final Logger LOGGER = Logger.getLogger(GameServerControllerRMI.class.getName());
 
     public GameServerControllerRMI() throws RemoteException {
         super();
@@ -36,7 +41,6 @@ public class GameServerControllerRMI extends UnicastRemoteObject implements ILob
         String token = database.login(username);
         viewMap.put(token, view);
         view.ack("You are now logged as: " + username);
-
         return token;
     }
 
@@ -80,17 +84,18 @@ public class GameServerControllerRMI extends UnicastRemoteObject implements ILob
      * @throws RemoteException
      */
     @Override
-    public void join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
+    public Lobby join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
-        database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
+        Lobby lobby = database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
         viewMap.get(token).ack("You're now in the lobby");
+        return lobby;
     }
 
 
     private boolean authorize(String token, String username) throws RemoteException {
         User user = database.getUserByToken(token);
 
-        return user.getName() == username;
+        return user.getName().equals(username);
     }
 }

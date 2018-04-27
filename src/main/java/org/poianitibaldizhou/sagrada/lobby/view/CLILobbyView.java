@@ -2,16 +2,19 @@ package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyServerController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver {
-    private final ILobbyServerController controller;
-    private final Scanner in;
+    private final transient ILobbyServerController controller;
+    private final transient Scanner in;
     private String token;
+    private Lobby lobby;
 
     public static final String JOIN_COMMAND = "join";
     public static final String LEAVE_COMMAND = "leave";
@@ -35,7 +38,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
         String command;
         boolean flag = false;
         do {
-            System.out.println("===> Next command:");
+            System.out.print("===> Next command: ");
             command = in.nextLine();
             if (!command.equals(JOIN_COMMAND) && !command.equals(LEAVE_COMMAND) && !command.equals(QUIT_COMMAND)) {
                 printHelp();
@@ -67,7 +70,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
                             controller.leave(token, username);
                             break;
                         case JOIN_COMMAND:
-                            controller.join(token, username, this);
+                            lobby = controller.join(token, username, this);
                             break;
                         default:
                             printHelp();
@@ -82,22 +85,22 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     }
 
     @Override
-    public void ack(String ack) {
+    public void ack(String ack) throws RemoteException {
         System.out.println("===> " + ack);
     }
 
     @Override
-    public void onUserJoin(User user) {
+    public void onUserJoin(User user) throws RemoteException{
         System.out.printf("===> User %s joined the lobby", user.getName());
     }
 
     @Override
-    public void onUserExit(User user) {
+    public void onUserExit(User user) throws RemoteException {
         System.out.printf("===> User %s left the lobby", user.getName());
     }
 
     @Override
-    public void onGameStart() {
+    public void onGameStart() throws RemoteException {
         System.out.printf("===> Game started");
     }
 }

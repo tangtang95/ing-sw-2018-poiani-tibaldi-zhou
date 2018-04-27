@@ -1,14 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import org.poianitibaldizhou.sagrada.game.model.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.NumberConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class RowPublicObjectiveCard extends PublicObjectiveCard{
 
