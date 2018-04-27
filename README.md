@@ -1,2 +1,36 @@
 # ing-sw-2018-poiani-tibaldi-zhou
 Progetto di Ingegneria del Software 2018 - Sagrada
+
+### How to run RMI Server and Client
+Requirements: [nanohttpd-webserver-2.3.2-snap.jar](https://github.com/affo/ingsoft-project/blob/master/rmi/warehouse/nanohttpd-webserver-2.3.2-snap.jar)
+1. Compile the project with ```mvn compile``` from terminal or Intellij IDEA Maven executor
+2. Start the web server:
+```bash
+# pwd=ing-sw-2018-poiani-tibaldi-zhou/
+# jarfilepwd=ing-sw-2018-poiani-tibaldi-zhou/
+
+#Unix
+java -cp nanohttpd-webserver-2.3.2-snap.jar org.nanohttpd.webserver.SimpleWebServer --dir ./target/classes/
+```
+3. Start the rmiregistry:
+```bash
+#Unix
+rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false
+
+#Windows
+start rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false
+```
+4. Launch server:
+```bash
+#pwd=ing-sw-2018-poiani-tibaldi-zhou/target/classes/
+
+#Unix
+java -Djava.rmi.server.useCodebaOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.lobby.Server
+```
+5. Launch client:
+```bash
+#pwd=ing-sw-2018-poiani-tibaldi-zhou/target/classes/
+
+#Unix
+java -Djava.rmi.server.useCodebaOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.lobby.Client
+```
