@@ -1,7 +1,8 @@
 package org.poianitibaldizhou.sagrada.lobby;
 
-import org.poianitibaldizhou.sagrada.lobby.controller.GameServerControllerSocket;
-import org.poianitibaldizhou.sagrada.lobby.socket.ProxyServerController;
+import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
+import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
+import org.poianitibaldizhou.sagrada.lobby.socket.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,14 +15,14 @@ public class SockServer {
 
     public static void main(String[] args) throws RemoteException {
         ServerSocket serverSocket = null;
-        GameServerControllerSocket serverController = null;
+        ILobbyController serverController = null;
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
-            serverController = new GameServerControllerSocket();
+            serverController = new LobbyController();
             while (serverSocket != null){
                 Socket clientSocket = serverSocket.accept();
                 System.out.println(">>> client accepted");
-                new ProxyServerController(clientSocket, serverController);
+                new Thread(new ClientHandler(clientSocket, serverController)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

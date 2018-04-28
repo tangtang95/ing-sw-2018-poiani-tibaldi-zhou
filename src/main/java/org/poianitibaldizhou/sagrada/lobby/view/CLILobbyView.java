@@ -1,26 +1,26 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
-import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyServerController;
+import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Scanner;
 
 public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver {
-    private final transient ILobbyServerController controller;
+    private final transient ILobbyController controller;
     private final transient Scanner in;
     private String token;
+    private String username;
     private Lobby lobby;
 
     public static final String JOIN_COMMAND = "join";
     public static final String LEAVE_COMMAND = "leave";
     public static final String QUIT_COMMAND = "quit";
 
-    public CLILobbyView(ILobbyServerController controller) throws RemoteException {
+    public CLILobbyView(ILobbyController controller) throws RemoteException {
         super();
         this.controller = controller;
         in = new Scanner(System.in);
@@ -52,7 +52,6 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
 
     public void run() throws RemoteException {
         System.out.println("WELCOME TO SAGRADA!");
-        String username;
         do {
             System.out.print("===> Provide an username: ");
             username = in.nextLine();
@@ -101,6 +100,11 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
 
     @Override
     public void onGameStart() throws RemoteException {
-        System.out.printf("===> Game started");
+        System.out.print("===> Game started");
+    }
+
+    @Override
+    public int hashCode() {
+        return username.hashCode();
     }
 }

@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface ILobbyServerController extends Remote {
+public interface ILobbyController extends Remote {
     String login(String username, ILobbyView view) throws RemoteException;
     void logout(String token) throws RemoteException;
     void leave(String token, String username) throws RemoteException;

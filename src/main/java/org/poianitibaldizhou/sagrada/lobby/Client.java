@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby;
 
-import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyServerController;
+import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
 import java.rmi.NotBoundException;
@@ -12,7 +12,7 @@ public class Client {
     public static void main(String[] args) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry();
 
-        ILobbyServerController controller = (ILobbyServerController) registry.lookup("lobbycontroller");
+        ILobbyController controller = (ILobbyController) registry.lookup("lobbycontroller");
 
         new CLILobbyView(controller).run();
     }
