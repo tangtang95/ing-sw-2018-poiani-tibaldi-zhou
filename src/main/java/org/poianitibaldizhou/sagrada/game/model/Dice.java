@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 @Immutable
 public class Dice {

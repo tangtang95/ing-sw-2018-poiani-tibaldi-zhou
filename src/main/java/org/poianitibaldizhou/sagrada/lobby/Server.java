@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby;
 
-import org.poianitibaldizhou.sagrada.lobby.controller.GameServerControllerRMI;
+import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
 
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -10,7 +10,7 @@ public class Server {
     private static Registry registry;
 
     public static void main(String[] args) throws RemoteException {
-        GameServerControllerRMI controller = new GameServerControllerRMI();
+        LobbyController controller = new LobbyController();
         System.out.println(">>> Controller exported");
 
         registry = LocateRegistry.getRegistry(1099);

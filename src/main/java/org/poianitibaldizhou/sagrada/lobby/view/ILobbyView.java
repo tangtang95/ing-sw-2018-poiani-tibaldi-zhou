@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
-public interface ILobbyView {
-    void ack(String ack);
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface ILobbyView extends Remote {
+    void ack(String ack) throws RemoteException;
 }

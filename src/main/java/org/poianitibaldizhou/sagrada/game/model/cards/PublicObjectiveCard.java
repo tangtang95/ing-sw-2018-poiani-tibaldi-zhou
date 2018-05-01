@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import org.poianitibaldizhou.sagrada.game.model.ColorConstraint;
-import org.poianitibaldizhou.sagrada.game.model.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.NumberConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.*;
 

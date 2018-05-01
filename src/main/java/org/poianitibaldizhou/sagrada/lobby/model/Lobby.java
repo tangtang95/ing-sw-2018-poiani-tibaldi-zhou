@@ -8,11 +8,10 @@ import java.util.List;
 public class Lobby implements Serializable{
     private List<User> userList;
     private String name;
-    private int numPlayer;
 
-    private final static int MAX_PLAYER = 4;
+    private static final int MAX_PLAYER = 4;
 
-    private transient final List<ILobbyObserver> lobbyObservers;
+    private final transient List<ILobbyObserver> lobbyObservers;
 
     /**
      * Constructor.
@@ -30,8 +29,8 @@ public class Lobby implements Serializable{
         return new ArrayList<>(userList);
     }
 
-    public int getNumPlayer() {
-        return numPlayer;
+    public int getNumberOfPlayer() {
+        return userList.size();
     }
 
     public String getName() {
@@ -58,7 +57,11 @@ public class Lobby implements Serializable{
         this.userList.add(user);
 
         for(ILobbyObserver lo:lobbyObservers) {
-            lo.onUserJoin(user);
+            try {
+                lo.onUserJoin(user);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         if(userList.size() == MAX_PLAYER) {
@@ -77,7 +80,11 @@ public class Lobby implements Serializable{
         this.userList.remove(user);
 
         for(ILobbyObserver lo:lobbyObservers) {
-            lo.onUserExit(user);
+            try {
+                lo.onUserExit(user);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -86,7 +93,11 @@ public class Lobby implements Serializable{
      */
     public void gameStart() {
         for(ILobbyObserver lo:lobbyObservers)
-            lo.onGameStart();
+            try {
+                lo.onGameStart();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
     }
 
 }

@@ -1,8 +1,11 @@
 package org.poianitibaldizhou.sagrada.model;
 
-import com.sun.javaws.exceptions.InvalidArgumentException;
 import org.junit.Test;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;

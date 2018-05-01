@@ -32,6 +32,6 @@ public class User implements Serializable {
         if(!(object instanceof User))
             return false;
         User u = (User)object;
-        return u.getName() == this.name? true:false;
+        return u.getName().equals(this.name);
     }
 }

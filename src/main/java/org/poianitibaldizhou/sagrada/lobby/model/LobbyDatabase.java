@@ -2,12 +2,16 @@ package org.poianitibaldizhou.sagrada.lobby.model;
 
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LobbyDatabase {
     private static LobbyDatabase database;
 
-    private LobbyDatabase(){
+    private static final Logger LOGGER = Logger.getLogger(LobbyDatabase.class.getName());
 
+    private LobbyDatabase(){
+        createLobby(UUID.randomUUID().toString());
     }
 
     public synchronized static LobbyDatabase getInstance(){
@@ -28,7 +32,7 @@ public class LobbyDatabase {
      */
     public User getUserByToken(String token) throws RemoteException {
         for(User u: users)
-            if(u.getToken() == token)
+            if(u.getToken().equals(token))
                 return u;
         throw new RemoteException("No such user with specified token exists.");
     }
@@ -40,11 +44,13 @@ public class LobbyDatabase {
      * @param lobbyObserver observing the lobby for the client
      * @param user user joining
      */
-    public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) {
-        lobby.observeLobby(lobbyObserver);
+    public synchronized Lobby userJoinLobby(ILobbyObserver lobbyObserver, User user) {
+        LOGGER.log(Level.INFO, user.getName());
         if(lobby.join(user)) {
             lobby = new Lobby(UUID.randomUUID().toString());
         }
+        lobby.observeLobby(lobbyObserver);
+        return lobby;
     }
 
     /**
@@ -74,7 +80,7 @@ public class LobbyDatabase {
      */
     public synchronized String login(String username) throws RemoteException {
         for(User u: users) {
-            if(u.getName() == username) {
+            if(u.getName().equals(username)) {
                 throw new RemoteException("User already logged: " + username);
             }
         }
@@ -91,7 +97,7 @@ public class LobbyDatabase {
      */
     public synchronized void logout(String token) throws RemoteException {
         for(User u : users) {
-            if(u.getToken() == token) {
+            if(u.getToken().equals(token)) {
                 users.remove(u);
                 return;
             }

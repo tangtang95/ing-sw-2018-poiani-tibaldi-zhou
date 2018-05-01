@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 

@@ -3,6 +3,9 @@ package org.poianitibaldizhou.sagrada.model;
 import org.junit.Test;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;

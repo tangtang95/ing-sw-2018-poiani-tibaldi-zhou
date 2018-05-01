@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import java.util.Collection;
 import java.util.List;

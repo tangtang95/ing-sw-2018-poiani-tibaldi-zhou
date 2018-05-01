@@ -10,13 +10,16 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
-public class GameServerControllerRMI extends UnicastRemoteObject implements ILobbyServerController{
+public class LobbyController extends UnicastRemoteObject implements ILobbyController {
     private final Map<String, ILobbyView> viewMap = new HashMap<>();
 
     private transient final LobbyDatabase database;
 
-    public GameServerControllerRMI() throws RemoteException {
+    private static final Logger LOGGER = Logger.getLogger(LobbyController.class.getName());
+
+    public LobbyController() throws RemoteException {
         super();
         database = LobbyDatabase.getInstance();
     }
@@ -32,11 +35,10 @@ public class GameServerControllerRMI extends UnicastRemoteObject implements ILob
      *                         some problems with the communication architecture
      */
     @Override
-    public String login(String username, ILobbyView view) throws RemoteException {
+    public synchronized String login(String username, ILobbyView view) throws RemoteException {
         String token = database.login(username);
         viewMap.put(token, view);
         view.ack("You are now logged as: " + username);
-
         return token;
     }
 
@@ -48,7 +50,7 @@ public class GameServerControllerRMI extends UnicastRemoteObject implements ILob
      *                          with the communication architecture
      */
     @Override
-    public void logout(String token) throws RemoteException {
+    public synchronized void logout(String token) throws RemoteException {
         database.logout(token);
         viewMap.get(token).ack("Logged out");
         viewMap.remove(token);
@@ -63,7 +65,7 @@ public class GameServerControllerRMI extends UnicastRemoteObject implements ILob
      * architecture
      */
     @Override
-    public void leave(String token, String username) throws RemoteException {
+    public synchronized void leave(String token, String username) throws RemoteException {
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
         database.userLeaveLobby(database.getUserByToken(token));
@@ -80,17 +82,18 @@ public class GameServerControllerRMI extends UnicastRemoteObject implements ILob
      * @throws RemoteException
      */
     @Override
-    public void join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
+    public synchronized Lobby join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
-        database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
+        Lobby lobby = database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
         viewMap.get(token).ack("You're now in the lobby");
+        return lobby;
     }
 
 
     private boolean authorize(String token, String username) throws RemoteException {
         User user = database.getUserByToken(token);
 
-        return user.getName() == username;
+        return user.getName().equals(username);
     }
 }

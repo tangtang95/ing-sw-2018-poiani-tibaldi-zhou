@@ -9,6 +9,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.ColumnPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.ArrayList;
 import java.util.Collection;
