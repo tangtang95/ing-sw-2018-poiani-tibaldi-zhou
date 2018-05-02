@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.game.model.*;
@@ -60,12 +59,8 @@ public class ExpendableDiceTest {
     public void useTest() {
         try {
             expendableDice.use(toolCard1);
-        } catch (DiceNotFoundException e) {
-            assertEquals("DraftPool size error", 10, draftPool.getDices().size());
         } catch (NoCoinsExpendableException e) {
             assertEquals("DraftPool size error", 10, draftPool.getDices().size());
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
         }
 
         assertEquals("DraftPool size error", 9, draftPool.getDices().size());

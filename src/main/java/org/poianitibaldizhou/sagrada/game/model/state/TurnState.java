@@ -4,8 +4,11 @@ import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 
 public class TurnState extends IStateGame implements IPlayerState {
 
@@ -20,10 +23,11 @@ public class TurnState extends IStateGame implements IPlayerState {
      * @param game the current game
      * @param player the current player
      */
-    public TurnState(Game game, Player player, boolean isFirstTurn) {
+    TurnState(Game game, Player player, boolean isFirstTurn) {
         super(game);
         this.player = player;
         this.isFirstTurn = isFirstTurn;
+        this.playerState = new SelectActionState(this);
     }
 
     /**
@@ -75,7 +79,16 @@ public class TurnState extends IStateGame implements IPlayerState {
      * @param dice the dice to be placed
      */
     @Override
-    public void placeDice(Player player, Dice dice) {
-        playerState.placeDice(player, dice);
+    public void placeDice(Player player, Dice dice, int row, int column, TileConstraintType tileConstraint,
+                          DiceConstraintType diceConstraint) {
+        playerState.placeDice(player, dice, row, column, tileConstraint, diceConstraint);
+    }
+
+    public void setPlayerState(IPlayerState playerState) {
+        this.playerState = playerState;
+    }
+
+    public IPlayerState getPlayerState() {
+        return playerState;
     }
 }
