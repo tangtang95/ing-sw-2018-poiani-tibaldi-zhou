@@ -27,6 +27,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
 
     /**
      * Implements the login of an User with an username and a view.
+     * If an User is already logged with username, returns an empty token (login is thus failed).
      *
      * @param username user's name
      * @param view user's view
@@ -36,7 +37,13 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public synchronized String login(String username, ILobbyView view) throws RemoteException {
-        String token = database.login(username);
+        String token = "";
+        try {
+            token = database.login(username);
+        } catch(RemoteException re) {
+            view.err("Another user is logged with this username. Please, choose a new username.");
+            return token;
+        }
         viewMap.put(token, view);
         view.ack("You are now logged as: " + username);
         return token;
@@ -68,13 +75,19 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     public synchronized void leave(String token, String username) throws RemoteException {
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
-        database.userLeaveLobby(database.getUserByToken(token));
+        try {
+            database.userLeaveLobby(database.getUserByToken(token));
+        } catch(RemoteException re) {
+            viewMap.get(token).err("Can't leave the lobby.");
+            return;
+        }
         viewMap.get(token).ack("Lobby left");
     }
 
     /**
      * An user identified by token and username join the lobby. It also carries an lobbyObserver
      * in order to receive notification of what happens.
+     * If the user has already joined, signals an error message to the user's view.
      *
      * @param token user's token
      * @param username user's name
@@ -82,14 +95,16 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * @throws RemoteException
      */
     @Override
-    public synchronized Lobby join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
+    public synchronized void join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
-        Lobby lobby = database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
+        try {
+            database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
+        } catch (RemoteException re) {
+            viewMap.get(token).err("You have already joined the lobby.");
+        }
         viewMap.get(token).ack("You're now in the lobby");
-        return lobby;
     }
-
 
     private boolean authorize(String token, String username) throws RemoteException {
         User user = database.getUserByToken(token);

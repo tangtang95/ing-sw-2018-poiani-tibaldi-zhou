@@ -27,7 +27,7 @@ public class ToolCard extends Card {
 
     public void invokeCommands(Player player){
         for (ICommand command : commands) {
-            command.executeCommand(player, observers);
+            command.executeCommand(player);
         }
 
         if(isSinglePlayer)

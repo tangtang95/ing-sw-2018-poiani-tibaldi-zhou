@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.lobby.socket.ClientHandler;
 import org.poianitibaldizhou.sagrada.lobby.socket.messages.NotifyMessage;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,6 +75,11 @@ public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILob
         List<Object> parameters = new ArrayList<>();
         parameters.add(ack);
         clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, parameters));
+    }
+
+    @Override
+    public void err(String err) throws RemoteException {
+        // TO-DO everything
     }
 
 }

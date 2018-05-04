@@ -30,7 +30,7 @@ public class LobbyDatabase {
      * @return User with specified token
      * @throws RemoteException if no such user with specified token exists
      */
-    public User getUserByToken(String token) throws RemoteException {
+    public synchronized User getUserByToken(String token) throws RemoteException {
         for(User u: users)
             if(u.getToken().equals(token))
                 return u;
@@ -43,22 +43,27 @@ public class LobbyDatabase {
      *
      * @param lobbyObserver observing the lobby for the client
      * @param user user joining
+     * @throws RemoteException if user has already joined the lobby
      */
-    public synchronized Lobby userJoinLobby(ILobbyObserver lobbyObserver, User user) {
+    public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) throws RemoteException {
         LOGGER.log(Level.INFO, user.getName());
+        if(lobby.getUserList().contains(user))
+            throw new RemoteException("User has already joined the lobby.");
+        lobby.observeLobby(lobbyObserver);
         if(lobby.join(user)) {
             lobby = new Lobby(UUID.randomUUID().toString());
         }
-        lobby.observeLobby(lobbyObserver);
-        return lobby;
     }
 
     /**
      * An user leave the lobby
      *
      * @param user user leaving
+     * @throws RemoteException if the user is not present in the lobby
      */
-    public synchronized void userLeaveLobby(User user) {
+    public synchronized void userLeaveLobby(User user) throws RemoteException {
+        if(!lobby.getUserList().contains(user))
+            throw new RemoteException("Can't leave because user is not in the lobby");
         lobby.leave(user);
     }
 
@@ -67,7 +72,7 @@ public class LobbyDatabase {
      *
      * @param name lobby's name
      */
-    public void createLobby(String name) {
+    private synchronized void createLobby(String name) {
         lobby = new Lobby(name);
     }
 
@@ -93,7 +98,8 @@ public class LobbyDatabase {
     /**
      * Implements user logout on server via login.
      *
-     * @param token
+     * @param token user's token
+     * @throws RemoteException if no user with token exists
      */
     public synchronized void logout(String token) throws RemoteException {
         for(User u : users) {
@@ -104,5 +110,14 @@ public class LobbyDatabase {
         }
 
         throw new RemoteException("No user with this token exists. Impossible to logout");
+    }
+
+    /**
+     * Returns the number of logged users.
+     *
+     * @return number of logged user
+     */
+    public int usersSize() {
+        return users.size();
     }
 }

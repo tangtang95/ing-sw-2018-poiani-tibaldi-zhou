@@ -94,7 +94,7 @@ public class ProxyClientController implements ILobbyController {
      * @return the lobby joined
      */
     @Override
-    public Lobby join(String token, String username, ILobbyObserver lobbyObserver) {
+    public void join(String token, String username, ILobbyObserver lobbyObserver) {
         serverHandler.addViewToHashMap(lobbyObserver.hashCode(), lobbyObserver);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         List<Object> parameters = new ArrayList<>();
@@ -102,6 +102,5 @@ public class ProxyClientController implements ILobbyController {
         parameters.add(username);
         parameters.add(lobbyObserver);
         serverHandler.sendRequest(new Request(methodName, parameters));
-        return (Lobby) serverHandler.getResponse();
     }
 }

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
+import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
@@ -14,7 +15,6 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     private final transient Scanner in;
     private String token;
     private String username;
-    private Lobby lobby;
 
     public static final String JOIN_COMMAND = "join";
     public static final String LEAVE_COMMAND = "leave";
@@ -55,9 +55,10 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
         do {
             System.out.print("===> Provide an username: ");
             username = in.nextLine();
-            if(!(username.isEmpty()))
+            if(!(username.isEmpty())) {
                 token = controller.login(username, this);
-        } while(username.isEmpty());
+            }
+        } while(username.isEmpty() || token.isEmpty());
 
         String command;
         do {
@@ -69,7 +70,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
                             controller.leave(token, username);
                             break;
                         case JOIN_COMMAND:
-                            lobby = controller.join(token, username, this);
+                            controller.join(token, username, this);
                             break;
                         default:
                             printHelp();
@@ -86,6 +87,11 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     @Override
     public void ack(String ack) throws RemoteException {
         System.out.println("===> " + ack);
+    }
+
+    @Override
+    public void err(String err) throws RemoteException {
+        System.out.println("===> Error: " + err);
     }
 
     @Override
