@@ -19,15 +19,20 @@ public class FavorToken implements ICoin {
      * if the number of favor tokens are greater of the cost of toolCard, decrement the player's number of Favor Tokens
      *
      * @param toolCard the card which the player would use
-     * @throws NoCoinsExpendableException               if there aren't any expandable favor tokens
-     * @throws IllegalNumberOfTokensOnToolCardException if on the ToolCard there is a number of tokens < 0 or 1
+     * @throws NoCoinsExpendableException if there aren't any expandable favor tokens
      */
     @Override
-    public void use(ToolCard toolCard) throws NoCoinsExpendableException, IllegalNumberOfTokensOnToolCardException {
-        if (numberOfFavorToken < toolCard.getCost())
+    public void use(ToolCard toolCard) throws NoCoinsExpendableException{
+        int cost = 0;
+        try {
+            cost = toolCard.getCost();
+        } catch (IllegalNumberOfTokensOnToolCardException e) {
+            e.printStackTrace();
+        }
+        if (numberOfFavorToken < cost)
             throw new NoCoinsExpendableException("FavorToken.use() failed, you haven't enough FavorTokens");
         else
-            this.numberOfFavorToken = numberOfFavorToken - toolCard.getCost();
+            this.numberOfFavorToken = numberOfFavorToken - cost;
     }
 
     @Override

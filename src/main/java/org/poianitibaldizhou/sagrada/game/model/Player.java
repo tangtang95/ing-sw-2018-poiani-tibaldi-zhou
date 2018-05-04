@@ -52,15 +52,12 @@ public class Player {
      * use the card and invoke the card commands
      *
      * @param toolCard the card which the player would use
-     * @throws DiceNotFoundException if dice is not present in the DraftPool
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
-     * @throws EmptyCollectionException if draftPull is empty
-     * @throws IllegalNumberOfTokensOnToolCardException if on the ToolCard there is a number of tokens < 0 or 1
      */
-    public void useCard(ToolCard toolCard) throws DiceNotFoundException, NoCoinsExpendableException,
-            EmptyCollectionException, IllegalNumberOfTokensOnToolCardException {
+    public void useCard(ToolCard toolCard) throws NoCoinsExpendableException{
         coins.use(toolCard);
         toolCard.invokeCommands(this);
+
     }
 
     /**

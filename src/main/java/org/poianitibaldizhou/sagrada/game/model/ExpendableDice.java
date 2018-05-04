@@ -18,13 +18,16 @@ public class ExpendableDice implements ICoin {
      *
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable dice in the DraftPool
-     * @throws DiceNotFoundException if there isn't the selected dice in the DraftPool
-     * @throws EmptyCollectionException if the DraftPool is empty
      */
     @Override
-    public void use(ToolCard toolCard) throws NoCoinsExpendableException, DiceNotFoundException,
-            EmptyCollectionException {
-        draftPool.useDice(searchDice(toolCard.getColor()));
+    public void use(ToolCard toolCard) throws NoCoinsExpendableException{
+        try {
+            draftPool.useDice(searchDice(toolCard.getColor()));
+        } catch (DiceNotFoundException e) {
+            e.printStackTrace();
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
