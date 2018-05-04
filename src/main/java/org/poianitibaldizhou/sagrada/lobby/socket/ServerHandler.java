@@ -103,10 +103,7 @@ public class ServerHandler implements Runnable {
                         this.notifyAll();
                     }
                 }
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
-                object = null;
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 LOGGER.log(Level.SEVERE, e.toString());
                 object = null;
             }

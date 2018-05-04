@@ -1,35 +1,45 @@
 package org.poianitibaldizhou.sagrada.lobby.socket.messages;
 
-import org.poianitibaldizhou.sagrada.lobby.socket.InvokerUtils;
-
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Request implements Serializable {
     private final String methodName;
-    private final List<Object> methodParameters;
+    private final Object[] methodParameters;
 
     /**
      * Constructor.
      * Encapsulate the values necessary to invoke the method of the other side
      *
      * @param methodName       name of the method to call
-     * @param methodParameters a list of Object needed by the method parameters
+     * @param methodParameters an array of Object needed by the method
      */
-    public Request(String methodName, List<Object> methodParameters) {
+    public Request(String methodName, Object... methodParameters) {
         this.methodName = methodName;
-        this.methodParameters = new ArrayList<>(methodParameters);
+        this.methodParameters = methodParameters.clone();
     }
 
+    /**
+     * Constructor.
+     * Encapsulate the values necessary to invoke the method of the other side
+     *
+     * @param request the request to copy from
+     */
     public Request(Request request) {
         this.methodName = request.methodName;
-        this.methodParameters = new ArrayList<>(request.methodParameters);
+        this.methodParameters = request.getMethodParameters().toArray();
     }
 
     public List<Object> getMethodParameters() {
-        return new ArrayList<>(methodParameters);
+        List<Object> parameters = new ArrayList<>();
+        parameters.addAll(Arrays.asList(methodParameters));
+        return parameters;
     }
 
     /**
@@ -42,7 +52,11 @@ public class Request implements Serializable {
         Method[] methods = target.getClass().getMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].getName().equals(methodName)) {
-                return InvokerUtils.invoke(methods[i], target, methodParameters.toArray());
+                try {
+                    return methods[i].invoke(target, methodParameters);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
+                }
             }
         }
         throw new RuntimeException("invocation failed, cannot find method from all the target's method");
@@ -55,6 +69,6 @@ public class Request implements Serializable {
      * @param index     the index of the old Object to be replaced
      */
     public void replaceParameter(Object parameter, int index) {
-        methodParameters.set(index, parameter);
+        methodParameters[index] = parameter;
     }
 }

@@ -6,10 +6,6 @@ import org.poianitibaldizhou.sagrada.lobby.socket.ClientHandler;
 import org.poianitibaldizhou.sagrada.lobby.socket.messages.NotifyMessage;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Proxy Pattern for the CLIView of the client
  * SERVER-SIDE
@@ -35,9 +31,7 @@ public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILob
     @Override
     public void onUserJoin(User user) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(user);
-        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, parameters));
+        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, user));
     }
 
     /**
@@ -48,9 +42,7 @@ public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILob
     @Override
     public void onUserExit(User user) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(user);
-        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, parameters));
+        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, user));
     }
 
     /**
@@ -60,8 +52,7 @@ public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILob
     @Override
     public void onGameStart() {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, parameters));
+        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName));
     }
 
     /**
@@ -72,14 +63,18 @@ public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILob
     @Override
     public void ack(String ack) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(ack);
-        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, parameters));
+        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, ack));
     }
 
+    /**
+     * Counter-part method err of the client-side view
+     *
+     * @param err
+     */
     @Override
-    public void err(String err) throws RemoteException {
-        // TO-DO everything
+    public void err(String err) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        clientHandler.sendResponse(new NotifyMessage(clientObserverHashcode, methodName, err));
     }
 
 }

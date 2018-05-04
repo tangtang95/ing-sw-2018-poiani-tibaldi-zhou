@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby;
 
+import org.poianitibaldizhou.sagrada.ScreenManager;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
@@ -14,6 +15,8 @@ public class Client {
 
         ILobbyController controller = (ILobbyController) registry.lookup("lobbycontroller");
 
-        new CLILobbyView(controller).run();
+        ScreenManager screenManager = new ScreenManager();
+        screenManager.pushScreen(new CLILobbyView(controller,screenManager));
+        System.exit(0);
     }
 }

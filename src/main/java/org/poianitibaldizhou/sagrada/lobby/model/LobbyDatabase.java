@@ -10,12 +10,12 @@ public class LobbyDatabase {
 
     private static final Logger LOGGER = Logger.getLogger(LobbyDatabase.class.getName());
 
-    private LobbyDatabase(){
+    private LobbyDatabase() {
         createLobby(UUID.randomUUID().toString());
     }
 
-    public synchronized static LobbyDatabase getInstance(){
-        if(database == null)
+    public synchronized static LobbyDatabase getInstance() {
+        if (database == null)
             database = new LobbyDatabase();
         return database;
     }
@@ -84,8 +84,8 @@ public class LobbyDatabase {
      * @throws RemoteException if an user with username is already logged
      */
     public synchronized String login(String username) throws RemoteException {
-        for(User u: users) {
-            if(u.getName().equals(username)) {
+        for (User u : users) {
+            if (u.getName().equals(username)) {
                 throw new RemoteException("User already logged: " + username);
             }
         }
@@ -102,8 +102,8 @@ public class LobbyDatabase {
      * @throws RemoteException if no user with token exists
      */
     public synchronized void logout(String token) throws RemoteException {
-        for(User u : users) {
-            if(u.getToken().equals(token)) {
+        for (User u : users) {
+            if (u.getToken().equals(token)) {
                 users.remove(u);
                 return;
             }

@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby.socket.messages;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class NotifyMessage implements Serializable{
 
@@ -16,7 +15,7 @@ public class NotifyMessage implements Serializable{
      * @param methodName the method name to create the request
      * @param methodParameters the method parameters to create the request
      */
-    public NotifyMessage(int observerHashcode, String methodName, List<Object> methodParameters) {
+    public NotifyMessage(int observerHashcode, String methodName, Object... methodParameters) {
         this.request = new Request(methodName, methodParameters);
         this.observerHashcode = observerHashcode;
     }

@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.net.Socket;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,8 +27,6 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
-    private static final Logger LOGGER = Logger.getLogger(ClientHandler.class.getName());
-
     /**
      * Constructor.
      * Create a Runnable ClientHandler to handle the client request and send response and notify to the client
@@ -41,7 +40,7 @@ public class ClientHandler implements Runnable {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 
@@ -57,7 +56,7 @@ public class ClientHandler implements Runnable {
             objectOutputStream.writeObject(obj);
             objectOutputStream.flush();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 
@@ -77,13 +76,10 @@ public class ClientHandler implements Runnable {
                     replaceObserver(request);
                     Object reply = request.invokeMethod(controller);
                     if (reply != null)
-                        sendResponse(new Response(reply));
+                        sendResponse(new Response((Serializable) reply));
                 }
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
-                object = null;
-            } catch (ClassNotFoundException e) {
-                LOGGER.log(Level.SEVERE, e.toString());
+            } catch (IOException | ClassNotFoundException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
                 object = null;
             }
         } while (object != null);
@@ -98,7 +94,7 @@ public class ClientHandler implements Runnable {
             objectInputStream.close();
             objectOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 

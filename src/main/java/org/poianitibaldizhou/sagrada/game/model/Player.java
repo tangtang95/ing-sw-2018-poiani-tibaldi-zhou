@@ -109,6 +109,16 @@ public class Player {
     }
 
     /**
+     * Override of hashCode because equals changed
+     *
+     * @return hashCode of the token string
+     */
+    @Override
+    public int hashCode() {
+        return this.getToken().hashCode();
+    }
+
+    /**
      * Return the score of the player based on the PrivateObjectiveCard
      *
      * @return the score of the player only by PrivateObjectiveCard

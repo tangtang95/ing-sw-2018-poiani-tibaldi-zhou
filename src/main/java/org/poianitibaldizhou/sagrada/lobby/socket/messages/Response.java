@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Response implements Serializable {
 
-    private final Object object;
+    private final Serializable object;
 
     /**
      * Constructor.
@@ -12,11 +12,11 @@ public class Response implements Serializable {
      *
      * @param object the object to encapsulate inside the Response
      */
-    public Response(Object object) {
+    public Response(Serializable object) {
         this.object = object;
     }
 
-    public Object getObject() {
+    public Serializable getObject() {
         return object;
     }
 

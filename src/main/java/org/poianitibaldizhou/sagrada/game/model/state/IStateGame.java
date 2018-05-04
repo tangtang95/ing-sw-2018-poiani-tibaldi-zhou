@@ -13,18 +13,18 @@ public abstract class IStateGame {
     }
 
     public void nextRound(){
-
+        throw new IllegalStateException();
     }
     public void ready(Player player, SchemaCard schemaCard){
-
+        throw new IllegalStateException();
     }
     public void readyGame(){
-
+        throw new IllegalStateException();
     }
     public void throwDices(Player player){
-
+        throw new IllegalStateException();
     }
     public void nextTurn(){
-
+        throw new IllegalStateException();
     }
 }

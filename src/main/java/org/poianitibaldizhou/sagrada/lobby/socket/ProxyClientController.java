@@ -2,14 +2,14 @@ package org.poianitibaldizhou.sagrada.lobby.socket;
 
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
 import org.poianitibaldizhou.sagrada.lobby.socket.messages.Request;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Proxy Pattern for the controller of the server
@@ -31,7 +31,7 @@ public class ProxyClientController implements ILobbyController {
         try {
             socket = new Socket(ipAddress, port);
         } catch (IOException e) {
-            System.out.println(e);
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
         serverHandler = new ServerHandler(socket);
         new Thread(serverHandler).start();
@@ -49,10 +49,7 @@ public class ProxyClientController implements ILobbyController {
     public String login(String username, ILobbyView view) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(username);
-        parameters.add(view);
-        serverHandler.sendRequest(new Request(methodName, parameters));
+        serverHandler.sendRequest(new Request(methodName, username, (Serializable) view));
         return (String) serverHandler.getResponse();
     }
 
@@ -64,9 +61,7 @@ public class ProxyClientController implements ILobbyController {
     @Override
     public void logout(String token) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(token);
-        serverHandler.sendRequest(new Request(methodName, parameters));
+        serverHandler.sendRequest(new Request(methodName, token));
     }
 
     /**
@@ -78,10 +73,7 @@ public class ProxyClientController implements ILobbyController {
     @Override
     public void leave(String token, String username) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(token);
-        parameters.add(username);
-        serverHandler.sendRequest(new Request(methodName, parameters));
+        serverHandler.sendRequest(new Request(methodName, token, username));
     }
 
     /**
@@ -97,10 +89,6 @@ public class ProxyClientController implements ILobbyController {
     public void join(String token, String username, ILobbyObserver lobbyObserver) {
         serverHandler.addViewToHashMap(lobbyObserver.hashCode(), lobbyObserver);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        List<Object> parameters = new ArrayList<>();
-        parameters.add(token);
-        parameters.add(username);
-        parameters.add(lobbyObserver);
-        serverHandler.sendRequest(new Request(methodName, parameters));
+        serverHandler.sendRequest(new Request(methodName, token, username, (Serializable) lobbyObserver));
     }
 }
