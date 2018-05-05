@@ -25,12 +25,20 @@ start rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false
 #pwd=ing-sw-2018-poiani-tibaldi-zhou/target/classes/
 
 #Unix
-java -Djava.rmi.server.useCodebaOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.lobby.Server
+java -Djava.rmi.server.useCodebaseOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.lobby.Server
 ```
+It's also possible to launch the server from Intellij IDEA:
+- goto Run -> Edit Configurations... 
+- add a new configuration of the Server class and in the VM options add ```-Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/```
+- run the configuration (there is no necessity to compile the project)
 5. Launch client:
 ```bash
 #pwd=ing-sw-2018-poiani-tibaldi-zhou/target/classes/
 
 #Unix
-java -Djava.rmi.server.useCodebaOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.lobby.Client
+java -Djava.rmi.server.useCodebaseOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.lobby.Client
 ```
+It's also possible to launch the client from Intellij IDEA:
+- goto Run -> Edit Configurations... 
+- add a new configuration of the Client class and in the VM options add ```-Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/```
+- run the configuration (there is no necessity to compile the project)
