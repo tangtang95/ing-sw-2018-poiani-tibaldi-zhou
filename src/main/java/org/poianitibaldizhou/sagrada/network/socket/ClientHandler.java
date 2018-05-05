@@ -1,11 +1,10 @@
-package org.poianitibaldizhou.sagrada.lobby.socket;
+package org.poianitibaldizhou.sagrada.network.socket;
 
-import org.mockito.internal.matchers.Not;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.NotifyMessage;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.Request;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.Response;
-import org.poianitibaldizhou.sagrada.lobby.socket.proxyviews.CLILobbyProxyView;
+import org.poianitibaldizhou.sagrada.network.socket.messages.NotifyMessage;
+import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
+import org.poianitibaldizhou.sagrada.network.socket.messages.Response;
+import org.poianitibaldizhou.sagrada.network.socket.proxyviews.CLILobbyProxyView;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
 import java.io.IOException;

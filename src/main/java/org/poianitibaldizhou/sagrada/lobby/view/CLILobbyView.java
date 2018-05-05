@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.ScreenManager;
+import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -12,10 +14,10 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver, IScreen {
-    private final transient ILobbyController controller;
     private final transient Scanner in;
     private final transient Map<String, Command> commandMap;
     private final transient ScreenManager screenManager;
+    private final transient NetworkManager networkManager;
 
     private String token;
     private String username;
@@ -25,9 +27,9 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     private static final String LEAVE_COMMAND = "leave";
     private static final String QUIT_COMMAND = "quit";
 
-    public CLILobbyView(ILobbyController controller, ScreenManager screenManager) throws RemoteException {
+    public CLILobbyView(NetworkManager networkManager, ScreenManager screenManager) throws RemoteException {
         super();
-        this.controller = controller;
+        this.networkManager = networkManager;
         this.screenManager = screenManager;
         in = new Scanner(System.in);
         commandMap = new HashMap<>();
@@ -36,11 +38,11 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
 
     private void initializeCommands() {
         Command joinCommand = new Command(JOIN_COMMAND, "join the lobby");
-        joinCommand.setCommandAction(() -> controller.join(token, username, this));
+        joinCommand.setCommandAction(() -> networkManager.getLobbyController().join(token, username, this));
         commandMap.put(joinCommand.getCommandText(), joinCommand);
 
         Command leaveCommand = new Command(LEAVE_COMMAND, "leave the lobby");
-        leaveCommand.setCommandAction(() -> controller.leave(token, username));
+        leaveCommand.setCommandAction(() -> networkManager.getLobbyController().leave(token, username));
         commandMap.put(leaveCommand.getCommandText(), leaveCommand);
 
         Command quitCommand = new Command(QUIT_COMMAND, "quit the game");
@@ -67,6 +69,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
         return command;
     }
 
+    @Override
     public void run() {
         System.out.println("WELCOME TO SAGRADA!");
         do {
@@ -74,7 +77,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
             username = in.nextLine();
             if (!(username.isEmpty()))
                 try {
-                    token = controller.login(username, this);
+                    token = networkManager.getLobbyController().login(username, this);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -91,7 +94,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
             }
         } while (isLoggedIn);
         try {
-            controller.logout(token);
+            networkManager.getLobbyController().logout(token);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -120,6 +123,8 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     @Override
     public void onGameStart() throws RemoteException {
         System.out.print("===> Game started");
+        networkManager.closeLobbyController();
+        screenManager.pushScreen(new CLIGameView(networkManager, screenManager));
     }
 
     @Override

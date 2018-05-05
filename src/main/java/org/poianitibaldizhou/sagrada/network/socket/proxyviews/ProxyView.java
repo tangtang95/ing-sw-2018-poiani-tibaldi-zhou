@@ -1,6 +1,6 @@
-package org.poianitibaldizhou.sagrada.lobby.socket.proxyviews;
+package org.poianitibaldizhou.sagrada.network.socket.proxyviews;
 
-import org.poianitibaldizhou.sagrada.lobby.socket.ClientHandler;
+import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
 
 /**
  * Proxy Pattern for the view of the client

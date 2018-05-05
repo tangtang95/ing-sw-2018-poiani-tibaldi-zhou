@@ -1,10 +1,9 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
 import java.rmi.RemoteException;
-import java.sql.Time;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class LobbyManager {
 
@@ -13,7 +12,9 @@ public class LobbyManager {
     private Thread timeoutThread;
     private Runnable timeout;
     private long timeoutStart;
-    private long param;
+
+    // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=60s
+    private static final long DELAY_TIME = 60000;
 
     /**
      * Constructor.
@@ -23,19 +24,17 @@ public class LobbyManager {
     public LobbyManager() {
         users = new ArrayList<>();
         lobby = null;
-    }
-
-    private synchronized void setTimeout() {
-        // TODO read timeout param from file (better check sagrada instruction), for now param=10s
-        param = 10000;
         timeout = () -> {
             try {
-                wait(param);
+                Thread.sleep(DELAY_TIME);
             } catch (InterruptedException e) {
-                // TODO handle exception
+                e.printStackTrace();
             }
             handleTimeout();
         };
+    }
+
+    private synchronized void setTimeout() {
         timeoutThread = new Thread(timeout);
         timeoutThread.start();
         timeoutStart = System.currentTimeMillis();
@@ -182,6 +181,6 @@ public class LobbyManager {
         if(lobby == null)
             throw new RemoteException("No lobby Active");
         long currTime = System.currentTimeMillis();
-        return param - (currTime-timeoutStart);
+        return DELAY_TIME - (currTime-timeoutStart);
     }
 }

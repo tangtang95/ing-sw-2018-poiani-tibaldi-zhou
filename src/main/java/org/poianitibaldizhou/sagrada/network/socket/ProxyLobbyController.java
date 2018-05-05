@@ -1,8 +1,8 @@
-package org.poianitibaldizhou.sagrada.lobby.socket;
+package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.Request;
+import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
 import java.io.IOException;
@@ -16,10 +16,8 @@ import java.util.logging.Logger;
  * Proxy Pattern for the controller of the server
  * CLIENT-SIDE
  */
-public class ProxyClientController implements ILobbyController {
+public class ProxyLobbyController extends ProxyController implements ILobbyController {
 
-    private Socket socket;
-    private ServerHandler serverHandler;
 
     /**
      * Constructor.
@@ -28,14 +26,8 @@ public class ProxyClientController implements ILobbyController {
      * @param ipAddress the IP address of the server
      * @param port      the port of the server on which is listening
      */
-    public ProxyClientController(String ipAddress, int port) {
-        try {
-            socket = new Socket(ipAddress, port);
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-        }
-        serverHandler = new ServerHandler(socket);
-        new Thread(serverHandler).start();
+    public ProxyLobbyController(String ipAddress, int port) {
+        super(ipAddress, port);
     }
 
     /**

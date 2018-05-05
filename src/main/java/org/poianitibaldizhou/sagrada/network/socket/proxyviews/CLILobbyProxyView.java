@@ -1,9 +1,9 @@
-package org.poianitibaldizhou.sagrada.lobby.socket.proxyviews;
+package org.poianitibaldizhou.sagrada.network.socket.proxyviews;
 
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.lobby.socket.ClientHandler;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.NotifyMessage;
+import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
+import org.poianitibaldizhou.sagrada.network.socket.messages.NotifyMessage;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
 /**

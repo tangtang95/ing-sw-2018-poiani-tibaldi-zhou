@@ -1,8 +1,8 @@
-package org.poianitibaldizhou.sagrada.lobby.socket;
+package org.poianitibaldizhou.sagrada.network.socket;
 
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.NotifyMessage;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.Request;
-import org.poianitibaldizhou.sagrada.lobby.socket.messages.Response;
+import org.poianitibaldizhou.sagrada.network.socket.messages.NotifyMessage;
+import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
+import org.poianitibaldizhou.sagrada.network.socket.messages.Response;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

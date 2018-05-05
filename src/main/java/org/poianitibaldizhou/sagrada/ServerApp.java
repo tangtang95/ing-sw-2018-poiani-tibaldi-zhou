@@ -1,7 +1,7 @@
-package org.poianitibaldizhou.sagrada.lobby;
+package org.poianitibaldizhou.sagrada;
 
 import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
-import org.poianitibaldizhou.sagrada.lobby.socket.ClientHandler;
+import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,7 +12,7 @@ import java.rmi.registry.Registry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Server {
+public class ServerApp {
     private static Registry registry;
 
     public static final int SERVER_SOCKET_PORT = 9090;

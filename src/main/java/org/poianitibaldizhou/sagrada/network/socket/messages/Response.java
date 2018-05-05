@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.lobby.socket.messages;
+package org.poianitibaldizhou.sagrada.network.socket.messages;
 
 import java.io.Serializable;
 
