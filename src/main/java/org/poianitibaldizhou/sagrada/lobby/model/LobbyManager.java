@@ -5,23 +5,20 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LobbyDatabase {
-    private static LobbyDatabase database;
+public class LobbyManager {
 
-    private static final Logger LOGGER = Logger.getLogger(LobbyDatabase.class.getName());
-
-    private LobbyDatabase() {
-        createLobby(UUID.randomUUID().toString());
-    }
-
-    public synchronized static LobbyDatabase getInstance() {
-        if (database == null)
-            database = new LobbyDatabase();
-        return database;
-    }
-
-    private final Collection<User> users = new ArrayList<>();
+    private final List<User> users;
     private Lobby lobby;
+
+    /**
+     * Constructor.
+     * Create a manager for the lobby
+     *
+     */
+    public LobbyManager() {
+        users = new ArrayList<>();
+        lobby = new Lobby(UUID.randomUUID().toString());
+    }
 
     /**
      * Returns an user with a specified token.
@@ -46,7 +43,6 @@ public class LobbyDatabase {
      * @throws RemoteException if user has already joined the lobby
      */
     public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) throws RemoteException {
-        LOGGER.log(Level.INFO, user.getName());
         if(lobby.getUserList().contains(user))
             throw new RemoteException("User has already joined the lobby.");
         lobby.observeLobby(lobbyObserver);
@@ -65,15 +61,6 @@ public class LobbyDatabase {
         if(!lobby.getUserList().contains(user))
             throw new RemoteException("Can't leave because user is not in the lobby");
         lobby.leave(user);
-    }
-
-    /**
-     * Creates the current lobby that need to be filled.
-     *
-     * @param name lobby's name
-     */
-    private synchronized void createLobby(String name) {
-        lobby = new Lobby(name);
     }
 
     /**

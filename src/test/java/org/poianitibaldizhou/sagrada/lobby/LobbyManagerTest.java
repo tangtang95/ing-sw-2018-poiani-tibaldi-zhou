@@ -1,19 +1,15 @@
 package org.poianitibaldizhou.sagrada.lobby;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.LobbyDatabase;
+import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,11 +19,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-public class LobbyDatabaseTest {
+public class LobbyManagerTest {
     @DataPoint
-    public static LobbyDatabase lobbyDatabase;
+    public static LobbyManager lobbyManager;
 
     @Mock
     public ILobbyObserver lobbyObserver1;
@@ -53,7 +48,7 @@ public class LobbyDatabaseTest {
 
     @BeforeClass
     public static void setUpClass() {
-        lobbyDatabase = LobbyDatabase.getInstance();
+        lobbyManager = new LobbyManager();
         observers = new ArrayList<>();
     }
 
@@ -73,21 +68,21 @@ public class LobbyDatabaseTest {
     @Test
     public void testSingletonClass() throws RemoteException {
         // Login test
-        User user1 = new User("user1", lobbyDatabase.login("user1"));
-        User user2 = new User("user2", lobbyDatabase.login("user2"));
+        User user1 = new User("user1", lobbyManager.login("user1"));
+        User user2 = new User("user2", lobbyManager.login("user2"));
         try {
-            lobbyDatabase.login("user1");
+            lobbyManager.login("user1");
             fail("Exception expected");
         }catch (RemoteException re) {
-            assertTrue("Login failed", lobbyDatabase.usersSize() == 2);
-            assertEquals("Login failed",user1, lobbyDatabase.getUserByToken(user1.getToken()));
-            assertEquals("Login failed",user2, lobbyDatabase.getUserByToken(user2.getToken()));
+            assertTrue("Login failed", lobbyManager.usersSize() == 2);
+            assertEquals("Login failed",user1, lobbyManager.getUserByToken(user1.getToken()));
+            assertEquals("Login failed",user2, lobbyManager.getUserByToken(user2.getToken()));
             assertTrue("Login failed",user1.getToken() != user2.getToken());
         }
 
         // getUserByToken test
         try {
-            lobbyDatabase.getUserByToken("prova");
+            lobbyManager.getUserByToken("prova");
             if(!(user1.getToken().equals("prova") || user2.getToken().equals("prova"))){
                 fail("getUserByToken failed: Exception expected");
             }
@@ -97,35 +92,35 @@ public class LobbyDatabaseTest {
 
         // Logout test
         try {
-            lobbyDatabase.logout("prova");
+            lobbyManager.logout("prova");
             if(!(user1.getToken().equals("prova") || user2.getToken().equals("prova"))){
                 fail("Logout failed: Exception expected");
             }
         } catch (RemoteException re) {
-            assertEquals("Logout failed", 2,lobbyDatabase.usersSize());
+            assertEquals("Logout failed", 2, lobbyManager.usersSize());
         }
 
-        lobbyDatabase.logout(user1.getToken());
-        lobbyDatabase.logout(user2.getToken());
-        assertEquals("Logout failed", 0, lobbyDatabase.usersSize());
+        lobbyManager.logout(user1.getToken());
+        lobbyManager.logout(user2.getToken());
+        assertEquals("Logout failed", 0, lobbyManager.usersSize());
 
         // Test user join lobby
         ArrayList<User> users = new ArrayList<>();
-        String name = "utente";
+        StringBuilder name = new StringBuilder("utente");
         for (int i = 0; i < 7; i++) {
-            name = new String(name + i);
-            users.add(new User(name, lobbyDatabase.login(name)));
-            name = "utente";
+            name.append(i);
+            users.add(new User(name.toString(), lobbyManager.login(name.toString())));
+            name = new StringBuilder("utente");
         }
 
         for (int i = 0; i <= 3; i++) {
-            lobbyDatabase.userJoinLobby(observers.get(i), users.get(i));
+            lobbyManager.userJoinLobby(observers.get(i), users.get(i));
             for (int j = 0; j <= i; j++) {
                 verify(observers.get(j), times(1)).onUserJoin(users.get(i));
             }
         }
         for (int i = 4; i <= 5; i++) {
-            lobbyDatabase.userJoinLobby(observers.get(i), users.get(i));
+            lobbyManager.userJoinLobby(observers.get(i), users.get(i));
             for (int j = 0; j <= i; j++) {
                 if(j<4)
                     verify(observers.get(j), times(0)).onUserJoin(users.get(i));
@@ -134,7 +129,7 @@ public class LobbyDatabaseTest {
             }
         }
         try {
-            lobbyDatabase.userJoinLobby(observers.get(5), users.get(5));
+            lobbyManager.userJoinLobby(observers.get(5), users.get(5));
             fail("Exception expected");
         }catch (RemoteException re) {
 
@@ -148,7 +143,7 @@ public class LobbyDatabaseTest {
         }
 
         // Test user leave lobby
-        lobbyDatabase.userLeaveLobby(users.get(5));
+        lobbyManager.userLeaveLobby(users.get(5));
         for (int i = 0; i <= 5; i++) {
             if(i < 4)
                 verify(observers.get(i), times(0)).onUserExit(users.get(5));
@@ -157,7 +152,7 @@ public class LobbyDatabaseTest {
         }
 
         try {
-            lobbyDatabase.userLeaveLobby(users.get(0));
+            lobbyManager.userLeaveLobby(users.get(0));
             fail("Exception expected");
         } catch(RemoteException re) {
 

@@ -2,22 +2,19 @@ package org.poianitibaldizhou.sagrada;
 
 import org.poianitibaldizhou.sagrada.lobby.view.IScreen;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.EmptyStackException;
-import java.util.Stack;
 
 /**
  * Singleton pattern without using global variables, just limiting the number of instances to 1
  */
 public class ScreenManager {
 
-    private static boolean isInstantiated = false;
-    private Stack<IScreen> screens;
+    private Deque<IScreen> screens;
 
     public ScreenManager(){
-        if(isInstantiated)
-            throw new IllegalArgumentException("cannot instantiate two screen manager");
-        isInstantiated = true;
-        screens = new Stack<>();
+        screens = new ArrayDeque<>();
     }
 
     public void pushScreen(IScreen screen){

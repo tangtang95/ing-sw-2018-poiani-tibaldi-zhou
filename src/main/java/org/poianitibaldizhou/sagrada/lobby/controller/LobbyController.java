@@ -1,8 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
-import org.poianitibaldizhou.sagrada.lobby.model.LobbyDatabase;
+import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
@@ -10,18 +9,15 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class LobbyController extends UnicastRemoteObject implements ILobbyController {
-    private final Map<String, ILobbyView> viewMap = new HashMap<>();
+    private final transient Map<String, ILobbyView> viewMap = new HashMap<>();
 
-    private transient final LobbyDatabase database;
-
-    private static final Logger LOGGER = Logger.getLogger(LobbyController.class.getName());
+    private final transient LobbyManager database;
 
     public LobbyController() throws RemoteException {
         super();
-        database = LobbyDatabase.getInstance();
+        database = new LobbyManager();
     }
 
 
@@ -102,13 +98,13 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
             database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
         } catch (RemoteException re) {
             viewMap.get(token).err("You have already joined the lobby.");
+            return;
         }
         viewMap.get(token).ack("You're now in the lobby");
     }
 
     private boolean authorize(String token, String username) throws RemoteException {
         User user = database.getUserByToken(token);
-
         return user.getName().equals(username);
     }
 }
