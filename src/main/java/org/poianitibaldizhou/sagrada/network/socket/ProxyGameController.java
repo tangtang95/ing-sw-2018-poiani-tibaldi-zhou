@@ -3,16 +3,18 @@ package org.poianitibaldizhou.sagrada.network.socket;
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 
+import java.net.Socket;
+
 public class ProxyGameController extends ProxyController implements IGameController{
+
     /**
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
      *
-     * @param ipAddress the IP address of the server
-     * @param port      the port of the server on which is listening
+     * @param socket the socket connected with the server
      */
-    public ProxyGameController(String ipAddress, int port) {
-        super(ipAddress, port);
+    public ProxyGameController(Socket socket) {
+        super(socket);
     }
 
     @Override

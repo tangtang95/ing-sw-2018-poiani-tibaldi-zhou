@@ -87,10 +87,17 @@ public class ServerHandler implements Runnable {
      */
     @Override
     public void run() {
-        Object object;
         do {
             try {
-                object = inputStream.readObject();
+                while (inputStream.available() == 0){
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        LOGGER.log(Level.INFO, "interrupt exception");
+                        return;
+                    }
+                }
+                Object object = inputStream.readObject();
                 if (object instanceof NotifyMessage) {
                     NotifyMessage notifyMessage = (NotifyMessage) object;
                     Object target = viewMap.get(notifyMessage.getObserverHashcode());
@@ -105,9 +112,8 @@ public class ServerHandler implements Runnable {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 LOGGER.log(Level.SEVERE, e.toString());
-                object = null;
             }
-        } while (object != null);
+        } while (!Thread.interrupted());
         close();
     }
 
@@ -125,7 +131,7 @@ public class ServerHandler implements Runnable {
     /**
      * Close every stream opened when the class is instantiated
      */
-    private void close() {
+    public synchronized void close() {
         try {
             inputStream.close();
             outputStream.close();

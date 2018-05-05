@@ -23,11 +23,10 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
      *
-     * @param ipAddress the IP address of the server
-     * @param port      the port of the server on which is listening
+     * @param socket the socket connected with the server
      */
-    public ProxyLobbyController(String ipAddress, int port) {
-        super(ipAddress, port);
+    public ProxyLobbyController(Socket socket) {
+        super(socket);
     }
 
     /**

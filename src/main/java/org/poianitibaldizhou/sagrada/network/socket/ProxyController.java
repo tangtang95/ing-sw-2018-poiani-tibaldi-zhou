@@ -10,34 +10,35 @@ public abstract class ProxyController {
     protected Socket socket;
     protected ServerHandler serverHandler;
     protected Thread serverHandlerThread;
+    protected boolean isEnabled;
 
     /**
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
      *
-     * @param ipAddress the IP address of the server
-     * @param port      the port of the server on which is listening
+     * @param socket the socket connected with the server
      */
-    public ProxyController(String ipAddress, int port) {
-        try {
-            socket = new Socket(ipAddress, port);
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-        }
+    public ProxyController(Socket socket) {
+        this.socket = socket;
         serverHandler = new ServerHandler(socket);
+        isEnabled = false;
+    }
+
+    /**
+     * Start the thread of server handler
+     */
+    public void start(){
+        isEnabled = true;
         serverHandlerThread = new Thread(serverHandler);
         serverHandlerThread.start();
     }
 
     /**
-     * Close the proxy controller -> stop the serverHandler thread and close the socket
+     * Close the proxy controller -> send an interrupt to the serverHandler thread
      */
     public void close() {
         serverHandlerThread.interrupt();
-        try {
-            socket.close();
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-        }
+        serverHandler.close();
+        isEnabled = false;
     }
 }

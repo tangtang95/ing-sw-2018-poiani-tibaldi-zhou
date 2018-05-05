@@ -13,7 +13,6 @@ public class ClientApp {
         NetworkManager networkManager = new NetworkManager("localhost", NetworkType.RMI);
         ScreenManager screenManager = new ScreenManager();
         screenManager.pushScreen(new CLILobbyView(networkManager,screenManager));
-        System.exit(0);
     }
 
 }
