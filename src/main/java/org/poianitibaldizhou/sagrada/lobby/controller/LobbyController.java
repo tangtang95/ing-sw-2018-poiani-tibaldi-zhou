@@ -103,6 +103,36 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         viewMap.get(token).ack("You're now in the lobby");
     }
 
+    /**
+     * Requests the list of users that are currently in the lobby
+     *
+     * @param token requesting user's token
+     * @throws RemoteException network communication error
+     */
+    @Override
+    public void requestUsersInLobby(String token) throws RemoteException {
+        try {
+            viewMap.get(token).ack(database.getLobbyUsers().toString());
+        } catch (RemoteException re) {
+            viewMap.get(token).err("No lobby is active. Join to create one.");
+        }
+    }
+
+    /**
+     * Requests the time needed to reach timeout in milliseconds
+     *
+     * @param token requesting user's token
+     * @throws RemoteException network communication error
+     */
+    @Override
+    public void requestTimeout(String token) throws RemoteException {
+        try {
+            viewMap.get(token).ack(database.getTimeToTimeout() + "");
+        } catch (RemoteException re){
+            viewMap.get(token).err("None lobby is active. Join to create one.");
+        }
+    }
+
     private boolean authorize(String token, String username) throws RemoteException {
         User user = database.getUserByToken(token);
         return user.getName().equals(username);

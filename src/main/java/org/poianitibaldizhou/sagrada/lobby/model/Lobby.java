@@ -8,14 +8,16 @@ import java.util.List;
 public class Lobby implements Serializable{
     private List<User> userList;
     private String name;
+    private boolean gameStarted;
 
-    private static final int MAX_PLAYER = 4;
+    public static final int MAX_PLAYER = 4;
 
     private final transient List<ILobbyObserver> lobbyObservers;
 
     /**
      * Constructor.
      * Creates a new Lobby with a certain name.
+     * A lobby represents of user that can contains duplicate.
      *
      * @param name lobby's name
      */
@@ -23,6 +25,11 @@ public class Lobby implements Serializable{
         this.name = name;
         userList = new ArrayList<>();
         lobbyObservers = new ArrayList<>();
+        gameStarted = false;
+    }
+
+    public int getPlayerNum() {
+        return userList.size();
     }
 
     public List<User> getUserList() {
@@ -31,6 +38,10 @@ public class Lobby implements Serializable{
 
     public int getNumberOfPlayer() {
         return userList.size();
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
     }
 
     public String getName() {
@@ -92,6 +103,7 @@ public class Lobby implements Serializable{
      * Notify that game is going to start
      */
     public void gameStart() {
+        gameStarted = true;
         for(ILobbyObserver lo:lobbyObservers)
             try {
                 lo.onGameStart();

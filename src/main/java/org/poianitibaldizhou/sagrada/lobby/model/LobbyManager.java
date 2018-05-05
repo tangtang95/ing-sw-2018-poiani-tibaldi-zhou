@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
 import java.rmi.RemoteException;
+import java.sql.Time;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -9,6 +10,10 @@ public class LobbyManager {
 
     private final List<User> users;
     private Lobby lobby;
+    private Thread timeoutThread;
+    private Runnable timeout;
+    private long timeoutStart;
+    private long param;
 
     /**
      * Constructor.
@@ -17,7 +22,31 @@ public class LobbyManager {
      */
     public LobbyManager() {
         users = new ArrayList<>();
+        lobby = null;
+    }
+
+    private synchronized void setTimeout() {
+        // TODO read timeout param from file (better check sagrada instruction), for now param=10s
+        param = 10000;
+        timeout = () -> {
+            try {
+                wait(param);
+            } catch (InterruptedException e) {
+                // TODO handle exception
+            }
+            handleTimeout();
+        };
+        timeoutThread = new Thread(timeout);
+        timeoutThread.start();
+        timeoutStart = System.currentTimeMillis();
+    }
+
+    /**
+     * Creates a new lobby
+     */
+    private synchronized void createLobby() {
         lobby = new Lobby(UUID.randomUUID().toString());
+        setTimeout();
     }
 
     /**
@@ -43,11 +72,15 @@ public class LobbyManager {
      * @throws RemoteException if user has already joined the lobby
      */
     public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) throws RemoteException {
+        if(lobby == null)
+            createLobby();
         if(lobby.getUserList().contains(user))
             throw new RemoteException("User has already joined the lobby.");
+        if(lobby.isGameStarted())
+            createLobby();
         lobby.observeLobby(lobbyObserver);
         if(lobby.join(user)) {
-            lobby = new Lobby(UUID.randomUUID().toString());
+            createLobby();
         }
     }
 
@@ -58,9 +91,16 @@ public class LobbyManager {
      * @throws RemoteException if the user is not present in the lobby
      */
     public synchronized void userLeaveLobby(User user) throws RemoteException {
-        if(!lobby.getUserList().contains(user))
+
+        if(!lobby.getUserList().contains(user) || lobby == null)
             throw new RemoteException("Can't leave because user is not in the lobby");
+        if(lobby.isGameStarted())
+            throw new RemoteException("The lobby is started");
         lobby.leave(user);
+        if(lobby.getNumberOfPlayer() == 0) {
+            lobby = null;
+            timeoutThread = null;
+        }
     }
 
     /**
@@ -83,12 +123,18 @@ public class LobbyManager {
     }
 
     /**
-     * Implements user logout on server via login.
+     * Implements user logout on server.
+     * If the user is in a lobby, it leaves.
+     *
      *
      * @param token user's token
      * @throws RemoteException if no user with token exists
      */
     public synchronized void logout(String token) throws RemoteException {
+        User user = this.getUserByToken(token);
+
+        if(lobby != null && lobby.getUserList().contains(user))
+            this.userLeaveLobby(user);
         for (User u : users) {
             if (u.getToken().equals(token)) {
                 users.remove(u);
@@ -106,5 +152,36 @@ public class LobbyManager {
      */
     public int usersSize() {
         return users.size();
+    }
+
+    public List<User> getLobbyUsers() throws RemoteException {
+        if(lobby == null)
+            throw new RemoteException("No lobby active");
+        return lobby.getUserList();
+    }
+
+
+    /**
+     * Handles timeout. When timeout is signaled, if the number of players in the lobby
+     * are greater or equal then 2, the game starts, otherwise timeout gets restarted.
+     */
+    public synchronized void handleTimeout() {
+        if(lobby.getPlayerNum() >= 2) {
+            lobby.gameStart();
+            createLobby();
+        } else {
+            setTimeout();
+        }
+    }
+
+    /**
+     * Returns time missing to reach timeout.
+     * @return time in millis
+     */
+    public synchronized long getTimeToTimeout() throws RemoteException {
+        if(lobby == null)
+            throw new RemoteException("No lobby Active");
+        long currTime = System.currentTimeMillis();
+        return param - (currTime-timeoutStart);
     }
 }

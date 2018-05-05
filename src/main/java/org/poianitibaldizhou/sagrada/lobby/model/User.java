@@ -33,4 +33,9 @@ public class User implements Serializable {
         User u = (User)object;
         return u.getName().equals(this.name);
     }
+
+    @Override
+    public String toString() {
+        return "Username: " + this.name;
+    }
 }

@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.Socket;
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -90,5 +91,15 @@ public class ProxyClientController implements ILobbyController {
         serverHandler.addViewToHashMap(lobbyObserver.hashCode(), lobbyObserver);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         serverHandler.sendRequest(new Request(methodName, token, username, (Serializable) lobbyObserver));
+    }
+
+    @Override
+    public void requestUsersInLobby(String token) throws RemoteException {
+        // TODO
+    }
+
+    @Override
+    public void requestTimeout(String token) throws RemoteException {
+        // TODO
     }
 }
