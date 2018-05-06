@@ -1,13 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
-import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
@@ -50,15 +49,49 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * @param dice dice to set
      * @param game game played
      * @param card toolcard on which to place the dice
-     * @throws RemoteException
      */
     @Override
-    public void setDice(Dice dice, Game game, ToolCard card) throws RemoteException {
+    public void setDice(Dice dice, Game game, ToolCard card) {
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard toolCard: toolCards) {
             if(toolCard.equals(card)) {
-                toolCard.setDice(dice);
+                toolCard.setNeededDice(dice);
             }
+        }
+    }
+
+    /**
+     * Set a a new value needed for a dice on a certain toolcard and its purpose.
+     * This method assumes that game's toolcards contains card.
+     *
+     * @param value dice's value
+     * @param game game played
+     * @param toolCard toolcard on which to place the dice
+     */
+    @Override
+    public void setNewValue(int value, Game game, ToolCard toolCard) {
+        List<ToolCard> toolCards = game.getToolCards();
+        for(ToolCard tc: toolCards) {
+            if(tc.equals(toolCard)) {
+                toolCard.setNeededValue(value);
+            }
+        }
+    }
+
+    /**
+     * Set a a new color needed for a certain toolcard and its purpose.
+     * This method assumes that game's toolcards contains card.
+     *
+     * @param color dice's value
+     * @param game game played
+     * @param toolCard toolcard on which to place the dice
+     */
+    @Override
+    public void setColor(Color color, Game game, ToolCard toolCard) throws RemoteException {
+        List<ToolCard> toolCards = game.getToolCards();
+        for(ToolCard tc : toolCards) {
+            if(tc.equals(toolCard))
+                toolCard.setNeededColor(color);
         }
     }
 }

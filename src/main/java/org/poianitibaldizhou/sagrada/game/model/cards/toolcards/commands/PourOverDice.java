@@ -8,13 +8,19 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
-import java.rmi.RemoteException;
-import java.util.List;
-
 public class PourOverDice implements ICommand {
+
+    /**
+     * Pour overs a certain dice in the draftpool.
+     *
+     * @param player player's that used the toolcard
+     * @param toolCard toolcard used
+     * @param game game in which the player acts
+     * @throws InterruptedException error with wait()
+     */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
-        Dice chosenDice = toolCard.getDice();
+    public void executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
+        Dice chosenDice = toolCard.getNeededDice();
 
         DraftPool draftPool = game.getDraftPool();
         draftPool.addDice(chosenDice.pourOverDice());

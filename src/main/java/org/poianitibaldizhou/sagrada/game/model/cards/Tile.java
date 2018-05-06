@@ -40,7 +40,7 @@ public class Tile{
     /**
      *
      * @param dice the dice to place on
-     * @throws RuleViolationException if this.getDice() != null
+     * @throws RuleViolationException if this.getNeededDice() != null
      */
     public void setDice(Dice dice) throws RuleViolationException {
         setDice(dice, TileConstraintType.NUMBER_COLOR);
@@ -50,7 +50,7 @@ public class Tile{
      *
      * @param dice the dice to place on
      * @param type the constraint to check when placing the dice
-     * @throws RuleViolationException if this.getDice() != null
+     * @throws RuleViolationException if this.getNeededDice() != null
      */
     public void setDice(Dice dice, TileConstraintType type) throws RuleViolationException {
         if(this.dice != null)
@@ -82,7 +82,7 @@ public class Tile{
      *
      * @param dice the dice to check if positionable
      * @return true if the dice can be placed with number and color constraint
-     * @throws RuleViolationException if this.getDice() != null
+     * @throws RuleViolationException if this.getNeededDice() != null
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice) {

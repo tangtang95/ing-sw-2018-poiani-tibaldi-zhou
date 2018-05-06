@@ -64,7 +64,7 @@ public class ToolCardLanguageParser {
         grammar.put("Modify dice value by 1", new ModifyDiceValue(1));
         grammar.put("Remove dice from schema", new RemoveDice(TileConstraintType.NONE));
         grammar.put("Remove dice of a certain color from schema", new RemoveDice(TileConstraintType.COLOR));
-        grammar.put("Swap dice with RoundTrack", new SwapDice());
+        grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
         grammar.put("Reroll dice", new RerollDice());
         grammar.put("Place dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL));
         grammar.put("Place dice ignoring number constraints", new PlaceDice(TileConstraintType.COLOR, DiceConstraintType.NORMAL));
