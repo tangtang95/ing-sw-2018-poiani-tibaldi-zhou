@@ -31,6 +31,8 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     private static final String JOIN_COMMAND = "join";
     private static final String LEAVE_COMMAND = "leave";
     private static final String QUIT_COMMAND = "quit";
+    private static final String TIMEOUT_COMMAND = "timeout";
+    private static final String LOBBY_USER_COMMAND = "showLobbyUsers";
 
     public CLILobbyView(NetworkManager networkManager, ScreenManager screenManager) throws RemoteException {
         super();
@@ -54,6 +56,15 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
         Command quitCommand = new Command(QUIT_COMMAND, "quit the game");
         quitCommand.setCommandAction(() -> isLoggedIn = false);
         commandMap.put(quitCommand.getCommandText(), quitCommand);
+
+        Command timeoutCommand = new Command(TIMEOUT_COMMAND, "show time to reach timeout");
+        timeoutCommand.setCommandAction(() -> networkManager.getLobbyController().requestTimeout(token));
+        commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
+
+        Command showUserCommand = new Command(LOBBY_USER_COMMAND, "show users in lobby");
+        showUserCommand.setCommandAction(() -> networkManager.getLobbyController().requestUsersInLobby(token));
+        commandMap.put(showUserCommand.getCommandText(), showUserCommand);
+
     }
 
     private void printHelp() {

@@ -2,10 +2,13 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
+import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,6 +19,8 @@ public class ToolCard extends Card {
     private List<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
+    private Dice dice;
+    private Game game;
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
@@ -23,11 +28,24 @@ public class ToolCard extends Card {
         this.color = color;
         this.isSinglePlayer = isSinglePlayer;
         observers = new ArrayList<>();
+        dice = null;
     }
 
-    public void invokeCommands(Player player){
+    public List<IToolCardObserver> getObservers() {
+        return new ArrayList<IToolCardObserver>(observers);
+    }
+
+    public Dice getDice() {
+        return dice;
+    }
+
+    public void setDice(Dice dice) {
+        this.dice = dice;
+    }
+
+    public void invokeCommands(Player player) throws RemoteException, InterruptedException {
         for (ICommand command : commands) {
-            command.executeCommand(player);
+            command.executeCommand(player, this,game);
         }
 
         if(isSinglePlayer)
@@ -79,7 +97,6 @@ public class ToolCard extends Card {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
 }

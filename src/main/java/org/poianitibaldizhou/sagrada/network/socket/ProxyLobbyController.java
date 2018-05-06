@@ -18,7 +18,6 @@ import java.util.logging.Logger;
  */
 public class ProxyLobbyController extends ProxyController implements ILobbyController {
 
-
     /**
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
@@ -84,13 +83,25 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
         serverHandler.sendRequest(new Request(methodName, token, username, lobbyObserver));
     }
 
+    /**
+     * Send a request of the user currently present in the lobby.
+     *
+     * @param token requesting user's token
+     */
     @Override
-    public void requestUsersInLobby(String token) throws RemoteException {
-        // TODO
+    public void requestUsersInLobby(String token) {
+        String methodName= Thread.currentThread().getStackTrace()[1].getMethodName();
+        serverHandler.sendRequest(new Request(methodName, token));
     }
 
+    /**
+     * Requesting time to reach timeout
+     *
+     * @param token requesting user's token
+     */
     @Override
-    public void requestTimeout(String token) throws RemoteException {
-        // TODO
+    public void requestTimeout(String token) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        serverHandler.sendRequest(new Request(methodName, token));
     }
 }

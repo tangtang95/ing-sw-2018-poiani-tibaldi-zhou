@@ -15,8 +15,8 @@ public class LobbyManager {
     private Runnable timeout;
     private long timeoutStart;
 
-    // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=60s
-    private static final long DELAY_TIME = 60000;
+    // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=30s
+    private static final long DELAY_TIME = 30000;
 
     /**
      * Constructor.
