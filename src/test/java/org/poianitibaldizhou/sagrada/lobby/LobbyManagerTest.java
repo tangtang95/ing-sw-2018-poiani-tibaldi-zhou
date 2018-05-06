@@ -66,7 +66,7 @@ public class LobbyManagerTest {
      * Test the entire singleton class
      */
     @Test
-    public void testSingletonClass() throws RemoteException {
+    public void testLobbyManager() throws RemoteException {
         // Login test
         User user1 = new User("user1", lobbyManager.login("user1"));
         User user2 = new User("user2", lobbyManager.login("user2"));

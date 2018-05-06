@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.lobby.view.IScreen;
+import org.poianitibaldizhou.sagrada.cli.IScreen;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 public class CLIGameView implements IGameView, IToolCardObserver, IScreen {

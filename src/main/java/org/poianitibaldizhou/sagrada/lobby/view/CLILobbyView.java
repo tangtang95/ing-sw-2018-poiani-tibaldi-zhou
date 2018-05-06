@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
-import org.poianitibaldizhou.sagrada.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.Command;
+import org.poianitibaldizhou.sagrada.cli.IScreen;
+import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
@@ -14,9 +16,6 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver, IScreen {
     private final transient BufferedReader reader;
@@ -84,7 +83,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     }
 
     @Override
-    public void run() {
+    public void run() throws InterruptedException{
         System.out.println("WELCOME TO SAGRADA!");
         do {
             System.out.print("===> Provide an username: ");
@@ -108,8 +107,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
             try {
                 command = nextCommand();
             } catch (InterruptedException e) {
-                Logger.getAnonymousLogger().log(Level.INFO, "interrupt caught");
-                return;
+                throw new InterruptedException("interrupt caught");
             }
             try {
                 command.executeCommand();

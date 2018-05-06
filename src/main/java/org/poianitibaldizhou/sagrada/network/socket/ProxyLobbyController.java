@@ -23,10 +23,10 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
      *
-     * @param socket the socket connected with the server
+     * @param serverHandler the serverHandler connected with the server
      */
-    public ProxyLobbyController(Socket socket) {
-        super(socket);
+    public ProxyLobbyController(ServerHandler serverHandler) {
+        super(serverHandler);
     }
 
     /**
@@ -41,7 +41,7 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     public String login(String username, ILobbyView view) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, username, (Serializable) view));
+        serverHandler.sendRequest(new Request(methodName, username, view));
         return (String) serverHandler.getResponse();
     }
 
@@ -81,7 +81,7 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     public void join(String token, String username, ILobbyObserver lobbyObserver) {
         serverHandler.addViewToHashMap(lobbyObserver.hashCode(), lobbyObserver);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token, username, (Serializable) lobbyObserver));
+        serverHandler.sendRequest(new Request(methodName, token, username, lobbyObserver));
     }
 
     @Override

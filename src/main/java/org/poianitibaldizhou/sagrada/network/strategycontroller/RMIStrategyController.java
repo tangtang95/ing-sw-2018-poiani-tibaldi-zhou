@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.network;
+package org.poianitibaldizhou.sagrada.network.strategycontroller;
 
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
@@ -14,6 +14,13 @@ public class RMIStrategyController implements StrategyController{
     private ILobbyController lobbyController;
     private IGameController gameController;
 
+    /**
+     * Constructor.
+     * Create a RMI strategy controller; get the controller from the registry located in the ipAddress with
+     * a specific port
+     * @param ipAddress the ip address of the registry
+     * @param port the listening port of the registry
+     */
     public RMIStrategyController(String ipAddress, int port){
         try {
             lobbyController = (ILobbyController) LocateRegistry.getRegistry(ipAddress, port)

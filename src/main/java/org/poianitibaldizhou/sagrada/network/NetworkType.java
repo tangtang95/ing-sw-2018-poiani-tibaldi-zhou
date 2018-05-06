@@ -7,6 +7,11 @@ public enum NetworkType {
 
     private final int port;
 
+    /**
+     * Constructor.
+     * The port changes if the type of connection changes
+     * @param port the port of the specific type of connection
+     */
     NetworkType(int port){
         this.port = port;
     }

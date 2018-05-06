@@ -4,6 +4,8 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class LobbyManager {
 
@@ -28,7 +30,8 @@ public class LobbyManager {
             try {
                 Thread.sleep(DELAY_TIME);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.INFO, "TimeoutThread interrupted");
+                Thread.currentThread().interrupt();
             }
             handleTimeout();
         };

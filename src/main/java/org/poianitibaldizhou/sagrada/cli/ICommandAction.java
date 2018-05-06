@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.lobby.view;
+package org.poianitibaldizhou.sagrada.cli;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
