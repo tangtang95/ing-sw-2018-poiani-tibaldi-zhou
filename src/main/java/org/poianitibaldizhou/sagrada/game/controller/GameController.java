@@ -60,6 +60,5 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 toolCard.setDice(dice);
             }
         }
-        notifyAll();
     }
 }

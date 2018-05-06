@@ -14,24 +14,17 @@ import java.util.List;
 public class PourOverDice implements ICommand {
     @Override
     public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
-        while(toolCard.getDice() == null)
-            wait();
         Dice chosenDice = toolCard.getDice();
 
         DraftPool draftPool = game.getDraftPool();
-        List<Dice> draftPoolDices = draftPool.getDices();
-
-        for(Dice d : draftPoolDices)
-            if(d.equals(chosenDice)) {
-                draftPool.addDice(chosenDice.pourOverDice());
-                try {
-                    draftPool.useDice(d);
-                } catch (DiceNotFoundException e) {
-                    e.printStackTrace();
-                } catch (EmptyCollectionException e) {
-                    e.printStackTrace();
-                }
-            }
+        draftPool.addDice(chosenDice.pourOverDice());
+        try {
+            draftPool.useDice(chosenDice);
+        } catch (DiceNotFoundException e) {
+            e.printStackTrace();
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

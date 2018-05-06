@@ -35,12 +35,17 @@ public class ToolCard extends Card {
         return new ArrayList<IToolCardObserver>(observers);
     }
 
-    public Dice getDice() {
-        return dice;
+    public Dice getDice() throws InterruptedException {
+        while(dice == null)
+            wait();
+        Dice d = dice;
+        dice = null;
+        return d;
     }
 
     public void setDice(Dice dice) {
         this.dice = dice;
+        notifyAll();
     }
 
     public void invokeCommands(Player player) throws RemoteException, InterruptedException {
