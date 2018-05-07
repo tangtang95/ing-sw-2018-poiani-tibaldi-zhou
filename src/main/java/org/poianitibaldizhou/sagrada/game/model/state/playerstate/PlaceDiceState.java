@@ -35,7 +35,7 @@ public class PlaceDiceState implements IPlayerState {
         } catch (RuleViolationException e) {
             e.printStackTrace();
         }
-        turnState.setPlayerState( new EndTurnState(turnState));
+        turnState.nextTurn();
     }
 
 }

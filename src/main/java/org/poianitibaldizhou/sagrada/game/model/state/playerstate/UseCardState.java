@@ -29,7 +29,7 @@ public class UseCardState implements IPlayerState {
             e.printStackTrace();
         }
 
-        turnState.setPlayerState( new EndTurnState(turnState));
+        turnState.nextTurn();
     }
 
     @Override

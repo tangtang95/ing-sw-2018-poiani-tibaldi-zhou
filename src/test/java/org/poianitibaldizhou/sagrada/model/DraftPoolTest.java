@@ -23,7 +23,7 @@ public class DraftPoolTest {
 
     @BeforeClass
     public static void setUpClass() {
-        dices = new ArrayList<Dice>();
+        dices = new ArrayList<>();
     }
 
     @Before

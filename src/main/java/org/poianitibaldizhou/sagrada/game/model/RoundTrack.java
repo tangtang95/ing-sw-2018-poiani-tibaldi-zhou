@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RoundTrack {
-    private final List<List<Dice>> roundTrack;
+    private final List<List<Dice>> roundTracks;
     private int currentRound;
 
     public static final int NUMBER_OF_TRACK = 10;
@@ -15,23 +15,21 @@ public class RoundTrack {
      * Constructor.
      * Create a new RoundTrack unique for each Game and set the initial value 1 to the currentRound
      */
-    public RoundTrack() {
-        this.roundTrack = new ArrayList<>();
+    RoundTrack() {
+        this.roundTracks = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
-            roundTrack.add(new ArrayList<Dice>());
+            roundTracks.add(new ArrayList<>());
         }
         currentRound = 1;
     }
 
     /**
-<<<<<<< HEAD
      * place the remainder dice of the DraftPool in the correct position of the roundTrack
      *
      * @param dices the dices which will be placed in the roundTrack
-     * @param round current round
      */
-    public void addDicesToCurrentRound(List<Dice> dices, int round){
-        roundTrack.get(currentRound).addAll(dices);
+    public void addDicesToCurrentRound(List<Dice> dices){
+        roundTracks.get(currentRound).addAll(dices);
     }
 
     /**
@@ -42,7 +40,7 @@ public class RoundTrack {
      */
     @Contract(pure = true)
     public List<Dice> getDices(int round){
-        return roundTrack.get(round);
+        return roundTracks.get(round);
     }
 
     /**

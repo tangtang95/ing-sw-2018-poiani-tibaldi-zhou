@@ -42,12 +42,17 @@ public class TurnState extends IStateGame implements IPlayerState {
     public void nextTurn() {
         if(!isFirstTurn && player.equals(game.getCurrentPlayerRound()))
             game.setState(new RoundEndState(game));
-        int indexLastPlayer = game.getNextIndexOfPlayer(player, Direction.COUNTER_CLOCKWISE);
-        if(isFirstTurn && player.equals(game.getPlayers().get(indexLastPlayer)))
-            game.setState(new TurnState(game, player, false));
-        int indexNextPlayer = game.getNextIndexOfPlayer(player, (isFirstTurn) ? Direction.CLOCKWISE : Direction.COUNTER_CLOCKWISE);
-        Player nextPlayer = game.getPlayers().get(indexNextPlayer);
-        game.setState(new TurnState(game, nextPlayer, isFirstTurn));
+        else {
+            int indexLastPlayer = game.getNextIndexOfPlayer(player, Direction.COUNTER_CLOCKWISE);
+            if (isFirstTurn && player.equals(game.getPlayers().get(indexLastPlayer)))
+                game.setState(new TurnState(game, player, false));
+            else {
+                int indexNextPlayer = game.getNextIndexOfPlayer(player, (isFirstTurn) ? Direction.CLOCKWISE :
+                        Direction.COUNTER_CLOCKWISE);
+                Player nextPlayer = game.getPlayers().get(indexNextPlayer);
+                game.setState(new TurnState(game, nextPlayer, isFirstTurn));
+            }
+        }
     }
 
 

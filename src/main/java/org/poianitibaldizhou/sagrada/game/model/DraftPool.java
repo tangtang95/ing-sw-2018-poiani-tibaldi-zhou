@@ -47,7 +47,7 @@ public class DraftPool {
     /**
      * Uses a dice presents in the DrafPool thus removing it.
      *
-     * @param d
+     * @param d dice used
      * @throws DiceNotFoundException if d is not presente in the DraftPool
      * @throws EmptyCollectionException if the DraftPool is empty
      */
@@ -77,6 +77,6 @@ public class DraftPool {
         return dices.toString();
     }
 
-
+    public int size(){return dices.size();}
 
 }

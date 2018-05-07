@@ -29,7 +29,7 @@ public class SelectActionState implements IPlayerState {
                 turnState.setPlayerState(new PlaceDiceState(turnState));
                 break;
             case "endTurn" :
-                turnState.setPlayerState(new EndTurnState(turnState));
+                turnState.nextTurn();
                 break;
             default:
                 throw new  IllegalArgumentException();

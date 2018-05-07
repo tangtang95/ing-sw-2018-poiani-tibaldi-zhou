@@ -4,17 +4,22 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class RoundStartState extends IStateGame{
 
     public static final int NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER = 4;
+
+    private static final Logger LOGGER = Logger.getLogger(RoundStartState.class.getName());
 
     /**
      * Constructor.
      * Create the state of RoundStartGame
      *
-     * @param game
+     * @param game the game to consider
      */
-    public RoundStartState(Game game) {
+    RoundStartState(Game game) {
         super(game);
     }
 
@@ -33,7 +38,7 @@ public class RoundStartState extends IStateGame{
                 try {
                     game.getDraftPool().addDice(game.getDiceBag().draw());
                 } catch (EmptyCollectionException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.FINE, "Error in throwDices for empty collection", e);
                 }
             }
             game.setState(new TurnState(game, player,true));

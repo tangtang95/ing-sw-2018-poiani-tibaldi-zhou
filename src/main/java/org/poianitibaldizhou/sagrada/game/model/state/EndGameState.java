@@ -9,14 +9,14 @@ import java.util.*;
 
 public class EndGameState extends IStateGame{
 
-    Map<Player, Integer> scoreMap = new HashMap<>();
+    private Map<Player, Integer> scoreMap = new HashMap<>();
 
     /**
      * Constructor.
      * Create EndGameState to calculate the score of the players and determinate the outcomes of all players
      * @param game the current game
      */
-    public EndGameState(Game game) {
+     EndGameState(Game game) {
         super(game);
 
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
@@ -126,7 +126,7 @@ public class EndGameState extends IStateGame{
      */
     private Player getWinnersByReverseOrder(List<Player> winners, List<Player> allPlayers, int currentIndexOfPlayer) {
         int index = (currentIndexOfPlayer - 1 + allPlayers.size()) % allPlayers.size();
-        for ( ; index != currentIndexOfPlayer ; ) {
+        while (index != currentIndexOfPlayer ) {
             if(winners.contains(allPlayers.get(index)))
                 return allPlayers.get(index);
             index = (currentIndexOfPlayer - 1 + allPlayers.size()) % allPlayers.size();

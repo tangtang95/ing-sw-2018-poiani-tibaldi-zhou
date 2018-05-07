@@ -9,13 +9,17 @@ import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SetupPlayerState extends IStateGame {
 
     private Set<Player> playersReady;
     private Map<Player, List<SchemaCard>> playerSchemaCards;
 
-    public final static int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
+    public static final int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
+
+    private static final Logger LOGGER = Logger.getLogger(SetupPlayerState.class.getName());
 
     /**
      * Constructor.
@@ -26,7 +30,7 @@ public class SetupPlayerState extends IStateGame {
      */
     public SetupPlayerState(Game game) {
         super(game);
-        playersReady = new TreeSet<>();
+        playersReady = new HashSet<>();
         playerSchemaCards = new HashMap<>();
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
@@ -41,14 +45,14 @@ public class SetupPlayerState extends IStateGame {
                 try {
                     schemaCardList.add(schemaCards.draw());
                 } catch (EmptyCollectionException e) {
-                    e.printStackTrace();
+                    LOGGER.log(Level.FINE, "Error in SetupPlayerState for empty collection", e);
                 }
             }
             try {
                 playerSchemaCards.put(player, schemaCardList);
                 player.setPrivateObjectiveCard(privateObjectiveCards.draw());
             } catch (EmptyCollectionException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.FINE, "Error in SetupPlayerState for empty collection", e);
             }
         }
         //TODO notify each player
@@ -69,5 +73,4 @@ public class SetupPlayerState extends IStateGame {
         if (game.getNumberOfPlayers() == playersReady.size())
             game.setState(new SetupGameState(game));
     }
-
 }

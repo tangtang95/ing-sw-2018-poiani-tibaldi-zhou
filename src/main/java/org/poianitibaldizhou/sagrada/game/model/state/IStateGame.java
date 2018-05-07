@@ -21,9 +21,7 @@ public abstract class IStateGame {
     public void readyGame(){
         throw new IllegalStateException();
     }
-    public void throwDices(Player player){
-        throw new IllegalStateException();
-    }
+    public void throwDices(Player player){ throw new IllegalStateException(); }
     public void nextTurn(){
         throw new IllegalStateException();
     }

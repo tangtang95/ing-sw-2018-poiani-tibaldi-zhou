@@ -40,8 +40,7 @@ public class Game {
         this.draftPool = new DraftPool();
 
         for (String token : tokens) {
-            players.add(new Player(token, isSinglePlayer ? new ExpendableDice(draftPool) : new FavorToken()));
-            setState(new SetupPlayerState(this));
+            players.add(new Player(token, new FavorToken()));
         }
         setState(new SetupPlayerState(this));
     }
@@ -174,4 +173,7 @@ public class Game {
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
 
+    public IStateGame getState() {
+        return state;
+    }
 }

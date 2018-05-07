@@ -11,7 +11,7 @@ public class RoundEndState extends IStateGame {
      *
      * @param game the game needed for changing state and other things to do
      */
-    public RoundEndState(Game game) {
+     RoundEndState(Game game) {
         super(game);
     }
 
@@ -23,7 +23,7 @@ public class RoundEndState extends IStateGame {
      */
     @Override
     public void nextRound() {
-        game.getRoundTrack().addDicesToCurrentRound(game.getDraftPool().getDices(),game.getCurrentRound());
+        game.getRoundTrack().addDicesToCurrentRound(game.getDraftPool().getDices());
         game.getDraftPool().clearPool();
         game.getRoundTrack().nextRound();
         game.rotateCurrentPlayerRound();

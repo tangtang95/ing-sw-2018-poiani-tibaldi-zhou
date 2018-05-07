@@ -4,6 +4,8 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
+import java.util.Objects;
+
 @Immutable
 public class Dice {
     private final NumberConstraint numberConstraint;
@@ -87,5 +89,11 @@ public class Dice {
      */
     public Dice pourOverDice() {
         return new Dice(MAX_VALUE + 1 - this.numberConstraint.getNumber(), this.colorConstraint.getColor());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(numberConstraint, colorConstraint);
     }
 }
