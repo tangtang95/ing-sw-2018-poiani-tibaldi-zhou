@@ -52,7 +52,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * Implements the logout of an User by his token.
      *
      * @param token user's token
-     * @throws RemoteException if no user's with token exists in the model or if there are some problems
+     * @throws RemoteException if no user's with token exists in the game or if there are some problems
      *                          with the communication architecture
      */
     @Override

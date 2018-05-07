@@ -286,7 +286,7 @@ public class SchemaCard {
      * @return if the position is out of bounds according to the matrix tile
      */
     @Contract(pure = true)
-    private boolean isOutOfBounds(int row, int column) {
+    public static boolean isOutOfBounds(int row, int column) {
         return row < 0 || row > SchemaCard.NUMBER_OF_ROWS - 1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS - 1;
     }
 

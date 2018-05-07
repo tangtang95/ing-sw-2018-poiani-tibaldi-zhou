@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
 
@@ -27,7 +26,7 @@ public class Player {
         this.schemaCard = null;
         this.privateObjectiveCard = null;
         this.token = token;
-        this.outcome = Outcome.INGAME;
+        this.outcome = Outcome.IN_GAME;
     }
 
     //GETTER

@@ -61,8 +61,15 @@ public class ScreenManagerTest {
 
     @After
     public void tearDown() {
-        if(screenManager.getCurrentThread() != null)
-            screenManager.getCurrentThread().interrupt();
+        if(screenManager.getCurrentThread() != null) {
+            Thread thread = screenManager.getCurrentThread();
+            thread.interrupt();
+            try {
+                thread.join(2000);
+            } catch (InterruptedException e) {
+                fail("thread didn't end");
+            }
+        }
         scanner1 = null;
         scanner2 = null;
         screenManager = null;

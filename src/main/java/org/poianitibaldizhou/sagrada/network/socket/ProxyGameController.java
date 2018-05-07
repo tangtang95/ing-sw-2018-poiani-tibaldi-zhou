@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -28,6 +29,16 @@ public class ProxyGameController extends ProxyController implements IGameControl
 
     @Override
     public void setDice(Dice dice, Game game, ToolCard toolCard) throws RemoteException {
+        //TODO
+    }
+
+    @Override
+    public void setNewValue(int value, Game game, ToolCard toolCard) throws RemoteException {
+        //TODO
+    }
+
+    @Override
+    public void setColor(Color color, Game game, ToolCard toolCard) throws RemoteException {
         //TODO
     }
 }

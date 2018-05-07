@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -23,7 +23,7 @@ public class DraftPoolTest {
 
     @BeforeClass
     public static void setUpClass() {
-        dices = new ArrayList<Dice>();
+        dices = new ArrayList();
     }
 
     @Before
@@ -61,7 +61,7 @@ public class DraftPoolTest {
                 dp.useDice(dices.get(order[i]));
                 dices.remove(order[i]);
 
-                assert(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
+                assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
             }
         } catch (DiceNotFoundException dnfe){
             fail("No exception expected");

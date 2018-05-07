@@ -10,7 +10,7 @@ public enum Direction {
      * Create a Direction that indicates if the next player is the one in the clockwise or counterclockwise direction
      * @param increment the value to increment when changing the index of the player
      */
-    private Direction(int increment) {
+    Direction(int increment) {
         this.increment = increment;
     }
 
