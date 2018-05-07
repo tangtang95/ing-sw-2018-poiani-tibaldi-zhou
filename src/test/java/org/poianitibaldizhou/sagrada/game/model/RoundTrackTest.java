@@ -54,7 +54,7 @@ public class RoundTrackTest {
     @Test
     public void test(){
         for (int i = 1; i < 10; i++) {
-            game.getRoundTrack().addDicesToCurrentRound(dices);
+            game.getRoundTrack().addDicesToRound(dices, game.getCurrentRound());
             game.getRoundTrack().nextRound();
         }
         int j = 0;

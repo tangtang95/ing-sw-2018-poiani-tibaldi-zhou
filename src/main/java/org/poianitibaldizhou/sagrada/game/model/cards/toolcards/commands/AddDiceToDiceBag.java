@@ -17,10 +17,11 @@ public class AddDiceToDiceBag implements ICommand {
      * @throws InterruptedException due to the wait for toolCard.getNeededDice()
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
         Dice dice = toolCard.getNeededDice();
         DrawableCollection<Dice> dicebag = game.getDiceBag();
         dicebag.addElement(dice);
+        return true;
     }
 
     @Override

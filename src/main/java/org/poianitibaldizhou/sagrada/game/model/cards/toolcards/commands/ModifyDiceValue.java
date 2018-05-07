@@ -28,13 +28,14 @@ public class ModifyDiceValue implements ICommand {
      * @throws InterruptedException due to the wait() in  toolCard.getDice()
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
         Dice dice = toolCard.getNeededDice();
         toolCard.setNeededDice(dice);
 
         List<IToolCardObserver> list = toolCard.getObservers();
         for(IToolCardObserver obs : list)
             obs.notifyNeedNewDeltaForDice(dice.getNumber(), value);
+        return true;
     }
 
     public int getValue() {

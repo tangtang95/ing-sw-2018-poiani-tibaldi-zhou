@@ -19,11 +19,12 @@ public class ChooseDiceValue implements ICommand {
      * @throws RemoteException if there are network communication errors
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
         List<IToolCardObserver> observerList = toolCard.getObservers();
         for(IToolCardObserver obs : observerList){
             obs.notifyNeedNewValue(player);
         }
+        return true;
     }
 
     @Override

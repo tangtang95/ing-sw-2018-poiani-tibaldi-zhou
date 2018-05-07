@@ -16,9 +16,10 @@ public class AddDiceToDraftPool implements ICommand {
      * @throws InterruptedException given by wait of toolCard.getNeededDice()
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
         Dice dice = toolCard.getNeededDice();
         game.getDraftPool().addDice(dice);
+        return true;
     }
 
     @Override

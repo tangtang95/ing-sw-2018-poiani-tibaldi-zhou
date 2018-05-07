@@ -7,5 +7,5 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import java.rmi.RemoteException;
 
 public interface ICommand {
-    void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException;
+    boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException;
 }
