@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -14,13 +14,13 @@ import static org.junit.Assert.*;
 
 public class SchemaCardTest {
     @DataPoint
-    public static SchemaCard emptySchemaCard;
+    public SchemaCard emptySchemaCard;
 
     @DataPoint
-    public static SchemaCard schemaCard;
+    public SchemaCard schemaCard;
 
     @DataPoint
-    public static SchemaCard fullSchemaCard;
+    public SchemaCard fullSchemaCard;
 
 
     @Before
@@ -218,6 +218,73 @@ public class SchemaCardTest {
         assertTrue(fullSchemaCard.isDicePositionable(d4,2,4, TileConstraintType.NUMBER, DiceConstraintType.NORMAL));
         assertTrue(fullSchemaCard.isDicePositionable(d4,2, 4, TileConstraintType.NONE, DiceConstraintType.NORMAL));
         assertTrue(fullSchemaCard.isDicePositionable(d3,0,1, TileConstraintType.COLOR, DiceConstraintType.NORMAL));
+    }
+
+    @Test
+    public void testIsolatedSetDice() throws RuleViolationException {
+        Dice d1 = new Dice(5, Color.PURPLE);
+        try {
+            schemaCard.isDicePositionable(d1, 0, 1, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+            schemaCard.setDice(d1,0, 1, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+            fail("exception expected");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.HAS_DICE_NEAR, e.getViolationType());
+        }
+        schemaCard.isDicePositionable(d1, 0, 0, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+        schemaCard.setDice(d1, 0, 0, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+        assertEquals(d1, schemaCard.getDice(0,0));
+    }
+
+    @Test
+    public void getNumberOfEmptySpaces() throws RuleViolationException{
+        assertEquals(20, emptySchemaCard.getNumberOfEmptySpaces());
+        assertEquals(19, schemaCard.getNumberOfEmptySpaces());
+        schemaCard.removeDice(0, 2);
+
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 1, 0);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 2, 0);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 3, 0);
+
+        schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 1, 1);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 2, 1);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 3, 1);
+
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 2);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 1, 2);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 2, 2);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 3, 2);
+
+        schemaCard.setDice(new Dice(2, Color.BLUE), 0, 3);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 1, 3);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 2, 3);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 3, 3);
+
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 4);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 1, 4);
+        schemaCard.setDice(new Dice(1, Color.YELLOW), 2, 4);
+        schemaCard.setDice(new Dice(2, Color.BLUE), 3, 4);
+
+        assertEquals(0, schemaCard.getNumberOfEmptySpaces());
+    }
+
+    @Test
+    public void testEquals(){
+        assertTrue(schemaCard.equals(schemaCard));
+        assertFalse(schemaCard.equals(emptySchemaCard));
+        assertFalse(schemaCard.equals(fullSchemaCard));
+        assertFalse(emptySchemaCard.equals(fullSchemaCard));
+        assertFalse(schemaCard.equals(Dice.class));
+    }
+
+    @Test
+    public void testHashCode(){
+        assertEquals(schemaCard.hashCode(), schemaCard.hashCode());
+        assertNotEquals(schemaCard.hashCode(), emptySchemaCard.hashCode());
+        assertNotEquals(schemaCard.hashCode(), fullSchemaCard.hashCode());
+        assertNotEquals(emptySchemaCard.hashCode(), fullSchemaCard.hashCode());
+        assertNotEquals(schemaCard.hashCode(), Dice.class.hashCode());
     }
 
 }

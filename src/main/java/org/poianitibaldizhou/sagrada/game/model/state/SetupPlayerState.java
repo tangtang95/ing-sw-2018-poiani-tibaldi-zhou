@@ -66,11 +66,37 @@ public class SetupPlayerState extends IStateGame {
      * @param schemaCard the schemaCard chosen by the player
      */
     @Override
-    public void ready(Player player, SchemaCard schemaCard) {
-        playersReady.add(player);
-        if (player.getSchemaCard() == null && playerSchemaCards.get(player).contains(schemaCard))
+    public boolean ready(Player player, SchemaCard schemaCard) {
+        if (!isPlayerReady(player) && player.getSchemaCard() == null && containsSchemaCard(player, schemaCard)) {
+            playersReady.add(player);
             player.setSchemaCard(schemaCard);
-        if (game.getNumberOfPlayers() == playersReady.size())
-            game.setState(new SetupGameState(game));
+            if (game.getNumberOfPlayers() == playersReady.size()) {
+                game.setState(new SetupGameState(game));
+                game.getState().readyGame();
+            }
+            return true;
+        }
+        return false;
     }
+
+    public boolean isPlayerReady(Player player) {
+        for (Player playerReady : playersReady) {
+            if(playerReady.equals(player))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean containsSchemaCard(Player player, SchemaCard schemaCard){
+        return playerSchemaCards.get(player).contains(schemaCard);
+    }
+
+    public List<SchemaCard> getSchemaCardsOfPlayer(Player player){
+        List<SchemaCard> schemaCards = new ArrayList<>();
+        for (SchemaCard schema: playerSchemaCards.get(player)) {
+            schemaCards.add(SchemaCard.newInstance(schema));
+        }
+        return schemaCards;
+    }
+
 }

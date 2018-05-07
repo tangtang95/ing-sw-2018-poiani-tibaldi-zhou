@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Immutable
 public class NumberConstraint implements IConstraint {
@@ -74,5 +75,10 @@ public class NumberConstraint implements IConstraint {
         if (!(obj instanceof NumberConstraint))
             return false;
         return this.getNumber() == ((NumberConstraint) obj).getNumber();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNumber());
     }
 }

@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionSt
 
 public class TurnState extends IStateGame implements IPlayerState {
 
+    private final Player roundPlayer;
     private final Player player;
     private IPlayerState playerState;
     private boolean isFirstTurn;
@@ -19,12 +20,13 @@ public class TurnState extends IStateGame implements IPlayerState {
     /**
      * Constructor.
      * Create the TurnState for the player
-     *
-     * @param game the current game
+     *  @param game the current game
+     * @param roundPlayer the current player of the round
      * @param player the current player
      */
-    TurnState(Game game, Player player, boolean isFirstTurn) {
+    TurnState(Game game, Player roundPlayer, Player player, boolean isFirstTurn) {
         super(game);
+        this.roundPlayer = roundPlayer;
         this.player = player;
         this.isFirstTurn = isFirstTurn;
         this.playerState = new SelectActionState(this);
@@ -40,17 +42,17 @@ public class TurnState extends IStateGame implements IPlayerState {
      */
     @Override
     public void nextTurn() {
-        if(!isFirstTurn && player.equals(game.getCurrentPlayerRound()))
-            game.setState(new RoundEndState(game));
+        if(!isFirstTurn && player.equals(roundPlayer))
+            game.setState(new RoundEndState(game, roundPlayer));
         else {
-            int indexLastPlayer = game.getNextIndexOfPlayer(player, Direction.COUNTER_CLOCKWISE);
+            int indexLastPlayer = game.getNextIndexOfPlayer(roundPlayer, Direction.COUNTER_CLOCKWISE);
             if (isFirstTurn && player.equals(game.getPlayers().get(indexLastPlayer)))
-                game.setState(new TurnState(game, player, false));
+                game.setState(new TurnState(game, roundPlayer, player, false));
             else {
                 int indexNextPlayer = game.getNextIndexOfPlayer(player, (isFirstTurn) ? Direction.CLOCKWISE :
                         Direction.COUNTER_CLOCKWISE);
                 Player nextPlayer = game.getPlayers().get(indexNextPlayer);
-                game.setState(new TurnState(game, nextPlayer, isFirstTurn));
+                game.setState(new TurnState(game, roundPlayer, nextPlayer, isFirstTurn));
             }
         }
     }
@@ -95,5 +97,13 @@ public class TurnState extends IStateGame implements IPlayerState {
 
     public IPlayerState getPlayerState() {
         return playerState;
+    }
+
+    public Player getPlayer(){
+        return player;
+    }
+
+    public boolean isFirstTurn() {
+        return isFirstTurn;
     }
 }

@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Immutable
 public class ColorConstraint implements IConstraint {
@@ -72,4 +73,8 @@ public class ColorConstraint implements IConstraint {
         return this.getColor() == ((ColorConstraint) obj).getColor();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getColor());
+    }
 }

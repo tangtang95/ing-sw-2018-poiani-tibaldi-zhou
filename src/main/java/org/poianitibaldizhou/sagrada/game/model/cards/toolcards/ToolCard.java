@@ -37,7 +37,7 @@ public class ToolCard extends Card {
     }
 
     public List<IToolCardObserver> getObservers() {
-        return new ArrayList<IToolCardObserver>(observers);
+        return new ArrayList<>(observers);
     }
 
     public void invokeCommands(Player player) throws RemoteException, InterruptedException {

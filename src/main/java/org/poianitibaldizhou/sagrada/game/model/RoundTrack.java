@@ -25,7 +25,6 @@ public class RoundTrack {
     }
 
     /**
-<<<<<<< HEAD
      * place the remainder dice of the DraftPool in the correct position of the roundTrack
      *
      * @param dices the dices which will be placed in the roundTrack

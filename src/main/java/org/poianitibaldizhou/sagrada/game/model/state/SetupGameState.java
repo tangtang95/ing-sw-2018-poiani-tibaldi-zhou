@@ -46,10 +46,6 @@ public class SetupGameState extends IStateGame {
 
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
-
-        game.setCurrentPlayerRound(getRandomStartPlayer(game.getPlayers()));
-
-        readyGame();
     }
 
     /**
@@ -57,7 +53,7 @@ public class SetupGameState extends IStateGame {
      */
     @Override
     public void readyGame() {
-        game.setState(new RoundStartState(game));
+        game.setState(new RoundStartState(game, getRandomStartPlayer(game.getPlayers())));
     }
 
     /**

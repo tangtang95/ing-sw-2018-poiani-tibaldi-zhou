@@ -1,11 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
+import com.oracle.tools.packager.JreUtils;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+
+import java.util.Objects;
 
 public class Tile{
 
@@ -30,11 +33,21 @@ public class Tile{
 
     /**
      * Constructor: create a copy of a tile (deep copy because dice and constraint are immutable)
-     * @param tile the tile to copy
+     * @param tile the tile to copy from
      */
-    public Tile(Tile tile) {
+    private Tile(Tile tile) {
         dice = tile.dice;
         constraint = tile.constraint;
+    }
+
+    /**
+     * Clone of the tile, calls the private constructor that copy a tile
+     *
+     * @param tile the tile to copy from
+     * @return the new tile equals to the tile given
+     */
+    public static Tile newInstance(Tile tile) {
+        return new Tile(tile);
     }
 
     /**
@@ -55,8 +68,9 @@ public class Tile{
     public void setDice(Dice dice, TileConstraintType type) throws RuleViolationException {
         if(this.dice != null)
             throw new RuleViolationException(RuleViolationType.TILE_FILLED);
-        if(isDicePositionable(dice, type))
-            this.dice = dice;
+        if(!isDicePositionable(dice, type))
+            throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
+        this.dice = dice;
     }
 
     /**
@@ -106,8 +120,9 @@ public class Tile{
                 return (checkConstraint(dice.getNumberConstraint()) && checkConstraint(dice.getColorConstraint()));
             case NONE:
                 return true;
+            default:
+                throw new IllegalArgumentException("impossible case");
         }
-        return false;
     }
 
     /**
@@ -129,12 +144,33 @@ public class Tile{
         return constraint.matches(other);
     }
 
+    /**
+     * Override of equals
+     *
+     * @param obj the other object to compare
+     * @return true if they have the same dice and the same constraint, otherwise false
+     */
     @Override
     public boolean equals(Object obj){
+        if(obj == this)
+            return true;
         if(!(obj instanceof Tile))
             return false;
         Tile other = (Tile) obj;
+        if((getDice() == null && other.getDice() != null) || (getDice() != null && other.getDice() == null))
+            return false;
+        else if(getDice() == null && other.getDice() == null)
+            return this.getConstraint().equals(other.getConstraint());
         return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
     }
 
+    /**
+     * Hashcode based on dice and constraint (the same tile has the same hashcode)
+     *
+     * @return the hashcode of this specific tile
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDice(), getConstraint());
+    }
 }

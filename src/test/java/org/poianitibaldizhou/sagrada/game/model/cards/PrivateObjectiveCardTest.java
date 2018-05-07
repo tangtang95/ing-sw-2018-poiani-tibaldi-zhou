@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -10,7 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class PrivateObjectiveCardTest {
 
@@ -82,5 +82,39 @@ public class PrivateObjectiveCardTest {
 
         privateObjectiveCard = new PrivateObjectiveCard("Sfumature gialle", "", Color.YELLOW);
         assertEquals("Wrong score", 9, privateObjectiveCard.getScore(schemaCard));
+    }
+
+    @Test
+    public void testGetConstraint(){
+        ColorConstraint cc = new ColorConstraint(Color.YELLOW);
+        privateObjectiveCard = new PrivateObjectiveCard("Sfumature gialle", "", cc);
+        assertEquals(cc, privateObjectiveCard.getConstraint());
+    }
+
+    @Test
+    public void testEquals(){
+        PrivateObjectiveCard poc1 = new PrivateObjectiveCard("Sfumature gialle", "", Color.YELLOW);
+        PrivateObjectiveCard poc2 = new PrivateObjectiveCard("Sfumature blu", "", Color.BLUE);
+        PrivateObjectiveCard poc2a = new PrivateObjectiveCard("Sfumature blu", "a", Color.BLUE);
+        PrivateObjectiveCard poc2b = new PrivateObjectiveCard("Sfumature blu", "a", Color.BLUE);
+
+        assertFalse(poc1.equals(PublicObjectiveCard.class));
+        assertTrue(poc1.equals(poc1));
+        assertFalse(poc1.equals(poc2));
+        assertFalse(poc2.equals(poc2a));
+        assertTrue(poc2a.equals(poc2b));
+    }
+
+    @Test
+    public void testHashCode(){
+        PrivateObjectiveCard poc1 = new PrivateObjectiveCard("Sfumature gialle", "", Color.YELLOW);
+        PrivateObjectiveCard poc2 = new PrivateObjectiveCard("Sfumature blu", "", Color.BLUE);
+        PrivateObjectiveCard poc2a = new PrivateObjectiveCard("Sfumature blu", "a", Color.BLUE);
+        PrivateObjectiveCard poc2b = new PrivateObjectiveCard("Sfumature blu", "a", Color.BLUE);
+
+        assertEquals(poc1.hashCode(), poc1.hashCode());
+        assertNotEquals(poc2.hashCode(), poc1.hashCode());
+        assertNotEquals(poc2.hashCode(), poc2a.hashCode());
+        assertEquals(poc2a.hashCode(), poc2b.hashCode());
     }
 }

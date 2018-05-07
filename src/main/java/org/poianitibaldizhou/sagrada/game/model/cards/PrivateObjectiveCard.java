@@ -5,6 +5,8 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
+import java.util.Objects;
+
 
 public class PrivateObjectiveCard extends Card implements IScore {
 
@@ -68,4 +70,20 @@ public class PrivateObjectiveCard extends Card implements IScore {
         return colorConstraint;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this)
+            return true;
+        if(!(obj instanceof PrivateObjectiveCard))
+            return false;
+        PrivateObjectiveCard other = (PrivateObjectiveCard) obj;
+        return getName().equals(other.getName())
+                && getDescription().equals(other.getDescription())
+                && getConstraint().equals(other.getConstraint());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getDescription(), getConstraint());
+    }
 }

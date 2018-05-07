@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+import java.util.Objects;
+
 /**
  * This class is a NullObject Pattern to avoid the check of null value
  */
@@ -31,5 +33,10 @@ public class NoConstraint implements IConstraint {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof NoConstraint;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(NoConstraint.class);
     }
 }

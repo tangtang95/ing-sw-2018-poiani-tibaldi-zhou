@@ -1,8 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.game.model.Player;
 
 public class RoundEndState extends IStateGame {
+
+    private Player currentPlayer;
 
     /**
      * Constructor.
@@ -11,8 +15,9 @@ public class RoundEndState extends IStateGame {
      *
      * @param game the game needed for changing state and other things to do
      */
-     RoundEndState(Game game) {
+     RoundEndState(Game game, Player currentPlayer) {
         super(game);
+        this.currentPlayer = currentPlayer;
     }
 
     /**
@@ -26,12 +31,13 @@ public class RoundEndState extends IStateGame {
         game.getRoundTrack().addDicesToCurrentRound(game.getDraftPool().getDices());
         game.getDraftPool().clearPool();
         game.getRoundTrack().nextRound();
-        game.rotateCurrentPlayerRound();
+        Player nextPlayer = game.getPlayers().get(
+                game.getNextIndexOfPlayer(currentPlayer, Direction.CLOCKWISE));
 
         if(game.getCurrentRound() < game.getNumberOfRounds())
-            game.setState(new RoundStartState(game));
+            game.setState(new RoundStartState(game, nextPlayer));
         else
-            game.setState(new EndGameState(game));
+            game.setState(new EndGameState(game, currentPlayer));
     }
 
 }

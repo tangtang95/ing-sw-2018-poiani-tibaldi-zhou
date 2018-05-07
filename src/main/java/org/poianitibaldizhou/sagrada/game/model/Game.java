@@ -19,7 +19,6 @@ public class Game {
     private final DraftPool draftPool;
     private final String name;
 
-    private Player currentPlayerRound;
     private IStateGame state;
     private int difficulty;
 
@@ -122,33 +121,6 @@ public class Game {
 
     public DrawableCollection<Dice> getDiceBag() {
         return diceBag;
-    }
-
-    /**
-     * Set the turn of the player to the passed playerTurn as parameter
-     *
-     * @param player the player
-     */
-    public void setCurrentPlayerRound(Player player) {
-        if (getIndexOfPlayer(player) != -1)
-            currentPlayerRound = player;
-    }
-
-    /**
-     * Return the Player who has the control of the round game (who has the diceBag)
-     *
-     * @return the player who has the control of the round game
-     */
-    public Player getCurrentPlayerRound() {
-        return currentPlayerRound;
-    }
-
-    /**
-     * Rotate the DiceBag to another player in clockwise direction
-     */
-    public void rotateCurrentPlayerRound() {
-        Player newCurrentPlayer = players.get(getNextIndexOfPlayer(getCurrentPlayerRound(), Direction.CLOCKWISE));
-        setCurrentPlayerRound(newCurrentPlayer);
     }
 
     /**

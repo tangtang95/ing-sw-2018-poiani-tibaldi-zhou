@@ -1,6 +1,8 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.junit.Test;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -35,7 +37,7 @@ public class TileIntegrationTest {
 
     @Test
     public void SetRemoveDiceTest(){
-        Tile tile = new Tile();
+        Tile tile = new Tile(new ColorConstraint(Color.BLUE));
         Dice d1 = null;
         try {
             d1 = new Dice(5, Color.BLUE);
@@ -43,10 +45,28 @@ public class TileIntegrationTest {
         } catch (Exception e){
             fail("no exception expected");
         }
+        Dice d2 = null;
+        try {
+             d2 = new Dice(3, Color.PURPLE);
+            tile.setDice(d2);
+            fail("exception expected");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.TILE_FILLED, e.getViolationType());
+            assertTrue(d1.equals(tile.getDice()));
+        }
         assertTrue(d1.equals(tile.getDice()));
         Dice removed = tile.removeDice();
         assertTrue(tile.getDice() == null);
-        assertTrue(removed == d1);
+        assertTrue(removed.equals(d1));
 
+        try {
+            tile.setDice(d2, TileConstraintType.NUMBER);
+            tile.removeDice();
+            tile.setDice(d2, TileConstraintType.COLOR);
+            fail("exception expected");
+        } catch (RuleViolationException e) {
+            assertEquals(RuleViolationType.TILE_UNMATCHED, e.getViolationType());
+            assertTrue(tile.getDice() == null);
+        }
     }
 }
