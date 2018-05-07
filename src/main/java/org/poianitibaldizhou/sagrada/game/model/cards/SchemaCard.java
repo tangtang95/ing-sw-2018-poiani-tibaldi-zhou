@@ -279,11 +279,12 @@ public class SchemaCard {
 
 
     /**
-     * Given row and column, return if the position is out of bounds according to the matrix tile
+     * Given row and column, return whether or not the position is out of bounds according
+     * to the matrix tile
      *
      * @param row    the row of the position
      * @param column the column of the position
-     * @return if the position is out of bounds according to the matrix tile
+     * @return true if out of bounds, false otherwise
      */
     @Contract(pure = true)
     public static boolean isOutOfBounds(int row, int column) {

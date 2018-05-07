@@ -1,10 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
-import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
@@ -25,6 +22,7 @@ public class ToolCard extends Card {
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
+    private Position position;
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
@@ -133,6 +131,19 @@ public class ToolCard extends Card {
 
     public synchronized void setNeededColor(Color neededColor) {
         this.neededColor = neededColor;
+        notifyAll();
+    }
+
+    public synchronized Position getPosition() throws InterruptedException {
+        while(position == null)
+            wait();
+        Position temp = position;
+        position = null;
+        return position;
+    }
+
+    public synchronized void setPosition(Position position) {
+        this.position = position;
         notifyAll();
     }
 }

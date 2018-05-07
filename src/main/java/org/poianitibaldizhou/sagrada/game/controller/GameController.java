@@ -1,9 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.GameManager;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 
@@ -31,8 +28,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * @throws RemoteException
      */
     @Override
-    public synchronized void joinGame(Game game, IGameView view, String token) throws RemoteException {
-        gameManager.addGame(game);
+    public synchronized void joinGame(Game game, IGameView view, String token, String gameName) throws RemoteException {
+        gameManager.addGame(game, gameName);
         try {
             gameManager.joinGame(game,token);
         } catch(RemoteException re) {
@@ -44,17 +41,17 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     /**
      * Set a dice on a certain toolcard for its purpose.
-     * This method assumes that game's toolcards contains card.
-     *
+     * This method assumes that game's toolcards contains the specified toolcard.
      * @param dice dice to set
-     * @param game game played
-     * @param card toolcard on which to place the dice
+     * @param gameName game's name
+     * @param toolCardName name of the ToolCard on which to place the dice
      */
     @Override
-    public void setDice(Dice dice, Game game, ToolCard card) {
+    public void setDice(Dice dice, String gameName, String toolCardName) {
+        Game game = gameManager.getGameByName(gameName);
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard toolCard: toolCards) {
-            if(toolCard.equals(card)) {
+            if(toolCard.getName().equals(toolCardName)){
                 toolCard.setNeededDice(dice);
             }
         }
@@ -62,36 +59,54 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     /**
      * Set a a new value needed for a dice on a certain toolcard and its purpose.
-     * This method assumes that game's toolcards contains card.
-     *
-     * @param value dice's value
-     * @param game game played
-     * @param toolCard toolcard on which to place the dice
+     * This method assumes that game's toolcards contains the specified toolcard.
+     *  @param value dice's value
+     * @param gameName game played
+     * @param toolCardName toolcard on which to place the value
      */
     @Override
-    public void setNewValue(int value, Game game, ToolCard toolCard) {
+    public void setNewValue(int value, String gameName, String toolCardName) {
+        Game game = gameManager.getGameByName(gameName);
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard tc: toolCards) {
-            if(tc.equals(toolCard)) {
-                toolCard.setNeededValue(value);
+            if(tc.getName().equals(toolCardName)) {
+                tc.setNeededValue(value);
             }
         }
     }
 
     /**
-     * Set a a new color needed for a certain toolcard and its purpose.
-     * This method assumes that game's toolcards contains card.
-     *
-     * @param color dice's value
-     * @param game game played
-     * @param toolCard toolcard on which to place the dice
+     * Set a new color needed for a certain toolcard and its purpose.
+     * This method assumes that game's toolcards contains the specified toolcard.
+     *  @param color dice's value
+     * @param gameName game played
+     * @param toolCardName toolcard on which to place the color
      */
     @Override
-    public void setColor(Color color, Game game, ToolCard toolCard) throws RemoteException {
+    public void setColor(Color color, String gameName, String toolCardName) {
+        Game game = gameManager.getGameByName(gameName);
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard tc : toolCards) {
-            if(tc.equals(toolCard))
-                toolCard.setNeededColor(color);
+            if(tc.getName().equals(toolCardName))
+                tc.setNeededColor(color);
         }
+    }
+
+    /**
+     * Set a new color needed for a certain toolcard and its purpose.
+     * This method assumes that game's toolcards contains the specified toolcard.
+     * @param position position that needs to be set for the specified toolcard
+     * @param gameName game played
+     * @param toolCardName toolcard on which to set the posiiton
+     * @throws RemoteException
+     */
+    @Override
+    public void setPosition(Position position, String gameName, String toolCardName) {
+        Game game = gameManager.getGameByName(gameName);
+        List<ToolCard> toolCards = game.getToolCards();
+        for(ToolCard tc : toolCards)
+            if(tc.getName().equals(toolCardName))
+                tc.setPosition(position);
+
     }
 }

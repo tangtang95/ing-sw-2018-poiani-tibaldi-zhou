@@ -30,16 +30,16 @@ public class ToolCardLanguageParser {
      *
      * @param description effects of a tool card
      * @return list of commands triggered by description
-     * @throws CommandNotFoundException if a string isn't matching with any of the avaible commands.
+     * @throws IllegalArgumentException if a string isn't matching with any of the avaible commands.
      */
-    public List<ICommand> parseToolCard(String description) throws CommandNotFoundException {
+    public List<ICommand> parseToolCard(String description) throws IllegalArgumentException {
         List<ICommand> commands = new ArrayList<>();
         ArrayList<String> processedText=  preprocessing(description);
         for(String s: processedText) {
             if(grammar.get(s) != null)
                 commands.add(grammar.get(s));
             else
-                throw new CommandNotFoundException("Command not recognized: " + s);
+                throw new IllegalArgumentException("Command not recognized: " + s);
         }
 
         return commands;

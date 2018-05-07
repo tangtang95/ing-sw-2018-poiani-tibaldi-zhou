@@ -18,11 +18,12 @@ public class RerollDice implements ICommand {
      * @throws InterruptedException
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
         Dice dice = toolCard.getNeededDice();
         Random rand = new Random();
         dice = new Dice(rand.nextInt(Dice.MAX_VALUE-1)+1, dice.getColor());
         toolCard.setNeededDice(dice);
+        return true;
     }
 
     @Override

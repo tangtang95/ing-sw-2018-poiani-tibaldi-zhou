@@ -15,8 +15,8 @@ public class SkipTurn implements ICommand {
     }
 
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
-
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+        return true;
     }
 
     public int getValue() {

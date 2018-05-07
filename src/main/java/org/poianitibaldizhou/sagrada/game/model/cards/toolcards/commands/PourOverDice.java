@@ -19,7 +19,7 @@ public class PourOverDice implements ICommand {
      * @throws InterruptedException error with wait()
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
         Dice chosenDice = toolCard.getNeededDice();
 
         DraftPool draftPool = game.getDraftPool();
@@ -28,9 +28,12 @@ public class PourOverDice implements ICommand {
             draftPool.useDice(chosenDice);
         } catch (DiceNotFoundException e) {
             e.printStackTrace();
+            return false;
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     @Override

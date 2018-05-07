@@ -1,13 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.cli.IScreen;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
@@ -18,8 +14,8 @@ public class CLIGameView implements IGameView, IToolCardObserver, IScreen {
     private Player player;
     private final transient NetworkManager networkManager;
     private final transient ScreenManager screenManager;
-    private Game game;
-    private ToolCard toolCard;
+    private String gameName;
+    private String toolCardName;
 
     public CLIGameView(NetworkManager networkManager, ScreenManager screenManager){
         this.networkManager = networkManager;
@@ -27,7 +23,7 @@ public class CLIGameView implements IGameView, IToolCardObserver, IScreen {
     }
 
     public void run() {
-        System.out.println("Welcome to the game");
+        System.out.println("Welcome to the gameName");
     }
 
     @Override
@@ -54,7 +50,7 @@ public class CLIGameView implements IGameView, IToolCardObserver, IScreen {
         if(this.player.equals(player)) {
             // TODO implements choose dice
             System.out.println("===> Choose a dice: ");
-            networkManager.getGameController().setDice(new Dice(1, Color.BLUE), game, toolCard);
+            networkManager.getGameController().setDice(new Dice(1, Color.BLUE), gameName, toolCardName);
         } else {
             System.out.println("===> Player "+ player + "is choosing a dice for using toolcard");
         }
@@ -73,7 +69,7 @@ public class CLIGameView implements IGameView, IToolCardObserver, IScreen {
             // TODO read value
             System.out.println("===> Choose a value for the dice: ");
             int value = 5;
-            networkManager.getGameController().setNewValue(value, game, toolCard);
+            networkManager.getGameController().setNewValue(value, gameName, toolCardName);
         }
     }
 
@@ -91,7 +87,7 @@ public class CLIGameView implements IGameView, IToolCardObserver, IScreen {
             // TODO choose color from roundtrack
             System.out.println("===> Choose a color from a dice present in the round track: ");
             Color color = Color.YELLOW;
-            networkManager.getGameController().setColor(color, game,toolCard);
+            networkManager.getGameController().setColor(color, gameName, toolCardName);
         }
     }
 
@@ -111,7 +107,72 @@ public class CLIGameView implements IGameView, IToolCardObserver, IScreen {
             // TODO choose delta
             System.out.println("===> Modify " + diceValue + "of +/-"+ value);
             int modifiedValue = 5;
-            networkManager.getGameController().setNewValue(modifiedValue, game, toolCard);
+            networkManager.getGameController().setNewValue(modifiedValue, gameName, toolCardName);
+        }
+    }
+
+    /**
+     * Players get notified that player needs to choose a dice from a given RoundTrack.
+     * If this is the player's CLI, he chooses the value and sends it back, nothing otherwise.
+     *
+     * @param player player that needs to choose the dice
+     * @param roundTrack RoundTrack that contains the list of dices among which the player has to choose
+     * @throws RemoteException network communication error
+     */
+    @Override
+    public void notifyNeedDiceFromRoundTrack(Player player, RoundTrack roundTrack) throws RemoteException {
+        if(this.player.equals(player)) {
+            // TODO implements dice choose from roundtrack
+            int round = 1;
+            Dice dice = new Dice(1, Color.YELLOW);
+            networkManager.getGameController().setDice(dice, gameName, toolCardName);
+            networkManager.getGameController().setNewValue(round, gameName,toolCardName);
+        }
+    }
+
+    /**
+     * Players get notified that player needs to choose a position of the schema card.
+     * If this is the player's CLI, he chooses the position and sends it back, nothing otherwise.
+     *
+     *
+     * @param player player that needs to choose a position
+     * @throws RemoteException network communication error
+     */
+    @Override
+    public void notifyNeedPosition(Player player) throws RemoteException {
+        if(this.player.equals(player)) {
+            // TODO implements position
+            Position position;
+            try {
+                position = new Position(1,1);
+                networkManager.getGameController().setPosition(position, gameName, toolCardName);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Players get notified that player needs to choose a position from the schema card.
+     * The position selected, must contain a dice of the specified color.
+     * If this is the player's CLI, he chooses the value and sends it back, nothing otherwise.
+     *
+     * @param player player that needs to choose a position
+     * @param color color of the dice of the selected position
+     * @throws RemoteException network communication error
+     */
+    @Override
+    public void notifyNeedDicePositionOfCertainColor(Player player, Color color) throws RemoteException {
+        if(this.player.equals(player)) {
+            // TODO implements position choose, the schemacard must contain a dice of that color
+            Position position;
+            try {
+                position = new Position(1,1);
+                networkManager.getGameController().setPosition(position, gameName, toolCardName);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 

@@ -88,7 +88,7 @@ public class ToolCardLanguageParserTest {
             for (int i = 0; i < actualCommands.size(); i++) {
                 assertEquals("Not matchin commands ("+i+")", commands.get(i), actualCommands.get(i));
             }
-        } catch (CommandNotFoundException e) {
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             fail("Exception not expected");
         }
@@ -101,7 +101,7 @@ public class ToolCardLanguageParserTest {
         try {
             commands = toolCardLanguageParser.parseToolCard(command);
             fail("Exception expected");
-        } catch (CommandNotFoundException e) {
+        } catch (IllegalArgumentException e) {
             assertEquals(commands, null);
         }
     }
@@ -116,7 +116,7 @@ public class ToolCardLanguageParserTest {
             assertEquals("Number of commands not matching",commands.size(),actualCommands.size());
             assertEquals(1, actualCommands.size());
             assertArrayEquals("Not matching commands",commands.toArray(), actualCommands.toArray());
-        } catch (CommandNotFoundException e) {
+        } catch (IllegalArgumentException e) {
             fail("No exceptione expected");
         }
     }
