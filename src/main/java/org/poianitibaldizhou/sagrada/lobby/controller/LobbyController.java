@@ -7,6 +7,9 @@ import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +52,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * Implements the logout of an User by his token.
      *
      * @param token user's token
-     * @throws RemoteException if no user's with token exists in the model or if there are some problems
+     * @throws RemoteException if no user's with token exists in the game or if there are some problems
      *                          with the communication architecture
      */
     @Override
@@ -127,14 +130,38 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     @Override
     public void requestTimeout(String token) throws RemoteException {
         try {
-            viewMap.get(token).ack(database.getTimeToTimeout() + "");
+            viewMap.get(token).ack(formatTimeout(database.getTimeToTimeout()));
         } catch (RemoteException re){
             viewMap.get(token).err("None lobby is active. Join to create one.");
         }
     }
 
-    private boolean authorize(String token, String username) throws RemoteException {
-        User user = database.getUserByToken(token);
+    /**
+     * Returns true if token matches username, false otherwise.
+     *
+     * @param token user's token
+     * @param username user's username
+     * @return true if token matches username, false otherwise
+     */
+    private boolean authorize(String token, String username) {
+        User user;
+        try {
+            user = database.getUserByToken(token);
+        } catch(RemoteException re) {
+            return false;
+        }
         return user.getName().equals(username);
+    }
+
+    /**
+     * Converts a time given in milliseconds to a String in format mm:ss.
+     *
+     * @param timeout time given in milliseconds
+     * @return string representing timeout in format mm:ss
+     */
+    private String formatTimeout(long timeout) {
+        Date date = new Date(timeout);
+        DateFormat formatter =  new SimpleDateFormat("mm:ss");
+        return formatter.format(date);
     }
 }

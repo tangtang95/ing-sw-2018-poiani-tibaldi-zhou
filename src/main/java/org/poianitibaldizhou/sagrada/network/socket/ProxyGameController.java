@@ -1,22 +1,44 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.view.IGameView;
+
+import java.rmi.RemoteException;
 
 public class ProxyGameController extends ProxyController implements IGameController{
+
+
     /**
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
      *
-     * @param ipAddress the IP address of the server
-     * @param port      the port of the server on which is listening
+     * @param serverHandler the serverHandler connected with the server
      */
-    public ProxyGameController(String ipAddress, int port) {
-        super(ipAddress, port);
+    public ProxyGameController(ServerHandler serverHandler) {
+        super(serverHandler);
     }
 
     @Override
-    public void setDice(Dice d) {
+    public void joinGame(Game game, IGameView view, String token) throws RemoteException {
+        // TODO
+    }
 
+    @Override
+    public void setDice(Dice dice, Game game, ToolCard toolCard) throws RemoteException {
+        //TODO
+    }
+
+    @Override
+    public void setNewValue(int value, Game game, ToolCard toolCard) throws RemoteException {
+        //TODO
+    }
+
+    @Override
+    public void setColor(Color color, Game game, ToolCard toolCard) throws RemoteException {
+        //TODO
     }
 }

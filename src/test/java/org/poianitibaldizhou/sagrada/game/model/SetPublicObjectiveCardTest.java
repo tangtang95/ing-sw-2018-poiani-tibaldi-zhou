@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;

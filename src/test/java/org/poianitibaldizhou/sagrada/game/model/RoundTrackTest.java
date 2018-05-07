@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -27,7 +27,7 @@ public class RoundTrackTest {
         dices = new ArrayList<>();
         tokens.add("ABC");
         tokens.add("DEF");
-        game = new Game(tokens);
+        game = new Game(tokens, "1Game");
         dices.add(new Dice(new NumberConstraint(1),new ColorConstraint(Color.BLUE)));
         dices.add(new Dice(new NumberConstraint(2),new ColorConstraint(Color.GREEN)));
         dices.add(new Dice(new NumberConstraint(3),new ColorConstraint(Color.YELLOW)));

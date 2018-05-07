@@ -17,6 +17,7 @@ public class Game {
     private final List<PublicObjectiveCard> publicObjectiveCards;
     private final DrawableCollection<Dice> diceBag;
     private final DraftPool draftPool;
+    private final String name;
 
     private Player currentPlayerRound;
     private IStateGame state;
@@ -30,7 +31,7 @@ public class Game {
      *
      * @param tokens the list of String token of the players
      */
-    public Game(List<String> tokens) {
+    public Game(List<String> tokens, String name) {
         this.isSinglePlayer = false;
         this.players = new LinkedList<>();
         this.diceBag = new DrawableCollection<>();
@@ -38,6 +39,7 @@ public class Game {
         this.publicObjectiveCards = new LinkedList<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
+        this.name = name;
 
         for (String token : tokens) {
             players.add(new Player(token, new FavorToken()));
@@ -65,6 +67,11 @@ public class Game {
         players.add(new Player(singlePlayerToken, new ExpendableDice(draftPool)));
         setState(new SetupPlayerState(this));
 
+        name = "Single player";
+    }
+
+    public String getName() {
+        return name;
     }
 
     public boolean isSinglePlayer() {

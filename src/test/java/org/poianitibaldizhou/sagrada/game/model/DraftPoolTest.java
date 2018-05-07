@@ -1,12 +1,9 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +58,7 @@ public class DraftPoolTest {
                 dp.useDice(dices.get(order[i]));
                 dices.remove(order[i]);
 
-                assert(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
+                assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
             }
         } catch (DiceNotFoundException dnfe){
             fail("No exception expected");

@@ -4,6 +4,8 @@ import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
+import java.rmi.RemoteException;
+
 public class Player {
     private ICoin coins;
     private final String token;
@@ -24,7 +26,7 @@ public class Player {
         this.schemaCard = null;
         this.privateObjectiveCard = null;
         this.token = token;
-        this.outcome = Outcome.INGAME;
+        this.outcome = Outcome.IN_GAME;
     }
 
     //GETTER
@@ -54,10 +56,9 @@ public class Player {
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
      */
-    public void useCard(ToolCard toolCard) throws NoCoinsExpendableException{
+    public void useCard(ToolCard toolCard) throws NoCoinsExpendableException, RemoteException, InterruptedException {
         coins.use(toolCard);
         toolCard.invokeCommands(this);
-
     }
 
     /**

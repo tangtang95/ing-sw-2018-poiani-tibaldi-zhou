@@ -18,16 +18,14 @@ import java.util.logging.Logger;
  */
 public class ProxyLobbyController extends ProxyController implements ILobbyController {
 
-
     /**
      * Constructor.
      * Create a proxy client controller to have transparency of the socket connection
      *
-     * @param ipAddress the IP address of the server
-     * @param port      the port of the server on which is listening
+     * @param serverHandler the serverHandler connected with the server
      */
-    public ProxyLobbyController(String ipAddress, int port) {
-        super(ipAddress, port);
+    public ProxyLobbyController(ServerHandler serverHandler) {
+        super(serverHandler);
     }
 
     /**
@@ -42,7 +40,7 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     public String login(String username, ILobbyView view) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, username, (Serializable) view));
+        serverHandler.sendRequest(new Request(methodName, username, view));
         return (String) serverHandler.getResponse();
     }
 
@@ -82,16 +80,28 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     public void join(String token, String username, ILobbyObserver lobbyObserver) {
         serverHandler.addViewToHashMap(lobbyObserver.hashCode(), lobbyObserver);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token, username, (Serializable) lobbyObserver));
+        serverHandler.sendRequest(new Request(methodName, token, username, lobbyObserver));
     }
 
+    /**
+     * Send a request of the user currently present in the lobby.
+     *
+     * @param token requesting user's token
+     */
     @Override
-    public void requestUsersInLobby(String token) throws RemoteException {
-        // TODO
+    public void requestUsersInLobby(String token) {
+        String methodName= Thread.currentThread().getStackTrace()[1].getMethodName();
+        serverHandler.sendRequest(new Request(methodName, token));
     }
 
+    /**
+     * Requesting time to reach timeout
+     *
+     * @param token requesting user's token
+     */
     @Override
-    public void requestTimeout(String token) throws RemoteException {
-        // TODO
+    public void requestTimeout(String token) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        serverHandler.sendRequest(new Request(methodName, token));
     }
 }

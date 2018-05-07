@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-public interface IGameView {
-    // Insert method needed by server for calls on client
+import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
+
+public interface IGameView extends ILobbyView{
+
 }

@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -51,7 +51,7 @@ public class ToolCardLanguageParserTest {
         commands.add(new ModifyDiceValue(1));
         commands.add(new RemoveDice(TileConstraintType.NONE));
         commands.add(new RemoveDice(TileConstraintType.COLOR));
-        commands.add(new SwapDice());
+        commands.add(new SwapDiceWithRoundTrack());
         commands.add(new RerollDice());
         commands.add(new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL));
         commands.add(new PlaceDice(TileConstraintType.COLOR, DiceConstraintType.NORMAL));

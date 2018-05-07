@@ -1,9 +1,7 @@
 package org.poianitibaldizhou.sagrada.network;
 
-import org.poianitibaldizhou.sagrada.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
-import org.poianitibaldizhou.sagrada.network.NetworkType;
 
 import java.rmi.RemoteException;
 

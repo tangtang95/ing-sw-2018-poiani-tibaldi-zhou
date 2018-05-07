@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -116,8 +116,9 @@ public class GameInjectorTest {
     public void toolCardInjectorTest() {
         injector.injectToolCards(toolCardDrawableCollection1, true);
         for (int i = 0; i < toolCardDrawableCollection.size(); i++) {
-            if(!toolCardDrawableCollection.getCollection().get(i).equals(toolCardDrawableCollection1.getCollection().get(i)))
-                System.out.println("Wrong drawableCollection of toolCards");
+            assertEquals("Wrong drawableCollection of toolCards",
+                    toolCardDrawableCollection.getCollection().get(i),
+                    toolCardDrawableCollection1.getCollection().get(i));
         }
         assertEquals("Wrong size", 12, toolCardDrawableCollection.size());
     }

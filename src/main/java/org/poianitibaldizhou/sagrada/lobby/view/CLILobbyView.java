@@ -1,23 +1,28 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
-import org.poianitibaldizhou.sagrada.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.Command;
+import org.poianitibaldizhou.sagrada.cli.IScreen;
+import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver, IScreen {
-    private final transient Scanner in;
+    private final transient BufferedReader reader;
     private final transient Map<String, Command> commandMap;
     private final transient ScreenManager screenManager;
     private final transient NetworkManager networkManager;
+    private final transient ILobbyController controller;
 
     private String token;
     private String username;
@@ -26,42 +31,61 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     private static final String JOIN_COMMAND = "join";
     private static final String LEAVE_COMMAND = "leave";
     private static final String QUIT_COMMAND = "quit";
+    private static final String TIMEOUT_COMMAND = "timeout";
+    private static final String LOBBY_USER_COMMAND = "showLobbyUsers";
 
     public CLILobbyView(NetworkManager networkManager, ScreenManager screenManager) throws RemoteException {
         super();
         this.networkManager = networkManager;
         this.screenManager = screenManager;
-        in = new Scanner(System.in);
+        this.controller = networkManager.getLobbyController();
+        reader = new BufferedReader(new InputStreamReader(System.in));
         commandMap = new HashMap<>();
         initializeCommands();
     }
 
     private void initializeCommands() {
         Command joinCommand = new Command(JOIN_COMMAND, "join the lobby");
-        joinCommand.setCommandAction(() -> networkManager.getLobbyController().join(token, username, this));
+        joinCommand.setCommandAction(() -> controller.join(token, username, this));
         commandMap.put(joinCommand.getCommandText(), joinCommand);
 
         Command leaveCommand = new Command(LEAVE_COMMAND, "leave the lobby");
-        leaveCommand.setCommandAction(() -> networkManager.getLobbyController().leave(token, username));
+        leaveCommand.setCommandAction(() -> controller.leave(token, username));
         commandMap.put(leaveCommand.getCommandText(), leaveCommand);
 
         Command quitCommand = new Command(QUIT_COMMAND, "quit the game");
         quitCommand.setCommandAction(() -> isLoggedIn = false);
         commandMap.put(quitCommand.getCommandText(), quitCommand);
+
+        Command timeoutCommand = new Command(TIMEOUT_COMMAND, "show time to reach timeout");
+        timeoutCommand.setCommandAction(() -> networkManager.getLobbyController().requestTimeout(token));
+        commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
+
+        Command showUserCommand = new Command(LOBBY_USER_COMMAND, "show users in lobby");
+        showUserCommand.setCommandAction(() -> networkManager.getLobbyController().requestUsersInLobby(token));
+        commandMap.put(showUserCommand.getCommandText(), showUserCommand);
+
     }
 
     private void printHelp() {
         System.out.println("===> Available commands:");
-        for (Command command: commandMap.values()) {
+        for (Command command : commandMap.values()) {
             System.out.println("\t " + command.getCommandText() + "\t\t" + command.getHelpText());
         }
     }
 
-    private Command nextCommand() {
+    private Command nextCommand() throws InterruptedException {
         Command command;
         do {
             System.out.print("===> Next command: ");
-            String commandText = in.nextLine();
+            String commandText = null;
+            try {
+                while (!reader.ready())
+                    Thread.sleep(10);
+                commandText = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             command = commandMap.get(commandText);
             if (command == null)
                 printHelp();
@@ -70,14 +94,19 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     }
 
     @Override
-    public void run() {
+    public void run() throws InterruptedException{
         System.out.println("WELCOME TO SAGRADA!");
         do {
             System.out.print("===> Provide an username: ");
-            username = in.nextLine();
+            try {
+                username = reader.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
             if (!(username.isEmpty()))
                 try {
-                    token = networkManager.getLobbyController().login(username, this);
+                    token = controller.login(username, this);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -86,7 +115,11 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
 
         Command command;
         do {
-            command = nextCommand();
+            try {
+                command = nextCommand();
+            } catch (InterruptedException e) {
+                throw new InterruptedException("interrupt caught");
+            }
             try {
                 command.executeCommand();
             } catch (RemoteException re) {
@@ -94,7 +127,7 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
             }
         } while (isLoggedIn);
         try {
-            networkManager.getLobbyController().logout(token);
+            controller.logout(token);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -123,7 +156,6 @@ public class CLILobbyView extends UnicastRemoteObject implements ILobbyView, ILo
     @Override
     public void onGameStart() throws RemoteException {
         System.out.print("===> Game started");
-        networkManager.closeLobbyController();
         screenManager.pushScreen(new CLIGameView(networkManager, screenManager));
     }
 

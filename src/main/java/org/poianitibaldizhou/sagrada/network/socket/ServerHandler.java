@@ -35,6 +35,7 @@ public class ServerHandler implements Runnable {
      * @param socket the socket connected to the server
      */
     public ServerHandler(Socket socket) {
+        LOGGER.setLevel(Level.SEVERE);
         try {
             outputStream = new ObjectOutputStream(socket.getOutputStream());
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -92,11 +93,13 @@ public class ServerHandler implements Runnable {
             try {
                 object = inputStream.readObject();
                 if (object instanceof NotifyMessage) {
+                    LOGGER.log(Level.INFO, "NotifyMessage received");
                     NotifyMessage notifyMessage = (NotifyMessage) object;
                     Object target = viewMap.get(notifyMessage.getObserverHashcode());
                     notifyMessage.getRequest().invokeMethod(target);
                 }
                 if (object instanceof Response) {
+                    LOGGER.log(Level.INFO, "Response received");
                     synchronized (this) {
                         Response response = (Response) object;
                         objectRequested = response.getObject();
@@ -118,14 +121,14 @@ public class ServerHandler implements Runnable {
      * @param view     the object binding the key
      */
     public synchronized void addViewToHashMap(int hashcode, Object view) {
-        if(!viewMap.containsKey(hashcode))
+        if (!viewMap.containsKey(hashcode))
             viewMap.put(hashcode, view);
     }
 
     /**
      * Close every stream opened when the class is instantiated
      */
-    private void close() {
+    public synchronized void close() {
         try {
             inputStream.close();
             outputStream.close();
@@ -133,4 +136,5 @@ public class ServerHandler implements Runnable {
             LOGGER.log(Level.SEVERE, e.toString());
         }
     }
+
 }

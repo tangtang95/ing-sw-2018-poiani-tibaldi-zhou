@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.Before;
 import org.junit.BeforeClass;

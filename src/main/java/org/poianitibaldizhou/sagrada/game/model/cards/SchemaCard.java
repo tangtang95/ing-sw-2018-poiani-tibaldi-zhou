@@ -51,7 +51,7 @@ public class SchemaCard {
      * @param dice   the dice to place on the schemaCard
      * @param row    the row where to place the dice
      * @param column the column where to place the dice
-     * @throws RuleViolationException if getDice(row, column) != null ||
+     * @throws RuleViolationException if getNeededDice(row, column) != null ||
      *                                hasOrthogonalDicesSimilar() ||
      *                                this.isEmpty() && !this.isOutOfBounds(row,column) ||
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
@@ -68,7 +68,7 @@ public class SchemaCard {
      * @param column         the column where to place the dice
      * @param diceConstraint the constraint to check on the placement of dice
      * @param tileConstraint the constraint to check on the tile
-     * @throws RuleViolationException if getDice(row, column) != null ||
+     * @throws RuleViolationException if getNeededDice(row, column) != null ||
      *                                hasOrthogonalDicesSimilar() ||
      *                                (this.isEmpty() && !this.isOutOfBounds(row,column)) ||
      *                                (diceConstraint == NORMAL && !this.isEmpty() &&
@@ -286,7 +286,7 @@ public class SchemaCard {
      * @return if the position is out of bounds according to the matrix tile
      */
     @Contract(pure = true)
-    private boolean isOutOfBounds(int row, int column) {
+    public static boolean isOutOfBounds(int row, int column) {
         return row < 0 || row > SchemaCard.NUMBER_OF_ROWS - 1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS - 1;
     }
 

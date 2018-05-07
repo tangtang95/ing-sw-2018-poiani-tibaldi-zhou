@@ -8,6 +8,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
+
 public class UseCardState implements IPlayerState {
     private TurnState turnState;
 
@@ -24,7 +26,13 @@ public class UseCardState implements IPlayerState {
     @Override
     public void useCard(Player player, ToolCard toolCard) {
         try {
-            player.useCard(toolCard);
+            try {
+                player.useCard(toolCard);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         } catch (NoCoinsExpendableException e) {
             e.printStackTrace();
         }

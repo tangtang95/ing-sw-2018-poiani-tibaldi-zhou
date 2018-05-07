@@ -2,43 +2,60 @@ package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
-import org.poianitibaldizhou.sagrada.network.socket.ProxyController;
-import org.poianitibaldizhou.sagrada.network.socket.ProxyGameController;
-import org.poianitibaldizhou.sagrada.network.socket.ProxyLobbyController;
-
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.poianitibaldizhou.sagrada.network.strategycontroller.RMIStrategyController;
+import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyController;
+import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
 
 
-public class NetworkManager {
+public class NetworkManager implements StrategyController{
 
     private NetworkType networkType;
-    private ILobbyController lobbyController;
-    private IGameController gameController;
+    private StrategyController strategyController;
     private final String ipAddress;
 
+    /**
+     * Constructor.
+     * Create a Network Manager with which it's possible to change the network connection type (RMI or Socket)
+     *
+     * @param ipAddress the ip address of the server
+     * @param networkType the network type of connection desired
+     */
     public NetworkManager(String ipAddress, NetworkType networkType) {
         this.ipAddress = ipAddress;
-        this.networkType = networkType;
-        this.lobbyController = null;
-        this.gameController = null;
+        setNetworkType(networkType);
     }
 
+    @Override
     public ILobbyController getLobbyController() {
-        setLobbyController(networkType);
-        return lobbyController;
+        return strategyController.getLobbyController();
     }
 
+    @Override
     public IGameController getGameController(){
-        setGameController(networkType);
-        return gameController;
+        return strategyController.getGameController();
     }
 
+    /**
+     * Set the network type if it is different from the current one. If it's different then
+     * the strategyController will be updated
+     *
+     * @param networkType the new network type
+     * @throws IllegalArgumentException if the network type is something different from RMI or SOCKET
+     */
     public void setNetworkType(NetworkType networkType) {
+        if(networkType == this.networkType)
+            return;
         this.networkType = networkType;
+        switch (networkType){
+            case RMI:
+                strategyController = new RMIStrategyController(ipAddress, networkType.getPort());
+                break;
+            case SOCKET:
+                strategyController = new SocketStrategyController(ipAddress, networkType.getPort());
+                break;
+            default:
+                throw new IllegalArgumentException("network type undefined");
+        }
     }
 
     public NetworkType getNetworkType() {
@@ -49,53 +66,4 @@ public class NetworkManager {
         return ipAddress;
     }
 
-    public void closeLobbyController(){
-        if (lobbyController != null && lobbyController instanceof ProxyLobbyController) {
-            ((ProxyController) lobbyController).close();
-        }
-        lobbyController = null;
-    }
-
-    public void closeGameController(){
-        if (gameController != null && gameController instanceof ProxyLobbyController) {
-            ((ProxyController) gameController).close();
-        }
-        gameController = null;
-    }
-
-    private void setGameController(NetworkType networkType){
-        switch (networkType) {
-            case RMI:
-                break;
-            case SOCKET:
-                if(gameController != null && gameController instanceof ProxyGameController)
-                    break;
-                gameController = new ProxyGameController(ipAddress, networkType.getPort());
-                break;
-            default:
-        }
-    }
-
-    private void setLobbyController(NetworkType networkType) {
-        switch (networkType) {
-            case RMI:
-                closeLobbyController();
-                try {
-                    lobbyController = (ILobbyController) LocateRegistry.getRegistry(ipAddress, networkType.getPort())
-                            .lookup("lobbycontroller");
-                } catch (RemoteException e) {
-                    Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot find RMI registry");
-                } catch (NotBoundException e) {
-                    Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot find RMI controller");
-                }
-                break;
-            case SOCKET:
-                if (lobbyController != null && lobbyController instanceof ProxyLobbyController)
-                    break;
-                lobbyController = new ProxyLobbyController(ipAddress, networkType.getPort());
-                break;
-            default:
-                break;
-        }
-    }
 }

@@ -1,8 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+
+import java.rmi.RemoteException;
 
 public class PlaceDice implements ICommand {
 
@@ -24,7 +28,7 @@ public class PlaceDice implements ICommand {
     }
 
     @Override
-    public void executeCommand(Player player) {
+    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
 
     }
 
