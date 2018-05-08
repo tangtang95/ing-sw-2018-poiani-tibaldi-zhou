@@ -29,6 +29,7 @@ public class RemoveDice implements ICommand {
      * So it requires a color in constraintType == TileConstraintType.COLOR.
      * Generally speaking, it doesn't require anything more and it will ask the client for a position and
      * it will remove the dice in that position.
+     * It will push the removed dice in toolcard
      *
      * @param player player that invoked the command
      * @param toolCard toolcard invoked
@@ -62,6 +63,7 @@ public class RemoveDice implements ICommand {
 
             removed = schemaCard.removeDice(position.getRow(), position.getColumn());
         } while(removed == null);
+        toolCard.setNeededDice(removed);
         return true;
     }
 

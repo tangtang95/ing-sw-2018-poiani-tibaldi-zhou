@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
@@ -62,7 +60,7 @@ public class ToolCardLanguageParser {
     private static void setGrammar(){
         grammar = new HashMap<>();
         grammar.put("Choose dice", new ChooseDice());
-        grammar.put("Modify dice value by 1", new ModifyDiceValue(1));
+        grammar.put("Modify dice value by 1", new ModifyDiceValueByDelta(1));
         grammar.put("Remove dice", new RemoveDice(TileConstraintType.NONE));
         grammar.put("Remove dice of a certain color", new RemoveDice(TileConstraintType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
@@ -74,7 +72,7 @@ public class ToolCardLanguageParser {
         grammar.put("Add dice to DraftPool", new AddDiceToDraftPool());
         grammar.put("Add dice to Dicebag", new AddDiceToDiceBag());
         grammar.put("Draw dice from Dicebag", new DrawDiceFromDicebag());
-        grammar.put("Choose dice value", new ChooseDiceValue());
+        grammar.put("Modify dice value", new ModifyDiceValue());
         grammar.put("Reroll DraftPool", new RerollDraftPool());
         grammar.put("Check second turn", new CheckTurn(2));
         grammar.put("Check first turn", new CheckTurn(1));

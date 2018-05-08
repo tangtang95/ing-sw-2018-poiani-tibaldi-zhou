@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
@@ -13,71 +11,31 @@ import java.util.List;
 
 public class ModifyDiceValue implements ICommand {
 
-    private final int value;
-
-    public ModifyDiceValue(int value) {
-        this.value = value;
-    }
-
     /**
-     * Notify that a player needs to modify the value of a certain dice by a certain quantity.
-     * This method will get the dice from the toolcard, and modify it with the new value.
-     * This method will need a dice in toolcard, and it will substitute it with the dice
-     * created with the new value.
-     * The value doesn't have to be present before the method invocation: it's requested inside
-     * the method.
+     * Notify that a new value for a certain dice is needed.
+     * Doesn't require anything in toolcard. It requires a dice in toolcard
+     * It will modify it's value and puts the new Dice in toolcard.
      *
-     * @param player Player who invoked toolcard
+     * @param player Player who invoked the ToolCard
      * @param toolCard ToolCard invoked that contains this command
      * @param game Game in which the player acts
-     * @throws RemoteException network communication error
-     * @throws InterruptedException due to the wait() in  toolCard.getDice()
-     * @return true if methods execute correctly, false if the new value doesn't respect the rules.
+     * @return true
+     * @throws RemoteException if there are network communication errors
      */
     @Override
     public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
-        Dice dice = toolCard.getNeededDice();
-        toolCard.setNeededDice(dice);
-
-        List<IToolCardObserver> list = toolCard.getObservers();
-        for(IToolCardObserver obs : list)
-            obs.notifyNeedNewDeltaForDice(dice.getNumber(), value);
-
-        int newValue = toolCard.getNeededValue();
-
-        if(checkNewValueValidity(newValue, dice.getNumber())) {
-            toolCard.setNeededDice(new Dice(newValue, dice.getColor()));
-            return true;
+        List<IToolCardObserver> observerList = toolCard.getObservers();
+        for(IToolCardObserver obs : observerList){
+            obs.notifyNeedNewValue(player);
         }
-        return false;
-    }
-
-    public int getValue() {
-        return value;
-    }
-
-    /**
-     * Returns true if the new value is valid, false otherwise.
-     * For being valid, the new number needs to differentiate from oldValue exactly of
-     * this.value.
-     * Also, new value must be in range [Dice.MAX_VALUE, Dice.MIN_VALUE]
-     *
-     * @param newValue new value
-     * @param oldValue old value
-     * @return true if new value is valid, false otherwise
-     */
-    private boolean checkNewValueValidity(int newValue, int oldValue) {
-        if(newValue < 1 || newValue > 6)
-            return false;
-        return ((newValue == oldValue+this.value) || (newValue == oldValue-this.value)) ? true:false;
+        Dice dice = toolCard.getNeededDice();
+        Integer integer = toolCard.getNeededValue();
+        toolCard.setNeededDice(new Dice(integer, dice.getColor()));
+        return true;
     }
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof ModifyDiceValue))
-            return false;
-
-        ModifyDiceValue obj = (ModifyDiceValue) object;
-        return this.value == obj.getValue();
+        return object instanceof ModifyDiceValue;
     }
 }
