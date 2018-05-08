@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class RoundTrack {
@@ -25,25 +26,39 @@ public class RoundTrack {
     }
 
     /**
-     * Place a dice in the specified round of the roundtrack
+<<<<<<< HEAD
+     * Copy constructor.
      *
-     * @param dice dice that need to be placed
-     * @param round specified round
+     * @param roundTrack the roundTrack to copy
+     * @return copy of roundTrack
      */
-    public void addDiceToRound(Dice dice, int round) {
-        listOfDices.get(round).add(dice);
+    public static RoundTrack newInstance(RoundTrack roundTrack) {
+        if (roundTrack == null)
+            return null;
+        RoundTrack newRoundTrack = new RoundTrack();
+        List<Dice> diceList = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_TRACK; i++) {
+            for (Dice d : roundTrack.listOfDices.get(i))
+                diceList.add(Dice.newInstance(d));
+            newRoundTrack.addDicesToRound(diceList,i);
+        }
+        newRoundTrack.currentRound = roundTrack.currentRound;
+        return newRoundTrack;
     }
 
     /**
-     * Place a list of dice in the specified round of the roundtrack
+     * Place a dice in the specified round of the roundTrack
      *
-     * @param dices list of dice that need to be placed
+     * @param dices dice that need to be placed
      * @param round specified round
      */
-    public void addDicesToRound(List<Dice> dices, int round) {
+    public void addDicesToRound(List<Dice> dices, int round){
         listOfDices.get(round).addAll(dices);
     }
 
+    public void addDiceToRound(Dice dice, int round){
+        listOfDices.get(round).add(dice);
+    }
 
     /**
      * Return the list of dices of a given round

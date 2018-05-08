@@ -56,4 +56,11 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
         }
         return score;
     }
+
+    public static RowPublicObjectiveCard newInstance(RowPublicObjectiveCard rpoc) {
+        if (rpoc == null)
+            return null;
+        return new RowPublicObjectiveCard(rpoc.getName(),rpoc.getDescription(),rpoc.getCardPoints(),
+                rpoc.getType());
+    }
 }

@@ -4,8 +4,13 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import java.util.Objects;
 
@@ -13,6 +18,8 @@ public class Tile{
 
     private final IConstraint constraint;
     private Dice dice = null;
+
+    private static final Logger LOGGER = Logger.getLogger(Tile.class.getName());
 
     /**
      * Constructor: create a tile with no constraint on it
@@ -28,25 +35,6 @@ public class Tile{
      */
     public Tile(IConstraint constraint){
         this.constraint = constraint == null ? new NoConstraint(): constraint;
-    }
-
-    /**
-     * Constructor: create a copy of a tile (deep copy because dice and constraint are immutable)
-     * @param tile the tile to copy from
-     */
-    private Tile(Tile tile) {
-        dice = tile.dice;
-        constraint = tile.constraint;
-    }
-
-    /**
-     * Clone of the tile, calls the private constructor that copy a tile
-     *
-     * @param tile the tile to copy from
-     * @return the new tile equals to the tile given
-     */
-    public static Tile newInstance(Tile tile) {
-        return new Tile(tile);
     }
 
     /**
@@ -95,7 +83,6 @@ public class Tile{
      *
      * @param dice the dice to check if positionable
      * @return true if the dice can be placed with number and color constraint
-     * @throws RuleViolationException if this.getNeededDice() != null
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice) {
@@ -161,6 +148,21 @@ public class Tile{
         else if(getDice() == null && other.getDice() == null)
             return this.getConstraint().equals(other.getConstraint());
         return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
+    }
+
+    @Override
+    public String toString() {
+        if (dice != null)
+            return dice.toString();
+        return " " + constraint.toString()+ " ";
+    }
+
+    public static Tile newInstance(Tile tile) {
+        if (tile == null)
+            return null;
+        Tile newTile = new Tile(tile.getConstraint());
+        newTile.dice = Dice.newInstance(tile.getDice());
+        return newTile;
     }
 
     /**

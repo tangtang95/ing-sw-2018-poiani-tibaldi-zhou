@@ -16,7 +16,15 @@ public class ToolCard extends Card {
     private List<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
+
+    // properties that need communication with client
+    private Dice neededDice;
+    private Color neededColor;
+    private Integer neededValue;
+    private Position position;
+    private boolean turnEnd;
     private ToolCardExecutorHelper toolCardExecutorHelper;
+
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
@@ -27,6 +35,7 @@ public class ToolCard extends Card {
         commands = toolCardLanguageParser.parseToolCard(action);
         observers = new ArrayList<>();
     }
+
 
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<>(observers);
@@ -85,9 +94,17 @@ public class ToolCard extends Card {
         return tokens == toolCard.tokens &&
                 isSinglePlayer == toolCard.isSinglePlayer &&
                 color == toolCard.color &&
-                Objects.equals(commands, toolCard.commands)&&
+                equalsCommand(toolCard.commands)&&
                 this.getName().equals(toolCard.getName()) &&
                 this.getDescription().equals(toolCard.getDescription());
+    }
+
+    private boolean equalsCommand(List<ICommand> commands){
+        for (int i = 0; i < commands.size(); i++) {
+            if (commands.get(i).getClass() != this.commands.get(i).getClass())
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -97,5 +114,9 @@ public class ToolCard extends Card {
 
     public ToolCardExecutorHelper getToolCardExecutorHelper() {
         return toolCardExecutorHelper;
+    }
+
+    public List<ICommand> getCommands() {
+        return commands;
     }
 }

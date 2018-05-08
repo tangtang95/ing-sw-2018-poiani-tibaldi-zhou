@@ -34,6 +34,11 @@ public class SchemaCard {
         }
     }
 
+    private SchemaCard(String name, int difficulty, Tile[][] tileMatrix){
+        this.name = name;
+        this.difficulty = difficulty;
+        this.tileMatrix = tileMatrix;
+    }
 
     @Contract(pure = true)
     public String getName() {
@@ -302,6 +307,8 @@ public class SchemaCard {
 
 
     /**
+     * Return the number of empty spaces inside the tileMatrix
+     *
      * @return the number of empty spaces inside the tileMatrix
      */
     public int getNumberOfEmptySpaces() {
@@ -315,9 +322,29 @@ public class SchemaCard {
         return numberOfEmptySpaces;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("  -----   -----   -----   -----   -----  \n");
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                stringBuilder.append("|  " + tileMatrix[i][j].toString() + "  ");
+            }
+            stringBuilder.append("|\n");
+            stringBuilder.append("  -----   -----   -----   -----   -----  \n");
+        }
+        return  stringBuilder.toString();
+    }
 
-    public static SchemaCard newInstance(SchemaCard schema) {
-        //TODO
-        return schema;
+    public static SchemaCard newInstance(SchemaCard schemaCard) {
+        if (schemaCard == null)
+            return null;
+        Tile[][] tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                tileMatrix[i][j] = Tile.newInstance(schemaCard.getTile(i,j));
+            }
+        }
+        return new SchemaCard(schemaCard.getName(),schemaCard.getDifficulty(),tileMatrix);
     }
 }

@@ -221,6 +221,13 @@ public class SchemaCardTest {
     }
 
     @Test
+    public void toStringTest(){
+        System.out.println(emptySchemaCard.toString() + "\n");
+        System.out.println(schemaCard.toString() + "\n");
+        System.out.println(fullSchemaCard.toString() + "\n");
+    }
+
+    @Test
     public void testIsolatedSetDice() throws RuleViolationException {
         Dice d1 = new Dice(5, Color.PURPLE);
         try {

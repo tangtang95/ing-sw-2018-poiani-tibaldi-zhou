@@ -79,4 +79,15 @@ public class DraftPool {
 
     public int size(){return dices.size();}
 
+    public static DraftPool newInstance(DraftPool draftPool){
+        if (draftPool == null)
+            return null;
+        DraftPool newDraftPool = new DraftPool();
+        List<Dice> diceList = new ArrayList<>();
+        for (Dice d: draftPool.getDices())
+            diceList.add(Dice.newInstance(d));
+        newDraftPool.addDices(diceList);
+        return newDraftPool;
+    }
+
 }

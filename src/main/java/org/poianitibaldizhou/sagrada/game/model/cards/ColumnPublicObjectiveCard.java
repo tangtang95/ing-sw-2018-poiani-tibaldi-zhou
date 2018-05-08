@@ -55,4 +55,11 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
         }
         return score;
     }
+
+    public static ColumnPublicObjectiveCard newInstance(ColumnPublicObjectiveCard cpoc) {
+        if (cpoc == null)
+            return null;
+        return new ColumnPublicObjectiveCard(cpoc.getName(),cpoc.getDescription(),cpoc.getCardPoints(),
+                cpoc.getType());
+    }
 }

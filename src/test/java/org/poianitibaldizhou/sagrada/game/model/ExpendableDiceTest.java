@@ -16,23 +16,22 @@ public class ExpendableDiceTest {
     @DataPoint
     public static DraftPool draftPool;
     @DataPoint
-    public static ToolCard toolCard1;
+    public static DrawableCollection<ToolCard> toolCards;
     @DataPoint
     public static ExpendableDice expendableDice;
 
     @BeforeClass
     public static void setUpClass() throws EmptyCollectionException {
         GameInjector gameInjector = new GameInjector();
-        DrawableCollection<ToolCard> toolCardDrawableCollection = new DrawableCollection<>();
+        toolCards = new DrawableCollection<>();
         DrawableCollection<Dice> diceBag = new DrawableCollection<>();
         draftPool = new DraftPool();
 
-        gameInjector.injectToolCards(toolCardDrawableCollection, false);
-        toolCard1 = toolCardDrawableCollection.draw();
+        gameInjector.injectToolCards(toolCards, false);
 
         gameInjector.injectDiceBag(diceBag);
         List<Dice> dices = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 90; i++) {
             dices.add(diceBag.draw());
         }
         draftPool.addDices(dices);
@@ -57,12 +56,15 @@ public class ExpendableDiceTest {
 
     @Test
     public void useTest() {
-        try {
-            expendableDice.use(toolCard1);
-        } catch (NoCoinsExpendableException e) {
-            assertEquals("DraftPool size error", 10, draftPool.getDices().size());
+        int i = 90;
+        for (ToolCard t : toolCards.getCollection()) {
+            try {
+                expendableDice.use(t);
+            } catch (NoCoinsExpendableException e) {
+                assertEquals("DraftPool size error", i, draftPool.getDices().size());
+            }
+            i--;
+            assertEquals("DraftPool size error", i, draftPool.getDices().size());
         }
-
-        assertEquals("DraftPool size error", 9, draftPool.getDices().size());
     }
 }

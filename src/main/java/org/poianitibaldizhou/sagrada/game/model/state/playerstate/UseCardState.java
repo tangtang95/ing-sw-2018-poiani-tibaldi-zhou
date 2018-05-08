@@ -24,6 +24,7 @@ public class UseCardState implements IPlayerState {
             throw new IllegalStateException();
     }
 
+
     @Override
     public void useCard(Player player, ToolCard toolCard, Game game) {
         try {

@@ -95,7 +95,7 @@ public class ToolCardLanguageParserTest {
 
     @Test
     public void testNotPresentCommand() {
-        String command = new String("thisIsNotACommand");
+        String command = "thisIsNotACommand";
         List<ICommand> commands = null;
         try {
             commands = toolCardLanguageParser.parseToolCard(command);

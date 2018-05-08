@@ -38,6 +38,8 @@ public class Player {
         return coins.getCoins();
     }
 
+    public ICoin getICoins() {return this.coins;}
+
     public SchemaCard getSchemaCard() {
         return schemaCard;
     }
@@ -149,5 +151,15 @@ public class Player {
         if (coins instanceof FavorToken)
             return getCoins();
         return 0;
+    }
+
+    public static Player newInstance(Player player) {
+        if (player == null)
+            return null;
+        Player newPlayer = new Player(player.getToken(),player.getICoins());
+        newPlayer.setSchemaCard(SchemaCard.newInstance(player.getSchemaCard()));
+        newPlayer.setPrivateObjectiveCard(PrivateObjectiveCard.newInstance(player.getPrivateObjectiveCard()));
+        newPlayer.setOutcome(player.getOutcome());
+        return newPlayer;
     }
 }

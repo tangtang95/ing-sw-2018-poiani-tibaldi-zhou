@@ -35,7 +35,10 @@ public class NoConstraint implements IConstraint {
         return obj instanceof NoConstraint;
     }
 
-    @Override
+    public String toString() {
+        return " ";
+    }
+
     public int hashCode() {
         return Objects.hash(NoConstraint.class);
     }

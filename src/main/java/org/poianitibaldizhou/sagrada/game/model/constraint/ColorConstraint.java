@@ -73,7 +73,10 @@ public class ColorConstraint implements IConstraint {
         return this.getColor() == ((ColorConstraint) obj).getColor();
     }
 
-    @Override
+    public String toString() {
+        return color.name().substring(0,1);
+    }
+
     public int hashCode() {
         return Objects.hash(getColor());
     }

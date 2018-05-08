@@ -39,4 +39,11 @@ public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
         return false;
     }
 
+    public static DiagonalPublicObjectiveCard newInstance(DiagonalPublicObjectiveCard dpoc) {
+        if (dpoc == null)
+            return null;
+        return new DiagonalPublicObjectiveCard(dpoc.getName(),dpoc.getDescription(),dpoc.getCardPoints(),
+                dpoc.getType());
+    }
+
 }
