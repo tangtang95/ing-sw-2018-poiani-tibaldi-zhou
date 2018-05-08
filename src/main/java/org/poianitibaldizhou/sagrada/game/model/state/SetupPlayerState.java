@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
@@ -79,6 +80,7 @@ public class SetupPlayerState extends IStateGame {
         return false;
     }
 
+    @Contract(pure = true)
     public boolean isPlayerReady(Player player) {
         for (Player playerReady : playersReady) {
             if(playerReady.equals(player))
@@ -87,10 +89,12 @@ public class SetupPlayerState extends IStateGame {
         return false;
     }
 
+    @Contract(pure = true)
     public boolean containsSchemaCard(Player player, SchemaCard schemaCard){
         return playerSchemaCards.get(player).contains(schemaCard);
     }
 
+    @Contract(pure = true)
     public List<SchemaCard> getSchemaCardsOfPlayer(Player player){
         List<SchemaCard> schemaCards = new ArrayList<>();
         for (SchemaCard schema: playerSchemaCards.get(player)) {

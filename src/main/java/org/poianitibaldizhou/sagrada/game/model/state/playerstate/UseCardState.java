@@ -11,17 +11,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
-public class UseCardState implements IPlayerState {
-    private TurnState turnState;
+public class UseCardState extends IPlayerState {
 
-    UseCardState(TurnState turnState) {
-        this.turnState = turnState;
-    }
-
-    @Override
-    public void chooseAction(String action) {
-        if (turnState.getPlayerState() instanceof UseCardState)
-            throw new IllegalStateException();
+    public UseCardState(TurnState turnState) {
+        super(turnState);
     }
 
 
@@ -42,11 +35,5 @@ public class UseCardState implements IPlayerState {
         turnState.nextTurn();
     }
 
-    @Override
-    public void placeDice(Player player, Dice dice, int row, int column, TileConstraintType tileConstraint,
-                          DiceConstraintType diceConstraint) {
-        if (turnState.getPlayerState() instanceof UseCardState)
-            throw new IllegalStateException();
-    }
 
 }

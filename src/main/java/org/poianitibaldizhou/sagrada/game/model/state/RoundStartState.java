@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
@@ -7,9 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class RoundStartState extends IStateGame{
+public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
-    private Player currentPlayer;
+    private Player currentRoundPlayer;
+    private int currentRound;
 
     public static final int NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER = 4;
 
@@ -20,10 +22,13 @@ public class RoundStartState extends IStateGame{
      * Create the state of RoundStartGame
      *
      * @param game the game to consider
+     * @param currentRound the current round of the game
+     * @param currentRoundPlayer the player who is the first player of the round
      */
-    RoundStartState(Game game, Player player) {
+    RoundStartState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
-        this.currentPlayer = player;
+        this.currentRoundPlayer = currentRoundPlayer;
+        this.currentRound = currentRound;
     }
 
     /**
@@ -33,19 +38,26 @@ public class RoundStartState extends IStateGame{
      * @param player the player who has called the throw dices (in the view)
      */
     @Override
-    public void throwDices(Player player) {
-        if(currentPlayer.equals(player)) {
+    public boolean throwDices(Player player) {
+        if(currentRoundPlayer.equals(player)) {
             int numberOfDicesToDraw = (game.isSinglePlayer()) ?
                     NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER : game.getNumberOfPlayers()*2 + 1;
             for (int i = 0; i < numberOfDicesToDraw; i++) {
                 try {
                     game.getDraftPool().addDice(game.getDiceBag().draw());
                 } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.FINE, "Error in throwDices for empty collection", e);
+                    LOGGER.log(Level.SEVERE, "Error in throwDices for empty collection", e);
                 }
             }
-            game.setState(new TurnState(game, currentPlayer, player,true));
+            game.setState(new TurnState(game, currentRound, currentRoundPlayer, player,true));
+            return true;
         }
+        return false;
+    }
+
+    @Contract(pure = true)
+    public Player getCurrentRoundPlayer(){
+        return currentRoundPlayer;
     }
 
 }

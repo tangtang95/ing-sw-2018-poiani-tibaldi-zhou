@@ -1,12 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
 
-public class RoundEndState extends IStateGame {
+public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 
-    private Player currentPlayer;
+    private Player currentRoundPlayer;
+    private int currentRound;
 
     /**
      * Constructor.
@@ -15,9 +18,15 @@ public class RoundEndState extends IStateGame {
      *
      * @param game the game needed for changing state and other things to do
      */
-     RoundEndState(Game game, Player currentPlayer) {
+     RoundEndState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
-        this.currentPlayer = currentPlayer;
+        this.currentRound = currentRound;
+        this.currentRoundPlayer = currentRoundPlayer;
+    }
+
+    @Contract(pure = true)
+    public int getCurrentRound(){
+        return currentRound;
     }
 
     /**
@@ -28,16 +37,19 @@ public class RoundEndState extends IStateGame {
      */
     @Override
     public void nextRound() {
-        game.getRoundTrack().addDicesToRound(game.getDraftPool().getDices(),game.getCurrentRound());
+        game.getRoundTrack().addDicesToRound(game.getDraftPool().getDices(), currentRound);
         game.getDraftPool().clearPool();
-        game.getRoundTrack().nextRound();
         Player nextPlayer = game.getPlayers().get(
-                game.getNextIndexOfPlayer(currentPlayer, Direction.CLOCKWISE));
+                game.getNextIndexOfPlayer(currentRoundPlayer, Direction.CLOCKWISE));
 
-        if(game.getCurrentRound() < game.getNumberOfRounds())
-            game.setState(new RoundStartState(game, nextPlayer));
+        if(currentRound < RoundTrack.LAST_ROUND)
+            game.setState(new RoundStartState(game, currentRound+1, nextPlayer));
         else
-            game.setState(new EndGameState(game, currentPlayer));
+            game.setState(new EndGameState(game, currentRoundPlayer));
     }
 
+    @Override
+    public Player getCurrentRoundPlayer() {
+        return currentRoundPlayer;
+    }
 }

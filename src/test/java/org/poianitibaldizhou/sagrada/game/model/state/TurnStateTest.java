@@ -23,7 +23,7 @@ public class TurnStateTest {
     @Mock
     private Game game;
     @Mock
-    private Player player1, player2, player3, player4;
+    private static Player player1, player2, player3, player4;
 
 
     @Before
@@ -39,6 +39,7 @@ public class TurnStateTest {
 
     @After
     public void tearDown() throws Exception {
+        game = null;
     }
 
     /**
@@ -46,7 +47,7 @@ public class TurnStateTest {
      */
     @Test
     public void testNextTurnWhenIsFirstTurn() throws Exception {
-        TurnState turnState = new TurnState(game, player1, player1, true);
+        TurnState turnState = new TurnState(game, 0,player1, player1, true);
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
@@ -62,7 +63,7 @@ public class TurnStateTest {
 
     @Test
     public void testNextTurnWhenIsFirstTurnButLastPlayer() throws Exception {
-        TurnState turnState = new TurnState(game, player2, player1, true);
+        TurnState turnState = new TurnState(game, 0, player2, player1, true);
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
@@ -79,7 +80,7 @@ public class TurnStateTest {
 
     @Test
     public void testNextTurnWhenIsNotFirstTurnAndCurrentPlayer() throws Exception {
-        TurnState turnState = new TurnState(game, player1, player1, false);
+        TurnState turnState = new TurnState(game, 0, player1, player1, false);
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
@@ -87,8 +88,12 @@ public class TurnStateTest {
         verify(game).setState(ArgumentMatchers.any(RoundEndState.class));
     }
 
-
-
+    @Test
+    public void getCurrentPlayer() throws Exception {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        assertEquals(player1, turnState.getCurrentRoundPlayer());
+        assertNotEquals(player2, turnState.getCurrentRoundPlayer());
+    }
 
 
 }

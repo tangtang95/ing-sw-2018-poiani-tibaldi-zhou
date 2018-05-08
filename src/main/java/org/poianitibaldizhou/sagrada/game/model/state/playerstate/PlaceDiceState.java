@@ -9,11 +9,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-public class PlaceDiceState implements IPlayerState {
-    private TurnState turnState;
+public class PlaceDiceState extends IPlayerState {
 
-    PlaceDiceState(TurnState turnState) {
-        this.turnState = turnState;
+
+    public PlaceDiceState(TurnState turnState) {
+        super(turnState);
     }
 
     @Override

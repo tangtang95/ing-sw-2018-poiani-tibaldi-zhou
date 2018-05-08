@@ -8,11 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-public class SelectActionState implements IPlayerState {
-    private TurnState turnState;
+public class SelectActionState extends IPlayerState {
 
     public SelectActionState(TurnState turnState) {
-        this.turnState = turnState;
+        super(turnState);
     }
 
     /**

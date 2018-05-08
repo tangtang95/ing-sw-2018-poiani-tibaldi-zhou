@@ -9,9 +9,10 @@ import java.util.List;
 public class RoundTrack {
 
     private final List<List<Dice>> listOfDices;
-    private int currentRound;
 
     public static final int NUMBER_OF_TRACK = 10;
+    public static final int FIRST_ROUND = 0;
+    public static final int LAST_ROUND = NUMBER_OF_TRACK - 1;
 
     /**
      * Constructor.
@@ -22,12 +23,11 @@ public class RoundTrack {
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
             listOfDices.add(new ArrayList<>());
         }
-        currentRound = 1;
     }
 
     /**
-<<<<<<< HEAD
      * Copy constructor.
+     * Place a dice in the specified round of the roundTrack
      *
      * @param roundTrack the roundTrack to copy
      * @return copy of roundTrack
@@ -42,7 +42,6 @@ public class RoundTrack {
                 diceList.add(Dice.newInstance(d));
             newRoundTrack.addDicesToRound(diceList,i);
         }
-        newRoundTrack.currentRound = roundTrack.currentRound;
         return newRoundTrack;
     }
 
@@ -68,7 +67,11 @@ public class RoundTrack {
      */
     @Contract(pure = true)
     public List<Dice> getDices(int round){
-        return new ArrayList<Dice>(listOfDices.get(round));
+        List<Dice> diceList = new ArrayList<>();
+        for (Dice dice: listOfDices.get(round)) {
+            diceList.add(Dice.newInstance(dice));
+        }
+        return diceList;
     }
 
     /**
@@ -81,19 +84,6 @@ public class RoundTrack {
     public void removeDiceFromRoundTrack(int round, Dice dice) throws IllegalArgumentException {
         if(!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
-    }
-
-    /**
-     * Increase the currentRound by 1 (called at the end of RoundEndState)
-     *
-     */
-    public void nextRound() {
-        currentRound++;
-    }
-
-    @Contract(pure = true)
-    public int getCurrentRound() {
-        return currentRound;
     }
 
 }

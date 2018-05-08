@@ -124,14 +124,6 @@ public class Game {
         this.state = state;
     }
 
-    public int getCurrentRound() {
-        return roundTrack.getCurrentRound();
-    }
-
-    public int getNumberOfRounds() {
-        return RoundTrack.NUMBER_OF_TRACK;
-    }
-
     public int getNumberOfPlayers() {
         return players.size();
     }

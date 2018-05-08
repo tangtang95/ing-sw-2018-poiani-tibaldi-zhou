@@ -10,23 +10,28 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 
-public class TurnState extends IStateGame implements IPlayerState {
+public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
-    private final Player roundPlayer;
+    private final Player currentRoundPlayer;
     private final Player player;
     private IPlayerState playerState;
+    private int currentRound;
     private boolean isFirstTurn;
 
     /**
      * Constructor.
      * Create the TurnState for the player
-     *  @param game the current game
-     * @param roundPlayer the current player of the round
-     * @param player the current player
+     *
+     * @param game               the current game
+     * @param currentRound       the number of the currentRound (from 0 to 9)
+     * @param currentRoundPlayer the current player of the round
+     * @param player             the current player
+     * @param isFirstTurn        the boolean that tells if it is first turn or not
      */
-    TurnState(Game game, Player roundPlayer, Player player, boolean isFirstTurn) {
+    TurnState(Game game, int currentRound, Player currentRoundPlayer, Player player, boolean isFirstTurn) {
         super(game);
-        this.roundPlayer = roundPlayer;
+        this.currentRound = currentRound;
+        this.currentRoundPlayer = currentRoundPlayer;
         this.player = player;
         this.isFirstTurn = isFirstTurn;
         this.playerState = new SelectActionState(this);
@@ -38,21 +43,20 @@ public class TurnState extends IStateGame implements IPlayerState {
      * turn and the player ending the turn is the last player(the one before the current player of the round) then
      * it starts the second run. Otherwise the turn goes to the next player (if is the first turn than the direction is
      * clockwise otherwise it's counter clockwise)
-     *
      */
     @Override
     public void nextTurn() {
-        if(!isFirstTurn && player.equals(roundPlayer))
-            game.setState(new RoundEndState(game, roundPlayer));
+        if (!isFirstTurn && player.equals(currentRoundPlayer))
+            game.setState(new RoundEndState(game, currentRound, currentRoundPlayer));
         else {
-            int indexLastPlayer = game.getNextIndexOfPlayer(roundPlayer, Direction.COUNTER_CLOCKWISE);
+            int indexLastPlayer = game.getNextIndexOfPlayer(currentRoundPlayer, Direction.COUNTER_CLOCKWISE);
             if (isFirstTurn && player.equals(game.getPlayers().get(indexLastPlayer)))
-                game.setState(new TurnState(game, roundPlayer, player, false));
+                game.setState(new TurnState(game, currentRound, currentRoundPlayer, player, false));
             else {
                 int indexNextPlayer = game.getNextIndexOfPlayer(player, (isFirstTurn) ? Direction.CLOCKWISE :
                         Direction.COUNTER_CLOCKWISE);
                 Player nextPlayer = game.getPlayers().get(indexNextPlayer);
-                game.setState(new TurnState(game, roundPlayer, nextPlayer, isFirstTurn));
+                game.setState(new TurnState(game, currentRound, currentRoundPlayer, nextPlayer, isFirstTurn));
             }
         }
     }
@@ -63,19 +67,17 @@ public class TurnState extends IStateGame implements IPlayerState {
      *
      * @param action the operation of the player
      */
-    @Override
-    public void chooseAction(String action) {
+    public void chooseAction(Player player, String action) {
         playerState.chooseAction(action);
     }
 
     /**
      * Pass the operation of useCard to the playerState
      *
-     * @param player the player who choose to use the card
+     * @param player   the player who choose to use the card
      * @param toolCard the toolCard to be used
      */
-    @Override
-    public void useCard(Player player, ToolCard toolCard, Game game) {
+    public void useCard(Player player, ToolCard toolCard) {
         playerState.useCard(player, toolCard, game);
     }
 
@@ -83,9 +85,8 @@ public class TurnState extends IStateGame implements IPlayerState {
      * Pass the operation of placeCard to the playerState
      *
      * @param player the player who choose to place a dice
-     * @param dice the dice to be placed
+     * @param dice   the dice to be placed
      */
-    @Override
     public void placeDice(Player player, Dice dice, int row, int column, TileConstraintType tileConstraint,
                           DiceConstraintType diceConstraint) {
         playerState.placeDice(player, dice, row, column, tileConstraint, diceConstraint);
@@ -99,11 +100,16 @@ public class TurnState extends IStateGame implements IPlayerState {
         return playerState;
     }
 
-    public Player getPlayer(){
+    public Player getPlayer() {
         return player;
     }
 
     public boolean isFirstTurn() {
         return isFirstTurn;
+    }
+
+    @Override
+    public Player getCurrentRoundPlayer() {
+        return currentRoundPlayer;
     }
 }
