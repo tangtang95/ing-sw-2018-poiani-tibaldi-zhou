@@ -4,7 +4,6 @@ import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
-import sun.invoke.empty.Empty;
 
 import java.util.*;
 
@@ -94,36 +93,36 @@ public class ToolCardLanguageParser {
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
 
-        ICommand clearColor = (player, toolCard, game) -> {
-            toolCard.setNeededColor(null);
+        ICommand clearColor = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededColor(null);
             return true;
         };
-        ICommand clearValue = (player, toolCard, game) -> {
-            toolCard.setNeededValue(null);
-            return true;
-        };
-
-        ICommand clearDice = (player, toolCard, game) -> {
-            toolCard.setNeededDice(null);
+        ICommand clearValue = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededValue(null);
             return true;
         };
 
-        ICommand clearPosition =  (player, toolCard, game) -> {
-            toolCard.setPosition(null);
+        ICommand clearDice = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededDice(null);
             return true;
         };
 
-        ICommand clearTurnEndCondition = (player, toolCard, game) -> {
-            toolCard.setTurnEnded(false);
+        ICommand clearPosition =  (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededPosition(null);
             return true;
         };
 
-        ICommand clearAll = (player, toolCard, game) -> {
-            clearColor.executeCommand(player, toolCard, game);
-            clearDice.executeCommand(player, toolCard, game);
-            clearPosition.executeCommand(player, toolCard, game);
-            clearTurnEndCondition.executeCommand(player, toolCard, game);
-            clearValue.executeCommand(player, toolCard, game);
+        ICommand clearTurnEndCondition = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setTurnEnded(false);
+            return true;
+        };
+
+        ICommand clearAll = (player, toolCardExecutorHelper, game) -> {
+            clearColor.executeCommand(player, toolCardExecutorHelper, game);
+            clearDice.executeCommand(player, toolCardExecutorHelper, game);
+            clearPosition.executeCommand(player, toolCardExecutorHelper, game);
+            clearTurnEndCondition.executeCommand(player, toolCardExecutorHelper, game);
+            clearValue.executeCommand(player, toolCardExecutorHelper, game);
             return true;
         };
 

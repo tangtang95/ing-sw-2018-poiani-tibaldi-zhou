@@ -52,7 +52,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard toolCard: toolCards) {
             if(toolCard.getName().equals(toolCardName)){
-                toolCard.setNeededDice(dice);
+                toolCard.getToolCardExecutorHelper().setNeededDice(dice);
             }
         }
     }
@@ -70,7 +70,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard tc: toolCards) {
             if(tc.getName().equals(toolCardName)) {
-                tc.setNeededValue(value);
+                tc.getToolCardExecutorHelper().setNeededValue(value);
             }
         }
     }
@@ -88,7 +88,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard tc : toolCards) {
             if(tc.getName().equals(toolCardName))
-                tc.setNeededColor(color);
+                tc.getToolCardExecutorHelper().setNeededColor(color);
         }
     }
 
@@ -106,7 +106,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         List<ToolCard> toolCards = game.getToolCards();
         for(ToolCard tc : toolCards)
             if(tc.getName().equals(toolCardName))
-                tc.setPosition(position);
+                tc.getToolCardExecutorHelper().setNeededPosition(position);;
 
     }
 }

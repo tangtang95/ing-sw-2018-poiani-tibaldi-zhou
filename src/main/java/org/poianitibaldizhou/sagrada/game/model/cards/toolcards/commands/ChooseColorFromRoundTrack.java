@@ -1,10 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -16,13 +15,13 @@ public class ChooseColorFromRoundTrack implements ICommand {
      * Doesn't require anything in ToolCard.
      *
      * @param player player who invoked toolCard
-     * @param toolCard toolCard invoked
+     * @param toolCardExecutorHelper toolCard invoked
      * @param game Game on which the player acts
      * @throws RemoteException
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
-        List<IToolCardObserver> observerList = toolCard.getObservers();
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException {
+        List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
         for(IToolCardObserver obs : observerList)
             obs.notifyNeedColor(player);
         return true;

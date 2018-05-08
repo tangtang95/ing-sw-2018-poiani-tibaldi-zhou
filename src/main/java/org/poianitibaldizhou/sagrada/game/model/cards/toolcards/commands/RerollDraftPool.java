@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 import java.util.List;
 import java.util.Random;
@@ -16,13 +16,12 @@ public class RerollDraftPool implements ICommand {
     /**
      * Re-roll every dice presents in the DraftPool.
      * Doesn't require anything and doesn't change anything from and in toolcard.
-     *
-     * @param player player that invoked the ToolCard containing this command
-     * @param toolCard ToolCard that used this command
+     *  @param player player that invoked the ToolCard containing this command
+     * @param toolCardExecutorHelper ToolCard that used this command
      * @param game game in which the player acts
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) {
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) {
         Random rand = new Random();
         DraftPool draftPool = game.getDraftPool();
         List<Dice> draftPoolDices = game.getDraftPool().getDices();

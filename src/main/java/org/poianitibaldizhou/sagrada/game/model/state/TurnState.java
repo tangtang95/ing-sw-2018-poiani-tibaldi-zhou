@@ -75,8 +75,8 @@ public class TurnState extends IStateGame implements IPlayerState {
      * @param toolCard the toolCard to be used
      */
     @Override
-    public void useCard(Player player, ToolCard toolCard) {
-        playerState.useCard(player, toolCard);
+    public void useCard(Player player, ToolCard toolCard, Game game) {
+        playerState.useCard(player, toolCard, game);
     }
 
     /**

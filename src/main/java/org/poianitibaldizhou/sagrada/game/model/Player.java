@@ -56,9 +56,9 @@ public class Player {
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
      */
-    public void useCard(ToolCard toolCard) throws NoCoinsExpendableException, RemoteException, InterruptedException {
+    public void useCard(ToolCard toolCard, Game game) throws NoCoinsExpendableException, RemoteException, InterruptedException {
         coins.use(toolCard);
-        toolCard.invokeCommands(this);
+        toolCard.invokeCommands(this, game);
     }
 
     /**

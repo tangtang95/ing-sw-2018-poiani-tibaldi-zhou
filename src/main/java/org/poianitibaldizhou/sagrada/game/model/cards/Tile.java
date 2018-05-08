@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import com.oracle.tools.packager.JreUtils;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;

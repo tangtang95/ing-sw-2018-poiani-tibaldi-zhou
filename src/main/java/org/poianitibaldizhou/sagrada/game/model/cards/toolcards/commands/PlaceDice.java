@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import javafx.geometry.Pos;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
@@ -10,7 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -46,28 +45,28 @@ public class PlaceDice implements ICommand {
      * This method requires a dice in toolcard. It will ask for a position to the client.
      *
      * @param player player that invoked the toolcard: its schema card will receive a new dice
-     * @param toolCard toolcard that has been invoked
+     * @param toolCardExecutorHelper toolcard that has been invoked
      * @param game game in which the player acts
      * @return true
      * @throws InterruptedException given to
      * @throws RemoteException network communication error
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException, RemoteException {
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws InterruptedException, RemoteException {
         Dice dice;
         SchemaCard schemaCard;
         Position position;
         boolean flag = false;
 
-        dice = toolCard.getNeededDice();
+        dice = toolCardExecutorHelper.getNeededDice();
         schemaCard = player.getSchemaCard();
 
         do {
-            List<IToolCardObserver> observerList = toolCard.getObservers();
+            List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
             for(IToolCardObserver obs : observerList)
                 obs.notifyNeedPosition(player);
 
-            position = toolCard.getPosition();
+            position = toolCardExecutorHelper.getPosition();
 
             try {
                 schemaCard.setDice(dice, position.getRow(), position.getColumn(), this.tileConstraint,
