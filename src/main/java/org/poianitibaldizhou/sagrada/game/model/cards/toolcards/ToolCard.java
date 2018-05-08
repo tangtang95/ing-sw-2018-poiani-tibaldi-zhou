@@ -23,12 +23,15 @@ public class ToolCard extends Card {
     private Color neededColor;
     private Integer neededValue;
     private Position position;
+    private boolean turnEnd;
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
         this.tokens = 0;
         this.color = color;
         this.isSinglePlayer = isSinglePlayer;
+        ToolCardLanguageParser toolCardLanguageParser = new ToolCardLanguageParser();
+        commands = toolCardLanguageParser.parseToolCard(action);
         observers = new ArrayList<>();
         neededDice = null;
         neededValue = null;
@@ -39,16 +42,23 @@ public class ToolCard extends Card {
     }
 
     public void invokeCommands(Player player) throws RemoteException, InterruptedException {
-        for (ICommand command : commands) {
-            command.executeCommand(player, this,game);
+        boolean flag = true;
+        for (int i = 0; i < commands.size(); i++) {
+            if(flag == false)
+                break;
+            flag = commands.get(i).executeCommand(player, this, game);
         }
 
-        if(isSinglePlayer)
-            for(IToolCardObserver obs : observers)
-                obs.onCardDestroy();
-        else
-            for(IToolCardObserver obs : observers)
-                obs.onTokenChange(tokens);
+        if(flag) {
+            if (isSinglePlayer)
+                for (IToolCardObserver obs : observers)
+                    obs.onCardDestroy();
+            else
+                for (IToolCardObserver obs : observers)
+                    obs.onTokenChange(tokens);
+        }
+
+        clearParameter();
     }
 
     public int getTokens() {
@@ -145,5 +155,28 @@ public class ToolCard extends Card {
     public synchronized void setPosition(Position position) {
         this.position = position;
         notifyAll();
+    }
+
+    public synchronized boolean getTurnEnded() throws InterruptedException {
+        if(turnEnd == false)
+            wait();
+        turnEnd = false;
+        return true;
+    }
+
+    public synchronized void turnEnded() {
+        this.turnEnd = true;
+        notifyAll();
+    }
+
+    /**
+     * Once the commands is done, successful or not, all the parameter are set to null.
+     */
+    private void clearParameter() {
+        this.position = null;
+        this.neededColor = null;
+        this.neededValue = null;
+        this.neededDice = null;
+        this.turnEnd = false;
     }
 }

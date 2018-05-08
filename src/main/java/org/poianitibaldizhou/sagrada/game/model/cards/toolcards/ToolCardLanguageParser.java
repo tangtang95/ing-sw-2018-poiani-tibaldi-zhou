@@ -62,8 +62,8 @@ public class ToolCardLanguageParser {
         grammar = new HashMap<>();
         grammar.put("Choose dice", new ChooseDice());
         grammar.put("Modify dice value by 1", new ModifyDiceValue(1));
-        grammar.put("Remove dice from schema", new RemoveDice(TileConstraintType.NONE));
-        grammar.put("Remove dice of a certain color from schema", new RemoveDice(TileConstraintType.COLOR));
+        grammar.put("Remove dice", new RemoveDice(TileConstraintType.NONE));
+        grammar.put("Remove dice of a certain color", new RemoveDice(TileConstraintType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
         grammar.put("Reroll dice", new RerollDice());
         grammar.put("Place dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL));
@@ -83,5 +83,7 @@ public class ToolCardLanguageParser {
         grammar.put("Skip first turn", new SkipTurn(1));
         grammar.put("Pour over dice", new PourOverDice());
         grammar.put("Choose color from RoundTrack", new ChooseColorFromRoundTrack());
+        grammar.put("Check Dice placeble", new CheckDicePlaceble());
+        grammar.put("Wait turn end", new WaitTurnEnd());
     }
 }
