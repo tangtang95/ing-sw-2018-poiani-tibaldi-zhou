@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 public class AddDiceToDiceBag implements ICommand {
 
@@ -13,14 +13,14 @@ public class AddDiceToDiceBag implements ICommand {
      * This methods expects a dice in ToolCard.
      *
      * @param player Player who invoked the command
-     * @param toolCard toolCard that has been invoked and that contains this command
+     * @param toolCardExecutorHelper toolCard that has been invoked and that contains this command
      * @param game Game in which the player acts
      * @return true
      * @throws InterruptedException due to the wait for toolCard.getNeededDice()
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {
-        Dice dice = toolCard.getNeededDice();
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws InterruptedException {
+        Dice dice = toolCardExecutorHelper.getNeededDice();
         DrawableCollection<Dice> dicebag = game.getDiceBag();
         dicebag.addElement(dice);
         return true;

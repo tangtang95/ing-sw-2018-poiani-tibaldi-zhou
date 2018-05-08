@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 import java.rmi.RemoteException;
 
@@ -16,15 +16,15 @@ public class DrawDiceFromDicebag implements ICommand {
      * It pushes a dice to toolcard.
      *
      * @param player player who invoked the ToolCard
-     * @param toolCard ToolCard invoked that contains this command
+     * @param toolCardExecutorHelper ToolCard invoked that contains this command
      * @param game Game in which the player acts
      * @throws RemoteException
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException {
         try {
             Dice dice = game.getDiceBag().draw();
-            toolCard.setNeededDice(dice);
+            toolCardExecutorHelper.setNeededDice(dice);
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
             return false;

@@ -1,11 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import javafx.geometry.Pos;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -29,18 +28,19 @@ public class RemoveDice implements ICommand {
      * So it requires a color in constraintType == TileConstraintType.COLOR.
      * Generally speaking, it doesn't require anything more and it will ask the client for a position and
      * it will remove the dice in that position.
+     * It will push the removed dice in toolcard
      *
      * @param player player that invoked the command
-     * @param toolCard toolcard invoked
+     * @param toolCardExecutorHelper toolcard invoked
      * @param game game in which the player acts
      * @return true
      * @throws RemoteException network communication error
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
         SchemaCard schemaCard = player.getSchemaCard();
-        List<IToolCardObserver> observerList = toolCard.getObservers();
+        List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
         Position position;
         Dice removed = null;
         Color color;
@@ -48,20 +48,21 @@ public class RemoveDice implements ICommand {
         do {
             if (this.constraintType == TileConstraintType.COLOR) {
                 do {
-                    color = toolCard.getNeededColor();
+                    color = toolCardExecutorHelper.getNeededColor();
                     for (IToolCardObserver obs : observerList)
                         obs.notifyNeedDicePositionOfCertainColor(player, color);
-                    position = toolCard.getPosition();
+                    position = toolCardExecutorHelper.getPosition();
 
                 } while (!schemaCard.getDice(position.getRow(), position.getColumn()).getColor().equals(color));
             } else {
                 for (IToolCardObserver obs : observerList)
                     obs.notifyNeedPosition(player);
-                position = toolCard.getPosition();
+                position = toolCardExecutorHelper.getPosition();
             }
 
             removed = schemaCard.removeDice(position.getRow(), position.getColumn());
         } while(removed == null);
+        toolCardExecutorHelper.setNeededDice(removed);
         return true;
     }
 

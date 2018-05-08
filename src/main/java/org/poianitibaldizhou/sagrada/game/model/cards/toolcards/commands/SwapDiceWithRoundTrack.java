@@ -7,10 +7,9 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SwapDiceWithRoundTrack implements ICommand {
@@ -22,24 +21,24 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * for a dice and a round.
      *
      * @param player player who invoked the command
-     * @param toolCard invoked toolcard
+     * @param toolCardExecutorHelper invoked toolcard
      * @param game game on which the player acts
      * @throws RemoteException network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
-        Dice dice = toolCard.getNeededDice(), roundTrackDice;
+    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
+        Dice dice = toolCardExecutorHelper.getNeededDice(), roundTrackDice;
         int round;
-        List<IToolCardObserver> observerList = toolCard.getObservers();
+        List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
         RoundTrack roundTrack = game.getRoundTrack();
 
         for(IToolCardObserver observer : observerList) {
             observer.notifyNeedDiceFromRoundTrack(player, roundTrack);
         }
 
-        roundTrackDice = toolCard.getNeededDice();
-        round = toolCard.getNeededValue();
+        roundTrackDice = toolCardExecutorHelper.getNeededDice();
+        round = toolCardExecutorHelper.getNeededValue();
 
         game.getDraftPool().addDice(roundTrackDice);
         try {

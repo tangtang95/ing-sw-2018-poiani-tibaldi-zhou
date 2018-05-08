@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardLanguageParser;
@@ -48,7 +47,7 @@ public class ToolCardLanguageParserTest {
         List<ICommand> commands = new ArrayList<>();
 
         commands.add(new ChooseDice());
-        commands.add(new ModifyDiceValue(1));
+        commands.add(new ModifyDiceValueByDelta(1));
         commands.add(new RemoveDice(TileConstraintType.NONE));
         commands.add(new RemoveDice(TileConstraintType.COLOR));
         commands.add(new SwapDiceWithRoundTrack());
@@ -60,7 +59,7 @@ public class ToolCardLanguageParserTest {
         commands.add(new AddDiceToDraftPool());
         commands.add(new AddDiceToDiceBag());
         commands.add(new DrawDiceFromDicebag());
-        commands.add(new ChooseDiceValue());
+        commands.add(new ModifyDiceValue());
         commands.add(new RerollDraftPool());
         commands.add(new CheckTurn(2));
         commands.add(new CheckTurn(1));

@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
@@ -46,6 +45,12 @@ public class ToolCardLanguageParser {
         return commands;
     }
 
+    @Deprecated
+    public Node<ICommand> parseToolCardNewLanguage(String description) throws IllegalArgumentException {
+        Node<ICommand> commands = new Node<>(null,null);
+        return commands;
+    }
+
     /**
      * Preprocesses the string, dividing sentences separeted with ";".
      *
@@ -62,7 +67,7 @@ public class ToolCardLanguageParser {
     private static void setGrammar(){
         grammar = new HashMap<>();
         grammar.put("Choose dice", new ChooseDice());
-        grammar.put("Modify dice value by 1", new ModifyDiceValue(1));
+        grammar.put("Modify dice value by 1", new ModifyDiceValueByDelta(1));
         grammar.put("Remove dice", new RemoveDice(TileConstraintType.NONE));
         grammar.put("Remove dice of a certain color", new RemoveDice(TileConstraintType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
@@ -74,7 +79,7 @@ public class ToolCardLanguageParser {
         grammar.put("Add dice to DraftPool", new AddDiceToDraftPool());
         grammar.put("Add dice to Dicebag", new AddDiceToDiceBag());
         grammar.put("Draw dice from Dicebag", new DrawDiceFromDicebag());
-        grammar.put("Choose dice value", new ChooseDiceValue());
+        grammar.put("Modify dice value", new ModifyDiceValue());
         grammar.put("Reroll DraftPool", new RerollDraftPool());
         grammar.put("Check second turn", new CheckTurn(2));
         grammar.put("Check first turn", new CheckTurn(1));
@@ -88,36 +93,36 @@ public class ToolCardLanguageParser {
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
 
-        ICommand clearColor = (player, toolCard, game) -> {
-            toolCard.setNeededColor(null);
+        ICommand clearColor = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededColor(null);
             return true;
         };
-        ICommand clearValue = (player, toolCard, game) -> {
-            toolCard.setNeededValue(null);
-            return true;
-        };
-
-        ICommand clearDice = (player, toolCard, game) -> {
-            toolCard.setNeededDice(null);
+        ICommand clearValue = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededValue(null);
             return true;
         };
 
-        ICommand clearPosition =  (player, toolCard, game) -> {
-            toolCard.setPosition(null);
+        ICommand clearDice = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededDice(null);
             return true;
         };
 
-        ICommand clearTurnEndCondition = (player, toolCard, game) -> {
-            toolCard.setTurnEnded(false);
+        ICommand clearPosition =  (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setNeededPosition(null);
             return true;
         };
 
-        ICommand clearAll = (player, toolCard, game) -> {
-            clearColor.executeCommand(player, toolCard, game);
-            clearDice.executeCommand(player, toolCard, game);
-            clearPosition.executeCommand(player, toolCard, game);
-            clearTurnEndCondition.executeCommand(player, toolCard, game);
-            clearValue.executeCommand(player, toolCard, game);
+        ICommand clearTurnEndCondition = (player, toolCardExecutorHelper, game) -> {
+            toolCardExecutorHelper.setTurnEnded(false);
+            return true;
+        };
+
+        ICommand clearAll = (player, toolCardExecutorHelper, game) -> {
+            clearColor.executeCommand(player, toolCardExecutorHelper, game);
+            clearDice.executeCommand(player, toolCardExecutorHelper, game);
+            clearPosition.executeCommand(player, toolCardExecutorHelper, game);
+            clearTurnEndCondition.executeCommand(player, toolCardExecutorHelper, game);
+            clearValue.executeCommand(player, toolCardExecutorHelper, game);
             return true;
         };
 
