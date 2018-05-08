@@ -12,6 +12,8 @@ public class DrawDiceFromDicebag implements ICommand {
 
     /**
      * Draws a dice from the DiceBag.
+     * Doesn't require anything in toolcard.
+     * It pushes a dice to toolcard.
      *
      * @param player player who invoked the ToolCard
      * @param toolCard ToolCard invoked that contains this command

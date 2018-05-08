@@ -14,8 +14,10 @@ import java.util.Random;
 public class RerollDraftPool implements ICommand {
 
     /**
-     * Re-roll every dice presents in the DraftPool
-     *  @param player player that invoked the ToolCard containing this command
+     * Re-roll every dice presents in the DraftPool.
+     * Doesn't require anything and doesn't change anything from and in toolcard.
+     *
+     * @param player player that invoked the ToolCard containing this command
      * @param toolCard ToolCard that used this command
      * @param game game in which the player acts
      */

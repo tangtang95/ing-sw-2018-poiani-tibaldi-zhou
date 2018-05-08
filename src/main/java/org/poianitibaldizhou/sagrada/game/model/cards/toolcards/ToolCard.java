@@ -105,7 +105,7 @@ public class ToolCard extends Card {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
 
-    public synchronized void setNeededValue(int neededValue) {
+    public synchronized void setNeededValue(Integer neededValue) {
         this.neededValue = neededValue;
         notifyAll();
     }
@@ -113,17 +113,13 @@ public class ToolCard extends Card {
     public synchronized int getNeededValue() throws InterruptedException {
         while(neededValue == null)
             wait();
-        int temp = neededValue;
-        neededValue = null;
-        return temp;
+        return neededValue;
     }
 
     public synchronized Dice getNeededDice() throws InterruptedException {
         while(neededDice == null)
             wait();
-        Dice d = neededDice;
-        neededDice = null;
-        return d;
+        return neededDice;
     }
 
     public synchronized void setNeededDice(Dice neededDice) {
@@ -134,9 +130,7 @@ public class ToolCard extends Card {
     public synchronized Color getNeededColor() throws InterruptedException {
         while(neededColor == null)
             wait();
-        Color temp = neededColor;
-        neededColor = null;
-        return temp;
+        return neededColor;
     }
 
     public synchronized void setNeededColor(Color neededColor) {
@@ -147,8 +141,6 @@ public class ToolCard extends Card {
     public synchronized Position getPosition() throws InterruptedException {
         while(position == null)
             wait();
-        Position temp = position;
-        position = null;
         return position;
     }
 
@@ -160,13 +152,13 @@ public class ToolCard extends Card {
     public synchronized boolean getTurnEnded() throws InterruptedException {
         if(turnEnd == false)
             wait();
-        turnEnd = false;
         return true;
     }
 
-    public synchronized void turnEnded() {
-        this.turnEnd = true;
-        notifyAll();
+    public synchronized void setTurnEnded(boolean isTurnEnded) {
+        this.turnEnd = isTurnEnded;
+        if(isTurnEnded)
+            notifyAll();
     }
 
     /**

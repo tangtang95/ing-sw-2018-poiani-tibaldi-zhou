@@ -10,10 +10,12 @@ public class AddDiceToDiceBag implements ICommand {
 
     /**
      * Adds the toolCard's dice to game's DiceBag.
+     * This methods expects a dice in ToolCard.
      *
      * @param player Player who invoked the command
      * @param toolCard toolCard that has been invoked and that contains this command
      * @param game Game in which the player acts
+     * @return true
      * @throws InterruptedException due to the wait for toolCard.getNeededDice()
      */
     @Override

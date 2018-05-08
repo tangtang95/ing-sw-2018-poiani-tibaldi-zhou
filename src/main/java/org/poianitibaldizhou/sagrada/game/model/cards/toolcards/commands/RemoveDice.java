@@ -26,6 +26,9 @@ public class RemoveDice implements ICommand {
      * Removes a dice from the toolcard.
      * If a color constraint is specified in this command class, the dice that needs to be removed must be
      * of the same color of toolcard's needed color, otherwise it can be any dice.
+     * So it requires a color in constraintType == TileConstraintType.COLOR.
+     * Generally speaking, it doesn't require anything more and it will ask the client for a position and
+     * it will remove the dice in that position.
      *
      * @param player player that invoked the command
      * @param toolCard toolcard invoked

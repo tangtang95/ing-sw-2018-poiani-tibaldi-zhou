@@ -18,7 +18,8 @@ public class SwapDiceWithRoundTrack implements ICommand {
     /**
      * Requires the player to choose a dice from the roundtrack.
      * The dice will be swapped with a specified one from the draftpool.
-     *
+     * It requires a dice in the toolcard (dice to put in the roundtrack) and it asks the client
+     * for a dice and a round.
      *
      * @param player player who invoked the command
      * @param toolCard invoked toolcard
@@ -31,7 +32,6 @@ public class SwapDiceWithRoundTrack implements ICommand {
         Dice dice = toolCard.getNeededDice(), roundTrackDice;
         int round;
         List<IToolCardObserver> observerList = toolCard.getObservers();
-        List<Dice> diceList = new ArrayList<>();
         RoundTrack roundTrack = game.getRoundTrack();
 
         for(IToolCardObserver observer : observerList) {

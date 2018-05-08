@@ -9,10 +9,12 @@ public class AddDiceToDraftPool implements ICommand {
 
     /**
      * Add the ToolCard's dice to the DraftPool.
+     * This method requires a dice in ToolCard
      *
      * @param player player that invoked the ToolCard
      * @param toolCard ToolCard invoked that contains this command
      * @param game game in which the player acts
+     * @return true
      * @throws InterruptedException given by wait of toolCard.getNeededDice()
      */
     @Override

@@ -43,6 +43,7 @@ public class PlaceDice implements ICommand {
     /**
      * Place a dice following the constraint given to the command.
      * The dice is placed in the schema card of a specified player.
+     * This method requires a dice in toolcard. It will ask for a position to the client.
      *
      * @param player player that invoked the toolcard: its schema card will receive a new dice
      * @param toolCard toolcard that has been invoked

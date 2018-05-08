@@ -14,6 +14,8 @@ public class ChooseDice implements ICommand {
 
     /**
      * Notify to clients that player needs to choose a dice.
+     * Doesn't require anything in toolcard
+     *
      * @param player player who needs to choose a dice
      * @param toolCard toolCard that generated this effect
      * @param game

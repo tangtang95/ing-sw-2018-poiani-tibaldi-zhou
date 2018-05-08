@@ -11,11 +11,13 @@ public class RerollDice implements ICommand {
 
     /**
      * Re-roll ToolCard's dice and set it to the ToolCard again for further uses.
+     * It requires a dice in the toolcard set to the toolcard the re-rolled dice.
      *
      * @param player player that invoked the ToolCard
      * @param toolCard ToolCard that contains this command
      * @param game Game in which player acts
-     * @throws InterruptedException
+     * @return true
+     * @throws InterruptedException due to wait
      */
     @Override
     public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws InterruptedException {

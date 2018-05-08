@@ -13,6 +13,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
 
     /**
      * Notify that player needs to choose a color from the dices present in the round track
+     * Doesn't require anything in ToolCard.
      *
      * @param player player who invoked toolCard
      * @param toolCard toolCard invoked
