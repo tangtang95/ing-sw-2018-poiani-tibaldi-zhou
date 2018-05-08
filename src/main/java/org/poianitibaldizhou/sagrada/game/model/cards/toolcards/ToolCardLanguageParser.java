@@ -1,8 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
+import sun.invoke.empty.Empty;
 
 import java.util.*;
 
@@ -41,6 +43,12 @@ public class ToolCardLanguageParser {
                 throw new IllegalArgumentException("Command not recognized: " + s);
         }
 
+        return commands;
+    }
+
+    @Deprecated
+    public Node<ICommand> parseToolCardNewLanguage(String description) throws IllegalArgumentException {
+        Node<ICommand> commands = new Node<>(null,null);
         return commands;
     }
 
