@@ -10,17 +10,19 @@ import java.util.*;
 public class EndGameState extends IStateGame{
 
     private Map<Player, Integer> scoreMap = new HashMap<>();
+    private Player currentPlayer;
 
     /**
      * Constructor.
      * Create EndGameState to calculate the score of the players and determinate the outcomes of all players
      * @param game the current game
      */
-     EndGameState(Game game) {
+     EndGameState(Game game, Player currentPlayer) {
         super(game);
+        this.currentPlayer = currentPlayer;
 
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
-        setOutcomePlayers(game.getPlayers(), game.getIndexOfPlayer(game.getCurrentPlayerRound()));
+        setOutcomePlayers(game.getPlayers(), game.getIndexOfPlayer(currentPlayer));
         //TODO notify players
     }
 

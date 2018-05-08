@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class GameManager {
     private HashMap<String, Game> games;
@@ -22,9 +23,9 @@ public class GameManager {
      *
      * @param game game to add
      */
-    public synchronized void addGame(Game game) {
-        if(games.putIfAbsent(game.getName(), game) == null){
-            playersByGame.put(game.getName(), new ArrayList<>());
+    public synchronized void addGame(Game game, String name) {
+        if(games.putIfAbsent(name, game) == null){
+            playersByGame.put(name, new ArrayList<>());
         }
     }
 
@@ -64,5 +65,15 @@ public class GameManager {
         List<String> playersPlaying = playersByGame.get(game.getName());
         players.removeAll(playersPlaying);
         playersByGame.remove(game.getName());
+    }
+
+    /**
+     * Return the game associated with name.
+     *
+     * @param name name of the wanted game
+     * @return game associated with name
+     */
+    public synchronized Game getGameByName(String name) {
+        return games.get(name);
     }
 }

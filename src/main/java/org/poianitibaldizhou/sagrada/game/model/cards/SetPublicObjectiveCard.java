@@ -68,15 +68,7 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
     public static SetPublicObjectiveCard newInstance(SetPublicObjectiveCard spoc) {
         if (spoc == null)
             return null;
-        Set<IConstraint> constraints = new HashSet<>();
-        for (IConstraint ic : spoc.getConstraint()){
-            if (ic instanceof ColorConstraint)
-                constraints.add(ColorConstraint.newInstance((ColorConstraint) ic));
-            else
-                constraints.add(NumberConstraint.newInstance((NumberConstraint) ic));
-        }
-
         return new SetPublicObjectiveCard(spoc.getName(),spoc.getDescription(),spoc.getCardPoints(),
-                constraints,spoc.getType());
+                spoc.getConstraint(),spoc.getType());
     }
 }

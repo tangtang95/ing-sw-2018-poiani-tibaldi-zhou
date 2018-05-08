@@ -6,6 +6,8 @@ import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
+import java.util.Objects;
+
 public class SchemaCard {
     private final String name;
     private final int difficulty;
@@ -161,7 +163,7 @@ public class SchemaCard {
         if (isEmpty()) {
             return isBorderPosition(row, column) && tileMatrix[row][column].isDicePositionable(dice, tileConstraint);
         } else {
-            switch(diceConstraint){
+            switch (diceConstraint) {
                 case NORMAL:
                     return tileMatrix[row][column].isDicePositionable(dice, tileConstraint) &&
                             !hasOrthogonalDicesSimilar(dice, row, column) &&
@@ -170,8 +172,9 @@ public class SchemaCard {
                     return tileMatrix[row][column].isDicePositionable(dice, tileConstraint) &&
                             !hasOrthogonalDicesSimilar(dice, row, column) &&
                             getNumberOfAdjacentDices(row, column) == 0;
+                default:
+                    throw new IllegalArgumentException("impossible case");
             }
-            return true;
         }
     }
 
@@ -198,7 +201,7 @@ public class SchemaCard {
      * @return the tile requested by row and column
      */
     public Tile getTile(int row, int column) {
-        return new Tile(tileMatrix[row][column]);
+        return Tile.newInstance(tileMatrix[row][column]);
     }
 
     /**
@@ -211,6 +214,8 @@ public class SchemaCard {
      */
     @Override
     public boolean equals(Object obj) {
+        if(obj == this)
+            return true;
         if (!(obj instanceof SchemaCard))
             return false;
         SchemaCard other = (SchemaCard) obj;
@@ -219,10 +224,14 @@ public class SchemaCard {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 if (!getTile(i, j).equals(other.getTile(i, j)))
                     hasSameTiles = false;
-
             }
         }
         return hasSameTiles && this.getName().equals(other.getName()) && this.getDifficulty() == other.getDifficulty();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), tileMatrix, getDifficulty());
     }
 
     /**
@@ -284,11 +293,12 @@ public class SchemaCard {
 
 
     /**
-     * Given row and column, return if the position is out of bounds according to the matrix tile
+     * Given row and column, return whether or not the position is out of bounds according
+     * to the matrix tile
      *
      * @param row    the row of the position
      * @param column the column of the position
-     * @return if the position is out of bounds according to the matrix tile
+     * @return true if out of bounds, false otherwise
      */
     @Contract(pure = true)
     public static boolean isOutOfBounds(int row, int column) {
@@ -299,13 +309,13 @@ public class SchemaCard {
     /**
      * Return the number of empty spaces inside the tileMatrix
      *
-     * @return number of empty space
+     * @return the number of empty spaces inside the tileMatrix
      */
     public int getNumberOfEmptySpaces() {
         int numberOfEmptySpaces = 0;
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                if(getDice(i,j) == null)
+                if (getDice(i, j) == null)
                     numberOfEmptySpaces++;
             }
         }

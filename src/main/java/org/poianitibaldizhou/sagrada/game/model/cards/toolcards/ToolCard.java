@@ -1,10 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
-import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
@@ -24,12 +21,16 @@ public class ToolCard extends Card {
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
+    private Position position;
+    private boolean turnEnd;
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
         this.tokens = 0;
         this.color = color;
         this.isSinglePlayer = isSinglePlayer;
+        ToolCardLanguageParser toolCardLanguageParser = new ToolCardLanguageParser();
+        commands = toolCardLanguageParser.parseToolCard(action);
         observers = new ArrayList<>();
         neededDice = null;
         neededValue = null;
@@ -37,20 +38,28 @@ public class ToolCard extends Card {
 
 
     public List<IToolCardObserver> getObservers() {
-        return new ArrayList<IToolCardObserver>(observers);
+        return new ArrayList<>(observers);
     }
 
     public void invokeCommands(Player player, Game game) throws RemoteException, InterruptedException {
-        for (ICommand command : commands) {
-            command.executeCommand(player, this,game);
+        boolean flag = true;
+        for (int i = 0; i < commands.size(); i++) {
+            if(flag == false)
+                break;
+            flag = commands.get(i).executeCommand(player, this, game);
+
         }
 
-        if(isSinglePlayer)
-            for(IToolCardObserver obs : observers)
-                obs.onCardDestroy();
-        else
-            for(IToolCardObserver obs : observers)
-                obs.onTokenChange(tokens);
+        if(flag) {
+            if (isSinglePlayer)
+                for (IToolCardObserver obs : observers)
+                    obs.onCardDestroy();
+            else
+                for (IToolCardObserver obs : observers)
+                    obs.onTokenChange(tokens);
+        }
+
+        clearParameter();
     }
 
     public int getTokens() {
@@ -87,9 +96,17 @@ public class ToolCard extends Card {
         return tokens == toolCard.tokens &&
                 isSinglePlayer == toolCard.isSinglePlayer &&
                 color == toolCard.color &&
-                Objects.equals(commands, toolCard.commands)&&
+                equalsCommand(toolCard.commands)&&
                 this.getName().equals(toolCard.getName()) &&
                 this.getDescription().equals(toolCard.getDescription());
+    }
+
+    private boolean equalsCommand(List<ICommand> commands){
+        for (int i = 0; i < commands.size(); i++) {
+            if (commands.get(i).getClass() != this.commands.get(i).getClass())
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -97,7 +114,7 @@ public class ToolCard extends Card {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
 
-    public synchronized void setNeededValue(int neededValue) {
+    public synchronized void setNeededValue(Integer neededValue) {
         this.neededValue = neededValue;
         notifyAll();
     }
@@ -105,17 +122,13 @@ public class ToolCard extends Card {
     public synchronized int getNeededValue() throws InterruptedException {
         while(neededValue == null)
             wait();
-        int temp = neededValue;
-        neededValue = null;
-        return temp;
+        return neededValue;
     }
 
     public synchronized Dice getNeededDice() throws InterruptedException {
         while(neededDice == null)
             wait();
-        Dice d = neededDice;
-        neededDice = null;
-        return d;
+        return neededDice;
     }
 
     public synchronized void setNeededDice(Dice neededDice) {
@@ -126,9 +139,7 @@ public class ToolCard extends Card {
     public synchronized Color getNeededColor() throws InterruptedException {
         while(neededColor == null)
             wait();
-        Color temp = neededColor;
-        neededColor = null;
-        return temp;
+        return neededColor;
     }
 
     public synchronized void setNeededColor(Color neededColor) {
@@ -136,7 +147,41 @@ public class ToolCard extends Card {
         notifyAll();
     }
 
-    public static ToolCard newInstance(ToolCard toolCard) {
-        return null;
+    public synchronized Position getPosition() throws InterruptedException {
+        while(position == null)
+            wait();
+        return position;
+    }
+
+    public synchronized void setPosition(Position position) {
+        this.position = position;
+        notifyAll();
+    }
+
+    public synchronized boolean getTurnEnded() throws InterruptedException {
+        if(turnEnd == false)
+            wait();
+        return true;
+    }
+
+    public synchronized void setTurnEnded(boolean isTurnEnded) {
+        this.turnEnd = isTurnEnded;
+        if(isTurnEnded)
+            notifyAll();
+    }
+
+    /**
+     * Once the commands is done, successful or not, all the parameter are set to null.
+     */
+    private void clearParameter() {
+        this.position = null;
+        this.neededColor = null;
+        this.neededValue = null;
+        this.neededDice = null;
+        this.turnEnd = false;
+    }
+
+    public List<ICommand> getCommands() {
+        return commands;
     }
 }

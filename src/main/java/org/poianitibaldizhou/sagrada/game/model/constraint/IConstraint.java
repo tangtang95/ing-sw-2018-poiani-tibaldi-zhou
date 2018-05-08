@@ -17,5 +17,4 @@ public interface IConstraint {
      * @return index value useful in an array to count the number of constraint founded
      */
      int getIndexValue();
-     String toString();
 }

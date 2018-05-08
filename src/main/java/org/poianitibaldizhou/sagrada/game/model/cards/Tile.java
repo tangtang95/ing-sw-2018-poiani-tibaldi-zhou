@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
@@ -12,6 +11,8 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import java.util.Objects;
 
 public class Tile{
 
@@ -37,15 +38,6 @@ public class Tile{
     }
 
     /**
-     * Constructor: create a copy of a tile (deep copy because dice and constraint are immutable)
-     * @param tile the tile to copy
-     */
-    public Tile(Tile tile) {
-        dice = tile.dice;
-        constraint = tile.constraint;
-    }
-
-    /**
      *
      * @param dice the dice to place on
      * @throws RuleViolationException if this.getNeededDice() != null
@@ -63,8 +55,9 @@ public class Tile{
     public void setDice(Dice dice, TileConstraintType type) throws RuleViolationException {
         if(this.dice != null)
             throw new RuleViolationException(RuleViolationType.TILE_FILLED);
-        if(isDicePositionable(dice, type))
-            this.dice = dice;
+        if(!isDicePositionable(dice, type))
+            throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
+        this.dice = dice;
     }
 
     /**
@@ -113,8 +106,9 @@ public class Tile{
                 return (checkConstraint(dice.getNumberConstraint()) && checkConstraint(dice.getColorConstraint()));
             case NONE:
                 return true;
+            default:
+                throw new IllegalArgumentException("impossible case");
         }
-        return false;
     }
 
     /**
@@ -136,11 +130,23 @@ public class Tile{
         return constraint.matches(other);
     }
 
+    /**
+     * Override of equals
+     *
+     * @param obj the other object to compare
+     * @return true if they have the same dice and the same constraint, otherwise false
+     */
     @Override
     public boolean equals(Object obj){
+        if(obj == this)
+            return true;
         if(!(obj instanceof Tile))
             return false;
         Tile other = (Tile) obj;
+        if((getDice() == null && other.getDice() != null) || (getDice() != null && other.getDice() == null))
+            return false;
+        else if(getDice() == null && other.getDice() == null)
+            return this.getConstraint().equals(other.getConstraint());
         return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
     }
 
@@ -154,21 +160,18 @@ public class Tile{
     public static Tile newInstance(Tile tile) {
         if (tile == null)
             return null;
-        IConstraint constraint;
-        if (tile.getConstraint() instanceof ColorConstraint)
-            constraint = ColorConstraint.newInstance((ColorConstraint) tile.getConstraint());
-        else
-            if (tile.getConstraint() instanceof NumberConstraint)
-                constraint = NumberConstraint.newInstance((NumberConstraint) tile.getConstraint());
-            else
-                constraint = new NoConstraint();
-
-        Tile newTile = new Tile(constraint);
-        try {
-            newTile.setDice(Dice.newInstance(tile.getDice()));
-        } catch (RuleViolationException e) {
-            LOGGER.log(Level.FINE, "Rule violation exception in Tile: newInstance", e);
-        }
+        Tile newTile = new Tile(tile.getConstraint());
+        newTile.dice = Dice.newInstance(tile.getDice());
         return newTile;
+    }
+
+    /**
+     * Hashcode based on dice and constraint (the same tile has the same hashcode)
+     *
+     * @return the hashcode of this specific tile
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDice(), getConstraint());
     }
 }

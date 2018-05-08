@@ -20,7 +20,6 @@ public class Game {
     private final DraftPool draftPool;
     private final String name;
 
-    private Player currentPlayerRound;
     private IStateGame state;
     private int difficulty;
 
@@ -50,7 +49,7 @@ public class Game {
 
     private Game(List<Player> players, RoundTrack roundTrack, List<ToolCard> toolCards,
                  List<PublicObjectiveCard> publicObjectiveCards, DrawableCollection<Dice> diceBag,
-                 DraftPool draftPool, String name, Player currentPlayerRound, IStateGame state,
+                 DraftPool draftPool, String name, IStateGame state,
                  Boolean isSinglePlayer, int difficulty) {
         this.players = new LinkedList<>();
         for (Player p : players)
@@ -63,7 +62,6 @@ public class Game {
             this.publicObjectiveCards.add(PublicObjectiveCard.newInstance(poc));
         this.draftPool = DraftPool.newInstance(draftPool);
         this.name = name;
-        this.currentPlayerRound = Player.newInstance(currentPlayerRound);
         this.isSinglePlayer = isSinglePlayer;
         this.difficulty = difficulty;
         //need a refactor
@@ -149,33 +147,6 @@ public class Game {
     }
 
     /**
-     * Set the turn of the player to the passed playerTurn as parameter
-     *
-     * @param player the player
-     */
-    public void setCurrentPlayerRound(Player player) {
-        if (getIndexOfPlayer(player) != -1)
-            currentPlayerRound = player;
-    }
-
-    /**
-     * Return the Player who has the control of the round game (who has the diceBag)
-     *
-     * @return the player who has the control of the round game
-     */
-    public Player getCurrentPlayerRound() {
-        return currentPlayerRound;
-    }
-
-    /**
-     * Rotate the DiceBag to another player in clockwise direction
-     */
-    public void rotateCurrentPlayerRound() {
-        Player newCurrentPlayer = players.get(getNextIndexOfPlayer(getCurrentPlayerRound(), Direction.CLOCKWISE));
-        setCurrentPlayerRound(newCurrentPlayer);
-    }
-
-    /**
      * Return the index of the player given based on the list of players
      *
      * @param player the player to find in the list of players
@@ -210,7 +181,7 @@ public class Game {
 
     public static Game newInstance(Game game) {
             return new Game(game.getPlayers(),game.getRoundTrack(),game.getToolCards(),game.getPublicObjectiveCards(),
-                    game.getDiceBag(),game.getDraftPool(),game.getName(),game.getCurrentPlayerRound(),game.getState(),
+                    game.getDiceBag(),game.getDraftPool(),game.getName(),game.getState(),
                     game.isSinglePlayer(),game.getDifficulty());
     }
 }

@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Immutable
 public class NumberConstraint implements IConstraint {
@@ -15,7 +16,7 @@ public class NumberConstraint implements IConstraint {
      * Constructor.
      * Create a NumberConstraint with a given number between Dice.MIN_VALUE and Dice.MAX_VALUE
      *
-     * @param number
+     * @param number number of the dice
      */
     public NumberConstraint(int number) {
         if (number < Dice.MIN_VALUE || number > Dice.MAX_VALUE)
@@ -76,14 +77,11 @@ public class NumberConstraint implements IConstraint {
         return this.getNumber() == ((NumberConstraint) obj).getNumber();
     }
 
-    @Override
     public String toString() {
         return "" + number;
     }
 
-    public static NumberConstraint newInstance(NumberConstraint numberConstraint) {
-        if (numberConstraint == null)
-            return null;
-        return new NumberConstraint(numberConstraint.getNumber());
+    public int hashCode() {
+        return Objects.hash(getNumber());
     }
 }

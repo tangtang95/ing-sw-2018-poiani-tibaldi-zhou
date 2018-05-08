@@ -26,6 +26,7 @@ public class RoundTrack {
     }
 
     /**
+<<<<<<< HEAD
      * Copy constructor.
      *
      * @param roundTrack the roundTrack to copy
@@ -46,13 +47,17 @@ public class RoundTrack {
     }
 
     /**
-<<<<<<< HEAD
-     * place the remainder dice of the DraftPool in the correct position of the roundTrack
+     * Place a dice in the specified round of the roundTrack
      *
-     * @param dices the dices which will be placed in the roundTrack
+     * @param dices dice that need to be placed
+     * @param round specified round
      */
     public void addDicesToRound(List<Dice> dices, int round){
         listOfDices.get(round).addAll(dices);
+    }
+
+    public void addDiceToRound(Dice dice, int round){
+        listOfDices.get(round).add(dice);
     }
 
     /**
@@ -63,7 +68,19 @@ public class RoundTrack {
      */
     @Contract(pure = true)
     public List<Dice> getDices(int round){
-        return listOfDices.get(round);
+        return new ArrayList<Dice>(listOfDices.get(round));
+    }
+
+    /**
+     * Deletes a dice from the RoundTrack at a specified round
+     *
+     * @param round removes dice from this round
+     * @param dice dice that needs to be removed
+     * @throws IllegalArgumentException if dice is not present at specified round
+     */
+    public void removeDiceFromRoundTrack(int round, Dice dice) throws IllegalArgumentException {
+        if(!listOfDices.get(round).remove(dice))
+            throw new IllegalArgumentException("Dice not present in round track");
     }
 
     /**

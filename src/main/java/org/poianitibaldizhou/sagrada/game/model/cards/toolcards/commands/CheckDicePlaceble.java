@@ -6,14 +6,14 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.rmi.RemoteException;
 
-public class CheckBeforeDiceChose implements ICommand {
+public class CheckDicePlaceble implements ICommand {
     @Override
-    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
         return false;
     }
 
     @Override
-    public boolean equals(Object object) {
-        return object instanceof CheckBeforeDiceChose;
+    public boolean equals(Object o) {
+        return o instanceof CheckDicePlaceble? true:false;
     }
 }

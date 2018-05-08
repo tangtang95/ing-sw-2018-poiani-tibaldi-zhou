@@ -12,18 +12,21 @@ public class ChooseDiceValue implements ICommand {
 
     /**
      * Notify that a new value for a certain dice is needed.
+     * Doesn't require anything in toolcard.
      *
      * @param player Player who invoked the ToolCard
      * @param toolCard ToolCard invoked that contains this command
      * @param game Game in which the player acts
+     * @return true
      * @throws RemoteException if there are network communication errors
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
         List<IToolCardObserver> observerList = toolCard.getObservers();
         for(IToolCardObserver obs : observerList){
             obs.notifyNeedNewValue(player);
         }
+        return true;
     }
 
     @Override

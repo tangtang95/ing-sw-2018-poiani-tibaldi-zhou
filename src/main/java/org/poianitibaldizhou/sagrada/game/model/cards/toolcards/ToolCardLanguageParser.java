@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
-import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
+import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
@@ -30,16 +31,16 @@ public class ToolCardLanguageParser {
      *
      * @param description effects of a tool card
      * @return list of commands triggered by description
-     * @throws CommandNotFoundException if a string isn't matching with any of the avaible commands.
+     * @throws IllegalArgumentException if a string isn't matching with any of the avaible commands.
      */
-    public List<ICommand> parseToolCard(String description) throws CommandNotFoundException {
+    public List<ICommand> parseToolCard(String description) throws IllegalArgumentException {
         List<ICommand> commands = new ArrayList<>();
         ArrayList<String> processedText=  preprocessing(description);
         for(String s: processedText) {
             if(grammar.get(s) != null)
                 commands.add(grammar.get(s));
             else
-                throw new CommandNotFoundException("Command not recognized: " + s);
+                throw new IllegalArgumentException("Command not recognized: " + s);
         }
 
         return commands;
@@ -62,8 +63,8 @@ public class ToolCardLanguageParser {
         grammar = new HashMap<>();
         grammar.put("Choose dice", new ChooseDice());
         grammar.put("Modify dice value by 1", new ModifyDiceValue(1));
-        grammar.put("Remove dice from schema", new RemoveDice(TileConstraintType.NONE));
-        grammar.put("Remove dice of a certain color from schema", new RemoveDice(TileConstraintType.COLOR));
+        grammar.put("Remove dice", new RemoveDice(TileConstraintType.NONE));
+        grammar.put("Remove dice of a certain color", new RemoveDice(TileConstraintType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
         grammar.put("Reroll dice", new RerollDice());
         grammar.put("Place dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL));
@@ -83,5 +84,48 @@ public class ToolCardLanguageParser {
         grammar.put("Skip first turn", new SkipTurn(1));
         grammar.put("Pour over dice", new PourOverDice());
         grammar.put("Choose color from RoundTrack", new ChooseColorFromRoundTrack());
+        grammar.put("Check Dice placeble", new CheckDicePlaceble());
+        grammar.put("Wait turn end", new WaitTurnEnd());
+        grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
+
+        ICommand clearColor = (player, toolCard, game) -> {
+            toolCard.setNeededColor(null);
+            return true;
+        };
+        ICommand clearValue = (player, toolCard, game) -> {
+            toolCard.setNeededValue(null);
+            return true;
+        };
+
+        ICommand clearDice = (player, toolCard, game) -> {
+            toolCard.setNeededDice(null);
+            return true;
+        };
+
+        ICommand clearPosition =  (player, toolCard, game) -> {
+            toolCard.setPosition(null);
+            return true;
+        };
+
+        ICommand clearTurnEndCondition = (player, toolCard, game) -> {
+            toolCard.setTurnEnded(false);
+            return true;
+        };
+
+        ICommand clearAll = (player, toolCard, game) -> {
+            clearColor.executeCommand(player, toolCard, game);
+            clearDice.executeCommand(player, toolCard, game);
+            clearPosition.executeCommand(player, toolCard, game);
+            clearTurnEndCondition.executeCommand(player, toolCard, game);
+            clearValue.executeCommand(player, toolCard, game);
+            return true;
+        };
+
+        grammar.put("CC", clearColor);
+        grammar.put("CV", clearValue);
+        grammar.put("CD", clearDice);
+        grammar.put("CP", clearPosition);
+        grammar.put("CTEC", clearTurnEndCondition);
+        grammar.put("CA", clearAll);
     }
 }

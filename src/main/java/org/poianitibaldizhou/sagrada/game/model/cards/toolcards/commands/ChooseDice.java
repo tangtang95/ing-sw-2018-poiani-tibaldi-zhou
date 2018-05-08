@@ -14,15 +14,19 @@ public class ChooseDice implements ICommand {
 
     /**
      * Notify to clients that player needs to choose a dice.
+     * Doesn't require anything in toolcard
+     *
      * @param player player who needs to choose a dice
      * @param toolCard toolCard that generated this effect
      * @param game
      **/
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
         List<IToolCardObserver> observerList = toolCard.getObservers();
+        List<Dice> diceList = game.getDraftPool().getDices();
         for(IToolCardObserver obs : observerList)
-            obs.notifyNeedDice(player, new ArrayList<Dice>());
+            obs.notifyNeedDice(player, diceList);
+        return true;
     }
 
     @Override

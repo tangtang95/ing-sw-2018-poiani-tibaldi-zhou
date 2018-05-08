@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 
 public class RoundStartState extends IStateGame{
 
+    private Player currentPlayer;
+
     public static final int NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER = 4;
 
     private static final Logger LOGGER = Logger.getLogger(RoundStartState.class.getName());
@@ -19,8 +21,9 @@ public class RoundStartState extends IStateGame{
      *
      * @param game the game to consider
      */
-    RoundStartState(Game game) {
+    RoundStartState(Game game, Player player) {
         super(game);
+        this.currentPlayer = player;
     }
 
     /**
@@ -31,7 +34,7 @@ public class RoundStartState extends IStateGame{
      */
     @Override
     public void throwDices(Player player) {
-        if(game.getCurrentPlayerRound().equals(player)) {
+        if(currentPlayer.equals(player)) {
             int numberOfDicesToDraw = (game.isSinglePlayer()) ?
                     NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER : game.getNumberOfPlayers()*2 + 1;
             for (int i = 0; i < numberOfDicesToDraw; i++) {
@@ -41,7 +44,7 @@ public class RoundStartState extends IStateGame{
                     LOGGER.log(Level.FINE, "Error in throwDices for empty collection", e);
                 }
             }
-            game.setState(new TurnState(game, player,true));
+            game.setState(new TurnState(game, currentPlayer, player,true));
         }
     }
 

@@ -12,6 +12,8 @@ public class DrawDiceFromDicebag implements ICommand {
 
     /**
      * Draws a dice from the DiceBag.
+     * Doesn't require anything in toolcard.
+     * It pushes a dice to toolcard.
      *
      * @param player player who invoked the ToolCard
      * @param toolCard ToolCard invoked that contains this command
@@ -19,13 +21,15 @@ public class DrawDiceFromDicebag implements ICommand {
      * @throws RemoteException
      */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException {
         try {
             Dice dice = game.getDiceBag().draw();
             toolCard.setNeededDice(dice);
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     @Override

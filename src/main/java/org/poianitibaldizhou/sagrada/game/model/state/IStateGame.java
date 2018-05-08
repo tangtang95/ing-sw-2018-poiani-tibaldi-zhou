@@ -15,7 +15,7 @@ public abstract class IStateGame {
     public void nextRound(){
         throw new IllegalStateException();
     }
-    public void ready(Player player, SchemaCard schemaCard){
+    public boolean ready(Player player, SchemaCard schemaCard){
         throw new IllegalStateException();
     }
     public void readyGame(){

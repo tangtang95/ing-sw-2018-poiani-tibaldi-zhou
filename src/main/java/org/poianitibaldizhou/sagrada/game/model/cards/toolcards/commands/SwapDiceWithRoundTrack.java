@@ -14,31 +14,43 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SwapDiceWithRoundTrack implements ICommand {
+
+    /**
+     * Requires the player to choose a dice from the roundtrack.
+     * The dice will be swapped with a specified one from the draftpool.
+     * It requires a dice in the toolcard (dice to put in the roundtrack) and it asks the client
+     * for a dice and a round.
+     *
+     * @param player player who invoked the command
+     * @param toolCard invoked toolcard
+     * @param game game on which the player acts
+     * @throws RemoteException network communication error
+     * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
+     */
     @Override
-    public void executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
+    public boolean executeCommand(Player player, ToolCard toolCard, Game game) throws RemoteException, InterruptedException {
         Dice dice = toolCard.getNeededDice(), roundTrackDice;
+        int round;
         List<IToolCardObserver> observerList = toolCard.getObservers();
-        List<Dice> diceList = new ArrayList<>();
         RoundTrack roundTrack = game.getRoundTrack();
-        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-            diceList.addAll(roundTrack.getDices(i)); // TODO check if round starts from 0 and go to 9 or 1 to 10
-        }
 
         for(IToolCardObserver observer : observerList) {
-            observer.notifyNeedDice(player, diceList);
+            observer.notifyNeedDiceFromRoundTrack(player, roundTrack);
         }
 
         roundTrackDice = toolCard.getNeededDice();
-        // needs better implementation i guess, because number of round is needed to do this also
+        round = toolCard.getNeededValue();
+
         game.getDraftPool().addDice(roundTrackDice);
         try {
             game.getDraftPool().useDice(dice);
-        } catch (DiceNotFoundException e) {
+        } catch (DiceNotFoundException | EmptyCollectionException e) {
             e.printStackTrace();
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
+            return false;
         }
-        // now change the round in an appropriate way
+        roundTrack.removeDiceFromRoundTrack(round,roundTrackDice);
+        roundTrack.addDiceToRound(dice, round);
+        return true;
     }
 
     @Override

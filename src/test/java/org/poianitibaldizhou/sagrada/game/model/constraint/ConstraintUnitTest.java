@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import org.junit.Test;
 import org.poianitibaldizhou.sagrada.game.model.*;

@@ -100,7 +100,6 @@ public class Dice {
     public static Dice newInstance(Dice dice) {
         if (dice == null)
             return null;
-        return new Dice(NumberConstraint.newInstance(dice.getNumberConstraint()),
-                ColorConstraint.newInstance(dice.getColorConstraint()));
+        return new Dice(dice.getNumberConstraint(), dice.getColorConstraint());
     }
 }
