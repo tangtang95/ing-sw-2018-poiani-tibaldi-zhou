@@ -75,4 +75,15 @@ public class NumberConstraint implements IConstraint {
             return false;
         return this.getNumber() == ((NumberConstraint) obj).getNumber();
     }
+
+    @Override
+    public String toString() {
+        return "" + number;
+    }
+
+    public static NumberConstraint newInstance(NumberConstraint numberConstraint) {
+        if (numberConstraint == null)
+            return null;
+        return new NumberConstraint(numberConstraint.getNumber());
+    }
 }

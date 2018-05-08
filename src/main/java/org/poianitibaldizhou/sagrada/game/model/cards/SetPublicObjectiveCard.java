@@ -2,10 +2,14 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class SetPublicObjectiveCard extends PublicObjectiveCard {
 
@@ -59,5 +63,20 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
             minValue = Math.min(minValue, counts[arrayConstraints.get(i).getIndexValue()]);
         }
         return minValue*getCardPoints();
+    }
+
+    public static SetPublicObjectiveCard newInstance(SetPublicObjectiveCard spoc) {
+        if (spoc == null)
+            return null;
+        Set<IConstraint> constraints = new HashSet<>();
+        for (IConstraint ic : spoc.getConstraint()){
+            if (ic instanceof ColorConstraint)
+                constraints.add(ColorConstraint.newInstance((ColorConstraint) ic));
+            else
+                constraints.add(NumberConstraint.newInstance((NumberConstraint) ic));
+        }
+
+        return new SetPublicObjectiveCard(spoc.getName(),spoc.getDescription(),spoc.getCardPoints(),
+                constraints,spoc.getType());
     }
 }

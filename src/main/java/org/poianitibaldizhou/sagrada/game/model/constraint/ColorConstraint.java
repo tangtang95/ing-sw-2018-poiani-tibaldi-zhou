@@ -72,4 +72,14 @@ public class ColorConstraint implements IConstraint {
         return this.getColor() == ((ColorConstraint) obj).getColor();
     }
 
+    @Override
+    public String toString() {
+        return color.name().substring(0,1);
+    }
+
+     public static ColorConstraint newInstance(ColorConstraint colorConstraint) {
+        if (colorConstraint == null)
+            return null;
+        return new ColorConstraint(colorConstraint.getColor());
+    }
 }

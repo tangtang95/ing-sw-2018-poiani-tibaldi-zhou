@@ -32,4 +32,10 @@ public class NoConstraint implements IConstraint {
     public boolean equals(Object obj) {
         return obj instanceof NoConstraint;
     }
+
+    @Override
+    public String toString() {
+        return " ";
+    }
+
 }

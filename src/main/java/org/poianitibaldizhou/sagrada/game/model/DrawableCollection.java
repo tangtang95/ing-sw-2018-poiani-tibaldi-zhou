@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class DrawableCollection<T> {
-    List<T> collection;
+    private List<T> collection;
 
     /**
      * Constructor.
@@ -77,7 +77,7 @@ public class DrawableCollection<T> {
     /**
      * Returns an array containing the elements present in DrawableCollection
      *
-     * @return
+     * @return a generic collection array
      */
     public T[] toArray() {
         return (T[]) collection.toArray();
@@ -90,5 +90,11 @@ public class DrawableCollection<T> {
 
     public List<T> getCollection() {
         return collection;
+    }
+
+    public static DrawableCollection newInstance(DrawableCollection drawableCollection) {
+        if (drawableCollection == null)
+            return null;
+        return new DrawableCollection(drawableCollection.getCollection());
     }
 }

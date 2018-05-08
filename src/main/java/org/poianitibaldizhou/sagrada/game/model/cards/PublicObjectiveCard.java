@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.*;
@@ -86,5 +87,17 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
             }
         }
         return false;
+    }
+
+    public static PublicObjectiveCard newInstance(PublicObjectiveCard publicObjectiveCard) {
+        if (publicObjectiveCard instanceof RowPublicObjectiveCard)
+            return RowPublicObjectiveCard.newInstance(publicObjectiveCard);
+        if (publicObjectiveCard instanceof ColumnPublicObjectiveCard)
+            return ColumnPublicObjectiveCard.newInstance(publicObjectiveCard);
+        if (publicObjectiveCard instanceof DiagonalPublicObjectiveCard)
+            return DiagonalPublicObjectiveCard.newInstance(publicObjectiveCard);
+        if (publicObjectiveCard instanceof SetPublicObjectiveCard)
+            return SetPublicObjectiveCard.newInstance(publicObjectiveCard);
+        return null;
     }
 }

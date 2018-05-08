@@ -78,7 +78,7 @@ public class Dice {
 
     @Override
     public String toString() {
-        return "Dice(" + numberConstraint.getNumber() + "," + colorConstraint.getColor() + ")";
+        return "" + numberConstraint.toString() + "/" + colorConstraint.toString();
     }
 
     /**
@@ -95,5 +95,12 @@ public class Dice {
     public int hashCode() {
 
         return Objects.hash(numberConstraint, colorConstraint);
+    }
+
+    public static Dice newInstance(Dice dice) {
+        if (dice == null)
+            return null;
+        return new Dice(NumberConstraint.newInstance(dice.getNumberConstraint()),
+                ColorConstraint.newInstance(dice.getColorConstraint()));
     }
 }

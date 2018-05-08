@@ -4,13 +4,21 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.GameInjector;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Tile{
 
     private final IConstraint constraint;
     private Dice dice = null;
+
+    private static final Logger LOGGER = Logger.getLogger(Tile.class.getName());
 
     /**
      * Constructor: create a tile with no constraint on it
@@ -82,7 +90,6 @@ public class Tile{
      *
      * @param dice the dice to check if positionable
      * @return true if the dice can be placed with number and color constraint
-     * @throws RuleViolationException if this.getNeededDice() != null
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice) {
@@ -137,4 +144,31 @@ public class Tile{
         return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
     }
 
+    @Override
+    public String toString() {
+        if (dice != null)
+            return dice.toString();
+        return " " + constraint.toString()+ " ";
+    }
+
+    public static Tile newInstance(Tile tile) {
+        if (tile == null)
+            return null;
+        IConstraint constraint;
+        if (tile.getConstraint() instanceof ColorConstraint)
+            constraint = ColorConstraint.newInstance((ColorConstraint) tile.getConstraint());
+        else
+            if (tile.getConstraint() instanceof NumberConstraint)
+                constraint = NumberConstraint.newInstance((NumberConstraint) tile.getConstraint());
+            else
+                constraint = new NoConstraint();
+
+        Tile newTile = new Tile(constraint);
+        try {
+            newTile.setDice(Dice.newInstance(tile.getDice()));
+        } catch (RuleViolationException e) {
+            LOGGER.log(Level.FINE, "Rule violation exception in Tile: newInstance", e);
+        }
+        return newTile;
+    }
 }

@@ -48,8 +48,6 @@ public class SetupGameState extends IStateGame {
         this.injectPublicObjectiveCards(publicObjectiveCards);
 
         game.setCurrentPlayerRound(getRandomStartPlayer(game.getPlayers()));
-
-        readyGame();
     }
 
     /**

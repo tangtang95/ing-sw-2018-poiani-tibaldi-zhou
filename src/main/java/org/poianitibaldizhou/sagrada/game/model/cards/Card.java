@@ -17,4 +17,5 @@ public abstract class Card {
     public String getDescription() {
         return description;
     }
+
 }

@@ -68,4 +68,11 @@ public class PrivateObjectiveCard extends Card implements IScore {
         return colorConstraint;
     }
 
+    public static PrivateObjectiveCard newInstance(PrivateObjectiveCard privateObjectiveCard) {
+        if (privateObjectiveCard == null)
+            return null;
+        return new PrivateObjectiveCard(privateObjectiveCard.getName(),privateObjectiveCard.getDescription(),
+                ColorConstraint.newInstance((ColorConstraint) privateObjectiveCard.getConstraint()));
+    }
+
 }

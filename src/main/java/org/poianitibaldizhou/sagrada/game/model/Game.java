@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,6 +46,29 @@ public class Game {
             players.add(new Player(token, new FavorToken()));
         }
         setState(new SetupPlayerState(this));
+    }
+
+    private Game(List<Player> players, RoundTrack roundTrack, List<ToolCard> toolCards,
+                 List<PublicObjectiveCard> publicObjectiveCards, DrawableCollection<Dice> diceBag,
+                 DraftPool draftPool, String name, Player currentPlayerRound, IStateGame state,
+                 Boolean isSinglePlayer, int difficulty) {
+        this.players = new LinkedList<>();
+        for (Player p : players)
+            this.players.add(Player.newInstance(p));
+        this.roundTrack = RoundTrack.newInstance(roundTrack);
+        this.toolCards = new LinkedList<>();
+
+        this.publicObjectiveCards = new LinkedList<>();
+        for (PublicObjectiveCard poc : publicObjectiveCards)
+            this.publicObjectiveCards.add(PublicObjectiveCard.newInstance(poc));
+        this.draftPool = DraftPool.newInstance(draftPool);
+        this.name = name;
+        this.currentPlayerRound = Player.newInstance(currentPlayerRound);
+        this.isSinglePlayer = isSinglePlayer;
+        this.difficulty = difficulty;
+        //need a refactor
+        this.diceBag = diceBag;
+        this.state = state;
     }
 
     /**
@@ -182,5 +206,11 @@ public class Game {
 
     public IStateGame getState() {
         return state;
+    }
+
+    public static Game newInstance(Game game) {
+            return new Game(game.getPlayers(),game.getRoundTrack(),game.getToolCards(),game.getPublicObjectiveCards(),
+                    game.getDiceBag(),game.getDraftPool(),game.getName(),game.getCurrentPlayerRound(),game.getState(),
+                    game.isSinglePlayer(),game.getDifficulty());
     }
 }

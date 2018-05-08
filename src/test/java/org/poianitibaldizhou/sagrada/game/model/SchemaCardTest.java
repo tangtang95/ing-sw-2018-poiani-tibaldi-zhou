@@ -219,5 +219,10 @@ public class SchemaCardTest {
         assertTrue(fullSchemaCard.isDicePositionable(d4,2, 4, TileConstraintType.NONE, DiceConstraintType.NORMAL));
         assertTrue(fullSchemaCard.isDicePositionable(d3,0,1, TileConstraintType.COLOR, DiceConstraintType.NORMAL));
     }
-
+    @Test
+    public void toStringTest(){
+        System.out.println(emptySchemaCard.toString() + "\n");
+        System.out.println(schemaCard.toString() + "\n");
+        System.out.println(fullSchemaCard.toString() + "\n");
+    }
 }

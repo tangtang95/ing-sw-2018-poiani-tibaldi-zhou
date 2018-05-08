@@ -38,6 +38,8 @@ public class Player {
         return coins.getCoins();
     }
 
+    public ICoin getICoins() {return this.coins;}
+
     public SchemaCard getSchemaCard() {
         return schemaCard;
     }
@@ -56,9 +58,9 @@ public class Player {
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
      */
-    public void useCard(ToolCard toolCard) throws NoCoinsExpendableException, RemoteException, InterruptedException {
+    public void useCard(ToolCard toolCard, Game game) throws NoCoinsExpendableException, RemoteException, InterruptedException {
         coins.use(toolCard);
-        toolCard.invokeCommands(this);
+        toolCard.invokeCommands(this, game);
     }
 
     /**
@@ -149,5 +151,15 @@ public class Player {
         if (coins instanceof FavorToken)
             return getCoins();
         return 0;
+    }
+
+    public static Player newInstance(Player player) {
+        if (player == null)
+            return null;
+        Player newPlayer = new Player(player.getToken(),player.getICoins());
+        newPlayer.setSchemaCard(SchemaCard.newInstance(player.getSchemaCard()));
+        newPlayer.setPrivateObjectiveCard(PrivateObjectiveCard.newInstance(player.getPrivateObjectiveCard()));
+        newPlayer.setOutcome(player.getOutcome());
+        return newPlayer;
     }
 }

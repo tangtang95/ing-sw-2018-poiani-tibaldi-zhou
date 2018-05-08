@@ -1,9 +1,7 @@
-package org.poianitibaldizhou.sagrada.model;
+package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -14,8 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.junit.Assert.*;
 
 public class StateIntegrationTest {
 
@@ -32,63 +31,48 @@ public class StateIntegrationTest {
         multiPlayerGame = new Game(tokens, "1Game");
         SchemaCard schemaCard = mock(SchemaCard.class);
         for (Player player : multiPlayerGame.getPlayers()) {
-            assert (player.getPrivateObjectiveCard() != null);
+            assertTrue(player.getPrivateObjectiveCard() != null);
             multiPlayerGame.getState().ready(player,schemaCard);
         }
         for (Player player : singleGame.getPlayers()) {
-            assert (player.getPrivateObjectiveCard() != null);
+            assertTrue(player.getPrivateObjectiveCard() != null);
             singleGame.getState().ready(player,schemaCard);
         }
-        singleGame.getState().readyGame();
-        multiPlayerGame.getState().readyGame();
-    }
 
-    @AfterClass
-    public static void tearDownClass(){
-
-    }
-
-    @Before
-    public void setUp(){
-
-    }
-
-    @After
-    public void tearDown() {
     }
 
     @Test
     public void setUpGameStateTest(){
-        assert (multiPlayerGame.getPublicObjectiveCards() != null);
-        assert (multiPlayerGame.getToolCards() != null);
+        assertTrue (multiPlayerGame.getPublicObjectiveCards() != null);
+        assertTrue (multiPlayerGame.getToolCards() != null);
         assertEquals("Wrong number of publicObjectiveCards", 3,
                 multiPlayerGame.getPublicObjectiveCards().size());
         assertEquals("Wrong number of ToolCards", 3,
                 multiPlayerGame.getToolCards().size());
         for (PublicObjectiveCard poc : multiPlayerGame.getPublicObjectiveCards()) {
-            assert (poc != null);
+            assertTrue (poc != null);
         }
         for (ToolCard toolCard : multiPlayerGame.getToolCards()) {
-            assert (toolCard != null);
+            assertTrue (toolCard != null);
         }
-        assert (singleGame.getPublicObjectiveCards() != null);
-        assert (singleGame.getToolCards() != null);
+        assertTrue (singleGame.getPublicObjectiveCards() != null);
+        assertTrue (singleGame.getToolCards() != null);
         assertEquals("Wrong number of publicObjectiveCards", 2,
                 singleGame.getPublicObjectiveCards().size());
         assertEquals("Wrong number of ToolCards", singleGame.getDifficulty(),
                 singleGame.getToolCards().size());
         for (PublicObjectiveCard poc : singleGame.getPublicObjectiveCards()) {
-            assert (poc != null);
+            assertTrue (poc != null);
         }
         for (ToolCard toolCard : singleGame.getToolCards()) {
-            assert (toolCard != null);
+            assertTrue (toolCard != null);
         }
     }
 
     @Test
     public void roundStartStateTest(){
-        assert (multiPlayerGame.getState() instanceof RoundStartState);
-        assert (singleGame.getState() instanceof RoundStartState);
+        assertTrue (multiPlayerGame.getState() instanceof RoundStartState);
+        assertTrue (singleGame.getState() instanceof RoundStartState);
         multiPlayerGame.getState().throwDices(multiPlayerGame.getCurrentPlayerRound());
         assertEquals("Wrong number of dices in draftPool",7,
                 multiPlayerGame.getDraftPool().size());
@@ -123,7 +107,7 @@ public class StateIntegrationTest {
         singleGame.getState().nextRound();
         assertEquals("Wrong number of dices in roundTrack round 1",7,
                 singleGame.getRoundTrack().getDices(1).size());
-        assert (multiPlayerGame.getState() instanceof RoundStartState);
-        assert (singleGame.getState() instanceof RoundStartState);
+        assertTrue (multiPlayerGame.getState() instanceof RoundStartState);
+        assertTrue (singleGame.getState() instanceof RoundStartState);
     }
 }

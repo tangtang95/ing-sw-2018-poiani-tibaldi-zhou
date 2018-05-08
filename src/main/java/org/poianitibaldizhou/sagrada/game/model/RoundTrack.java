@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class RoundTrack {
@@ -25,13 +26,33 @@ public class RoundTrack {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param roundTrack the roundTrack to copy
+     * @return copy of roundTrack
+     */
+    public static RoundTrack newInstance(RoundTrack roundTrack) {
+        if (roundTrack == null)
+            return null;
+        RoundTrack newRoundTrack = new RoundTrack();
+        List<Dice> diceList = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_TRACK; i++) {
+            for (Dice d : roundTrack.listOfDices.get(i))
+                diceList.add(Dice.newInstance(d));
+            newRoundTrack.addDicesToRound(diceList,i);
+        }
+        newRoundTrack.currentRound = roundTrack.currentRound;
+        return newRoundTrack;
+    }
+
+    /**
 <<<<<<< HEAD
      * place the remainder dice of the DraftPool in the correct position of the roundTrack
      *
      * @param dices the dices which will be placed in the roundTrack
      */
-    public void addDicesToCurrentRound(List<Dice> dices){
-        listOfDices.get(currentRound).addAll(dices);
+    public void addDicesToRound(List<Dice> dices, int round){
+        listOfDices.get(round).addAll(dices);
     }
 
     /**

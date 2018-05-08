@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
@@ -22,7 +23,7 @@ public class PlaceDiceState implements IPlayerState {
     }
 
     @Override
-    public void useCard(Player player, ToolCard toolCard) {
+    public void useCard(Player player, ToolCard toolCard, Game game) {
         if (turnState.getPlayerState() instanceof PlaceDiceState)
             throw new IllegalStateException();
     }

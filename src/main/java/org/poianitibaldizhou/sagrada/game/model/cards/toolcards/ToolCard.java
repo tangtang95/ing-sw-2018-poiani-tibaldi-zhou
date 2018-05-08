@@ -19,7 +19,6 @@ public class ToolCard extends Card {
     private List<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
-    private Game game;
 
     // properties that need communication with client
     private Dice neededDice;
@@ -36,11 +35,12 @@ public class ToolCard extends Card {
         neededValue = null;
     }
 
+
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<IToolCardObserver>(observers);
     }
 
-    public void invokeCommands(Player player) throws RemoteException, InterruptedException {
+    public void invokeCommands(Player player, Game game) throws RemoteException, InterruptedException {
         for (ICommand command : commands) {
             command.executeCommand(player, this,game);
         }
@@ -134,5 +134,9 @@ public class ToolCard extends Card {
     public synchronized void setNeededColor(Color neededColor) {
         this.neededColor = neededColor;
         notifyAll();
+    }
+
+    public static ToolCard newInstance(ToolCard toolCard) {
+        return null;
     }
 }

@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
@@ -23,11 +24,12 @@ public class UseCardState implements IPlayerState {
             throw new IllegalStateException();
     }
 
+
     @Override
-    public void useCard(Player player, ToolCard toolCard) {
+    public void useCard(Player player, ToolCard toolCard, Game game) {
         try {
             try {
-                player.useCard(toolCard);
+                player.useCard(toolCard, game);
             } catch (RemoteException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

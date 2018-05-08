@@ -70,7 +70,9 @@ public class SetupPlayerState extends IStateGame {
         playersReady.add(player);
         if (player.getSchemaCard() == null && playerSchemaCards.get(player).contains(schemaCard))
             player.setSchemaCard(schemaCard);
-        if (game.getNumberOfPlayers() == playersReady.size())
+        if (game.getNumberOfPlayers() == playersReady.size()) {
             game.setState(new SetupGameState(game));
+            game.getState().readyGame();
+        }
     }
 }
