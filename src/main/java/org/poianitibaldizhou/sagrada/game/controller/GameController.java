@@ -22,16 +22,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     /**
      * Implements a player joining a certain game.
      *
-     * @param game game to join
      * @param view player's view
      * @param token player's token
+     * @param gameName name of the game that player wants to join
      * @throws RemoteException
      */
     @Override
-    public synchronized void joinGame(Game game, IGameView view, String token, String gameName) throws RemoteException {
-        gameManager.addGame(game, gameName);
+    public synchronized void joinGame(IGameView view, String token, String gameName) throws RemoteException {
         try {
-            gameManager.joinGame(game,token);
+            gameManager.joinGame(gameName,token);
         } catch(RemoteException re) {
             view.err("You are already in game");
             return;
@@ -95,6 +94,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     /**
      * Set a new color needed for a certain toolcard and its purpose.
      * This method assumes that game's toolcards contains the specified toolcard.
+     *
      * @param position position that needs to be set for the specified toolcard
      * @param gameName game played
      * @param toolCardName toolcard on which to set the posiiton

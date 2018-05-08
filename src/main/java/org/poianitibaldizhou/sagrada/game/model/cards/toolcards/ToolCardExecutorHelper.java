@@ -7,6 +7,12 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import java.util.List;
 
 public class ToolCardExecutorHelper {
+    private Object diceMonitor;
+    private Object colorMonitor;
+    private Object valueMonitor;
+    private Object turnEndMonitor;
+    private Object positionMonitor;
+
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
@@ -14,7 +20,20 @@ public class ToolCardExecutorHelper {
     private boolean turnEnd;
     List<IToolCardObserver> observers;
 
+    /**
+     * Constructor.
+     * Creates an exectuor helper for the invocation of the various commands.
+     *
+     * @param observers list of observers that will be notified when some actions are required
+     *                  during the execution of the commands
+     */
     public ToolCardExecutorHelper(List<IToolCardObserver> observers) {
+        diceMonitor = new Object();
+        colorMonitor = new Object();
+        valueMonitor = new Object();
+        turnEndMonitor = new Object();
+        positionMonitor = new Object();
+
         neededDice = null;
         neededValue = null;
         neededColor = null;
@@ -27,59 +46,79 @@ public class ToolCardExecutorHelper {
         return observers;
     }
 
-    public synchronized void setNeededValue(Integer neededValue) {
-        this.neededValue = neededValue;
-        notifyAll();
+    public void setNeededValue(Integer neededValue) {
+        synchronized (valueMonitor) {
+            this.neededValue = neededValue;
+            valueMonitor.notifyAll();
+        }
     }
 
-    public synchronized int getNeededValue() throws InterruptedException {
-        while(neededValue == null)
-            wait();
-        return neededValue;
+    public int getNeededValue() throws InterruptedException {
+        synchronized (valueMonitor) {
+            while (neededValue == null)
+                valueMonitor.wait();
+            return neededValue;
+        }
     }
 
-    public synchronized Dice getNeededDice() throws InterruptedException {
-        while(neededDice == null)
-            wait();
-        return neededDice;
+    public Dice getNeededDice() throws InterruptedException {
+        synchronized (diceMonitor) {
+            while (neededDice == null)
+                diceMonitor.wait();
+            return neededDice;
+        }
     }
 
-    public synchronized void setNeededDice(Dice neededDice) {
-        this.neededDice = neededDice;
-        notifyAll();
+    public void setNeededDice(Dice neededDice) {
+        synchronized (diceMonitor) {
+            this.neededDice = neededDice;
+            diceMonitor.notifyAll();
+        }
     }
 
-    public synchronized Color getNeededColor() throws InterruptedException {
-        while(neededColor == null)
-            wait();
-        return neededColor;
+    public Color getNeededColor() throws InterruptedException {
+        synchronized (colorMonitor) {
+            while (neededColor == null)
+                colorMonitor.wait();
+            return neededColor;
+        }
     }
 
-    public synchronized void setNeededColor(Color neededColor) {
-        this.neededColor = neededColor;
-        notifyAll();
+    public void setNeededColor(Color neededColor) {
+        synchronized (colorMonitor) {
+            this.neededColor = neededColor;
+            colorMonitor.notifyAll();
+        }
     }
 
-    public synchronized Position getPosition() throws InterruptedException {
-        while(neededPosition == null)
-            wait();
-        return neededPosition;
+    public Position getPosition() throws InterruptedException {
+        synchronized (positionMonitor) {
+            while (neededPosition == null)
+                positionMonitor.wait();
+            return neededPosition;
+        }
     }
 
-    public synchronized void setNeededPosition(Position position) {
-        this.neededPosition = position;
-        notifyAll();
+    public void setNeededPosition(Position position) {
+        synchronized (positionMonitor) {
+            this.neededPosition = position;
+            positionMonitor.notifyAll();
+        }
     }
 
-    public synchronized boolean getTurnEnded() throws InterruptedException {
-        if(turnEnd == false)
-            wait();
-        return true;
+    public boolean getTurnEnded() throws InterruptedException {
+        synchronized (turnEndMonitor) {
+            if (turnEnd == false)
+                turnEndMonitor.wait();
+            return true;
+        }
     }
 
     public synchronized void setTurnEnded(boolean isTurnEnded) {
-        this.turnEnd = isTurnEnded;
-        if(isTurnEnded)
-            notifyAll();
+        synchronized (turnEndMonitor) {
+            this.turnEnd = isTurnEnded;
+            if (isTurnEnded)
+                turnEndMonitor.notifyAll();
+        }
     }
 }

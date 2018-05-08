@@ -81,7 +81,7 @@ public class LobbyTest {
     }
 
     @Test
-    public void testUserJoinGametartLeave() throws RemoteException {
+    public void testUserJoinGamestartLeave() throws RemoteException {
         for (int i = 0; i < Lobby.MAX_PLAYER; i++) {
             lobby.observeLobby(observers.get(i));
         }
