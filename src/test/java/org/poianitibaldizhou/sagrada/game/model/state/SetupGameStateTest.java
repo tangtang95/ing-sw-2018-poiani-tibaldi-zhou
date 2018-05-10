@@ -3,15 +3,13 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
@@ -23,6 +21,11 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * Dependency class with:
+ * - GameInjector
+ * - RoundStartState constructor
+ */
 public class SetupGameStateTest {
 
     private SetupGameState setupGameState;
@@ -93,16 +96,18 @@ public class SetupGameStateTest {
         when(game.isSinglePlayer()).thenReturn(false);
         when(game.getDifficulty()).thenReturn(3);
         setupGameState = new SetupGameState(game);
-        doAnswer(new Answer() {
+        /*doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
                 RoundStartState roundStartState = invocationOnMock.getArgument(0);
                 assertTrue(playerList.contains(roundStartState.getCurrentRoundPlayer()));
                 return null;
             }
-        }).when(game).setState(ArgumentMatchers.any(RoundStartState.class));
+        }).when(game).setState(ArgumentMatchers.any(RoundStartState.class));*/
         setupGameState.readyGame();
-        verify(game).setState(ArgumentMatchers.any(RoundStartState.class));
+        ArgumentCaptor<RoundStartState> argument = ArgumentCaptor.forClass(RoundStartState.class);
+        verify(game).setState(argument.capture());
+        assertTrue(playerList.contains(argument.getValue().getCurrentRoundPlayer()));
     }
 
 }

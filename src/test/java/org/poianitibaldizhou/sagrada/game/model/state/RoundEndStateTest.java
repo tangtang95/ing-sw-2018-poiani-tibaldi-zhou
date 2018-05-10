@@ -11,6 +11,7 @@ import org.mockito.stubbing.Answer;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -75,8 +76,8 @@ public class RoundEndStateTest {
         roundEndState = new RoundEndState(game, round, player1);
         roundEndState.nextRound();
         doAnswer(invocationOnMock -> {
-            assertEquals((Integer) round, invocationOnMock.getArgument(1));
-            assertTrue(diceList.containsAll(invocationOnMock.getArgument(0)));
+            assertEquals((Integer) round, invocationOnMock.getArguments()[1]);
+            assertTrue(diceList.containsAll((Collection<?>) invocationOnMock.getArguments()[0]));
             return null;
         }).when(roundTrack).addDicesToRound(ArgumentMatchers.anyList(), anyInt());
         verify(roundTrack).addDicesToRound(ArgumentMatchers.anyList(), anyInt());

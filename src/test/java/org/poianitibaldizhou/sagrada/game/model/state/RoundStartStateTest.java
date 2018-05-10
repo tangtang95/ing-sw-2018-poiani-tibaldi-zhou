@@ -32,8 +32,9 @@ public class RoundStartStateTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         diceBag = new DrawableCollection<>();
-        GameInjector gameInjector = new GameInjector();
-        gameInjector.injectDiceBag(diceBag);
+        for (int i = 0; i < 90; i++) {
+            diceBag.addElement(mock(Dice.class));
+        }
         when(game.getDiceBag()).thenReturn(diceBag);
         when(game.getDraftPool()).thenReturn(draftPool);
     }

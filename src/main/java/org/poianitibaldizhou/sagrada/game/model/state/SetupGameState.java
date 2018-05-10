@@ -32,14 +32,13 @@ public class SetupGameState extends IStateGame{
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
-        GameInjector gameInjector = new GameInjector();
-        gameInjector.injectToolCards(toolCards, game.isSinglePlayer());
+        GameInjector.injectToolCards(toolCards, game.isSinglePlayer());
         try {
-            gameInjector.injectPublicObjectiveCards(publicObjectiveCards);
+            GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
         }catch (WrongCardInJsonFileException e){
             LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards", e);
         }
-        gameInjector.injectDiceBag(game.getDiceBag());
+        GameInjector.injectDiceBag(game.getDiceBag());
 
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);

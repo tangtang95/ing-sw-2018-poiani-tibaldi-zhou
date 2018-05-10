@@ -68,14 +68,11 @@ public class ToolCard extends Card {
         return color;
     }
 
-    public int getCost() throws IllegalNumberOfTokensOnToolCardException {
-        if(tokens == 0)
+    public int getCost() {
+        if(tokens <= 0)
             return 1;
-        else if(tokens > 1)
-            return 2;
         else
-            throw new IllegalNumberOfTokensOnToolCardException();
-
+            return 2;
     }
 
     public void attachToolCardObserver(IToolCardObserver observer) {

@@ -13,15 +13,8 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import static org.junit.Assert.*;
 
 public class SchemaCardTest {
-    @DataPoint
-    public SchemaCard emptySchemaCard;
 
-    @DataPoint
-    public SchemaCard schemaCard;
-
-    @DataPoint
-    public SchemaCard fullSchemaCard;
-
+    private SchemaCard schemaCard ,fullSchemaCard, emptySchemaCard;
 
     @Before
     public void setUp() {

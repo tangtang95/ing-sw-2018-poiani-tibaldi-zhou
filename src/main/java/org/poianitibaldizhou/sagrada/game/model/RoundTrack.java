@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class RoundTrack {
@@ -81,7 +80,7 @@ public class RoundTrack {
      * @param dice dice that needs to be removed
      * @throws IllegalArgumentException if dice is not present at specified round
      */
-    public void removeDiceFromRoundTrack(int round, Dice dice) throws IllegalArgumentException {
+    public void removeDiceFromRoundTrack(int round, Dice dice) {
         if(!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
     }

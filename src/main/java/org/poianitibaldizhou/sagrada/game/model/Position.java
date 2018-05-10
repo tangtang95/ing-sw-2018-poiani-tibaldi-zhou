@@ -34,6 +34,6 @@ public class Position {
         if(!(o instanceof Position))
             return false;
         Position temp = (Position) o;
-        return (temp.getColumn() == this.column && temp.getRow() == this.row)? true:false;
+        return temp.getColumn() == this.column && temp.getRow() == this.row;
     }
 }

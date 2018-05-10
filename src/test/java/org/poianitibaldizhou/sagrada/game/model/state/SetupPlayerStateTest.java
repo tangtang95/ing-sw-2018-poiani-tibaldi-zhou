@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
@@ -16,18 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+/**
+ * Dependency class with:
+ * - GameInjector
+ * - SetupGameState constructor
+ */
 public class SetupPlayerStateTest {
     private SetupPlayerState setupPlayerState;
 
-    @Mock
-    private Game game;
+    @Mock private Game game;
 
-    @Mock
-    private static Player player1, player2, player3, player4;
+    @Mock private static Player player1, player2, player3, player4;
 
     private List<Player> playerList;
 

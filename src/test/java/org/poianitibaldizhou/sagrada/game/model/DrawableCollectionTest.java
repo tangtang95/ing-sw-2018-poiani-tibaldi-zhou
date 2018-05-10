@@ -19,7 +19,7 @@ public class DrawableCollectionTest {
 
     @BeforeClass
     public static void setUpClass() {
-        stringList = new ArrayList<String>();
+        stringList = new ArrayList();
     }
 
     @AfterClass

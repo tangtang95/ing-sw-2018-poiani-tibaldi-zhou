@@ -37,9 +37,8 @@ public class SetupPlayerState extends IStateGame {
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
 
-        GameInjector gameInjector = new GameInjector();
-        gameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-        gameInjector.injectSchemaCards(schemaCards);
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
+        GameInjector.injectSchemaCards(schemaCards);
         for (Player player : game.getPlayers()) {
             List<SchemaCard> schemaCardList = new ArrayList<>();
             for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
