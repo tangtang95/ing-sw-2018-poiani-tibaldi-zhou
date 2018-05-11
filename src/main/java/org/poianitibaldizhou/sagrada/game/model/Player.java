@@ -2,6 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.rmi.RemoteException;
@@ -73,9 +76,13 @@ public class Player {
      * @param diceConstraint the constrains of the dice
      * @throws RuleViolationException if the rule of the schema is violated
      */
-    public void placeDice(Dice dice, int row, int column, TileConstraintType tileConstraint,
-                          DiceConstraintType diceConstraint) throws RuleViolationException {
+    public void placeDice(Dice dice, int row, int column, ObjectiveCardType tileConstraint,
+                          DiceRestrictionType diceConstraint) throws RuleViolationException {
         schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
+    }
+
+    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
+        schemaCard.setDice(dice, row, column);
     }
 
     public void endTurn() {

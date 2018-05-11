@@ -3,6 +3,8 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PourOverDice;
 
+import java.util.Objects;
+
 public class Position {
     private int row;
     private int column;
@@ -35,5 +37,10 @@ public class Position {
             return false;
         Position temp = (Position) o;
         return temp.getColumn() == this.column && temp.getRow() == this.row;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(row, column);
     }
 }

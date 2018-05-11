@@ -1,10 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.junit.*;
-import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
@@ -175,11 +175,11 @@ public class SchemaCardTest {
         }
 
         try{
-            fullSchemaCard.setDice(d4,0,2, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+            fullSchemaCard.setDice(d4,0,2, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
             fullSchemaCard.removeDice(0,2);
-            fullSchemaCard.setDice(d4,2,4, TileConstraintType.NUMBER, DiceConstraintType.NORMAL);
+            fullSchemaCard.setDice(d4,2,4, ObjectiveCardType.NUMBER, DiceRestrictionType.NORMAL);
             fullSchemaCard.removeDice(2,4);
-            fullSchemaCard.setDice(d3,0,1, TileConstraintType.COLOR, DiceConstraintType.NORMAL);
+            fullSchemaCard.setDice(d3,0,1, ObjectiveCardType.COLOR, DiceRestrictionType.NORMAL);
         } catch (Exception e) {
             fail("no exception expected");
         }
@@ -208,9 +208,9 @@ public class SchemaCardTest {
         assertFalse(schemaCard.isDicePositionable(d3,0,2));
         assertFalse(fullSchemaCard.isDicePositionable(d4,2, 4));
 
-        assertTrue(fullSchemaCard.isDicePositionable(d4,2,4, TileConstraintType.NUMBER, DiceConstraintType.NORMAL));
-        assertTrue(fullSchemaCard.isDicePositionable(d4,2, 4, TileConstraintType.NONE, DiceConstraintType.NORMAL));
-        assertTrue(fullSchemaCard.isDicePositionable(d3,0,1, TileConstraintType.COLOR, DiceConstraintType.NORMAL));
+        assertTrue(fullSchemaCard.isDicePositionable(d4,2,4, ObjectiveCardType.NUMBER, DiceRestrictionType.NORMAL));
+        assertTrue(fullSchemaCard.isDicePositionable(d4,2, 4, ObjectiveCardType.NONE, DiceRestrictionType.NORMAL));
+        assertTrue(fullSchemaCard.isDicePositionable(d3,0,1, ObjectiveCardType.COLOR, DiceRestrictionType.NORMAL));
     }
 
     @Test
@@ -224,14 +224,14 @@ public class SchemaCardTest {
     public void testIsolatedSetDice() throws RuleViolationException {
         Dice d1 = new Dice(5, Color.PURPLE);
         try {
-            schemaCard.isDicePositionable(d1, 0, 1, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
-            schemaCard.setDice(d1,0, 1, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+            schemaCard.isDicePositionable(d1, 0, 1, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
+            schemaCard.setDice(d1,0, 1, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
             fail("exception expected");
         } catch (RuleViolationException e) {
             assertEquals(RuleViolationType.HAS_DICE_NEAR, e.getViolationType());
         }
-        schemaCard.isDicePositionable(d1, 0, 0, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
-        schemaCard.setDice(d1, 0, 0, TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED);
+        schemaCard.isDicePositionable(d1, 0, 0, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
+        schemaCard.setDice(d1, 0, 0, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
         assertEquals(d1, schemaCard.getDice(0,0));
     }
 

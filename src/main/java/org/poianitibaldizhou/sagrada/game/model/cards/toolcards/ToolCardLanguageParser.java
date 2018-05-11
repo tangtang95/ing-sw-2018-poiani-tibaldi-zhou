@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.poianitibaldizhou.sagrada.game.model.Node;
-import org.poianitibaldizhou.sagrada.game.model.cards.DiceConstraintType;
-import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 
 import java.util.*;
@@ -68,14 +68,14 @@ public class ToolCardLanguageParser {
         grammar = new HashMap<>();
         grammar.put("Choose dice", new ChooseDice());
         grammar.put("Modify dice value by 1", new ModifyDiceValueByDelta(1));
-        grammar.put("Remove dice", new RemoveDice(TileConstraintType.NONE));
-        grammar.put("Remove dice of a certain color", new RemoveDice(TileConstraintType.COLOR));
+        grammar.put("Remove dice", new RemoveDice(ObjectiveCardType.NONE));
+        grammar.put("Remove dice of a certain color", new RemoveDice(ObjectiveCardType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
         grammar.put("Reroll dice", new RerollDice());
-        grammar.put("Place dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.NORMAL));
-        grammar.put("Place dice ignoring number constraints", new PlaceDice(TileConstraintType.COLOR, DiceConstraintType.NORMAL));
-        grammar.put("Place dice ignoring color constraints", new PlaceDice(TileConstraintType.NUMBER, DiceConstraintType.NORMAL));
-        grammar.put("Place isolated dice", new PlaceDice(TileConstraintType.NUMBER_COLOR, DiceConstraintType.ISOLATED));
+        grammar.put("Place dice", new PlaceDice(ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.NORMAL));
+        grammar.put("Place dice ignoring number constraints", new PlaceDice(ObjectiveCardType.COLOR, DiceRestrictionType.NORMAL));
+        grammar.put("Place dice ignoring color constraints", new PlaceDice(ObjectiveCardType.NUMBER, DiceRestrictionType.NORMAL));
+        grammar.put("Place isolated dice", new PlaceDice(ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED));
         grammar.put("Add dice to DraftPool", new AddDiceToDraftPool());
         grammar.put("Add dice to Dicebag", new AddDiceToDiceBag());
         grammar.put("Draw dice from Dicebag", new DrawDiceFromDicebag());

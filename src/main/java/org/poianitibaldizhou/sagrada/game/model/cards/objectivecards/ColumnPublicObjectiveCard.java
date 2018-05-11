@@ -1,5 +1,8 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import org.jetbrains.annotations.NotNull;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
@@ -13,18 +16,18 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
      * Constructor.
      * Creates a ColumnPublicObjectiveCard with a name, description and points.
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single TileConstraintType.
+     * with a single ObjectiveCardType.
      *
      * @param name card's name
      * @param description card's description
      * @param cardPoints card's point
      * @param type type of tile constraint on which the card operates
      */
-    public ColumnPublicObjectiveCard(String name, String description, int cardPoints, TileConstraintType type) {
+    public ColumnPublicObjectiveCard(String name, String description, int cardPoints, ObjectiveCardType type) {
         super(name, description, cardPoints, type);
 
         constraints = new HashSet<>();
-        constraints.addAll((type == TileConstraintType.COLOR) ?
+        constraints.addAll((type == ObjectiveCardType.COLOR) ?
                 ColorConstraint.getAllColorConstraints() : NumberConstraint.getAllNumberConstraint());
     }
 
@@ -44,7 +47,7 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
             for (int j = 0; j < SchemaCard.NUMBER_OF_ROWS; j++) {
                 Dice dice = schema.getDice(j,i);
                 if(dice != null) {
-                    if (getType() == TileConstraintType.COLOR)
+                    if (getType() == ObjectiveCardType.COLOR)
                         valueSet.add(dice.getColorConstraint().getIndexValue());
                     else
                         valueSet.add(dice.getNumberConstraint().getIndexValue());

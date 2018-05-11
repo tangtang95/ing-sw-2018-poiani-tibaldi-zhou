@@ -7,22 +7,22 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import java.util.List;
 
 public class ToolCardExecutorHelper {
-    private Object diceMonitor;
-    private Object colorMonitor;
-    private Object valueMonitor;
-    private Object turnEndMonitor;
-    private Object positionMonitor;
+    private final Object diceMonitor;
+    private final Object colorMonitor;
+    private final Object valueMonitor;
+    private final Object turnEndMonitor;
+    private final Object positionMonitor;
 
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
     private Position neededPosition;
     private boolean turnEnd;
-    List<IToolCardObserver> observers;
+    private List<IToolCardObserver> observers;
 
     /**
      * Constructor.
-     * Creates an exectuor helper for the invocation of the various commands.
+     * Creates an executor helper for the invocation of the various commands.
      *
      * @param observers list of observers that will be notified when some actions are required
      *                  during the execution of the commands
@@ -108,7 +108,7 @@ public class ToolCardExecutorHelper {
 
     public boolean getTurnEnded() throws InterruptedException {
         synchronized (turnEndMonitor) {
-            if (turnEnd == false)
+            while(!turnEnd)
                 turnEndMonitor.wait();
             return true;
         }

@@ -45,18 +45,21 @@ public class ToolCard extends Card {
         boolean flag = true;
         toolCardExecutorHelper = new ToolCardExecutorHelper(observers);
         for (int i = 0; i < commands.size(); i++) {
-            if(flag == false)
+            if(!flag)
                 break;
             flag = commands.get(i).executeCommand(player, toolCardExecutorHelper, game);
         }
+        //TODO: INCREMENT TOKEN ??
 
         if(flag) {
-            if (isSinglePlayer)
+            if (isSinglePlayer) {
                 for (IToolCardObserver obs : observers)
                     obs.onCardDestroy();
-            else
+            }
+            else {
                 for (IToolCardObserver obs : observers)
                     obs.onTokenChange(tokens);
+            }
         }
     }
 

@@ -1,10 +1,12 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
 public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
 
-    public DiagonalPublicObjectiveCard(String name, String description, int cardPoints, TileConstraintType type) {
+    public DiagonalPublicObjectiveCard(String name, String description, int cardPoints, ObjectiveCardType type) {
         super(name, description, cardPoints, type);
     }
 
@@ -28,7 +30,7 @@ public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
                         !SchemaCard.isOutOfBounds(row + deltaRow, column + deltaColumn)) {
                     Dice other = schema.getDice(row + deltaRow, column + deltaColumn);
                     if(other != null) {
-                        if (getType() == TileConstraintType.COLOR)
+                        if (getType() == ObjectiveCardType.COLOR)
                             return dice.getColor() == other.getColor();
                         else
                             return dice.getNumber() == other.getNumber();

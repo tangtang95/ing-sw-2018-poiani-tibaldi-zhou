@@ -8,6 +8,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
@@ -110,7 +112,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_NAME),
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 case "column":
@@ -118,7 +120,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_NAME),
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 case "set":
@@ -139,7 +141,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
                             constraints,
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 case "diagonal":
@@ -147,7 +149,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_NAME),
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 default:

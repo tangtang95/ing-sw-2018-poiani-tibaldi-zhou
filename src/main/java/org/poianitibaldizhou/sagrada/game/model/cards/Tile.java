@@ -4,13 +4,9 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
-import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import java.util.Objects;
 
@@ -19,7 +15,6 @@ public class Tile{
     private final IConstraint constraint;
     private Dice dice = null;
 
-    private static final Logger LOGGER = Logger.getLogger(Tile.class.getName());
 
     /**
      * Constructor: create a tile with no constraint on it
@@ -43,19 +38,19 @@ public class Tile{
      * @throws RuleViolationException if this.getNeededDice() != null
      */
     public void setDice(Dice dice) throws RuleViolationException {
-        setDice(dice, TileConstraintType.NUMBER_COLOR);
+        setDice(dice, ObjectiveCardType.NUMBER_COLOR);
     }
 
     /**
      *
      * @param dice the dice to place on
-     * @param type the constraint to check when placing the dice
+     * @param restrictionType the constraint to check when placing the dice
      * @throws RuleViolationException if this.getNeededDice() != null
      */
-    public void setDice(Dice dice, TileConstraintType type) throws RuleViolationException {
+    public void setDice(Dice dice, ObjectiveCardType restrictionType) throws RuleViolationException {
         if(this.dice != null)
             throw new RuleViolationException(RuleViolationType.TILE_FILLED);
-        if(!isDicePositionable(dice, type))
+        if(!isDicePositionable(dice, restrictionType))
             throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
         this.dice = dice;
     }
@@ -86,7 +81,7 @@ public class Tile{
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice) {
-        return isDicePositionable(dice, TileConstraintType.NUMBER_COLOR);
+        return isDicePositionable(dice, ObjectiveCardType.NUMBER_COLOR);
     }
 
     /**
@@ -96,19 +91,8 @@ public class Tile{
      * @return true if the dice can be placed with number and color constraint
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, TileConstraintType type) {
-        switch (type){
-            case NUMBER:
-                return checkConstraint(dice.getNumberConstraint());
-            case COLOR:
-                return checkConstraint(dice.getColorConstraint());
-            case NUMBER_COLOR:
-                return (checkConstraint(dice.getNumberConstraint()) && checkConstraint(dice.getColorConstraint()));
-            case NONE:
-                return true;
-            default:
-                throw new IllegalArgumentException("impossible case");
-        }
+    public boolean isDicePositionable(Dice dice, ObjectiveCardType type) {
+        return type.getPlacementRestriction().isPositionable(this, dice);
     }
 
     /**
@@ -157,6 +141,7 @@ public class Tile{
         return " " + constraint.toString()+ " ";
     }
 
+    @Contract("null -> null")
     public static Tile newInstance(Tile tile) {
         if (tile == null)
             return null;

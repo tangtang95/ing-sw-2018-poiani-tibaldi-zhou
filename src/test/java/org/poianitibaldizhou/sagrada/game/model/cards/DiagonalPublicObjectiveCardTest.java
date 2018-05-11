@@ -5,7 +5,9 @@ import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.DiagonalPublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import static org.junit.Assert.assertEquals;
@@ -51,11 +53,11 @@ public class DiagonalPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(2, Color.BLUE), 3, 0);
 
         PublicObjectiveCard poc = new DiagonalPublicObjectiveCard("test", "test",
-                1, TileConstraintType.NUMBER);
+                1, ObjectiveCardType.NUMBER);
         assertEquals(0 ,poc.getScore(schemaCard));
 
         poc = new DiagonalPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(0,poc.getScore(schemaCard));
     }
 
@@ -72,11 +74,11 @@ public class DiagonalPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(1, Color.BLUE), 1, 4);
 
         PublicObjectiveCard poc = new DiagonalPublicObjectiveCard("test", "test",
-                1, TileConstraintType.NUMBER);
+                1, ObjectiveCardType.NUMBER);
         assertEquals(0 ,poc.getScore(schemaCard));
 
         poc = new DiagonalPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(0,poc.getScore(schemaCard));
     }
 
@@ -111,11 +113,11 @@ public class DiagonalPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(2, Color.BLUE), 3, 4);
 
         PublicObjectiveCard poc = new DiagonalPublicObjectiveCard("test", "test",
-                1, TileConstraintType.NUMBER);
+                1, ObjectiveCardType.NUMBER);
         assertEquals(20*poc.getCardPoints() ,poc.getScore(schemaCard));
 
         poc = new DiagonalPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(9*poc.getCardPoints(),poc.getScore(schemaCard));
     }
 
@@ -150,11 +152,11 @@ public class DiagonalPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(1, Color.BLUE), 3, 4);
 
         PublicObjectiveCard poc = new DiagonalPublicObjectiveCard("test", "test",
-                1, TileConstraintType.NUMBER);
+                1, ObjectiveCardType.NUMBER);
         assertEquals(0 ,poc.getScore(schemaCard));
 
         poc = new DiagonalPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(poc.getCardPoints()*20,poc.getScore(schemaCard));
     }
 
@@ -189,11 +191,11 @@ public class DiagonalPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(1, Color.PURPLE), 3, 4);
 
         PublicObjectiveCard poc = new DiagonalPublicObjectiveCard("test", "test",
-                1, TileConstraintType.NUMBER);
+                1, ObjectiveCardType.NUMBER);
         assertEquals(0 ,poc.getScore(schemaCard));
 
         poc = new DiagonalPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(0,poc.getScore(schemaCard));
     }
 

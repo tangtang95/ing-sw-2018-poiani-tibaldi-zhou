@@ -4,9 +4,8 @@ import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.ColumnPublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ColumnPublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import static org.junit.Assert.assertEquals;
@@ -52,11 +51,11 @@ public class ColumnPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(2, Color.BLUE), 3, 2);
 
         ColumnPublicObjectiveCard cpoc = new ColumnPublicObjectiveCard("test", "test",
-                3, TileConstraintType.NUMBER);
+                3, ObjectiveCardType.NUMBER);
         assertEquals(3,cpoc.getScore(schemaCard));
 
         cpoc = new ColumnPublicObjectiveCard("test", "test",
-                3, TileConstraintType.COLOR);
+                3, ObjectiveCardType.COLOR);
         assertEquals(0,cpoc.getScore(schemaCard));
 
     }
@@ -73,11 +72,11 @@ public class ColumnPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(1, Color.BLUE), 3, 2);
 
         ColumnPublicObjectiveCard cpoc = new ColumnPublicObjectiveCard("test", "test",
-                3, TileConstraintType.COLOR);
+                3, ObjectiveCardType.COLOR);
         assertEquals(3,cpoc.getScore(schemaCard));
 
         cpoc = new ColumnPublicObjectiveCard("test", "test",
-                3, TileConstraintType.NUMBER);
+                3, ObjectiveCardType.NUMBER);
         assertEquals(0,cpoc.getScore(schemaCard));
 
     }
@@ -114,11 +113,11 @@ public class ColumnPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(5, Color.BLUE), 3, 4);
 
         ColumnPublicObjectiveCard cpoc = new ColumnPublicObjectiveCard("test", "test",
-                2, TileConstraintType.NUMBER);
+                2, ObjectiveCardType.NUMBER);
         assertEquals(2*SchemaCard.NUMBER_OF_COLUMNS ,cpoc.getScore(schemaCard));
 
         cpoc = new ColumnPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(0,cpoc.getScore(schemaCard));
 
     }
@@ -155,11 +154,11 @@ public class ColumnPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(2, Color.RED), 3, 4);
 
         ColumnPublicObjectiveCard cpoc = new ColumnPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(2*SchemaCard.NUMBER_OF_COLUMNS ,cpoc.getScore(schemaCard));
 
         cpoc = new ColumnPublicObjectiveCard("test", "test",
-                2, TileConstraintType.NUMBER);
+                2, ObjectiveCardType.NUMBER);
         assertEquals(0,cpoc.getScore(schemaCard));
     }
 
@@ -195,11 +194,11 @@ public class ColumnPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(2, Color.BLUE), 3, 4);
 
         ColumnPublicObjectiveCard cpoc = new ColumnPublicObjectiveCard("test", "test",
-                2, TileConstraintType.COLOR);
+                2, ObjectiveCardType.COLOR);
         assertEquals(0,cpoc.getScore(schemaCard));
 
         cpoc = new ColumnPublicObjectiveCard("test", "test",
-                2, TileConstraintType.NUMBER);
+                2, ObjectiveCardType.NUMBER);
         assertEquals(0,cpoc.getScore(schemaCard));
     }
 }
