@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -9,7 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import java.util.Objects;
 
-
+@Immutable
 public class PrivateObjectiveCard extends Card implements IScore {
 
     private ColorConstraint colorConstraint;

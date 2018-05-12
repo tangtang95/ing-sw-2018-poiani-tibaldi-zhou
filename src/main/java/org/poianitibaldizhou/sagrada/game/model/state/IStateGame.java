@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
@@ -29,6 +30,12 @@ public abstract class IStateGame {
     }
     public boolean throwDices(Player player){ throw new IllegalStateException(); }
     public void nextTurn(){
+        throw new IllegalStateException();
+    }
+    public void choosePrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
+        throw new IllegalStateException();
+    }
+    public void endGame(){
         throw new IllegalStateException();
     }
     public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {throw new IllegalStateException();}

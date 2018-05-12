@@ -49,7 +49,6 @@ public class ToolCard extends Card {
                 break;
             flag = commands.get(i).executeCommand(player, toolCardExecutorHelper, game);
         }
-        //TODO: INCREMENT TOKEN ??
 
         if(flag) {
             if (isSinglePlayer) {
@@ -76,6 +75,10 @@ public class ToolCard extends Card {
             return 1;
         else
             return 2;
+    }
+
+    public void addTokens(int tokens) {
+        this.tokens += tokens;
     }
 
     public void attachToolCardObserver(IToolCardObserver observer) {
@@ -119,4 +122,6 @@ public class ToolCard extends Card {
     public List<ICommand> getCommands() {
         return commands;
     }
+
+
 }

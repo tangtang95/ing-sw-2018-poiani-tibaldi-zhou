@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 
@@ -21,6 +23,7 @@ public class DraftPool {
      *
      * @return list of dices present in the DraftPool of the game
      */
+    @Contract(pure = true)
     public List<Dice> getDices() {
         return new ArrayList<>(dices);
     }
@@ -45,10 +48,10 @@ public class DraftPool {
     }
 
     /**
-     * Uses a dice presents in the DrafPool thus removing it.
+     * Uses a dice presents in the DraftPool thus removing it.
      *
      * @param d dice used
-     * @throws DiceNotFoundException if d is not presente in the DraftPool
+     * @throws DiceNotFoundException if d is not present in the DraftPool
      * @throws EmptyCollectionException if the DraftPool is empty
      */
     public void useDice(Dice d) throws DiceNotFoundException, EmptyCollectionException {

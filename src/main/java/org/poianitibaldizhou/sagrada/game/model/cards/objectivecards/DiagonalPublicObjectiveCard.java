@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
+@Immutable
 public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
 
     public DiagonalPublicObjectiveCard(String name, String description, int cardPoints, ObjectiveCardType type) {

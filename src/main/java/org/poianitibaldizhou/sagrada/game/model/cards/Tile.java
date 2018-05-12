@@ -10,7 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
 import java.util.Objects;
 
-public class Tile{
+public class Tile {
 
     private final IConstraint constraint;
     private Dice dice = null;
@@ -19,21 +19,21 @@ public class Tile{
     /**
      * Constructor: create a tile with no constraint on it
      */
-    public Tile(){
+    public Tile() {
         constraint = new NoConstraint();
     }
 
     /**
      * Constructor: create a tile with the constraint passed.
      * If constraint is null, constraint is set to NoConstraint.
+     *
      * @param constraint the constraint of the tile
      */
-    public Tile(IConstraint constraint){
-        this.constraint = constraint == null ? new NoConstraint(): constraint;
+    public Tile(IConstraint constraint) {
+        this.constraint = constraint == null ? new NoConstraint() : constraint;
     }
 
     /**
-     *
      * @param dice the dice to place on
      * @throws RuleViolationException if this.getNeededDice() != null
      */
@@ -42,21 +42,19 @@ public class Tile{
     }
 
     /**
-     *
-     * @param dice the dice to place on
+     * @param dice            the dice to place on
      * @param restrictionType the constraint to check when placing the dice
      * @throws RuleViolationException if this.getNeededDice() != null
      */
     public void setDice(Dice dice, ObjectiveCardType restrictionType) throws RuleViolationException {
-        if(this.dice != null)
+        if (this.dice != null)
             throw new RuleViolationException(RuleViolationType.TILE_FILLED);
-        if(!isDicePositionable(dice, restrictionType))
+        if (!isDicePositionable(dice, restrictionType))
             throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
         this.dice = dice;
     }
 
     /**
-     *
      * @return the dice placed on the tile
      */
     @Contract(pure = true)
@@ -65,7 +63,6 @@ public class Tile{
     }
 
     /**
-     *
      * @return the dice removed from the tile
      */
     public Dice removeDice() {
@@ -75,7 +72,6 @@ public class Tile{
     }
 
     /**
-     *
      * @param dice the dice to check if positionable
      * @return true if the dice can be placed with number and color constraint
      */
@@ -85,7 +81,6 @@ public class Tile{
     }
 
     /**
-     *
      * @param dice the dice to check if positionable
      * @param type the constraint to check when placing the dice
      * @return true if the dice can be placed with number and color constraint
@@ -96,7 +91,6 @@ public class Tile{
     }
 
     /**
-     *
      * @return the constraint of the tile
      */
     @Contract(pure = true)
@@ -105,7 +99,6 @@ public class Tile{
     }
 
     /**
-     *
      * @param other another constraint to check
      * @return true if the constraint of the tile matches with the other
      */
@@ -121,15 +114,15 @@ public class Tile{
      * @return true if they have the same dice and the same constraint, otherwise false
      */
     @Override
-    public boolean equals(Object obj){
-        if(obj == this)
+    public boolean equals(Object obj) {
+        if (obj == this)
             return true;
-        if(!(obj instanceof Tile))
+        if (!(obj instanceof Tile))
             return false;
         Tile other = (Tile) obj;
-        if((getDice() == null && other.getDice() != null) || (getDice() != null && other.getDice() == null))
+        if ((getDice() == null && other.getDice() != null) || (getDice() != null && other.getDice() == null))
             return false;
-        else if(getDice() == null && other.getDice() == null)
+        else if (getDice() == null && other.getDice() == null)
             return this.getConstraint().equals(other.getConstraint());
         return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
     }
@@ -138,7 +131,7 @@ public class Tile{
     public String toString() {
         if (dice != null)
             return dice.toString();
-        return " " + constraint.toString()+ " ";
+        return " " + constraint.toString() + " ";
     }
 
     @Contract("null -> null")

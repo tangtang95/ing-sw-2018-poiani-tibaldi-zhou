@@ -1,10 +1,13 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,8 +22,8 @@ public class Game {
     private final DraftPool draftPool;
     private final String name;
 
+    private IGameStrategy gameStrategy;
     private IStateGame state;
-    private int difficulty;
 
 
     /**
@@ -39,10 +42,11 @@ public class Game {
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
         this.name = name;
-
         for (String token : tokens) {
             players.add(new Player(token, new FavorToken()));
         }
+
+        this.gameStrategy = new MultiPlayerGameStrategy(players.size());
         setState(new SetupPlayerState(this));
     }
 
@@ -62,7 +66,6 @@ public class Game {
         this.draftPool = DraftPool.newInstance(draftPool);
         this.name = name;
         this.isSinglePlayer = isSinglePlayer;
-        this.difficulty = difficulty;
         //need a refactor
         this.diceBag = diceBag;
         this.state = state;
@@ -83,7 +86,7 @@ public class Game {
         this.publicObjectiveCards = new LinkedList<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
-        this.difficulty = difficulty;
+        this.gameStrategy = new SinglePlayerGameStrategy(difficulty);
 
         players.add(new Player(singlePlayerToken, new ExpendableDice(draftPool)));
         setState(new SetupPlayerState(this));
@@ -100,11 +103,15 @@ public class Game {
     }
 
     public List<Player> getPlayers() {
-        return players;
+        List<Player> copyPlayers = new ArrayList<>();
+        for (Player player : players) {
+            copyPlayers.add(player.newInstance(player));
+        }
+        return copyPlayers;
     }
 
     public RoundTrack getRoundTrack() {
-        return roundTrack;
+        return RoundTrack.newInstance(roundTrack);
     }
 
     public List<ToolCard> getToolCards() {
@@ -127,14 +134,55 @@ public class Game {
         return players.size();
     }
 
-    public int getDifficulty() {
-        if (!isSinglePlayer)
-            throw new IllegalArgumentException("shouldn't call this method if it is a multi player game");
-        return difficulty;
-    }
-
     public DrawableCollection<Dice> getDiceBag() {
         return diceBag;
+    }
+
+    public IGameStrategy getGameStrategy() {
+        return gameStrategy;
+    }
+
+    public void setPrivateObjectiveCards(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
+        gameStrategy.setPrivateObjectiveCard(player, privateObjectiveCards);
+    }
+
+    public void readyGame() {
+        state.readyGame();
+    }
+
+    public void setPlayerOutcome(Player player, Outcome outcome) {
+        players.get(getIndexOfPlayer(player)).setOutcome(outcome);
+    }
+
+    public void setPlayerSchemaCard(Player player, SchemaCard schemaCard) {
+        players.get(getIndexOfPlayer(player)).setSchemaCard(schemaCard);
+    }
+
+    public void addRemainingDiceToRoundTrack(int currentRound) {
+        roundTrack.addDicesToRound(draftPool.getDices(), currentRound);
+    }
+
+    public void clearDraftPool() {
+        draftPool.clearPool();
+    }
+
+    public void removeDiceFromRoundTrack(int round, Dice roundTrackDice) {
+        roundTrack.removeDiceFromRoundTrack(round, roundTrackDice);
+    }
+
+    public void addDiceToRoundTrack(Dice dice, int round) {
+        roundTrack.addDiceToRound(dice, round);
+    }
+
+    public int getTargetScore() {
+        int targetScore = 0;
+        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
+            List<Dice> dices = roundTrack.getDices(i);
+            for (Dice dice: dices) {
+                targetScore += dice.getNumber();
+            }
+        }
+        return targetScore;
     }
 
     /**
@@ -171,8 +219,11 @@ public class Game {
     }
 
     public static Game newInstance(Game game) {
-            return new Game(game.getPlayers(),game.getRoundTrack(),game.getToolCards(),game.getPublicObjectiveCards(),
-                    game.getDiceBag(),game.getDraftPool(),game.getName(),game.getState(),
-                    game.isSinglePlayer(),game.getDifficulty());
+        return new Game(game.getPlayers(), game.getRoundTrack(), game.getToolCards(), game.getPublicObjectiveCards(),
+                game.getDiceBag(), game.getDraftPool(), game.getName(), game.getState(),
+                game.isSinglePlayer(), 0);
+        //TODO FIX difficulty
     }
+
+
 }

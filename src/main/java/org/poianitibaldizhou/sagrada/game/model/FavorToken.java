@@ -26,8 +26,10 @@ public class FavorToken implements ICoin {
         int cost = toolCard.getCost();
         if (numberOfFavorToken < cost)
             throw new NoCoinsExpendableException("FavorToken.use() failed, you haven't enough FavorTokens");
-        else
+        else {
+            toolCard.addTokens(cost);
             numberOfFavorToken = numberOfFavorToken - cost;
+        }
     }
 
     @Override

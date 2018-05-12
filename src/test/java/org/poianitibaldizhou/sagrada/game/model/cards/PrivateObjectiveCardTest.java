@@ -70,7 +70,7 @@ public class PrivateObjectiveCardTest {
 
     @Test
     /**
-     * Test branch coverage of PrivateObjectiveCard.getScore().
+     * Test branch coverage of PrivateObjectiveCard.getMultiPlayerScore().
      */
     public void testBranchCoverage() throws RuleViolationException {
         schemaCard = new SchemaCard("TestBranchCoverage", 3, constraints);

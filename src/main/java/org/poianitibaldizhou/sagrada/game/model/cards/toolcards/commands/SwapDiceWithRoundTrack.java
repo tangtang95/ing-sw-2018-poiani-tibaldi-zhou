@@ -47,8 +47,8 @@ public class SwapDiceWithRoundTrack implements ICommand {
             e.printStackTrace();
             return false;
         }
-        roundTrack.removeDiceFromRoundTrack(round,roundTrackDice);
-        roundTrack.addDiceToRound(dice, round);
+        game.removeDiceFromRoundTrack(round, roundTrackDice);
+        game.addDiceToRoundTrack(dice, round);
         return true;
     }
 

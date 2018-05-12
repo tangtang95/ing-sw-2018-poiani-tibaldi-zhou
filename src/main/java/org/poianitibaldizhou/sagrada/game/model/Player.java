@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardT
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 public class Player {
     private ICoin coins;
@@ -138,14 +139,22 @@ public class Player {
     }
 
     /**
-     * Return the score of the player based on the PrivateObjectiveCard, the remained favor tokens and the empty spaces
+     * Return the score of the player based on the PrivateObjectiveCard, the remaining favor tokens and the empty spaces
      * of the schemaCard
      *
-     * @return the score of the player
+     * @return the score of the player for multiPlayerGame
      */
-    public int getScore() {
+    public int getMultiPlayerScore() {
         //getCoins should be fixed when the game is single player
         return privateObjectiveCard.getScore(schemaCard) + getFavorTokens() - schemaCard.getNumberOfEmptySpaces();
+    }
+
+    /**
+     *
+     * @return the score of the player for singlePlayerGame
+     */
+    public int getSinglePlayerScore(PrivateObjectiveCard privateObjectiveCard){
+        return privateObjectiveCard.getScore(schemaCard) - schemaCard.getNumberOfEmptySpaces()*3;
     }
 
 

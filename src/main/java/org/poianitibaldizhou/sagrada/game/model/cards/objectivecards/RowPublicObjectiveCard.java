@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
@@ -9,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import java.util.HashSet;
 import java.util.Set;
 
+@Immutable
 public class RowPublicObjectiveCard extends PublicObjectiveCard{
 
     /**

@@ -37,6 +37,8 @@ public class SetupGameStateTest {
 
     @Mock
     private Game game;
+    @Mock
+    private IGameStrategy gameStrategy;
 
     @Before
     public void setUp() throws Exception {
@@ -53,6 +55,7 @@ public class SetupGameStateTest {
         when(game.getToolCards()).thenReturn(toolCards);
         when(game.getPublicObjectiveCards()).thenReturn(publicObjectiveCards);
         when(game.getPlayers()).thenReturn(playerList);
+        when(game.getGameStrategy()).thenReturn(gameStrategy);
     }
 
     @After
@@ -67,30 +70,28 @@ public class SetupGameStateTest {
     public void constructorSinglePlayerTest(){
         int difficulty = 3;
         when(game.isSinglePlayer()).thenReturn(true);
-        when(game.getDifficulty()).thenReturn(difficulty);
+        when(gameStrategy.getNumberOfToolCardForGame()).thenReturn(difficulty);
         setupGameState = new SetupGameState(game);
         assertEquals("DiceBag size error", 90,  diceBag.size());
         assertEquals("PublicObjectiveCards size error",
-                SetupGameState.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_SINGLE_PLAYER, publicObjectiveCards.size());
+                SinglePlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS, publicObjectiveCards.size());
         assertEquals("ToolCards size error", difficulty, toolCards.size());
     }
 
     @Test
     public void constructorMultiPlayerTest(){
         when(game.isSinglePlayer()).thenReturn(false);
-        when(game.getDifficulty()).thenReturn(3);
         setupGameState = new SetupGameState(game);
         assertEquals("DiceBag size error", 90,  diceBag.size());
         assertEquals("PublicObjectiveCards size error",
-                SetupGameState.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_MULTI_PLAYER, publicObjectiveCards.size());
+                MultiPlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS, publicObjectiveCards.size());
         assertEquals("ToolCards size error",
-                SetupGameState.NUMBER_OF_TOOL_CARDS_MULTI_PLAYER, toolCards.size());
+                MultiPlayerGameStrategy.NUMBER_OF_TOOL_CARDS, toolCards.size());
     }
 
     @Test
     public void readyGameTest() throws Exception {
         when(game.isSinglePlayer()).thenReturn(false);
-        when(game.getDifficulty()).thenReturn(3);
         setupGameState = new SetupGameState(game);
         /*doAnswer(new Answer() {
             @Override

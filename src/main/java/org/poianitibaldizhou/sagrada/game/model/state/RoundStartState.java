@@ -13,8 +13,6 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     private Player currentRoundPlayer;
     private int currentRound;
 
-    public static final int NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER = 4;
-
     private static final Logger LOGGER = Logger.getLogger(RoundStartState.class.getName());
 
     /**
@@ -40,8 +38,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public boolean throwDices(Player player) {
         if(currentRoundPlayer.equals(player)) {
-            int numberOfDicesToDraw = (game.isSinglePlayer()) ?
-                    NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER : game.getNumberOfPlayers()*2 + 1;
+            int numberOfDicesToDraw = game.getGameStrategy().getNumberOfDicesToDraw();
             for (int i = 0; i < numberOfDicesToDraw; i++) {
                 try {
                     game.getDraftPool().addDice(game.getDiceBag().draw());

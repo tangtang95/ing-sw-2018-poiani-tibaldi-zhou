@@ -30,7 +30,7 @@ public class StateIntegrationTest {
 
     @Before
     public void setUp() {
-        List<String> tokens = new ArrayList<>();
+       /* List<String> tokens = new ArrayList<>();
         tokens.add("ABC");
         tokens.add("DEF");
         tokens.add("GHI");
@@ -44,7 +44,7 @@ public class StateIntegrationTest {
         for (Player player : singleGame.getPlayers()) {
             assertTrue(player.getPrivateObjectiveCard() != null);
             singleGame.getState().ready(player, schemaCard);
-        }
+        }*/
 
     }
 

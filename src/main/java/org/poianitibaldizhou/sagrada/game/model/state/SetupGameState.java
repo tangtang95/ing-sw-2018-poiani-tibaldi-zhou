@@ -12,10 +12,6 @@ import java.util.logging.Logger;
 
 public class SetupGameState extends IStateGame{
 
-    public static final int NUMBER_OF_TOOL_CARDS_MULTI_PLAYER = 3;
-    public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_MULTI_PLAYER = 3;
-    public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_SINGLE_PLAYER = 2;
-
     private static final Logger LOGGER = Logger.getLogger(SetupGameState.class.getName());
 
     /**
@@ -58,7 +54,7 @@ public class SetupGameState extends IStateGame{
      * @param toolCards the collection of every tool cards
      */
     private void injectToolCards(DrawableCollection<ToolCard> toolCards) {
-        int numberOfToolCards = game.isSinglePlayer() ? game.getDifficulty() : NUMBER_OF_TOOL_CARDS_MULTI_PLAYER;
+        int numberOfToolCards = game.getGameStrategy().getNumberOfToolCardForGame();
         for (int i = 0; i < numberOfToolCards; i++) {
             try {
                 game.getToolCards().add(toolCards.draw());
@@ -74,8 +70,7 @@ public class SetupGameState extends IStateGame{
      * @param publicObjectiveCards the collection of every public objective cards
      */
     private void injectPublicObjectiveCards(DrawableCollection<PublicObjectiveCard> publicObjectiveCards) {
-        int numberOfPublicObjectiveCards = game.isSinglePlayer() ?
-                NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_SINGLE_PLAYER : NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_MULTI_PLAYER;
+        int numberOfPublicObjectiveCards = game.getGameStrategy().getNumberOfPublicObjectiveCardForGame();
         for (int i = 0; i < numberOfPublicObjectiveCards; i++) {
             try {
                 game.getPublicObjectiveCards().add(publicObjectiveCards.draw());

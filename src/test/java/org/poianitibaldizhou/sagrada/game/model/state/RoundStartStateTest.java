@@ -16,6 +16,8 @@ public class RoundStartStateTest {
     @Mock
     private Game game;
     @Mock
+    private IGameStrategy gameStrategy;
+    @Mock
     private DraftPool draftPool;
     @Mock
     private Player currentPlayer, otherPlayer;
@@ -37,6 +39,7 @@ public class RoundStartStateTest {
         }
         when(game.getDiceBag()).thenReturn(diceBag);
         when(game.getDraftPool()).thenReturn(draftPool);
+        when(game.getGameStrategy()).thenReturn(gameStrategy);
     }
 
     @After
@@ -50,10 +53,11 @@ public class RoundStartStateTest {
         assertEquals("DiceBag size error", 90, diceBag.size());
 
         when(game.isSinglePlayer()).thenReturn(true);
+        when(gameStrategy.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGameStrategy.NUMBER_OF_DICES_TO_DRAW);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         assertFalse(roundStartState.throwDices(otherPlayer));
         assertTrue(roundStartState.throwDices(currentPlayer));
-        verify(draftPool, times(RoundStartState.NUMBER_OF_DICES_TO_DRAW_FOR_SINGLE_PLAYER))
+        verify(draftPool, times(SinglePlayerGameStrategy.NUMBER_OF_DICES_TO_DRAW))
                 .addDice(ArgumentMatchers.any(Dice.class));
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }
@@ -65,6 +69,7 @@ public class RoundStartStateTest {
 
         when(game.isSinglePlayer()).thenReturn(false);
         when(game.getNumberOfPlayers()).thenReturn(numberOfPlayers);
+        when(gameStrategy.getNumberOfDicesToDraw()).thenReturn(numberOfPlayers*2 + 1);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         assertFalse(roundStartState.throwDices(otherPlayer));
         assertTrue(roundStartState.throwDices(currentPlayer));

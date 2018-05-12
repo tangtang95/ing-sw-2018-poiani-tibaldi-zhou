@@ -45,17 +45,13 @@ public class SetupPlayerState extends IStateGame {
                 try {
                     schemaCardList.add(schemaCards.draw());
                 } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.FINE, "Error in SetupPlayerState for empty collection", e);
+                    LOGGER.log(Level.SEVERE, "Error in SetupPlayerState for empty collection", e);
                 }
             }
-            try {
-                playerSchemaCards.put(player, schemaCardList);
-                player.setPrivateObjectiveCard(privateObjectiveCards.draw());
-            } catch (EmptyCollectionException e) {
-                LOGGER.log(Level.FINE, "Error in SetupPlayerState for empty collection", e);
-            }
+            playerSchemaCards.put(player, schemaCardList);
+            game.setPrivateObjectiveCards(player, privateObjectiveCards);
         }
-        //TODO notify each player
+        //TODO notify each player for the schemaCard
     }
 
     /**
@@ -69,10 +65,10 @@ public class SetupPlayerState extends IStateGame {
     public boolean ready(Player player, SchemaCard schemaCard) {
         if (!isPlayerReady(player) && player.getSchemaCard() == null && containsSchemaCard(player, schemaCard)) {
             playersReady.add(player);
-            player.setSchemaCard(schemaCard);
+            game.setPlayerSchemaCard(player, schemaCard);
             if (game.getNumberOfPlayers() == playersReady.size()) {
                 game.setState(new SetupGameState(game));
-                game.getState().readyGame();
+                game.readyGame();
             }
             return true;
         }
@@ -82,21 +78,21 @@ public class SetupPlayerState extends IStateGame {
     @Contract(pure = true)
     public boolean isPlayerReady(Player player) {
         for (Player playerReady : playersReady) {
-            if(playerReady.equals(player))
+            if (playerReady.equals(player))
                 return true;
         }
         return false;
     }
 
     @Contract(pure = true)
-    public boolean containsSchemaCard(Player player, SchemaCard schemaCard){
+    public boolean containsSchemaCard(Player player, SchemaCard schemaCard) {
         return playerSchemaCards.get(player).contains(schemaCard);
     }
 
     @Contract(pure = true)
-    public List<SchemaCard> getSchemaCardsOfPlayer(Player player){
+    public List<SchemaCard> getSchemaCardsOfPlayer(Player player) {
         List<SchemaCard> schemaCards = new ArrayList<>();
-        for (SchemaCard schema: playerSchemaCards.get(player)) {
+        for (SchemaCard schema : playerSchemaCards.get(player)) {
             schemaCards.add(SchemaCard.newInstance(schema));
         }
         return schemaCards;
