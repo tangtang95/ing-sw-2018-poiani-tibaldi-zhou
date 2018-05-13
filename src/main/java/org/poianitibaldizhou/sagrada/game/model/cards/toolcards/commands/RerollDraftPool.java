@@ -1,14 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
-import java.util.List;
 import java.util.Random;
 
 public class RerollDraftPool implements ICommand {
@@ -22,19 +17,7 @@ public class RerollDraftPool implements ICommand {
      */
     @Override
     public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) {
-        Random rand = new Random();
-        DraftPool draftPool = game.getDraftPool();
-        List<Dice> draftPoolDices = game.getDraftPool().getDices();
-        Dice temp;
-        for(Dice d: draftPoolDices) {
-            draftPool.addDice(new Dice(rand.nextInt(Dice.MAX_VALUE-1)+1, d.getColor()));
-            try {
-                draftPool.useDice(d);
-            } catch (DiceNotFoundException  | EmptyCollectionException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
+        game.reRollDraftPool();
         return true;
     }
 

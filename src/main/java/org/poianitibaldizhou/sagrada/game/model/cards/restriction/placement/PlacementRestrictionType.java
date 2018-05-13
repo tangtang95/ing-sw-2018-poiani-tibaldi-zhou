@@ -1,8 +1,8 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.restriction;
+package org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement;
 
 import org.jetbrains.annotations.Contract;
 
-public enum ObjectiveCardType {
+public enum PlacementRestrictionType {
     NUMBER(new NumberPlacementRestriction()),
     COLOR(new ColorPlacementRestriction()),
     NUMBER_COLOR(new NumberColorPlacementRestriction()),
@@ -10,7 +10,7 @@ public enum ObjectiveCardType {
 
     private IPlacementRestriction placementRestriction;
 
-    ObjectiveCardType(IPlacementRestriction placementRestriction){
+    PlacementRestrictionType(IPlacementRestriction placementRestriction){
         this.placementRestriction = placementRestriction;
     }
 

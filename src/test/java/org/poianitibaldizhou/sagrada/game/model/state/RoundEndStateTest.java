@@ -27,18 +27,15 @@ public class RoundEndStateTest {
     private RoundTrack roundTrack;
     @Mock
     private DraftPool draftPool;
-
-
-    private List<Player> playerList;
-    private List<Dice> diceList;
+    
     private RoundEndState roundEndState;
 
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        playerList = new ArrayList<>();
-        diceList = new ArrayList<>();
+        List<Player> playerList = new ArrayList<>();
+        List<Dice> diceList = new ArrayList<>();
         when(game.getDraftPool()).thenReturn(draftPool);
         when(game.getRoundTrack()).thenReturn(roundTrack);
         playerList.add(player1);
@@ -75,13 +72,8 @@ public class RoundEndStateTest {
         int round = 0;
         roundEndState = new RoundEndState(game, round, player1);
         roundEndState.nextRound();
-        doAnswer(invocationOnMock -> {
-            assertEquals((Integer) round, invocationOnMock.getArguments()[1]);
-            assertTrue(diceList.containsAll((Collection<?>) invocationOnMock.getArguments()[0]));
-            return null;
-        }).when(roundTrack).addDicesToRound(ArgumentMatchers.anyList(), anyInt());
-        verify(roundTrack).addDicesToRound(ArgumentMatchers.anyList(), anyInt());
-        verify(draftPool).clearPool();
+        verify(game).addRemainingDiceToRoundTrack(round);
+        verify(game).clearDraftPool();
         verify(game).setState(ArgumentMatchers.any(RoundStartState.class));
     }
 
@@ -90,8 +82,8 @@ public class RoundEndStateTest {
         int round = 9;
         roundEndState = new RoundEndState(game, round, player1);
         roundEndState.nextRound();
-        verify(roundTrack).addDicesToRound(ArgumentMatchers.anyList(), anyInt());
-        verify(draftPool).clearPool();
+        verify(game).addRemainingDiceToRoundTrack(round);
+        verify(game).clearDraftPool();
         verify(game).setState(ArgumentMatchers.any(EndGameState.class));
     }
 

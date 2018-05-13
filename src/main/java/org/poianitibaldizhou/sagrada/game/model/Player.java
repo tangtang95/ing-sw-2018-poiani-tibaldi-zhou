@@ -3,12 +3,11 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.rmi.RemoteException;
-import java.util.List;
 
 public class Player {
     private ICoin coins;
@@ -77,7 +76,7 @@ public class Player {
      * @param diceConstraint the constrains of the dice
      * @throws RuleViolationException if the rule of the schema is violated
      */
-    public void placeDice(Dice dice, int row, int column, ObjectiveCardType tileConstraint,
+    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
                           DiceRestrictionType diceConstraint) throws RuleViolationException {
         schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
     }

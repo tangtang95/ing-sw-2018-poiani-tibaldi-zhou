@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
@@ -17,7 +17,7 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
      * Constructor.
      * Creates a SetPublicObjectiveCard with a name, description and points.
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single ObjectiveCardType.
+     * with a single PlacementRestrictionType.
      *
      * @param name card's name
      * @param description card's description
@@ -46,13 +46,9 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice dice = schema.getDice(i,j);
                 if(dice != null) {
-                    if(getType() == ObjectiveCardType.COLOR) {
-                        if(containsConstraint(dice.getColorConstraint())) {
-                            counts[dice.getColorConstraint().getIndexValue()]++;
-                        }
-                    } else
-                        if(containsConstraint(dice.getNumberConstraint()))
-                            counts[dice.getNumberConstraint().getIndexValue()]++;
+                    IConstraint constraint = (getType() == ObjectiveCardType.COLOR) ?
+                            dice.getColorConstraint() : dice.getNumberConstraint();
+                    counts[constraint.getIndexValue()]++;
                 }
 
             }

@@ -1,10 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.HashSet;
@@ -17,9 +17,8 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
      * Constructor.
      * Creates a RowPublicObjectiveCard with a name, description and points.
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single ObjectiveCardType.
-     *
-     * @param name card's name
+     * with a single PlacementRestrictionType.
+     *  @param name card's name
      * @param description card's description
      * @param cardPoints card's point
      * @param type type of tile constraint on which the card operates
@@ -49,10 +48,9 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice dice = schema.getDice(i,j);
                 if (dice != null) {
-                    if (getType() == ObjectiveCardType.COLOR)
-                        valueSet.add(dice.getColorConstraint().getIndexValue());
-                    else
-                        valueSet.add(dice.getNumberConstraint().getIndexValue());
+                    IConstraint constraint = (getType() == ObjectiveCardType.COLOR) ?
+                            dice.getColorConstraint() : dice.getNumberConstraint();
+                    valueSet.add(constraint.getIndexValue());
                 }
             }
             if (valueSet.size() == SchemaCard.NUMBER_OF_COLUMNS)

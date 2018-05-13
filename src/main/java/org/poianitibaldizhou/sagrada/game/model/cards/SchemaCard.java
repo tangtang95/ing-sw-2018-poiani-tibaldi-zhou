@@ -4,9 +4,8 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.NormalDiceRestriction;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import java.util.Objects;
@@ -56,7 +55,7 @@ public class SchemaCard {
 
     /**
      * Set the dice on a tile indicated by row and column based on a standard constraint
-     * (ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
+     * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
      *
      * @param dice   the dice to place on the schemaCard
      * @param row    the row where to place the dice
@@ -67,7 +66,7 @@ public class SchemaCard {
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
     public void setDice(Dice dice, int row, int column) throws RuleViolationException {
-        setDice(dice, row, column, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+        setDice(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
     /**
@@ -86,7 +85,7 @@ public class SchemaCard {
      *                                (diceRestriction == ISOLATED &&
      *                                getNumberOfAdjacentDices() > 0
      */
-    public void setDice(Dice dice, int row, int column, ObjectiveCardType restriction,
+    public void setDice(Dice dice, int row, int column, PlacementRestrictionType restriction,
                         DiceRestrictionType diceRestriction) throws RuleViolationException {
         if (isEmpty()) {
             if (!isBorderPosition(row, column)) {
@@ -104,7 +103,7 @@ public class SchemaCard {
             }
             int numberOfAdjacentDices = getNumberOfAdjacentDices(row, column);
             if(!diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(numberOfAdjacentDices)){
-                if(diceRestriction.getDiceRestriction() instanceof NormalDiceRestriction)
+                if(diceRestriction == DiceRestrictionType.NORMAL)
                     throw new RuleViolationException(RuleViolationType.NO_DICE_NEAR);
                 else
                     throw new RuleViolationException(RuleViolationType.HAS_DICE_NEAR);
@@ -138,7 +137,7 @@ public class SchemaCard {
 
     /**
      * Check if the dice can be placed on the tile designated by row and column based on the standard constraint
-     * (ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
+     * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
      *
      * @param dice   the dice to check if positionable
      * @param row    the row of the tile
@@ -147,7 +146,7 @@ public class SchemaCard {
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice, int row, int column) {
-        return isDicePositionable(dice, row, column, ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+        return isDicePositionable(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
     /**
@@ -161,7 +160,7 @@ public class SchemaCard {
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, int row, int column, ObjectiveCardType restriction,
+    public boolean isDicePositionable(Dice dice, int row, int column, PlacementRestrictionType restriction,
                                       DiceRestrictionType diceRestriction) {
         if (isEmpty()) {
             return isBorderPosition(row, column) && tileMatrix[row][column].isDicePositionable(dice, restriction);

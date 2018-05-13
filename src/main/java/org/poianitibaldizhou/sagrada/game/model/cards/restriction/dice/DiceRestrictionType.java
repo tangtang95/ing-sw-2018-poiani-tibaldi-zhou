@@ -1,9 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.restriction;
+package org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice;
 
 import org.jetbrains.annotations.Contract;
 
 public enum DiceRestrictionType {
-    NORMAL(new NormalDiceRestriction()), ISOLATED(new IsolatedDiceRestriction());
+    NORMAL(new NormalDiceRestriction()),
+    ISOLATED(new IsolatedDiceRestriction());
 
     private IDiceRestriction diceRestriction;
 

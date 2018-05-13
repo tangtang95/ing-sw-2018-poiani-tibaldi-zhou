@@ -2,8 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardLanguageParser;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 
@@ -48,14 +48,14 @@ public class ToolCardLanguageParserTest {
 
         commands.add(new ChooseDice());
         commands.add(new ModifyDiceValueByDelta(1));
-        commands.add(new RemoveDice(ObjectiveCardType.NONE));
-        commands.add(new RemoveDice(ObjectiveCardType.COLOR));
+        commands.add(new RemoveDice(PlacementRestrictionType.NONE));
+        commands.add(new RemoveDice(PlacementRestrictionType.COLOR));
         commands.add(new SwapDiceWithRoundTrack());
         commands.add(new RerollDice());
-        commands.add(new PlaceDice(ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.NORMAL));
-        commands.add(new PlaceDice(ObjectiveCardType.COLOR, DiceRestrictionType.NORMAL));
-        commands.add(new PlaceDice(ObjectiveCardType.NUMBER, DiceRestrictionType.NORMAL));
-        commands.add(new PlaceDice(ObjectiveCardType.NUMBER_COLOR, DiceRestrictionType.ISOLATED));
+        commands.add(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL));
+        commands.add(new PlaceDice(PlacementRestrictionType.COLOR, DiceRestrictionType.NORMAL));
+        commands.add(new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL));
+        commands.add(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED));
         commands.add(new AddDiceToDraftPool());
         commands.add(new AddDiceToDiceBag());
         commands.add(new DrawDiceFromDicebag());

@@ -20,35 +20,33 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * It requires a dice in the toolcard (dice to put in the roundtrack) and it asks the client
      * for a dice and a round.
      *
-     * @param player player who invoked the command
+     * @param player                 player who invoked the command
      * @param toolCardExecutorHelper invoked toolcard
-     * @param game game on which the player acts
-     * @throws RemoteException network communication error
+     * @param game                   game on which the player acts
+     * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override
     public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
-        Dice dice = toolCardExecutorHelper.getNeededDice(), roundTrackDice;
+        Dice dice = toolCardExecutorHelper.getNeededDice();
+        Dice roundTrackDice;
         int round;
         List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
         RoundTrack roundTrack = game.getRoundTrack();
 
-        for(IToolCardObserver observer : observerList) {
+        for (IToolCardObserver observer : observerList) {
             observer.notifyNeedDiceFromRoundTrack(player, roundTrack);
         }
 
         roundTrackDice = toolCardExecutorHelper.getNeededDice();
         round = toolCardExecutorHelper.getNeededValue();
 
-        game.getDraftPool().addDice(roundTrackDice);
         try {
-            game.getDraftPool().useDice(dice);
-        } catch (DiceNotFoundException | EmptyCollectionException e) {
-            e.printStackTrace();
+            game.swapDraftPoolDice(dice, roundTrackDice);
+            game.swapRoundTrackDice(roundTrackDice, dice, round);
+        } catch (DiceNotFoundException e) {
             return false;
         }
-        game.removeDiceFromRoundTrack(round, roundTrackDice);
-        game.addDiceToRoundTrack(dice, round);
         return true;
     }
 

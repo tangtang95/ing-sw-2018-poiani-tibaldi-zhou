@@ -57,8 +57,7 @@ public class RoundStartStateTest {
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         assertFalse(roundStartState.throwDices(otherPlayer));
         assertTrue(roundStartState.throwDices(currentPlayer));
-        verify(draftPool, times(SinglePlayerGameStrategy.NUMBER_OF_DICES_TO_DRAW))
-                .addDice(ArgumentMatchers.any(Dice.class));
+        verify(game).addDicesToDraftPoolFromDiceBag();
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }
 
@@ -73,8 +72,7 @@ public class RoundStartStateTest {
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         assertFalse(roundStartState.throwDices(otherPlayer));
         assertTrue(roundStartState.throwDices(currentPlayer));
-        verify(draftPool, times(numberOfPlayers*2 + 1))
-                .addDice(ArgumentMatchers.any(Dice.class));
+        verify(game).addDicesToDraftPoolFromDiceBag();
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }
 

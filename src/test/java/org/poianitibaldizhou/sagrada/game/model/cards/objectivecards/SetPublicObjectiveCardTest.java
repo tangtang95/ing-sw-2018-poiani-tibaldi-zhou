@@ -1,11 +1,11 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
-import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.SetPublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;

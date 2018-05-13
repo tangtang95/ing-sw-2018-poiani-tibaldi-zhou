@@ -83,6 +83,11 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
         }
     }
 
+    @Override
+    public boolean isSinglePlayer() {
+        return false;
+    }
+
     /**
      * Return the list of the winners by VictoryPoints
      *

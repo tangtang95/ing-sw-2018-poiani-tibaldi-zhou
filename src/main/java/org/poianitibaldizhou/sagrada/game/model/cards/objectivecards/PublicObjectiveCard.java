@@ -2,11 +2,12 @@ package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
+import java.io.ObjectInputStream;
 import java.util.*;
 
 @Immutable
@@ -35,7 +36,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * Constructor.
      * Creates a PublicObjectiveCard with a name, description and points.
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single ObjectiveCardType.
+     * with a single PlacementRestrictionType.
      *
      * @param name        card's name
      * @param description card's description
@@ -49,12 +50,12 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
         for (IConstraint constraint : constraints) {
             if (type == ObjectiveCardType.COLOR) {
                 if (!(constraint instanceof ColorConstraint))
-                    throw new IllegalArgumentException("constraints has different type than ObjectiveCardType given");
+                    throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
             } else if (type == ObjectiveCardType.NUMBER) {
                 if (!(constraint instanceof NumberConstraint))
-                    throw new IllegalArgumentException("constraints has different type than ObjectiveCardType given");
+                    throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
             } else {
-                throw new IllegalArgumentException("cannot instantiate publicObjectiveCard with this ObjectiveCardType");
+                throw new IllegalArgumentException("cannot instantiate publicObjectiveCard with this PlacementRestrictionType");
             }
         }
 

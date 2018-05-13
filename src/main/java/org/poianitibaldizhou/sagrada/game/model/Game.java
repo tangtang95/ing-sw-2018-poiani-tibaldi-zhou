@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
@@ -10,10 +13,11 @@ import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Game {
 
-    private final boolean isSinglePlayer;
     private final List<Player> players;
     private final RoundTrack roundTrack;
     private final List<ToolCard> toolCards;
@@ -34,7 +38,6 @@ public class Game {
      * @param tokens the list of String token of the players
      */
     public Game(List<String> tokens, String name) {
-        this.isSinglePlayer = false;
         this.players = new LinkedList<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new LinkedList<>();
@@ -50,27 +53,6 @@ public class Game {
         setState(new SetupPlayerState(this));
     }
 
-    private Game(List<Player> players, RoundTrack roundTrack, List<ToolCard> toolCards,
-                 List<PublicObjectiveCard> publicObjectiveCards, DrawableCollection<Dice> diceBag,
-                 DraftPool draftPool, String name, IStateGame state,
-                 Boolean isSinglePlayer, int difficulty) {
-        this.players = new LinkedList<>();
-        for (Player p : players)
-            this.players.add(Player.newInstance(p));
-        this.roundTrack = RoundTrack.newInstance(roundTrack);
-        this.toolCards = new LinkedList<>();
-
-        this.publicObjectiveCards = new LinkedList<>();
-        for (PublicObjectiveCard poc : publicObjectiveCards)
-            this.publicObjectiveCards.add(PublicObjectiveCard.newInstance(poc));
-        this.draftPool = DraftPool.newInstance(draftPool);
-        this.name = name;
-        this.isSinglePlayer = isSinglePlayer;
-        //need a refactor
-        this.diceBag = diceBag;
-        this.state = state;
-    }
-
     /**
      * Constructor of Single Player.
      * Create the Game for the single player with all the attributes intialized
@@ -79,7 +61,6 @@ public class Game {
      * @param difficulty        the difficulty of the game chosen by the user
      */
     public Game(String singlePlayerToken, int difficulty) {
-        this.isSinglePlayer = true;
         this.players = new LinkedList<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new LinkedList<>();
@@ -94,60 +75,107 @@ public class Game {
         name = "Single player";
     }
 
+    /**
+     * Deep-copy Constructor.
+     */
+    private Game(Game game) {
+        this.players = new LinkedList<>();
+        for (Player p : players)
+            this.players.add(Player.newInstance(p));
+        this.roundTrack = RoundTrack.newInstance(game.roundTrack);
+        this.toolCards = new LinkedList<>();
+        //TODO copy toolCards
+
+        this.publicObjectiveCards = new LinkedList<>();
+        for (PublicObjectiveCard poc : publicObjectiveCards)
+            this.publicObjectiveCards.add(PublicObjectiveCard.newInstance(poc));
+        this.draftPool = DraftPool.newInstance(game.draftPool);
+        this.name = game.name;
+        //TODO copy of gameStrategy
+
+        //need a refactor
+        this.diceBag = game.diceBag;
+        this.state = game.state;
+    }
+
+    //GETTER
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
 
+    @Contract(pure = true)
     public boolean isSinglePlayer() {
-        return isSinglePlayer;
+        return gameStrategy.isSinglePlayer();
     }
 
+    @Contract(pure = true)
     public List<Player> getPlayers() {
         List<Player> copyPlayers = new ArrayList<>();
         for (Player player : players) {
-            copyPlayers.add(player.newInstance(player));
+            copyPlayers.add(Player.newInstance(player));
         }
         return copyPlayers;
     }
 
+    @Contract(pure = true)
     public RoundTrack getRoundTrack() {
         return RoundTrack.newInstance(roundTrack);
     }
 
+    @Contract(pure = true)
     public List<ToolCard> getToolCards() {
-        return toolCards;
+        List<ToolCard> copyToolCards = new ArrayList<>();
+        for (ToolCard toolCard: toolCards){
+            copyToolCards.add(ToolCard.newInstance(toolCard));
+        }
+        return copyToolCards;
     }
 
+    @Contract(pure = true)
     public List<PublicObjectiveCard> getPublicObjectiveCards() {
-        return publicObjectiveCards;
+        List<PublicObjectiveCard> copyPublicObjectiveCards = new ArrayList<>();
+        for (PublicObjectiveCard publicObjectiveCard: publicObjectiveCards){
+            copyPublicObjectiveCards.add(PublicObjectiveCard.newInstance(publicObjectiveCard));
+        }
+        return copyPublicObjectiveCards;
     }
 
+    @Contract(pure = true)
     public DraftPool getDraftPool() {
-        return draftPool;
+        return DraftPool.newInstance(draftPool);
     }
+
+    @Contract(pure = true)
+    public int getNumberOfPlayers() {
+        return players.size();
+    }
+
+    @Contract(pure = true)
+    public IStateGame getState() {
+        // TODO deep copy
+        return state;
+    }
+
+    @Contract(pure = true)
+    public DrawableCollection<Dice> getDiceBag() {
+        return DrawableCollection.newInstance(diceBag);
+    }
+
+    @Contract(pure = true)
+    public IGameStrategy getGameStrategy() {
+        //TODO deep copy
+        return gameStrategy;
+    }
+
+    //MODIFIER
 
     public void setState(IStateGame state) {
         this.state = state;
     }
 
-    public int getNumberOfPlayers() {
-        return players.size();
-    }
-
-    public DrawableCollection<Dice> getDiceBag() {
-        return diceBag;
-    }
-
-    public IGameStrategy getGameStrategy() {
-        return gameStrategy;
-    }
-
     public void setPrivateObjectiveCards(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
         gameStrategy.setPrivateObjectiveCard(player, privateObjectiveCards);
-    }
-
-    public void readyGame() {
-        state.readyGame();
     }
 
     public void setPlayerOutcome(Player player, Outcome outcome) {
@@ -166,14 +194,59 @@ public class Game {
         draftPool.clearPool();
     }
 
-    public void removeDiceFromRoundTrack(int round, Dice roundTrackDice) {
-        roundTrack.removeDiceFromRoundTrack(round, roundTrackDice);
+
+    public void swapRoundTrackDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
+        roundTrack.swapDice(oldDice, newDice, round);
     }
 
-    public void addDiceToRoundTrack(Dice dice, int round) {
-        roundTrack.addDiceToRound(dice, round);
+    public void swapDraftPoolDice(Dice oldDice, Dice newDice) throws DiceNotFoundException {
+        draftPool.addDice(newDice);
+        try {
+            draftPool.useDice(oldDice);
+        } catch (EmptyCollectionException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "ERROR: draftPool is empty!");
+        }
     }
 
+    public void addToolCard(ToolCard toolCard) {
+        toolCards.add(toolCard);
+    }
+
+    public void addPublicObjectiveCard(PublicObjectiveCard publicObjectiveCard) {
+        publicObjectiveCards.add(publicObjectiveCard);
+    }
+
+    public void addDiceToDraftPool(Dice dice) {
+        draftPool.addDice(dice);
+    }
+
+    public void addDicesToDraftPoolFromDiceBag() {
+        for (int i = 0; i < gameStrategy.getNumberOfDicesToDraw(); i++) {
+            try {
+                draftPool.addDice(diceBag.draw());
+            } catch (EmptyCollectionException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
+            }
+        }
+    }
+
+    public void useDraftPoolDice(Dice dice) throws EmptyCollectionException, DiceNotFoundException {
+        draftPool.useDice(dice);
+    }
+
+    public void reRollDraftPool() {
+        draftPool.reRollDices();
+    }
+
+    public void readyGame() {
+        state.readyGame();
+    }
+
+    /**
+     * Return the target score for a single player game. The player score has to be higher than this to win
+     *
+     * @return the target score
+     */
     public int getTargetScore() {
         int targetScore = 0;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
@@ -214,15 +287,8 @@ public class Game {
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
 
-    public IStateGame getState() {
-        return state;
-    }
-
     public static Game newInstance(Game game) {
-        return new Game(game.getPlayers(), game.getRoundTrack(), game.getToolCards(), game.getPublicObjectiveCards(),
-                game.getDiceBag(), game.getDraftPool(), game.getName(), game.getState(),
-                game.isSinglePlayer(), 0);
-        //TODO FIX difficulty
+        return new Game(game);
     }
 
 

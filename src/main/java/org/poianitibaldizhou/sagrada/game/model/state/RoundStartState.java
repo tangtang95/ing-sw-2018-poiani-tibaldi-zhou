@@ -13,8 +13,6 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     private Player currentRoundPlayer;
     private int currentRound;
 
-    private static final Logger LOGGER = Logger.getLogger(RoundStartState.class.getName());
-
     /**
      * Constructor.
      * Create the state of RoundStartGame
@@ -38,14 +36,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public boolean throwDices(Player player) {
         if(currentRoundPlayer.equals(player)) {
-            int numberOfDicesToDraw = game.getGameStrategy().getNumberOfDicesToDraw();
-            for (int i = 0; i < numberOfDicesToDraw; i++) {
-                try {
-                    game.getDraftPool().addDice(game.getDiceBag().draw());
-                } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.SEVERE, "Error in throwDices for empty collection", e);
-                }
-            }
+            game.addDicesToDraftPoolFromDiceBag();
             game.setState(new TurnState(game, currentRound, currentRoundPlayer, player,true));
             return true;
         }

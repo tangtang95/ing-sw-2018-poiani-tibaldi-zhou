@@ -23,7 +23,7 @@ public class UseCardState extends IPlayerState {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        turnState.setPlayerState(new SelectActionState(turnState));
+        //turnState.setPlayerState(new SelectActionState(turnState));
     }
 
 

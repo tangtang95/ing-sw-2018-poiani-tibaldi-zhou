@@ -124,4 +124,8 @@ public class ToolCard extends Card {
     }
 
 
+    public static ToolCard newInstance(ToolCard toolCard) {
+        // TODO
+        return toolCard;
+    }
 }

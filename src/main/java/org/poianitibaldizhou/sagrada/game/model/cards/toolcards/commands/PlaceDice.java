@@ -5,8 +5,8 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.Position;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PlaceDice implements ICommand {
 
-    public final ObjectiveCardType tileConstraint;
+    public final PlacementRestrictionType tileConstraint;
     public final DiceRestrictionType diceConstraint;
 
     /**
@@ -26,12 +26,12 @@ public class PlaceDice implements ICommand {
      * @param tileConstraint TileConstraint that need to be checked when placing the dice
      * @param diceConstraint DiceConstraint that need to be checked when placing the dice
      */
-    public PlaceDice(ObjectiveCardType tileConstraint, DiceRestrictionType diceConstraint) {
+    public PlaceDice(PlacementRestrictionType tileConstraint, DiceRestrictionType diceConstraint) {
         this.tileConstraint = tileConstraint;
         this.diceConstraint = diceConstraint;
     }
 
-    public ObjectiveCardType getTileConstraint() {
+    public PlacementRestrictionType getTileConstraint() {
         return tileConstraint;
     }
 

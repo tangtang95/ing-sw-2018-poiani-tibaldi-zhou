@@ -73,5 +73,10 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
         game.setPlayerOutcome(currentRoundPlayer, outcome);
     }
 
+    @Override
+    public boolean isSinglePlayer() {
+        return true;
+    }
+
 
 }

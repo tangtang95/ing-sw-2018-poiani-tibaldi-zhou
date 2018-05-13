@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.restriction;
+package org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice;
 
 public class IsolatedDiceRestriction implements IDiceRestriction {
 

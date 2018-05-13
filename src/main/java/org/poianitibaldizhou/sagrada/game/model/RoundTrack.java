@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,4 +86,24 @@ public class RoundTrack {
             throw new IllegalArgumentException("Dice not present in round track");
     }
 
+    /**
+     * Replace a dice from the list of dices of "round" number with a new one
+     *
+     * @param oldDice the oldDice to replace
+     * @param newDice the newDice to replace
+     * @param round the round from where to replace the dice
+     * @throws DiceNotFoundException if dice is not founded at the specified round
+     */
+    public void swapDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
+        boolean diceFounded = false;
+        List<Dice> dices = listOfDices.get(round);
+        for (int i = 0; i < dices.size(); i++) {
+            if(dices.get(i).equals(oldDice)) {
+                dices.set(i, newDice);
+                diceFounded = true;
+            }
+        }
+        if(!diceFounded)
+            throw new DiceNotFoundException("oldDice not founded!");
+    }
 }

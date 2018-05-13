@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.ObjectiveCardType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
@@ -38,7 +38,7 @@ public class Tile {
      * @throws RuleViolationException if this.getNeededDice() != null
      */
     public void setDice(Dice dice) throws RuleViolationException {
-        setDice(dice, ObjectiveCardType.NUMBER_COLOR);
+        setDice(dice, PlacementRestrictionType.NUMBER_COLOR);
     }
 
     /**
@@ -46,7 +46,7 @@ public class Tile {
      * @param restrictionType the constraint to check when placing the dice
      * @throws RuleViolationException if this.getNeededDice() != null
      */
-    public void setDice(Dice dice, ObjectiveCardType restrictionType) throws RuleViolationException {
+    public void setDice(Dice dice, PlacementRestrictionType restrictionType) throws RuleViolationException {
         if (this.dice != null)
             throw new RuleViolationException(RuleViolationType.TILE_FILLED);
         if (!isDicePositionable(dice, restrictionType))
@@ -77,7 +77,7 @@ public class Tile {
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice) {
-        return isDicePositionable(dice, ObjectiveCardType.NUMBER_COLOR);
+        return isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR);
     }
 
     /**
@@ -86,7 +86,7 @@ public class Tile {
      * @return true if the dice can be placed with number and color constraint
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, ObjectiveCardType type) {
+    public boolean isDicePositionable(Dice dice, PlacementRestrictionType type) {
         return type.getPlacementRestriction().isPositionable(this, dice);
     }
 

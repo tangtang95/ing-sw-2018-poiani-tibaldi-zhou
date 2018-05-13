@@ -57,7 +57,7 @@ public class SetupGameState extends IStateGame{
         int numberOfToolCards = game.getGameStrategy().getNumberOfToolCardForGame();
         for (int i = 0; i < numberOfToolCards; i++) {
             try {
-                game.getToolCards().add(toolCards.draw());
+                game.addToolCard(toolCards.draw());
             } catch (EmptyCollectionException e) {
                 LOGGER.log(Level.SEVERE, "Error in injectToolCards for empty collection", e);
             }
@@ -73,7 +73,7 @@ public class SetupGameState extends IStateGame{
         int numberOfPublicObjectiveCards = game.getGameStrategy().getNumberOfPublicObjectiveCardForGame();
         for (int i = 0; i < numberOfPublicObjectiveCards; i++) {
             try {
-                game.getPublicObjectiveCards().add(publicObjectiveCards.draw());
+                game.addPublicObjectiveCard(publicObjectiveCards.draw());
             } catch (EmptyCollectionException e) {
                 LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards for empty collection", e);
             }

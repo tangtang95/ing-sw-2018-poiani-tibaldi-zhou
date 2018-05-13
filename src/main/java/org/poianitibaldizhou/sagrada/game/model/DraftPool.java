@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
@@ -51,15 +52,15 @@ public class DraftPool {
      * Uses a dice presents in the DraftPool thus removing it.
      *
      * @param d dice used
-     * @throws DiceNotFoundException if d is not present in the DraftPool
+     * @throws DiceNotFoundException    if d is not present in the DraftPool
      * @throws EmptyCollectionException if the DraftPool is empty
      */
     public void useDice(Dice d) throws DiceNotFoundException, EmptyCollectionException {
-        if(dices.isEmpty())  {
+        if (dices.isEmpty()) {
             throw new EmptyCollectionException();
         }
-        for(int i = 0; i < dices.size(); i++) {
-            if(dices.get(i).equals(d)) {
+        for (int i = 0; i < dices.size(); i++) {
+            if (dices.get(i).equals(d)) {
                 dices.remove(i);
                 return;
             }
@@ -67,9 +68,15 @@ public class DraftPool {
         throw new DiceNotFoundException("DraftPool.useDice() failed due to non existence of the dice in the pool");
     }
 
+    public void reRollDices() {
+        Random random = new Random();
+        for (int i = 0; i < dices.size(); i++) {
+            dices.set(i, new Dice(random.nextInt(Dice.MAX_VALUE) + 1, dices.get(i).getColor()));
+        }
+    }
+
     /**
      * Remove every dices in the draftPool
-     *
      */
     public void clearPool() {
         dices.clear();
@@ -80,17 +87,20 @@ public class DraftPool {
         return dices.toString();
     }
 
-    public int size(){return dices.size();}
+    public int size() {
+        return dices.size();
+    }
 
-    public static DraftPool newInstance(DraftPool draftPool){
+    public static DraftPool newInstance(DraftPool draftPool) {
         if (draftPool == null)
             return null;
         DraftPool newDraftPool = new DraftPool();
         List<Dice> diceList = new ArrayList<>();
-        for (Dice d: draftPool.getDices())
+        for (Dice d : draftPool.getDices())
             diceList.add(Dice.newInstance(d));
         newDraftPool.addDices(diceList);
         return newDraftPool;
     }
+
 
 }

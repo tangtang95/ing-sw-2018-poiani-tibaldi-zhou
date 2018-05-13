@@ -15,6 +15,6 @@ public interface IGameStrategy {
     int getNumberOfPrivateObjectiveCardForGame();
     void selectPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException;
     void setPrivateObjectiveCard(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards);
-
     void setPlayersOutcome(Game game, Map<Player, Integer> scoreMap, Player currentRoundPlayer);
+    boolean isSinglePlayer();
 }
