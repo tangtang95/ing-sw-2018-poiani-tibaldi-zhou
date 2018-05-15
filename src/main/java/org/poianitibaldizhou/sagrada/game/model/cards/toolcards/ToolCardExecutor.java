@@ -1,8 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +22,14 @@ public class ToolCardExecutor {
     private boolean turnEnd;
     private List<IToolCardExecutorObserver> observers;
 
-    private Node<ICommand> commands;
+    private Node<ICommand> commandRoot;
     private boolean isDone;
 
     /**
      * Constructor.
-     * Creates an executor helper for the invocation of the various commands.
+     * Creates an executor helper for the invocation of the various commandRoot.
      *
-     * @param commands tree of commands of the toolCard invoked
+     * @param commands tree of commandRoot of the toolCard invoked
      */
     public ToolCardExecutor(Node<ICommand> commands) {
         diceMonitor = new Object();
@@ -43,11 +45,10 @@ public class ToolCardExecutor {
         turnEnd = false;
         isDone = false;
         this.observers = new ArrayList<>();
-        this.commands = commands;
-
+        this.commandRoot = commands;
     }
 
-    public void addObserver(IToolCardExecutorObserver observer){
+    public void addObserver(IToolCardExecutorObserver observer) {
         this.observers.add(observer);
     }
 
@@ -60,20 +61,30 @@ public class ToolCardExecutor {
      *
      * @param toolCardExecutor the toolCard Executor to copy
      */
-    private ToolCardExecutor(ToolCardExecutor toolCardExecutor){
+    private ToolCardExecutor(ToolCardExecutor toolCardExecutor) {
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
         turnEndMonitor = new Object();
         positionMonitor = new Object();
-
     }
 
-
-
-    public void invokeCommands(Player player, Game game){
+    public void invokeCommands(Player player, Game game) throws RemoteException, InterruptedException {
         CommandFlow commandFlow = CommandFlow.MAIN;
-        // TODO Riccardo Tree
+        Node<ICommand> root = commandRoot;
+        do {
+            try {
+                commandFlow = root.getData().executeCommand(player, this, game);
+
+                if (commandFlow == CommandFlow.MAIN) {
+                    root = root.getLeftChild();
+                } else {
+                    root = root.getRightChild();
+                }
+            } catch (ExecutionCommandException e) {
+                // Basically nothing is needed, the commands just needs to be re-executed
+            }
+        } while(root != null);
     }
 
     public void setNeededValue(Integer neededValue) {
@@ -138,7 +149,7 @@ public class ToolCardExecutor {
 
     public void waitForTurnEnd() throws InterruptedException {
         synchronized (turnEndMonitor) {
-            while(!turnEnd)
+            while (!turnEnd)
                 turnEndMonitor.wait();
         }
     }
