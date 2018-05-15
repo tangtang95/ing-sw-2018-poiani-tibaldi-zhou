@@ -5,9 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import static org.junit.Assert.*;
@@ -40,7 +42,7 @@ public class AddDiceToDiceBagTest {
     public void executeCommandTest() throws Exception {
         Dice dice = mock(Dice.class);
         when(executorHelper.getNeededDice()).thenReturn(dice);
-        assertTrue(command.executeCommand(invokerPlayer, executorHelper, game));
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executorHelper, game));
         verify(game).addDiceToDiceBag(dice);
     }
 

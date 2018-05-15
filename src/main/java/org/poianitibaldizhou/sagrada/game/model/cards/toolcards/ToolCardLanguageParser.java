@@ -95,26 +95,26 @@ public class ToolCardLanguageParser {
 
         ICommand clearColor = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededColor(null);
-            return true;
+            return CommandFlow.MAIN;
         };
         ICommand clearValue = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededValue(null);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearDice = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededDice(null);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearPosition =  (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededPosition(null);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearTurnEndCondition = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setTurnEnded(false);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearAll = (player, toolCardExecutorHelper, game) -> {
@@ -123,7 +123,7 @@ public class ToolCardLanguageParser {
             clearPosition.executeCommand(player, toolCardExecutorHelper, game);
             clearTurnEndCondition.executeCommand(player, toolCardExecutorHelper, game);
             clearValue.executeCommand(player, toolCardExecutorHelper, game);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         grammar.put("CC", clearColor);

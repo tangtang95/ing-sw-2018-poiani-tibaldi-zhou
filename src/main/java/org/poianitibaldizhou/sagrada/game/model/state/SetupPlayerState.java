@@ -98,4 +98,9 @@ public class SetupPlayerState extends IStateGame {
         return schemaCards;
     }
 
+    public static IStateGame newInstance(IStateGame iStateGame) {
+        if (iStateGame == null)
+            return null;
+        return iStateGame;
+    }
 }

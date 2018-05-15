@@ -15,7 +15,6 @@ public class ToolCard extends Card {
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
 
-
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
         this.tokens = 0;
@@ -26,6 +25,16 @@ public class ToolCard extends Card {
         observers = new ArrayList<>();
     }
 
+    //TODO refactor
+    private ToolCard(Color color,String name, String description, int tokens, List<ICommand> commands,
+                     boolean isSinglePlayer, List<IToolCardObserver> observers){
+        super(name,description);
+        this.color = color;
+        this.tokens = tokens;
+        this.commands = commands;
+        this.isSinglePlayer = isSinglePlayer;
+        this.observers = observers;
+    }
 
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<>(observers);
@@ -102,9 +111,11 @@ public class ToolCard extends Card {
         return commands;
     }
 
-
+    //TODO refactor
     public static ToolCard newInstance(ToolCard toolCard) {
-        // TODO
-        return toolCard;
+        if (toolCard == null)
+            return null;
+        return new ToolCard(toolCard.getColor(),toolCard.getName(),toolCard.getDescription(),
+                toolCard.getTokens(),toolCard.getCommands(),toolCard.isSinglePlayer, toolCard.getObservers());
     }
 }

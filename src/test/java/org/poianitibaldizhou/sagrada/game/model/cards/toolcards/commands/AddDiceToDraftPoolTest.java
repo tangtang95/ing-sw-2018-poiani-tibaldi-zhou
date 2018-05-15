@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import static org.junit.Assert.*;
@@ -39,7 +40,7 @@ public class AddDiceToDraftPoolTest {
     public void executeCommandTest() throws Exception {
         Dice dice = mock(Dice.class);
         when(executorHelper.getNeededDice()).thenReturn(dice);
-        assertTrue(command.executeCommand(invokerPlayer, executorHelper, game));
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executorHelper, game));
         verify(game).addDiceToDraftPool(dice);
     }
 

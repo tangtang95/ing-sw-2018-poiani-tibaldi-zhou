@@ -55,6 +55,17 @@ public class ToolCardExecutor {
         return observers;
     }
 
+    private ToolCardExecutor(ToolCardExecutor toolCardExecutor){
+        diceMonitor = new Object();
+        colorMonitor = new Object();
+        valueMonitor = new Object();
+        turnEndMonitor = new Object();
+        positionMonitor = new Object();
+
+    }
+
+
+
     public void invokeCommands(Player player, Game game){
         CommandFlow commandFlow = CommandFlow.MAIN;
         // TODO Riccardo Tree
@@ -140,5 +151,11 @@ public class ToolCardExecutor {
             while (!isDone)
                 this.wait();
         }
+    }
+
+    public static ToolCardExecutor newInstance(ToolCardExecutor tceh) {
+        if (tceh == null)
+            return null;
+        return new ToolCardExecutor(tceh);
     }
 }

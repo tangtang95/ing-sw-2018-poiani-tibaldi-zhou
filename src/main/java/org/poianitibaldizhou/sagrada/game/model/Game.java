@@ -48,9 +48,6 @@ public class Game {
         for (String token : tokens) {
             players.add(new Player(token, new FavorToken()));
         }
-
-        this.gameStrategy = new MultiPlayerGameStrategy(players.size());
-        setState(new SetupPlayerState(this));
     }
 
     /**

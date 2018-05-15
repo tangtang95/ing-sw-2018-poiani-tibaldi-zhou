@@ -48,12 +48,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setDice(Dice dice, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-        List<ToolCard> toolCards = game.getToolCards();
-        for(ToolCard toolCard: toolCards) {
-            if(toolCard.getName().equals(toolCardName)){
-                toolCard.getToolCardExecutorHelper().setNeededDice(dice);
-            }
-        }
+
     }
 
     /**
@@ -66,12 +61,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setNewValue(int value, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-        List<ToolCard> toolCards = game.getToolCards();
-        for(ToolCard tc: toolCards) {
-            if(tc.getName().equals(toolCardName)) {
-                tc.getToolCardExecutorHelper().setNeededValue(value);
-            }
-        }
+
     }
 
     /**
@@ -84,11 +74,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setColor(Color color, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-        List<ToolCard> toolCards = game.getToolCards();
-        for(ToolCard tc : toolCards) {
-            if(tc.getName().equals(toolCardName))
-                tc.getToolCardExecutorHelper().setNeededColor(color);
-        }
+
     }
 
     /**
@@ -103,10 +89,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setPosition(Position position, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-        List<ToolCard> toolCards = game.getToolCards();
-        for(ToolCard tc : toolCards)
-            if(tc.getName().equals(toolCardName))
-                tc.getToolCardExecutorHelper().setNeededPosition(position);;
+
 
     }
 }

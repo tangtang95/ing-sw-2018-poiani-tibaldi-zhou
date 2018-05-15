@@ -43,4 +43,7 @@ public abstract class IStateGame {
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException {
         throw new IllegalStateException();
     }
+
+    public static IStateGame newInstance(IStateGame iStateGame) {throw new IllegalStateException(); }
+
 }

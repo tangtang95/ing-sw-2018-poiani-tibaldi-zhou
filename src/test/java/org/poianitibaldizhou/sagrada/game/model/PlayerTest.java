@@ -44,7 +44,7 @@ public class PlayerTest {
         player = new Player(token1, coin);
         player.useCard(toolCard);
         verify(coin).use(toolCard);
-        verify(toolCard).invokeCommands(player, game);
+
     }
 
     @Test
