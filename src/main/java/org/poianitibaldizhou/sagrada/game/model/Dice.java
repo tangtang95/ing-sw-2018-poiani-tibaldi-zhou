@@ -109,11 +109,5 @@ public class Dice {
         return Objects.hash(numberConstraint, colorConstraint);
     }
 
-    public static Dice newInstance(Dice dice) {
-        if (dice == null)
-            return null;
-        return new Dice(dice.getNumberConstraint(), dice.getColorConstraint());
-    }
-
 
 }

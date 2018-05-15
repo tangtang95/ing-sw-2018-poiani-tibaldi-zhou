@@ -23,7 +23,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      */
     RoundStartState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
-        this.currentRoundPlayer = currentRoundPlayer;
+        this.currentRoundPlayer = Player.newInstance(currentRoundPlayer);
         this.currentRound = currentRound;
     }
 
@@ -48,4 +48,10 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
+    public static IStateGame newInstance(IStateGame rss) {
+        if (rss == null)
+            return null;
+        return new RoundStartState(rss.game, ((RoundStartState)(rss)).currentRound,
+                ((RoundStartState)(rss)).currentRoundPlayer);
+    }
 }

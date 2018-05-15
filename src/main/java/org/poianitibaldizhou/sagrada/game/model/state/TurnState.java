@@ -40,8 +40,23 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.currentRoundPlayer = currentRoundPlayer;
         this.currentTurnPlayer = currentTurnPlayer;
         this.isFirstTurn = isFirstTurn;
-        actionUsed = new HashSet<>();
+        this.actionUsed = new HashSet<>();
         this.playerState = new SelectActionState(this);
+    }
+
+    /**
+     * copy_constructor
+     *
+     * @param turnState turnState to copy
+     */
+    private TurnState(TurnState turnState) {
+        super(turnState.game);
+        this.currentRoundPlayer = Player.newInstance(turnState.getCurrentRoundPlayer());
+        this.currentTurnPlayer = Player.newInstance(turnState.getCurrentTurnPlayer());
+        this.playerState = turnState.playerState;
+        this.currentRound = turnState.currentRound;
+        this.isFirstTurn = turnState.isFirstTurn;
+        this.actionUsed = turnState.actionUsed;
     }
 
     /**
@@ -105,7 +120,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * @param player the currentTurnPlayer who choose to place a dice
      * @param dice   the dice to be placed
      * @throws InvalidActionException if the given player is different from the currentTurnPlayer
-     * @throws RuleViolationException
+     * @throws RuleViolationException if the rules of placement are violated
      */
     @Override
     public void placeDice(Player player, Dice dice, int row, int column) throws RuleViolationException, InvalidActionException {
@@ -139,6 +154,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-
+    public static IStateGame newInstance(IStateGame ts) {
+        if (ts == null)
+            return null;
+        return new TurnState((TurnState) ts);
+    }
 
 }

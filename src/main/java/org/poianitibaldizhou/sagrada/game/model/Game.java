@@ -81,18 +81,17 @@ public class Game {
             this.players.add(Player.newInstance(p));
         this.roundTrack = RoundTrack.newInstance(game.roundTrack);
         this.toolCards = new LinkedList<>();
-        //TODO copy toolCards
-
-        this.publicObjectiveCards = new LinkedList<>();
-        for (PublicObjectiveCard poc : publicObjectiveCards)
-            this.publicObjectiveCards.add(PublicObjectiveCard.newInstance(poc));
+        for (ToolCard t : game.getToolCards())
+            this.toolCards.add(ToolCard.newInstance(t));
+        this.publicObjectiveCards = game.publicObjectiveCards;
         this.draftPool = DraftPool.newInstance(game.draftPool);
         this.name = game.name;
-        //TODO copy of gameStrategy
-
-        //need a refactor
-        this.diceBag = game.diceBag;
-        this.state = game.state;
+        if (game.getGameStrategy() instanceof SinglePlayerGameStrategy)
+            this.gameStrategy = SinglePlayerGameStrategy.newInstance((SinglePlayerGameStrategy) game.getGameStrategy());
+        else
+            this.gameStrategy = new MultiPlayerGameStrategy(((MultiPlayerGameStrategy)game.getGameStrategy()).getNumberOfPlayer());
+        this.diceBag = DrawableCollection.newInstance(game.getDiceBag());
+        this.state = IStateGame.newInstance(game.state);
     }
 
     //GETTER
@@ -133,7 +132,7 @@ public class Game {
     public List<PublicObjectiveCard> getPublicObjectiveCards() {
         List<PublicObjectiveCard> copyPublicObjectiveCards = new ArrayList<>();
         for (PublicObjectiveCard publicObjectiveCard: publicObjectiveCards){
-            copyPublicObjectiveCards.add(PublicObjectiveCard.newInstance(publicObjectiveCard));
+            copyPublicObjectiveCards.add(publicObjectiveCard);
         }
         return copyPublicObjectiveCards;
     }
@@ -285,6 +284,8 @@ public class Game {
     }
 
     public static Game newInstance(Game game) {
+        if (game == null)
+            return  null;
         return new Game(game);
     }
 

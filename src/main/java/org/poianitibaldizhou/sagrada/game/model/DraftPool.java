@@ -95,9 +95,7 @@ public class DraftPool {
         if (draftPool == null)
             return null;
         DraftPool newDraftPool = new DraftPool();
-        List<Dice> diceList = new ArrayList<>();
-        for (Dice d : draftPool.getDices())
-            diceList.add(Dice.newInstance(d));
+        List<Dice> diceList = new ArrayList<>(draftPool.getDices());
         newDraftPool.addDices(diceList);
         return newDraftPool;
     }

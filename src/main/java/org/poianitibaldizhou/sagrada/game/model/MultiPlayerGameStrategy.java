@@ -171,4 +171,8 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
             return allPlayers.get(index);
         throw new IllegalArgumentException("No players founded");
     }
+
+    public int getNumberOfPlayer() {
+        return numberOfPlayer;
+    }
 }

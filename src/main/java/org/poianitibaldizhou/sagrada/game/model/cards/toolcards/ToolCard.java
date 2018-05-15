@@ -31,16 +31,19 @@ public class ToolCard extends Card {
         observers = new ArrayList<>();
     }
 
+    /**
+     * copy-constructor
+     *
+     * @param toolCard the toolCard to copy
+     */
     //TODO refactor
-    private ToolCard(Color color,String name, String description, int tokens, List<ICommand> commands,
-                     boolean isSinglePlayer, List<IToolCardObserver> observers,
-                     ToolCardExecutorHelper toolCardExecutorHelper){
-        super(name,description);
-        this.color = color;
-        this.tokens = tokens;
-        this.commands = commands;
-        this.isSinglePlayer = isSinglePlayer;
-        this.observers = observers;
+    private ToolCard(ToolCard toolCard){
+        super(toolCard.getName(),toolCard.getDescription());
+        this.color = toolCard.getColor();
+        this.tokens = toolCard.getTokens();
+        this.commands = toolCard.getCommands();
+        this.isSinglePlayer = toolCard.isSinglePlayer;
+        this.observers = toolCard.getObservers();
         this.toolCardExecutorHelper = ToolCardExecutorHelper.newInstance(toolCardExecutorHelper);
     }
 
@@ -134,8 +137,6 @@ public class ToolCard extends Card {
     public static ToolCard newInstance(ToolCard toolCard) {
         if (toolCard == null)
             return null;
-        return new ToolCard(toolCard.getColor(),toolCard.getName(),toolCard.getDescription(),
-                toolCard.getTokens(),toolCard.getCommands(),toolCard.isSinglePlayer, toolCard.getObservers(),
-                toolCard.getToolCardExecutorHelper());
+        return new ToolCard(toolCard);
     }
 }

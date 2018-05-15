@@ -1,11 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import java.lang.reflect.Array;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 public class GameManager {
     private HashMap<String, Game> games;
@@ -44,7 +42,6 @@ public class GameManager {
     /**
      * Player joining a certain game
      *
-     * @param game game that player in joining
      * @param token player's token
      * @throws RemoteException if player is already playing in another game
      */

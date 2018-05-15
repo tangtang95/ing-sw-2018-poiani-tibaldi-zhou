@@ -93,15 +93,4 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
         return false;
     }
 
-    public static PublicObjectiveCard newInstance(PublicObjectiveCard publicObjectiveCard) {
-        if (publicObjectiveCard instanceof RowPublicObjectiveCard)
-            return RowPublicObjectiveCard.newInstance(publicObjectiveCard);
-        if (publicObjectiveCard instanceof ColumnPublicObjectiveCard)
-            return ColumnPublicObjectiveCard.newInstance(publicObjectiveCard);
-        if (publicObjectiveCard instanceof DiagonalPublicObjectiveCard)
-            return DiagonalPublicObjectiveCard.newInstance(publicObjectiveCard);
-        if (publicObjectiveCard instanceof SetPublicObjectiveCard)
-            return SetPublicObjectiveCard.newInstance(publicObjectiveCard);
-        return null;
-    }
 }

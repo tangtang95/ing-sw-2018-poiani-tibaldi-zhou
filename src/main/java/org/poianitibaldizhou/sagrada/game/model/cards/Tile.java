@@ -139,7 +139,7 @@ public class Tile {
         if (tile == null)
             return null;
         Tile newTile = new Tile(tile.getConstraint());
-        newTile.dice = Dice.newInstance(tile.getDice());
+        newTile.dice = new Dice(tile.getDice().getNumberConstraint(),tile.getDice().getColorConstraint());
         return newTile;
     }
 

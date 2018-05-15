@@ -26,6 +26,17 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         //
     }
 
+    /**
+     * copy-constructor
+     *
+     * @param gameState the gameState to copy
+     */
+    private EndGameState(EndGameState gameState) {
+        super(gameState.game);
+        this.currentRoundPlayer = Player.newInstance(gameState.getCurrentRoundPlayer());
+        for (Player player : gameState.scoreMap.keySet())
+            this.scoreMap.put(Player.newInstance(player), gameState.scoreMap.get(player));
+    }
     @Override
     public void choosePrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
         game.getGameStrategy().selectPrivateObjectiveCard(privateObjectiveCard);
@@ -58,5 +69,11 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;
+    }
+
+    public static IStateGame newInstance(IStateGame egs) {
+        if (egs == null)
+            return null;
+        return new EndGameState((EndGameState) egs);
     }
 }

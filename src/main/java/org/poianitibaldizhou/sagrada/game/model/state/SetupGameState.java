@@ -98,4 +98,5 @@ public class SetupGameState extends IStateGame{
         }
         return player;
     }
+
 }

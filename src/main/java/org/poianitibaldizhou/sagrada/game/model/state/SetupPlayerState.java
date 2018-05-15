@@ -55,6 +55,28 @@ public class SetupPlayerState extends IStateGame {
     }
 
     /**
+     * Copy_constructor
+     *
+     * @param playerState playerState to copy
+     */
+    private SetupPlayerState(SetupPlayerState playerState) {
+        super(playerState.game);
+        playersReady = new HashSet<>();
+        playerSchemaCards = new HashMap<>();
+        List<SchemaCard> schemaCardList = new ArrayList<>();
+
+        for (Player player : playerState.playerSchemaCards.keySet()) {
+            for (SchemaCard schemaCard : playerState.playerSchemaCards.get(player))
+                schemaCardList.add(SchemaCard.newInstance(schemaCard));
+            this.playerSchemaCards.put(Player.newInstance(player), schemaCardList);
+        }
+
+        for (Player player : playerState.playersReady)
+            this.playersReady.add(Player.newInstance(player));
+
+    }
+
+    /**
      * Method of the state pattern: When the player have finished to select the schemaCard,
      * this method is invoked to set the SchemaCard to the player and when every player has readied the state
      *
@@ -98,9 +120,9 @@ public class SetupPlayerState extends IStateGame {
         return schemaCards;
     }
 
-    public static IStateGame newInstance(IStateGame iStateGame) {
-        if (iStateGame == null)
+    public static IStateGame newInstance(IStateGame sps) {
+        if (sps == null)
             return null;
-        return iStateGame;
+        return new SetupPlayerState((SetupPlayerState) sps);
     }
 }

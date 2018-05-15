@@ -52,4 +52,11 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;
     }
+
+    public static IStateGame newInstance(IStateGame res) {
+        if (res == null)
+            return null;
+        return new RoundEndState(res.game,((RoundEndState) res).getCurrentRound(),
+                ((RoundEndState) res).getCurrentRoundPlayer());
+    }
 }

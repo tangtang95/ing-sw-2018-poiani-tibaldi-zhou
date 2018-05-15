@@ -36,6 +36,13 @@ public class SchemaCard {
         }
     }
 
+    /**
+     * copy-constructor
+     *
+     * @param name card name
+     * @param difficulty card difficulty
+     * @param tileMatrix card matrix
+     */
     private SchemaCard(String name, int difficulty, Tile[][] tileMatrix) {
         this.name = name;
         this.difficulty = difficulty;

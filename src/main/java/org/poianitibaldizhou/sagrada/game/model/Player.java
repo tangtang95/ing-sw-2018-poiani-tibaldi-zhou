@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 
 import java.rmi.RemoteException;
 
@@ -173,7 +174,9 @@ public class Player {
             return null;
         Player newPlayer = new Player(player.getToken(),player.getICoins());
         newPlayer.setSchemaCard(SchemaCard.newInstance(player.getSchemaCard()));
-        newPlayer.setPrivateObjectiveCard(PrivateObjectiveCard.newInstance(player.getPrivateObjectiveCard()));
+        newPlayer.setPrivateObjectiveCard(new PrivateObjectiveCard(player.getPrivateObjectiveCard().getName(),
+                player.getPrivateObjectiveCard().getDescription(),
+                (ColorConstraint) player.getPrivateObjectiveCard().getConstraint()));
         newPlayer.setOutcome(player.getOutcome());
         return newPlayer;
     }

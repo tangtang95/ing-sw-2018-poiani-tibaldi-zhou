@@ -42,15 +42,6 @@ public class ToolCardExecutorHelper {
         this.observers = observers;
     }
 
-    private ToolCardExecutorHelper(Dice neededDice, Color neededColor, Integer neededValue, Position neededPosition,
-                                   boolean turnEnd, List<IToolCardObserver> observers){
-        this.neededDice = Dice.newInstance(neededDice);
-        this.neededColor = neededColor;
-        this.neededValue = neededValue;
-        this.neededPosition = neededPosition;
-        this.turnEnd = turnEnd;
-        this.observers = observers;
-    }
 
     public List<IToolCardObserver> getObservers() {
         return observers;
@@ -135,12 +126,6 @@ public class ToolCardExecutorHelper {
     public static ToolCardExecutorHelper newInstance(ToolCardExecutorHelper tceh) {
         if (tceh == null)
             return null;
-        try {
-            return new ToolCardExecutorHelper(tceh.getNeededDice(),tceh.getNeededColor(),tceh.getNeededValue(),
-                    tceh.getPosition(),tceh.getTurnEnded(),tceh.getObservers());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return new ToolCardExecutorHelper(tceh.getObservers());
     }
 }

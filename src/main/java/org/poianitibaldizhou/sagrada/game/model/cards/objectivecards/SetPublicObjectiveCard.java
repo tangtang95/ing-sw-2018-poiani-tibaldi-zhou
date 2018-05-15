@@ -61,10 +61,4 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
         return minValue*getCardPoints();
     }
 
-    public static SetPublicObjectiveCard newInstance(SetPublicObjectiveCard spoc) {
-        if (spoc == null)
-            return null;
-        return new SetPublicObjectiveCard(spoc.getName(),spoc.getDescription(),spoc.getCardPoints(),
-                spoc.getConstraint(),spoc.getType());
-    }
 }

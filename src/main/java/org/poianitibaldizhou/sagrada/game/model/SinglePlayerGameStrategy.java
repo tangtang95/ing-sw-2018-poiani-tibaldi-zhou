@@ -25,6 +25,17 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
         privateObjectiveCards = new ArrayList<>();
     }
 
+    /**
+     * copy-constructor
+     *
+     * @param spgs the single player game strategy to copy
+     */
+    private SinglePlayerGameStrategy(SinglePlayerGameStrategy spgs) {
+        this.gameDifficulty = spgs.gameDifficulty;
+        this.privateObjectiveCards = new ArrayList<>(spgs.privateObjectiveCards);
+        this.privateObjectiveCardSelected = spgs.privateObjectiveCardSelected;
+    }
+
     @Override
     public int getNumberOfToolCardForGame() {
         return gameDifficulty;
@@ -78,5 +89,9 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
         return true;
     }
 
-
+    public static SinglePlayerGameStrategy newInstance(SinglePlayerGameStrategy spgs) {
+        if (spgs == null)
+            return null;
+        return new SinglePlayerGameStrategy(spgs);
+    }
 }

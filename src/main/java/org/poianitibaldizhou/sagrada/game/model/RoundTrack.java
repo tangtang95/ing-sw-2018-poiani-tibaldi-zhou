@@ -39,7 +39,7 @@ public class RoundTrack {
         List<Dice> diceList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
             for (Dice d : roundTrack.listOfDices.get(i))
-                diceList.add(Dice.newInstance(d));
+                diceList.add(new Dice(d.getNumber(),d.getColor()));
             newRoundTrack.addDicesToRound(diceList,i);
         }
         return newRoundTrack;
@@ -69,7 +69,7 @@ public class RoundTrack {
     public List<Dice> getDices(int round){
         List<Dice> diceList = new ArrayList<>();
         for (Dice dice: listOfDices.get(round)) {
-            diceList.add(Dice.newInstance(dice));
+            diceList.add(new Dice(dice.getNumber(),dice.getColor()));
         }
         return diceList;
     }
