@@ -20,16 +20,16 @@ public class ToolCardExecutor {
     private boolean turnEnd;
     private List<IToolCardExecutorObserver> observers;
 
-    private List<ICommand> commands;
+    private Node<ICommand> commands;
     private boolean isDone;
 
     /**
      * Constructor.
      * Creates an executor helper for the invocation of the various commands.
      *
-     * @param commands list of commands of the toolCard invoked
+     * @param commands tree of commands of the toolCard invoked
      */
-    public ToolCardExecutor(List<ICommand> commands) {
+    public ToolCardExecutor(Node<ICommand> commands) {
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();

@@ -11,9 +11,10 @@ import java.util.Objects;
 public class ToolCard extends Card {
     private Color color;
     private int tokens;
-    private List<ICommand> commands;
+    private Node<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
+
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
@@ -38,14 +39,13 @@ public class ToolCard extends Card {
         this.commands = toolCard.getCommands();
         this.isSinglePlayer = toolCard.isSinglePlayer;
         this.observers = toolCard.getObservers();
-
     }
 
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<>(observers);
     }
 
-    public ToolCardExecutor getToolCardExecutor(){
+    public ToolCardExecutor getToolCardExecutor() {
         ToolCardExecutor toolCardExecutor = new ToolCardExecutor(commands);
 
         if (isSinglePlayer) {
@@ -94,25 +94,19 @@ public class ToolCard extends Card {
         return tokens == toolCard.tokens &&
                 isSinglePlayer == toolCard.isSinglePlayer &&
                 color == toolCard.color &&
-                equalsCommand(toolCard.commands) &&
+                this.commands.equals(toolCard.getCommands())&&
                 this.getName().equals(toolCard.getName()) &&
                 this.getDescription().equals(toolCard.getDescription());
     }
 
-    private boolean equalsCommand(List<ICommand> commands) {
-        for (int i = 0; i < commands.size(); i++) {
-            if (commands.get(i).getClass() != this.commands.get(i).getClass())
-                return false;
-        }
-        return true;
-    }
 
     @Override
     public int hashCode() {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
 
-    public List<ICommand> getCommands() {
+
+    public Node<ICommand> getCommands() {
         return commands;
     }
 
