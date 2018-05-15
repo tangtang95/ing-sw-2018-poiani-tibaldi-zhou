@@ -1,10 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 
@@ -15,21 +15,16 @@ public class DrawDiceFromDicebag implements ICommand {
      * Doesn't require anything in toolcard.
      * It pushes a dice to toolcard.
      *
-     * @param player player who invoked the ToolCard
-     * @param toolCardExecutorHelper ToolCard invoked that contains this command
-     * @param game Game in which the player acts
+     * @param player                 player who invoked the ToolCard
+     * @param toolCardExecutor ToolCard invoked that contains this command
+     * @param game                   Game in which the player acts
      * @throws RemoteException
      */
     @Override
-    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException {
-        try {
-            Dice dice = game.getDiceBag().draw();
-            toolCardExecutorHelper.setNeededDice(dice);
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException {
+        Dice dice = game.getDiceFromDiceBag();
+        toolCardExecutor.setNeededDice(dice);
+        return CommandFlow.MAIN;
     }
 
     @Override

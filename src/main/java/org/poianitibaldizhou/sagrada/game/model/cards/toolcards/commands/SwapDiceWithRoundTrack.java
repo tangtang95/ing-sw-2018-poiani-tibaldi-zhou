@@ -1,13 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -21,33 +23,33 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * for a dice and a round.
      *
      * @param player                 player who invoked the command
-     * @param toolCardExecutorHelper invoked toolcard
+     * @param toolCardExecutor invoked toolcard
      * @param game                   game on which the player acts
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override
-    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
-        Dice dice = toolCardExecutorHelper.getNeededDice();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
+        Dice dice = toolCardExecutor.getNeededDice();
         Dice roundTrackDice;
         int round;
-        List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
+        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = game.getRoundTrack();
 
-        for (IToolCardObserver observer : observerList) {
+        for (IToolCardExecutorObserver observer : observerList) {
             observer.notifyNeedDiceFromRoundTrack(player, roundTrack);
         }
 
-        roundTrackDice = toolCardExecutorHelper.getNeededDice();
-        round = toolCardExecutorHelper.getNeededValue();
+        roundTrackDice = toolCardExecutor.getNeededDice();
+        round = toolCardExecutor.getNeededValue();
 
         try {
             game.swapDraftPoolDice(dice, roundTrackDice);
             game.swapRoundTrackDice(roundTrackDice, dice, round);
         } catch (DiceNotFoundException e) {
-            return false;
+            throw new ExecutionCommandException();
         }
-        return true;
+        return CommandFlow.MAIN;
     }
 
     @Override

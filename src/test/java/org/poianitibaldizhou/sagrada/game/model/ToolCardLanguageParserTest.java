@@ -63,7 +63,7 @@ public class ToolCardLanguageParserTest {
         commands.add(new RerollDraftPool());
         commands.add(new CheckTurn(2));
         commands.add(new CheckTurn(1));
-        commands.add(new CheckBeforeDiceChose());
+        commands.add(new CheckBeforeDiceChosen());
         commands.add(new CheckTurnEnd());
         commands.add(new SkipTurn(2));
         commands.add(new SkipTurn(1));

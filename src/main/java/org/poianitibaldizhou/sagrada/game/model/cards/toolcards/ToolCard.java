@@ -1,11 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -16,14 +14,6 @@ public class ToolCard extends Card {
     private List<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
-
-    // properties that need communication with client
-    private Dice neededDice;
-    private Color neededColor;
-    private Integer neededValue;
-    private Position position;
-    private boolean turnEnd;
-    private ToolCardExecutorHelper toolCardExecutorHelper;
 
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
@@ -41,25 +31,18 @@ public class ToolCard extends Card {
         return new ArrayList<>(observers);
     }
 
-    public void invokeCommands(Player player, Game game) throws RemoteException, InterruptedException {
-        boolean flag = true;
-        toolCardExecutorHelper = new ToolCardExecutorHelper(observers);
-        for (int i = 0; i < commands.size(); i++) {
-            if(!flag)
-                break;
-            flag = commands.get(i).executeCommand(player, toolCardExecutorHelper, game);
+    public ToolCardExecutor getToolCardExecutor(){
+        ToolCardExecutor toolCardExecutor = new ToolCardExecutor(commands);
+
+        if (isSinglePlayer) {
+            for (IToolCardObserver obs : observers)
+                obs.onCardDestroy();
+        } else {
+            for (IToolCardObserver obs : observers)
+                obs.onTokenChange(tokens);
         }
 
-        if(flag) {
-            if (isSinglePlayer) {
-                for (IToolCardObserver obs : observers)
-                    obs.onCardDestroy();
-            }
-            else {
-                for (IToolCardObserver obs : observers)
-                    obs.onTokenChange(tokens);
-            }
-        }
+        return toolCardExecutor;
     }
 
     public int getTokens() {
@@ -71,7 +54,7 @@ public class ToolCard extends Card {
     }
 
     public int getCost() {
-        if(tokens <= 0)
+        if (tokens <= 0)
             return 1;
         else
             return 2;
@@ -97,12 +80,12 @@ public class ToolCard extends Card {
         return tokens == toolCard.tokens &&
                 isSinglePlayer == toolCard.isSinglePlayer &&
                 color == toolCard.color &&
-                equalsCommand(toolCard.commands)&&
+                equalsCommand(toolCard.commands) &&
                 this.getName().equals(toolCard.getName()) &&
                 this.getDescription().equals(toolCard.getDescription());
     }
 
-    private boolean equalsCommand(List<ICommand> commands){
+    private boolean equalsCommand(List<ICommand> commands) {
         for (int i = 0; i < commands.size(); i++) {
             if (commands.get(i).getClass() != this.commands.get(i).getClass())
                 return false;
@@ -113,10 +96,6 @@ public class ToolCard extends Card {
     @Override
     public int hashCode() {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
-    }
-
-    public ToolCardExecutorHelper getToolCardExecutorHelper() {
-        return toolCardExecutorHelper;
     }
 
     public List<ICommand> getCommands() {

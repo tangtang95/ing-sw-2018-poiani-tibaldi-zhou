@@ -1,10 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -26,28 +30,28 @@ public class ModifyDiceValueByDelta implements ICommand {
      * the method.
      *
      * @param player Player who invoked toolcard
-     * @param toolCardExecutorHelper ToolCard invoked that contains this command
+     * @param toolCardExecutor ToolCard invoked that contains this command
      * @param game Game in which the player acts
      * @throws RemoteException network communication error
      * @throws InterruptedException due to the wait() in  toolCard.getDice()
      * @return true if methods execute correctly, false if the new value doesn't respect the rules.
      */
     @Override
-    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
-        Dice dice = toolCardExecutorHelper.getNeededDice();
-        toolCardExecutorHelper.setNeededDice(dice);
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
+        Dice dice = toolCardExecutor.getNeededDice();
+        toolCardExecutor.setNeededDice(dice);
 
-        List<IToolCardObserver> list = toolCardExecutorHelper.getObservers();
-        for(IToolCardObserver obs : list)
+        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
+        for(IToolCardExecutorObserver obs : observerList)
             obs.notifyNeedNewDeltaForDice(dice.getNumber(), value);
 
-        int newValue = toolCardExecutorHelper.getNeededValue();
+        int newValue = toolCardExecutor.getNeededValue();
 
-        if(checkNewValueValidity(newValue, dice.getNumber())) {
-            toolCardExecutorHelper.setNeededDice(new Dice(newValue, dice.getColor()));
-            return true;
+        if(!checkNewValueValidity(newValue, dice.getNumber())) {
+            throw new ExecutionCommandException();
         }
-        return false;
+        toolCardExecutor.setNeededDice(new Dice(newValue, dice.getColor()));
+        return CommandFlow.MAIN;
     }
 
     public int getValue() {
@@ -64,10 +68,11 @@ public class ModifyDiceValueByDelta implements ICommand {
      * @param oldValue old value
      * @return true if new value is valid, false otherwise
      */
+    @Contract(pure = true)
     private boolean checkNewValueValidity(int newValue, int oldValue) {
         if(newValue < 1 || newValue > 6)
             return false;
-        return ((newValue == oldValue+this.value) || (newValue == oldValue-this.value)) ? true:false;
+        return (newValue == oldValue + this.value) || (newValue == oldValue - this.value);
     }
 
     @Override

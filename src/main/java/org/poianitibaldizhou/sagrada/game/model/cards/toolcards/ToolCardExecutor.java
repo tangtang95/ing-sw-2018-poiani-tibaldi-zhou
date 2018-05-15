@@ -1,12 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Position;
+import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ToolCardExecutorHelper {
+public class ToolCardExecutor {
     private final Object diceMonitor;
     private final Object colorMonitor;
     private final Object valueMonitor;
@@ -18,16 +18,18 @@ public class ToolCardExecutorHelper {
     private Integer neededValue;
     private Position neededPosition;
     private boolean turnEnd;
-    private List<IToolCardObserver> observers;
+    private List<IToolCardExecutorObserver> observers;
+
+    private List<ICommand> commands;
+    private boolean isDone;
 
     /**
      * Constructor.
      * Creates an executor helper for the invocation of the various commands.
      *
-     * @param observers list of observers that will be notified when some actions are required
-     *                  during the execution of the commands
+     * @param commands list of commands of the toolCard invoked
      */
-    public ToolCardExecutorHelper(List<IToolCardObserver> observers) {
+    public ToolCardExecutor(List<ICommand> commands) {
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
@@ -39,11 +41,23 @@ public class ToolCardExecutorHelper {
         neededColor = null;
         neededPosition = null;
         turnEnd = false;
-        this.observers = observers;
+        isDone = false;
+        this.observers = new ArrayList<>();
+        this.commands = commands;
+
     }
 
-    public List<IToolCardObserver> getObservers() {
+    public void addObserver(IToolCardExecutorObserver observer){
+        this.observers.add(observer);
+    }
+
+    public List<IToolCardExecutorObserver> getObservers() {
         return observers;
+    }
+
+    public void invokeCommands(Player player, Game game){
+        CommandFlow commandFlow = CommandFlow.MAIN;
+        // TODO Riccardo Tree
     }
 
     public void setNeededValue(Integer neededValue) {
@@ -106,11 +120,10 @@ public class ToolCardExecutorHelper {
         }
     }
 
-    public boolean getTurnEnded() throws InterruptedException {
+    public void waitForTurnEnd() throws InterruptedException {
         synchronized (turnEndMonitor) {
             while(!turnEnd)
                 turnEndMonitor.wait();
-            return true;
         }
     }
 
@@ -119,6 +132,13 @@ public class ToolCardExecutorHelper {
             this.turnEnd = isTurnEnded;
             if (isTurnEnded)
                 turnEndMonitor.notifyAll();
+        }
+    }
+
+    public void waitForToolCardExecutionEnd() throws InterruptedException {
+        synchronized (this) {
+            while (!isDone)
+                this.wait();
         }
     }
 }

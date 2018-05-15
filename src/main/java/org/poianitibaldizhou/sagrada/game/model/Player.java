@@ -6,8 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-
-import java.rmi.RemoteException;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 public class Player {
     private ICoin coins;
@@ -61,9 +60,9 @@ public class Player {
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
      */
-    public void useCard(ToolCard toolCard, Game game) throws NoCoinsExpendableException, RemoteException, InterruptedException {
+    public ToolCardExecutor useCard(ToolCard toolCard) throws NoCoinsExpendableException {
         coins.use(toolCard);
-        toolCard.invokeCommands(this, game);
+        return toolCard.getToolCardExecutor();
     }
 
     /**
