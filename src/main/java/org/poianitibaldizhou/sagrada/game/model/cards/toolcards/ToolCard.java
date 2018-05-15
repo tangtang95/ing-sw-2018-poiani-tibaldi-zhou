@@ -18,11 +18,6 @@ public class ToolCard extends Card {
     private List<IToolCardObserver> observers;
 
     // properties that need communication with client
-    private Dice neededDice;
-    private Color neededColor;
-    private Integer neededValue;
-    private Position position;
-    private boolean turnEnd;
     private ToolCardExecutorHelper toolCardExecutorHelper;
 
 
@@ -36,6 +31,18 @@ public class ToolCard extends Card {
         observers = new ArrayList<>();
     }
 
+    //TODO refactor
+    private ToolCard(Color color,String name, String description, int tokens, List<ICommand> commands,
+                     boolean isSinglePlayer, List<IToolCardObserver> observers,
+                     ToolCardExecutorHelper toolCardExecutorHelper){
+        super(name,description);
+        this.color = color;
+        this.tokens = tokens;
+        this.commands = commands;
+        this.isSinglePlayer = isSinglePlayer;
+        this.observers = observers;
+        this.toolCardExecutorHelper = ToolCardExecutorHelper.newInstance(toolCardExecutorHelper);
+    }
 
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<>(observers);
@@ -118,5 +125,14 @@ public class ToolCard extends Card {
 
     public List<ICommand> getCommands() {
         return commands;
+    }
+
+    //TODO refactor
+    public static ToolCard newInstance(ToolCard toolCard) {
+        if (toolCard == null)
+            return null;
+        return new ToolCard(toolCard.getColor(),toolCard.getName(),toolCard.getDescription(),
+                toolCard.getTokens(),toolCard.getCommands(),toolCard.isSinglePlayer, toolCard.getObservers(),
+                toolCard.getToolCardExecutorHelper());
     }
 }

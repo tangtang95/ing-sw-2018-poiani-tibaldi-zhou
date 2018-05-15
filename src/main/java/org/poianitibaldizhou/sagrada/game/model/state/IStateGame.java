@@ -25,4 +25,5 @@ public abstract class IStateGame {
     public void nextTurn(){
         throw new IllegalStateException();
     }
+    public static IStateGame newInstance(IStateGame iStateGame) {throw new IllegalStateException(); }
 }

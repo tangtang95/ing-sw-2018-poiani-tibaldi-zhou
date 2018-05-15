@@ -56,7 +56,8 @@ public class Game {
             this.players.add(Player.newInstance(p));
         this.roundTrack = RoundTrack.newInstance(roundTrack);
         this.toolCards = new LinkedList<>();
-
+        for (ToolCard t: toolCards)
+            this.toolCards.add(ToolCard.newInstance(t));
         this.publicObjectiveCards = new LinkedList<>();
         for (PublicObjectiveCard poc : publicObjectiveCards)
             this.publicObjectiveCards.add(PublicObjectiveCard.newInstance(poc));
@@ -64,6 +65,7 @@ public class Game {
         this.name = name;
         this.isSinglePlayer = isSinglePlayer;
         this.difficulty = difficulty;
+
         //need a refactor
         this.diceBag = diceBag;
         this.state = state;
