@@ -6,42 +6,31 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 
 import java.rmi.RemoteException;
 
-public class CheckTurn implements ICommand {
-    private final int turn;
-
-    public CheckTurn(int turn) {
-        this.turn = turn;
-    }
+public class CheckBeforeDiceChosen implements ICommand {
 
     /**
-     * Check if the turn is first turn or second turn
+     * Check if the player has already placed a dice or not
      *
      * @param player player that invoked the ToolCard
      * @param toolCardExecutor executorHelper that contains this command
      * @param game game in which the player acts
-     * @return true if the number of turn matches with this.turn, otherwise false
+     * @return true if the placeDice action is not used, otherwise false
      * @throws RemoteException RMI connection error
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, ExecutionCommandException {
         TurnState turnState = (TurnState) game.getState();
-        if(turnState.isFirstTurn() != (turn == 1))
+        if(turnState.hasActionUsed(new PlaceDiceAction()))
             throw new ExecutionCommandException();
         return CommandFlow.MAIN;
     }
 
-    public int getTurn() {
-        return turn;
-    }
-
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof CheckTurn))
-            return false;
-        CheckTurn obj = (CheckTurn) object;
-        return this.turn == obj.getTurn();
+        return object instanceof CheckBeforeDiceChosen;
     }
 }

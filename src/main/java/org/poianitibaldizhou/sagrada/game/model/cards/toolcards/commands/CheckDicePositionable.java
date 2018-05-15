@@ -1,34 +1,32 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 
-public class RemoveDiceFromDraftPool implements ICommand {
+public class CheckDicePositionable implements ICommand {
 
     /**
-     * It requires a dice in the toolcard and removes it from the toolcard.
+     * Check if the dice given is positionable on the position given on the schemaCard of the player invoker
      *
-     * @param player player who invoked the toolcard
-     * @param toolCardExecutor toolcard invoked
+     * @param player player that invoked the ToolCard
+     * @param toolCardExecutor executorHelper that contains this command
      * @param game game in which the player acts
-     * @return false if dice is not present in the DraftPool, true otherwise
-     * @throws RemoteException network communication error
-     * @throws InterruptedException due to wait()
+     * @return true if the dice is positionable, otherwise false
+     * @throws InterruptedException given by wait of getNeededDice() and getPosition()
+     * @throws RemoteException RMI connection error
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
         Dice dice = toolCardExecutor.getNeededDice();
-        try {
-            game.useDraftPoolDice(dice);
-        } catch (DiceNotFoundException | EmptyCollectionException e) {
+        Position position = toolCardExecutor.getPosition();
+        if(!player.getSchemaCard().isDicePositionable(dice, position.getRow(), position.getColumn())){
             throw new ExecutionCommandException();
         }
         return CommandFlow.MAIN;
@@ -36,6 +34,6 @@ public class RemoveDiceFromDraftPool implements ICommand {
 
     @Override
     public boolean equals(Object o) {
-        return o instanceof RemoveDiceFromDraftPool;
+        return o instanceof CheckDicePositionable;
     }
 }

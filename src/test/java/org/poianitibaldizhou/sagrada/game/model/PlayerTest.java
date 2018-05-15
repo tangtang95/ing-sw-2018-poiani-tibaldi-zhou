@@ -42,9 +42,9 @@ public class PlayerTest {
     public void useCardTest() throws Exception {
         when(coin.getCoins()).thenReturn(4);
         player = new Player(token1, coin);
-        player.useCard(toolCard, game);
+        player.useCard(toolCard);
         verify(coin).use(toolCard);
-        verify(toolCard).invokeCommands(player, game);
+
     }
 
     @Test

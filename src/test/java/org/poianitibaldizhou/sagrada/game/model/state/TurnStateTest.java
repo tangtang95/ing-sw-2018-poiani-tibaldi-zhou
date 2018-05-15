@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ public class TurnStateTest {
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
-        turnState.nextTurn();
+        turnState.chooseAction(player1, new EndTurnAction());
         ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
         verify(game).setState(argument.capture());
         assertEquals("player incorrect", player2, argument.getValue().getCurrentTurnPlayer());
@@ -85,7 +86,7 @@ public class TurnStateTest {
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
-        turnState.nextTurn();
+        turnState.chooseAction(player1, new EndTurnAction());
         ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
         verify(game).setState(argument.capture());
         assertEquals("player incorrect", player1, argument.getValue().getCurrentTurnPlayer());
@@ -98,7 +99,7 @@ public class TurnStateTest {
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
-        turnState.nextTurn();
+        turnState.chooseAction(player1, new EndTurnAction());
         verify(game).setState(ArgumentMatchers.any(RoundEndState.class));
     }
 

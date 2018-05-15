@@ -226,12 +226,26 @@ public class Game {
         }
     }
 
+    public void addDiceToDiceBag(Dice dice) {
+        diceBag.addElement(dice);
+    }
+
     public void useDraftPoolDice(Dice dice) throws EmptyCollectionException, DiceNotFoundException {
         draftPool.useDice(dice);
     }
 
     public void reRollDraftPool() {
         draftPool.reRollDices();
+    }
+
+    public Dice getDiceFromDiceBag() {
+        Dice dice = null;
+        try {
+            dice = diceBag.draw();
+        } catch (EmptyCollectionException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "CRITICAL ERROR: diceBag empty");
+        }
+        return dice;
     }
 
     public void readyGame() {

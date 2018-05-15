@@ -3,8 +3,10 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -31,16 +33,16 @@ public class RemoveDice implements ICommand {
      * It will push the removed dice in toolcard
      *
      * @param player player that invoked the command
-     * @param toolCardExecutorHelper toolcard invoked
+     * @param toolCardExecutor toolcard invoked
      * @param game game in which the player acts
      * @return true
      * @throws RemoteException network communication error
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
-    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException {
         SchemaCard schemaCard = player.getSchemaCard();
-        List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
+        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         Position position;
         Dice removed = null;
         Color color;
@@ -48,22 +50,22 @@ public class RemoveDice implements ICommand {
         do {
             if (this.constraintType == PlacementRestrictionType.COLOR) {
                 do {
-                    color = toolCardExecutorHelper.getNeededColor();
-                    for (IToolCardObserver obs : observerList)
+                    color = toolCardExecutor.getNeededColor();
+                    for(IToolCardExecutorObserver obs : observerList)
                         obs.notifyNeedDicePositionOfCertainColor(player, color);
-                    position = toolCardExecutorHelper.getPosition();
+                    position = toolCardExecutor.getPosition();
 
                 } while (!schemaCard.getDice(position.getRow(), position.getColumn()).getColor().equals(color));
             } else {
-                for (IToolCardObserver obs : observerList)
+                for (IToolCardExecutorObserver obs : observerList)
                     obs.notifyNeedPosition(player);
-                position = toolCardExecutorHelper.getPosition();
+                position = toolCardExecutor.getPosition();
             }
 
             removed = schemaCard.removeDice(position.getRow(), position.getColumn());
         } while(removed == null);
-        toolCardExecutorHelper.setNeededDice(removed);
-        return true;
+        toolCardExecutor.setNeededDice(removed);
+        return CommandFlow.MAIN;
     }
 
     @Override

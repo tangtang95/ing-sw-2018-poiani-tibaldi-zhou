@@ -3,7 +3,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 public class AddDiceToDraftPool implements ICommand {
 
@@ -12,16 +13,16 @@ public class AddDiceToDraftPool implements ICommand {
      * This method requires a dice in ToolCard
      *
      * @param player player that invoked the ToolCard
-     * @param toolCardExecutorHelper ToolCard invoked that contains this command
+     * @param toolCardExecutor ToolCard invoked that contains this command
      * @param game game in which the player acts
      * @return true
      * @throws InterruptedException given by wait of toolCard.getNeededDice()
      */
     @Override
-    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws InterruptedException {
-        Dice dice = toolCardExecutorHelper.getNeededDice();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws InterruptedException {
+        Dice dice = toolCardExecutor.getNeededDice();
         game.addDiceToDraftPool(dice);
-        return true;
+        return CommandFlow.MAIN;
     }
 
     @Override

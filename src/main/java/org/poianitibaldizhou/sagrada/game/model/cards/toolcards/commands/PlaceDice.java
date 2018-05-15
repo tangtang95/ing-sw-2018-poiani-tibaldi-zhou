@@ -8,8 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -45,28 +47,28 @@ public class PlaceDice implements ICommand {
      * This method requires a dice in toolcard. It will ask for a position to the client.
      *
      * @param player player that invoked the toolcard: its schema card will receive a new dice
-     * @param toolCardExecutorHelper toolcard that has been invoked
+     * @param toolCardExecutor toolcard that has been invoked
      * @param game game in which the player acts
      * @return true
      * @throws InterruptedException given to
      * @throws RemoteException network communication error
      */
     @Override
-    public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws InterruptedException, RemoteException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws InterruptedException, RemoteException {
         Dice dice;
         SchemaCard schemaCard;
         Position position;
         boolean flag = false;
 
-        dice = toolCardExecutorHelper.getNeededDice();
+        dice = toolCardExecutor.getNeededDice();
         schemaCard = player.getSchemaCard();
 
         do {
-            List<IToolCardObserver> observerList = toolCardExecutorHelper.getObservers();
-            for(IToolCardObserver obs : observerList)
+            List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
+            for(IToolCardExecutorObserver obs : observerList)
                 obs.notifyNeedPosition(player);
 
-            position = toolCardExecutorHelper.getPosition();
+            position = toolCardExecutor.getPosition();
 
             try {
                 schemaCard.setDice(dice, position.getRow(), position.getColumn(), this.tileConstraint,
@@ -77,7 +79,7 @@ public class PlaceDice implements ICommand {
             }
         } while(!flag);
 
-        return true;
+        return CommandFlow.MAIN;
     }
 
     @Override

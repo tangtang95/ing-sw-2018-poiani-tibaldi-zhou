@@ -83,38 +83,38 @@ public class ToolCardLanguageParser {
         grammar.put("Reroll DraftPool", new RerollDraftPool());
         grammar.put("Check second turn", new CheckTurn(2));
         grammar.put("Check first turn", new CheckTurn(1));
-        grammar.put("Check before choose dice", new CheckBeforeDiceChose());
+        grammar.put("Check before choose dice", new CheckBeforeDiceChosen());
         grammar.put("Check turn over", new CheckTurnEnd());
         grammar.put("Skip second turn", new SkipTurn(2));
         grammar.put("Skip first turn", new SkipTurn(1));
         grammar.put("Pour over dice", new PourOverDice());
         grammar.put("Choose color from RoundTrack", new ChooseColorFromRoundTrack());
-        grammar.put("Check Dice placeble", new CheckDicePlaceble());
+        grammar.put("Check Dice placeble", new CheckDicePositionable());
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
 
         ICommand clearColor = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededColor(null);
-            return true;
+            return CommandFlow.MAIN;
         };
         ICommand clearValue = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededValue(null);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearDice = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededDice(null);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearPosition =  (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setNeededPosition(null);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearTurnEndCondition = (player, toolCardExecutorHelper, game) -> {
             toolCardExecutorHelper.setTurnEnded(false);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         ICommand clearAll = (player, toolCardExecutorHelper, game) -> {
@@ -123,7 +123,7 @@ public class ToolCardLanguageParser {
             clearPosition.executeCommand(player, toolCardExecutorHelper, game);
             clearTurnEndCondition.executeCommand(player, toolCardExecutorHelper, game);
             clearValue.executeCommand(player, toolCardExecutorHelper, game);
-            return true;
+            return CommandFlow.MAIN;
         };
 
         grammar.put("CC", clearColor);

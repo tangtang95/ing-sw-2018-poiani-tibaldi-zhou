@@ -12,13 +12,5 @@ public interface IToolCardObserver {
 
     void onTokenChange(int tokens);
     void onCardDestroy();
-
-    void notifyNeedDice(Player player, List<Dice> diceList) throws RemoteException;
-    void notifyNeedNewValue(Player player) throws RemoteException;
-    void notifyNeedColor(Player player) throws RemoteException;
-    void notifyNeedNewDeltaForDice(int diceValue, int value) throws RemoteException;
-    void notifyNeedDiceFromRoundTrack(Player player, RoundTrack roundTrack) throws RemoteException;
-    void notifyNeedPosition(Player player) throws RemoteException;
-    void notifyNeedDicePositionOfCertainColor(Player player, Color color) throws RemoteException;
 }
 
