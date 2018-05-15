@@ -1,15 +1,19 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.poianitibaldizhou.sagrada.game.model.cards.Card;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
+import java.io.ObjectInputStream;
 import java.util.*;
 
+@Immutable
 public abstract class PublicObjectiveCard extends Card implements IScore {
 
-    protected final TileConstraintType type;
+    protected final ObjectiveCardType type;
     protected Set<IConstraint> constraints;
     private final int cardPoints;
 
@@ -21,7 +25,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * @param description card's description
      * @param cardPoints  card's point
      */
-    PublicObjectiveCard(String name, String description, int cardPoints, TileConstraintType type) {
+    PublicObjectiveCard(String name, String description, int cardPoints, ObjectiveCardType type) {
         super(name, description);
 
         this.type = type;
@@ -32,7 +36,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * Constructor.
      * Creates a PublicObjectiveCard with a name, description and points.
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single TileConstraintType.
+     * with a single PlacementRestrictionType.
      *
      * @param name        card's name
      * @param description card's description
@@ -40,18 +44,18 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * @param constraints set of constraint to apply
      * @param type        type of tile constraint on which the card operates
      */
-    PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, TileConstraintType type) {
+    PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, ObjectiveCardType type) {
         this(name, description, cardPoints, type);
 
         for (IConstraint constraint : constraints) {
-            if (type == TileConstraintType.COLOR) {
+            if (type == ObjectiveCardType.COLOR) {
                 if (!(constraint instanceof ColorConstraint))
-                    throw new IllegalArgumentException("constraints has different type than TileConstraintType given");
-            } else if (type == TileConstraintType.NUMBER) {
+                    throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
+            } else if (type == ObjectiveCardType.NUMBER) {
                 if (!(constraint instanceof NumberConstraint))
-                    throw new IllegalArgumentException("constraints has different type than TileConstraintType given");
+                    throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
             } else {
-                throw new IllegalArgumentException("cannot instantiate publicObjectiveCard with this TileConstraintType");
+                throw new IllegalArgumentException("cannot instantiate publicObjectiveCard with this PlacementRestrictionType");
             }
         }
 
@@ -66,7 +70,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
         return constraints;
     }
 
-    public TileConstraintType getType() {
+    public ObjectiveCardType getType() {
         return type;
     }
 

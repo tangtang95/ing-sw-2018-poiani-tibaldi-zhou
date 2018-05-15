@@ -41,7 +41,7 @@ public class DrawableCollection<T> {
      * Draws a random element from DrawableCollection.
      * This removes the element from DrawableCollection.
      *
-     * @return the drawed element
+     * @return the drawn element
      * @throws EmptyCollectionException if DrawableCollection is empty
      */
     public T draw() throws EmptyCollectionException {
@@ -79,6 +79,7 @@ public class DrawableCollection<T> {
      *
      * @return a generic collection array
      */
+    //TODO deep copy
     public T[] toArray() {
         return (T[]) collection.toArray();
     }
@@ -88,6 +89,7 @@ public class DrawableCollection<T> {
         return collection.toString();
     }
 
+    //TODO deep copy
     public List<T> getCollection() {
         return collection;
     }

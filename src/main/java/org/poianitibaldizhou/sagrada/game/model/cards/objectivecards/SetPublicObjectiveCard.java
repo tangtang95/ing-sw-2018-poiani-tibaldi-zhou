@@ -1,23 +1,23 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
+@Immutable
 public class SetPublicObjectiveCard extends PublicObjectiveCard {
 
     /**
      * Constructor.
      * Creates a SetPublicObjectiveCard with a name, description and points.
      * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single TileConstraintType.
+     * with a single PlacementRestrictionType.
      *
      * @param name card's name
      * @param description card's description
@@ -26,7 +26,7 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
      * @param type type of tile constraint on which the card operates
      */
     public SetPublicObjectiveCard(String name, String description, int cardPoints,
-                                  Collection<IConstraint> constraints, TileConstraintType type) {
+                                  Collection<IConstraint> constraints, ObjectiveCardType type) {
         super(name, description, cardPoints, constraints, type);
     }
 
@@ -46,13 +46,9 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice dice = schema.getDice(i,j);
                 if(dice != null) {
-                    if(getType() == TileConstraintType.COLOR) {
-                        if(containsConstraint(dice.getColorConstraint())) {
-                            counts[dice.getColorConstraint().getIndexValue()]++;
-                        }
-                    } else
-                        if(containsConstraint(dice.getNumberConstraint()))
-                            counts[dice.getNumberConstraint().getIndexValue()]++;
+                    IConstraint constraint = (getType() == ObjectiveCardType.COLOR) ?
+                            dice.getColorConstraint() : dice.getNumberConstraint();
+                    counts[constraint.getIndexValue()]++;
                 }
 
             }

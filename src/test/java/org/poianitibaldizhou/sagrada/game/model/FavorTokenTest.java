@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
@@ -10,50 +12,57 @@ import org.poianitibaldizhou.sagrada.game.model.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
+import javax.tools.Tool;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.when;
 
 public class FavorTokenTest {
-    @DataPoint
-    public static FavorToken favorToken;
-    @DataPoint
-    public static ToolCard toolCard;
+    @Mock
+    private ToolCard toolCard;
 
-    @BeforeClass
-    public static void setUpClass() throws EmptyCollectionException {
-        DrawableCollection<ToolCard> toolCardDrawableCollection = new DrawableCollection<>();
-        GameInjector injector = new GameInjector();
 
-        injector.injectToolCards(toolCardDrawableCollection, true);
-
-        toolCard = toolCardDrawableCollection.draw();
-        favorToken = new FavorToken(6);
-
-    }
-
-    @AfterClass
-    public static void tearDownClass(){
-
-    }
+    private ICoin favorToken;
 
     @Before
-    public void setUp(){
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
     }
 
     @After
     public void tearDown() {
+        favorToken = null;
+        toolCard = null;
     }
 
+    /**
+     * Test use method when numberOfFavorToken greater than toolCardCost
+     */
     @Test
-    public void useTest() throws IllegalNumberOfTokensOnToolCardException, NoCoinsExpendableException {
-        int temp = favorToken.getCoins();
+    public void useTestWithFavorToken() throws Exception {
+        int toolCardCost = 1;
+        int numberOfFavorToken = 3;
+        when(toolCard.getCost()).thenReturn(toolCardCost);
+        favorToken = new FavorToken(numberOfFavorToken);
         favorToken.use(toolCard);
-        assertEquals("Wrong number of coins", temp - toolCard.getCost(), favorToken.getCoins());
-        for (int i = 0; i < 6; i++) {
-            try {
-                favorToken.use(toolCard);
-            } catch (NoCoinsExpendableException e) {
-                assertEquals("Wrong number of coins", 0, favorToken.getCoins());
-            }
+        assertEquals(numberOfFavorToken - toolCardCost, favorToken.getCoins());
+    }
+
+    /**
+     * Test use method when numberOfFavorToken less than toolCardCost
+     */
+    @Test
+    public void useTestWithoutFavorToken() throws Exception {
+        int toolCardCost = 4;
+        int numberOfFavorToken = 2;
+        when(toolCard.getCost()).thenReturn(toolCardCost);
+        favorToken = new FavorToken(numberOfFavorToken);
+        try {
+            favorToken.use(toolCard);
+            fail("exception expected");
+        } catch (NoCoinsExpendableException e){
+            assertEquals(numberOfFavorToken , favorToken.getCoins());
         }
     }
 }

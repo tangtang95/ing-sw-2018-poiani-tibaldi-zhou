@@ -1,11 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
@@ -13,13 +17,15 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
 public class GameInjector {
-    private JSONParser jsonParser;
     private static final Logger LOGGER = Logger.getLogger(GameInjector.class.getName());
 
     private static final String CARD_NAME = "cardName";
@@ -27,12 +33,10 @@ public class GameInjector {
     private static final String CARD_POINTS = "cardPoints";
     private static final String CONSTRAINT_TYPE = "constraintType";
 
-    /**
-     * Constructor.
-     * Creates a JSONParser for analyzing json file
-     */
-    public GameInjector() {
-        jsonParser = new JSONParser();
+
+    @Contract(" -> fail")
+    private GameInjector(){
+        throw new IllegalStateException("Utility class");
     }
 
     /**
@@ -42,10 +46,9 @@ public class GameInjector {
      * @param toolCardDrawableCollection DrawableCollection of ToolCard
      * @param isSinglePlayer             Game parameter for choosing the game mode (single player or multilayer)
      */
-    public void injectToolCards(DrawableCollection<ToolCard> toolCardDrawableCollection,
-                                boolean isSinglePlayer) {
-        if (toolCardDrawableCollection == null)
-            throw new IllegalArgumentException();
+    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection,
+                                       boolean isSinglePlayer) {
+        JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
 
@@ -72,9 +75,7 @@ public class GameInjector {
      *
      * @param diceBag DrawableCollection of Dice not null
      */
-    public void injectDiceBag(DrawableCollection<Dice> diceBag) {
-        if (diceBag == null)
-            throw new IllegalArgumentException();
+    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) {
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
@@ -90,12 +91,10 @@ public class GameInjector {
      * @param publicObjectiveCardDrawableCollection DrawableCollection of PublicObjectiveCard
      * @throws WrongCardInJsonFileException if the cardType in json file is wrong
      */
-    public void injectPublicObjectiveCards(
-            DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection)
+    public static void injectPublicObjectiveCards(
+            @NotNull DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection)
             throws WrongCardInJsonFileException {
-        if (publicObjectiveCardDrawableCollection == null)
-            throw new IllegalArgumentException();
-
+        JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
         try {
@@ -113,7 +112,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_NAME),
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 case "column":
@@ -121,7 +120,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_NAME),
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 case "set":
@@ -142,7 +141,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
                             constraints,
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 case "diagonal":
@@ -150,7 +149,7 @@ public class GameInjector {
                             (String) publicObjectiveCard.get(CARD_NAME),
                             (String) publicObjectiveCard.get(CARD_DESCRIPTION),
                             Integer.parseInt(publicObjectiveCard.get(CARD_POINTS).toString()),
-                            TileConstraintType.valueOf((String) value.get(CONSTRAINT_TYPE))
+                            ObjectiveCardType.valueOf((String) value.get(CONSTRAINT_TYPE))
                     ));
                     break;
                 default:
@@ -165,11 +164,9 @@ public class GameInjector {
      *
      * @param privateObjectiveCardDrawableCollection DrawableCollection of PrivateObjectiveCard
      */
-    public void injectPrivateObjectiveCard(
-            DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) {
-        if (privateObjectiveCardDrawableCollection == null)
-            throw new IllegalArgumentException();
-
+    public static void injectPrivateObjectiveCard(
+            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) {
+        JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
         try {
@@ -193,12 +190,8 @@ public class GameInjector {
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard
      */
-    public void injectSchemaCards(
-            DrawableCollection<SchemaCard> schemaCardDrawableCollection) {
-        if (schemaCardDrawableCollection == null) {
-            throw new IllegalArgumentException();
-        }
-
+    public static void injectSchemaCards(@NotNull DrawableCollection<SchemaCard> schemaCardDrawableCollection) {
+        JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
         try {
@@ -221,7 +214,7 @@ public class GameInjector {
         }
     }
 
-    private void injectSchemaMatrix(JSONArray matrix, IConstraint[][] constraints) {
+    private static void injectSchemaMatrix(JSONArray matrix, IConstraint[][] constraints) {
         int i = 0;
         for (Object o : matrix) {
             JSONArray row = (JSONArray) o;

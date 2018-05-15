@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -18,6 +19,10 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * Test with dependency class:
+ * -
+ */
 public class TurnStateTest {
 
     @Mock
@@ -39,47 +44,57 @@ public class TurnStateTest {
 
     @After
     public void tearDown() throws Exception {
+        game = null;
+        player1 = null;
+        player2 = null;
+        player3 = null;
+        player4 = null;
     }
 
-    /**
-     *
-     */
+    @Test
+    public void chooseActionTest() throws Exception{
+        //TODO
+    }
+
+    @Test
+    public void useCardTest() throws Exception {
+        //TODO
+    }
+
+    @Test
+    public void placeDiceTest() throws Exception {
+        //TODO
+    }
+
+
     @Test
     public void testNextTurnWhenIsFirstTurn() throws Exception {
-        TurnState turnState = new TurnState(game, player1, player1, true);
+        TurnState turnState = new TurnState(game, 0,player1, player1, true);
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
-        doAnswer(invocationOnMock -> {
-            TurnState newTurnState = (TurnState) invocationOnMock.getArgument(0);
-            assertEquals("player incorrect", player2, newTurnState.getPlayer());
-            return null;
-        }).when(game).setState(ArgumentMatchers.any(TurnState.class));
-
         turnState.nextTurn();
-        verify(game).setState(ArgumentMatchers.any(TurnState.class));
+        ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
+        verify(game).setState(argument.capture());
+        assertEquals("player incorrect", player2, argument.getValue().getCurrentTurnPlayer());
     }
 
     @Test
     public void testNextTurnWhenIsFirstTurnButLastPlayer() throws Exception {
-        TurnState turnState = new TurnState(game, player2, player1, true);
+        TurnState turnState = new TurnState(game, 0, player2, player1, true);
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
-        doAnswer(invocationOnMock -> {
-            TurnState newTurnState = (TurnState) invocationOnMock.getArgument(0);
-            assertEquals("player incorrect", player1, newTurnState.getPlayer());
-            assertFalse(newTurnState.isFirstTurn());
-            return null;
-        }).when(game).setState(ArgumentMatchers.any(TurnState.class));
-
         turnState.nextTurn();
-        verify(game).setState(ArgumentMatchers.any(TurnState.class));
+        ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
+        verify(game).setState(argument.capture());
+        assertEquals("player incorrect", player1, argument.getValue().getCurrentTurnPlayer());
+        assertFalse(argument.getValue().isFirstTurn());
     }
 
     @Test
     public void testNextTurnWhenIsNotFirstTurnAndCurrentPlayer() throws Exception {
-        TurnState turnState = new TurnState(game, player1, player1, false);
+        TurnState turnState = new TurnState(game, 0, player1, player1, false);
         when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
         when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
 
@@ -87,8 +102,12 @@ public class TurnStateTest {
         verify(game).setState(ArgumentMatchers.any(RoundEndState.class));
     }
 
-
-
+    @Test
+    public void getCurrentPlayer() throws Exception {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        assertEquals(player1, turnState.getCurrentRoundPlayer());
+        assertNotEquals(player2, turnState.getCurrentRoundPlayer());
+    }
 
 
 }

@@ -2,6 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.rmi.RemoteException;
@@ -73,9 +76,13 @@ public class Player {
      * @param diceConstraint the constrains of the dice
      * @throws RuleViolationException if the rule of the schema is violated
      */
-    public void placeDice(Dice dice, int row, int column, TileConstraintType tileConstraint,
-                          DiceConstraintType diceConstraint) throws RuleViolationException {
+    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
+                          DiceRestrictionType diceConstraint) throws RuleViolationException {
         schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
+    }
+
+    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
+        schemaCard.setDice(dice, row, column);
     }
 
     public void endTurn() {
@@ -131,14 +138,22 @@ public class Player {
     }
 
     /**
-     * Return the score of the player based on the PrivateObjectiveCard, the remained favor tokens and the empty spaces
+     * Return the score of the player based on the PrivateObjectiveCard, the remaining favor tokens and the empty spaces
      * of the schemaCard
      *
-     * @return the score of the player
+     * @return the score of the player for multiPlayerGame
      */
-    public int getScore() {
+    public int getMultiPlayerScore() {
         //getCoins should be fixed when the game is single player
         return privateObjectiveCard.getScore(schemaCard) + getFavorTokens() - schemaCard.getNumberOfEmptySpaces();
+    }
+
+    /**
+     *
+     * @return the score of the player for singlePlayerGame
+     */
+    public int getSinglePlayerScore(PrivateObjectiveCard privateObjectiveCard){
+        return privateObjectiveCard.getScore(schemaCard) - schemaCard.getNumberOfEmptySpaces()*3;
     }
 
 

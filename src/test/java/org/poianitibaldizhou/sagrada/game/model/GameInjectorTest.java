@@ -3,42 +3,68 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
-import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
 
+/**
+ * Dependency class with:
+ * - SchemaCard -> Tile -> Constraints
+ * - ToolCard
+ * - PrivateObjectiveCard -> Card
+ * - Dice -> Constraints
+ * - PublicObjectiveCard -> Card
+ * - DrawableCollection
+ */
 public class GameInjectorTest {
     @DataPoint
-    public static DrawableCollection<SchemaCard> schemaCardDrawableCollection;
+    private static DrawableCollection<SchemaCard> schemaCardDrawableCollection;
     @DataPoint
-    public static DrawableCollection<ToolCard> toolCardDrawableCollection, toolCardDrawableCollection1;
+    private static DrawableCollection<ToolCard> toolCardDrawableCollection, toolCardDrawableCollection1;
     @DataPoint
-    public static DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection;
+    private static DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection;
     @DataPoint
-    public static DrawableCollection<Dice> diceDrawableCollection;
+    private static DrawableCollection<Dice> diceDrawableCollection;
     @DataPoint
-    public static DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection;
-    @DataPoint
-    private static GameInjector injector;
+    private static DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection;
 
     @BeforeClass
     public static void setUpClass() {
-        injector = new GameInjector();
         schemaCardDrawableCollection = new DrawableCollection<>();
         toolCardDrawableCollection = new DrawableCollection<>();
         toolCardDrawableCollection1 = new DrawableCollection<>();
         privateObjectiveCardDrawableCollection = new DrawableCollection<>();
         diceDrawableCollection = new DrawableCollection<>();
         publicObjectiveCardDrawableCollection = new DrawableCollection<>();
+    }
 
+    @AfterClass
+    public static void tearDownClass() {
+        schemaCardDrawableCollection = null;
+    }
+
+    @Before
+    public void setUp() {
+
+    }
+
+    @After
+    public void tearDown() {
+
+    }
+
+    @Test
+    public void toolCardInjectorTest() {
         toolCardDrawableCollection.addElement(new ToolCard(Color.PURPLE, "Pinza Sgrossatrice",
                 "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1." +
                         " Non puoi cambiare un 6 in 1 o un 1 in 6",
                 "Choose dice;Modify dice value by 1;Add dice to DraftPool;CA",true
-                ));
+        ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.BLUE, "Pennello per Eglomise",
                 "Muovi un qualsiasi dado nella tua vetrata ignorando le restrizioni di colore." +
                         " Devi rispettare tutte le altre restrizioni di piazzamento"
@@ -92,26 +118,8 @@ public class GameInjectorTest {
                         "Devi rispettare tutte le restrizioni di piazzamento",
                 "Choose color from RoundTrack;Remove dice of a certain color;Place dice;Remove dice of a certain color;Place dice",true
         ));
-    }
 
-    @AfterClass
-    public static void tearDownClass() {
-        schemaCardDrawableCollection = null;
-    }
-
-    @Before
-    public void setUp() {
-
-    }
-
-    @After
-    public void tearDown() {
-
-    }
-
-    @Test
-    public void toolCardInjectorTest() {
-        injector.injectToolCards(toolCardDrawableCollection1, true);
+        GameInjector.injectToolCards(toolCardDrawableCollection1, true);
         for (int i = 0; i < toolCardDrawableCollection.size(); i++) {
             assertEquals("Wrong drawableCollection of toolCards",
                     toolCardDrawableCollection.getCollection().get(i),
@@ -122,25 +130,36 @@ public class GameInjectorTest {
 
     @Test
     public void privateObjectiveCardInjectorTest() {
-        injector.injectPrivateObjectiveCard(privateObjectiveCardDrawableCollection);
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCardDrawableCollection);
         assertEquals("Wrong size", 5, privateObjectiveCardDrawableCollection.size());
     }
 
     @Test
     public void diceBagInjectorTest() {
-        injector.injectDiceBag(diceDrawableCollection);
+        GameInjector.injectDiceBag(diceDrawableCollection);
         assertEquals("Wrong size", 90, diceDrawableCollection.size());
     }
 
     @Test
     public void PublicObjectiveCardInjectorTest() throws WrongCardInJsonFileException {
-        injector.injectPublicObjectiveCards(publicObjectiveCardDrawableCollection);
+        GameInjector.injectPublicObjectiveCards(publicObjectiveCardDrawableCollection);
         assertEquals("Wrong size", 10, publicObjectiveCardDrawableCollection.size());
     }
 
     @Test
     public void schemaCardInjectorTest() {
-        injector.injectSchemaCards(schemaCardDrawableCollection);
+        GameInjector.injectSchemaCards(schemaCardDrawableCollection);
         assertEquals("Wrong size", 24, schemaCardDrawableCollection.size());
+    }
+
+    @Test
+    public void NotNullAnnotationParameterTest(){
+        DrawableCollection<Dice> diceBag = null;
+        try {
+            GameInjector.injectDiceBag(diceBag);
+            fail("exception expected");
+        } catch (IllegalArgumentException e){
+            assertNotEquals(null, e);
+        }
     }
 }

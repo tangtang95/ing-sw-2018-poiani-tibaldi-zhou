@@ -1,11 +1,12 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
@@ -70,7 +71,7 @@ public class PrivateObjectiveCardTest {
 
     @Test
     /**
-     * Test branch coverage of PrivateObjectiveCard.getScore().
+     * Test branch coverage of PrivateObjectiveCard.getMultiPlayerScore().
      */
     public void testBranchCoverage() throws RuleViolationException {
         schemaCard = new SchemaCard("TestBranchCoverage", 3, constraints);

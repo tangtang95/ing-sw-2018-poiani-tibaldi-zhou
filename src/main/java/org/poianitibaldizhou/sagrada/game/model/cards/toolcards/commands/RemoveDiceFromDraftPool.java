@@ -25,7 +25,7 @@ public class RemoveDiceFromDraftPool implements ICommand {
     public boolean executeCommand(Player player, ToolCardExecutorHelper toolCardExecutorHelper, Game game) throws RemoteException, InterruptedException {
         Dice dice = toolCardExecutorHelper.getNeededDice();
         try {
-            game.getDraftPool().useDice(dice);
+            game.useDraftPoolDice(dice);
         } catch (DiceNotFoundException | EmptyCollectionException e) {
             return false;
         }

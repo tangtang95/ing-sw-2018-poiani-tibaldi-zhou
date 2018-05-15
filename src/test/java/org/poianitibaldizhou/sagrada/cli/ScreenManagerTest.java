@@ -89,7 +89,7 @@ public class ScreenManagerTest {
         } catch (InterruptedException e) {
             fail("thread1 didn't end");
         }
-        assertTrue(!thread1.isAlive());
+        assertFalse(thread1.isAlive());
         assertTrue(screenManager.getCurrentThread().isAlive());
     }
 

@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
@@ -63,9 +64,21 @@ public class Dice {
      * @param other the other dice to compare
      * @return true if the dices have same color or same number
      */
-    public boolean isSimilar(Dice other) {
+    public boolean isSimilar(@NotNull Dice other) {
         return this.getColorConstraint().equals(other.getColorConstraint()) ||
                 this.getNumberConstraint().equals(other.getNumberConstraint());
+    }
+
+    public boolean hasSameColor(Dice other) {
+        if(other == null)
+            return false;
+        return this.getColorConstraint().equals(other.getColorConstraint());
+    }
+
+    public boolean hasSameNumber(Dice other){
+        if(other == null)
+            return false;
+        return this.getNumberConstraint().equals(other.getNumberConstraint());
     }
 
     @Override
@@ -93,7 +106,6 @@ public class Dice {
 
     @Override
     public int hashCode() {
-
         return Objects.hash(numberConstraint, colorConstraint);
     }
 
@@ -102,4 +114,6 @@ public class Dice {
             return null;
         return new Dice(dice.getNumberConstraint(), dice.getColorConstraint());
     }
+
+
 }

@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutorHelper;
 
@@ -11,13 +11,13 @@ import java.util.List;
 
 public class RemoveDice implements ICommand {
 
-    public TileConstraintType getConstraintType() {
+    public PlacementRestrictionType getConstraintType() {
         return constraintType;
     }
 
-    private final TileConstraintType constraintType;
+    private final PlacementRestrictionType constraintType;
 
-    public RemoveDice(TileConstraintType type) {
+    public RemoveDice(PlacementRestrictionType type) {
         this.constraintType = type;
     }
 
@@ -25,7 +25,7 @@ public class RemoveDice implements ICommand {
      * Removes a dice from the toolcard.
      * If a color constraint is specified in this command class, the dice that needs to be removed must be
      * of the same color of toolcard's needed color, otherwise it can be any dice.
-     * So it requires a color in constraintType == TileConstraintType.COLOR.
+     * So it requires a color in constraintType == PlacementRestrictionType.COLOR.
      * Generally speaking, it doesn't require anything more and it will ask the client for a position and
      * it will remove the dice in that position.
      * It will push the removed dice in toolcard
@@ -46,7 +46,7 @@ public class RemoveDice implements ICommand {
         Color color;
 
         do {
-            if (this.constraintType == TileConstraintType.COLOR) {
+            if (this.constraintType == PlacementRestrictionType.COLOR) {
                 do {
                     color = toolCardExecutorHelper.getNeededColor();
                     for (IToolCardObserver obs : observerList)

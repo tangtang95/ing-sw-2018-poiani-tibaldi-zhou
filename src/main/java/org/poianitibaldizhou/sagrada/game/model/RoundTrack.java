@@ -1,17 +1,18 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class RoundTrack {
 
     private final List<List<Dice>> listOfDices;
-    private int currentRound;
 
     public static final int NUMBER_OF_TRACK = 10;
+    public static final int FIRST_ROUND = 0;
+    public static final int LAST_ROUND = NUMBER_OF_TRACK - 1;
 
     /**
      * Constructor.
@@ -22,12 +23,11 @@ public class RoundTrack {
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
             listOfDices.add(new ArrayList<>());
         }
-        currentRound = 1;
     }
 
     /**
-<<<<<<< HEAD
      * Copy constructor.
+     * Place a dice in the specified round of the roundTrack
      *
      * @param roundTrack the roundTrack to copy
      * @return copy of roundTrack
@@ -42,7 +42,6 @@ public class RoundTrack {
                 diceList.add(Dice.newInstance(d));
             newRoundTrack.addDicesToRound(diceList,i);
         }
-        newRoundTrack.currentRound = roundTrack.currentRound;
         return newRoundTrack;
     }
 
@@ -68,7 +67,11 @@ public class RoundTrack {
      */
     @Contract(pure = true)
     public List<Dice> getDices(int round){
-        return new ArrayList<Dice>(listOfDices.get(round));
+        List<Dice> diceList = new ArrayList<>();
+        for (Dice dice: listOfDices.get(round)) {
+            diceList.add(Dice.newInstance(dice));
+        }
+        return diceList;
     }
 
     /**
@@ -78,22 +81,29 @@ public class RoundTrack {
      * @param dice dice that needs to be removed
      * @throws IllegalArgumentException if dice is not present at specified round
      */
-    public void removeDiceFromRoundTrack(int round, Dice dice) throws IllegalArgumentException {
+    public void removeDiceFromRoundTrack(int round, Dice dice) {
         if(!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
     }
 
     /**
-     * Increase the currentRound by 1 (called at the end of RoundEndState)
+     * Replace a dice from the list of dices of "round" number with a new one
      *
+     * @param oldDice the oldDice to replace
+     * @param newDice the newDice to replace
+     * @param round the round from where to replace the dice
+     * @throws DiceNotFoundException if dice is not founded at the specified round
      */
-    public void nextRound() {
-        currentRound++;
+    public void swapDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
+        boolean diceFounded = false;
+        List<Dice> dices = listOfDices.get(round);
+        for (int i = 0; i < dices.size(); i++) {
+            if(dices.get(i).equals(oldDice)) {
+                dices.set(i, newDice);
+                diceFounded = true;
+            }
+        }
+        if(!diceFounded)
+            throw new DiceNotFoundException("oldDice not founded!");
     }
-
-    @Contract(pure = true)
-    public int getCurrentRound() {
-        return currentRound;
-    }
-
 }

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,9 +15,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -46,14 +45,10 @@ public class LobbyManagerTest {
     @DataPoint
     public static List<ILobbyObserver> observers;
 
-    @BeforeClass
-    public static void setUpClass() {
-        lobbyManager = new LobbyManager();
-        observers = new ArrayList<>();
-    }
-
     @Before
     public void setUp() {
+        lobbyManager = new LobbyManager();
+        observers = new ArrayList<>();
         MockitoAnnotations.initMocks(this);
         observers.add(lobbyObserver1);
         observers.add(lobbyObserver2);
@@ -62,9 +57,13 @@ public class LobbyManagerTest {
         observers.add(lobbyObserver5);
         observers.add(lobbyObserver6);
     }
-    /**
-     * Test the entire singleton class
-     */
+
+    @After
+    public void tearDown() {
+        lobbyManager = null;
+        observers = null;
+    }
+
     @Test
     public void testLobbyManager() throws RemoteException {
         // Login test
@@ -91,6 +90,11 @@ public class LobbyManagerTest {
         }
 
         // Logout test
+        try {
+            lobbyManager.logout("notexistinguser");
+            fail("Exception expected");
+        } catch(RemoteException re) {
+        }
         try {
             lobbyManager.logout("prova");
             if(!(user1.getToken().equals("prova") || user2.getToken().equals("prova"))){
@@ -142,6 +146,8 @@ public class LobbyManagerTest {
                 verify(observers.get(i), times(0)).onGameStart();
         }
 
+
+
         // Test user leave lobby
         lobbyManager.userLeaveLobby(users.get(5));
         for (int i = 0; i <= 5; i++) {
@@ -157,5 +163,76 @@ public class LobbyManagerTest {
         } catch(RemoteException re) {
 
         }
+    }
+
+    @Test
+    public void testTimeoutNoGameStart() throws RemoteException {
+        User user1 = new User("u1", lobbyManager.login("u1"));
+        lobbyManager.userJoinLobby(observers.get(0), user1);
+        long time1 = lobbyManager.getTimeToTimeout();
+        try {
+            Thread.sleep(time1 / 6);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        long time2 = lobbyManager.getTimeToTimeout();
+        assertTrue(time1 > time2);
+        assertTrue(lobbyManager.getDelayTime() > time1);
+        try {
+            Thread.sleep(time1 + (time1/6));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        assertTrue(lobbyManager.getLobbyUsers().size() == 1 && lobbyManager.getLobbyUsers().get(0).equals(user1));
+        verify(observers.get(0), times(0)).onGameStart();
+    }
+
+    @Test
+    public void testTimeoutGameStart() throws RemoteException {
+        User user1 = new User("u1", lobbyManager.login("u1"));
+        User user2 = new User("u2", lobbyManager.login("u2"));
+
+        lobbyManager.userJoinLobby(observers.get(0), user1);
+        lobbyManager.userJoinLobby(observers.get(1), user2);
+
+        try {
+            Thread.sleep(lobbyManager.getDelayTime()*3/2);
+        } catch(InterruptedException ie) {
+            ie.printStackTrace();
+        }
+        verify(observers.get(0), times(1)).onGameStart();
+        verify(observers.get(1), times(1)).onGameStart();
+    }
+
+    @Test
+    public void noLobbyActive() {
+        try {
+            lobbyManager.getTimeToTimeout();
+            fail("Exception expected");
+        } catch (RemoteException e) {
+
+        }
+
+        try {
+            lobbyManager.getLobbyUsers();
+            fail("Exception expected");
+        } catch (RemoteException e) {
+
+        }
+    }
+
+    @Test
+    public void lobbyGetBackToZeroPlayer() throws RemoteException {
+        User user1 = new User("u1", lobbyManager.login("u1"));
+        lobbyManager.userJoinLobby(observers.get(0), user1);
+        try {
+            Thread.sleep(lobbyManager.getDelayTime() / 2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        long time1 = lobbyManager.getTimeToTimeout();
+        lobbyManager.userLeaveLobby(user1);
+        lobbyManager.userJoinLobby(observers.get(0), user1);
+        assertTrue(lobbyManager.getTimeToTimeout() > time1);
     }
 }

@@ -2,22 +2,15 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
-import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.GameInjector;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SetupGameState extends IStateGame {
-
-    public static final int NUMBER_OF_TOOL_CARDS = 3;
-    public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_MULTI_PLAYER = 3;
-    public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_SINGLE_PLAYER = 2;
+public class SetupGameState extends IStateGame{
 
     private static final Logger LOGGER = Logger.getLogger(SetupGameState.class.getName());
 
@@ -35,14 +28,13 @@ public class SetupGameState extends IStateGame {
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
-        GameInjector gameInjector = new GameInjector();
-        gameInjector.injectToolCards(toolCards, game.isSinglePlayer());
+        GameInjector.injectToolCards(toolCards, game.isSinglePlayer());
         try {
-            gameInjector.injectPublicObjectiveCards(publicObjectiveCards);
+            GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
         }catch (WrongCardInJsonFileException e){
-            LOGGER.log(Level.FINE, "Error in injectPublicObjectiveCards", e);
+            LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards", e);
         }
-        gameInjector.injectDiceBag(game.getDiceBag());
+        GameInjector.injectDiceBag(game.getDiceBag());
 
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
@@ -53,7 +45,7 @@ public class SetupGameState extends IStateGame {
      */
     @Override
     public void readyGame() {
-        game.setState(new RoundStartState(game, getRandomStartPlayer(game.getPlayers())));
+        game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayers())));
     }
 
     /**
@@ -62,12 +54,12 @@ public class SetupGameState extends IStateGame {
      * @param toolCards the collection of every tool cards
      */
     private void injectToolCards(DrawableCollection<ToolCard> toolCards) {
-        int numberOfToolCards = game.isSinglePlayer() ? game.getDifficulty() : NUMBER_OF_TOOL_CARDS;
+        int numberOfToolCards = game.getGameStrategy().getNumberOfToolCardForGame();
         for (int i = 0; i < numberOfToolCards; i++) {
             try {
-                game.getToolCards().add(toolCards.draw());
+                game.addToolCard(toolCards.draw());
             } catch (EmptyCollectionException e) {
-                LOGGER.log(Level.FINE, "Error in injectToolCards for empty collection", e);
+                LOGGER.log(Level.SEVERE, "Error in injectToolCards for empty collection", e);
             }
         }
     }
@@ -78,13 +70,12 @@ public class SetupGameState extends IStateGame {
      * @param publicObjectiveCards the collection of every public objective cards
      */
     private void injectPublicObjectiveCards(DrawableCollection<PublicObjectiveCard> publicObjectiveCards) {
-        int numberOfPublicObjectiveCards = game.isSinglePlayer() ?
-                NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_SINGLE_PLAYER : NUMBER_OF_PUBLIC_OBJECTIVE_CARDS_MULTI_PLAYER;
+        int numberOfPublicObjectiveCards = game.getGameStrategy().getNumberOfPublicObjectiveCardForGame();
         for (int i = 0; i < numberOfPublicObjectiveCards; i++) {
             try {
-                game.getPublicObjectiveCards().add(publicObjectiveCards.draw());
+                game.addPublicObjectiveCard(publicObjectiveCards.draw());
             } catch (EmptyCollectionException e) {
-                LOGGER.log(Level.FINE, "Error in injectPublicObjectiveCards for empty collection", e);
+                LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards for empty collection", e);
             }
         }
     }
@@ -103,9 +94,8 @@ public class SetupGameState extends IStateGame {
         try {
             player = drawablePlayers.draw();
         } catch (EmptyCollectionException e) {
-            LOGGER.log(Level.FINE, "Error in getRandomStartPlayer for empty collection", e);
+            LOGGER.log(Level.SEVERE, "Error in getRandomStartPlayer for empty collection", e);
         }
         return player;
     }
-
 }

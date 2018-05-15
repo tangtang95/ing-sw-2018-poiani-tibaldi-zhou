@@ -4,64 +4,57 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
-import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import java.util.Objects;
 
-public class Tile{
+public class Tile {
 
     private final IConstraint constraint;
     private Dice dice = null;
 
-    private static final Logger LOGGER = Logger.getLogger(Tile.class.getName());
 
     /**
      * Constructor: create a tile with no constraint on it
      */
-    public Tile(){
+    public Tile() {
         constraint = new NoConstraint();
     }
 
     /**
      * Constructor: create a tile with the constraint passed.
      * If constraint is null, constraint is set to NoConstraint.
+     *
      * @param constraint the constraint of the tile
      */
-    public Tile(IConstraint constraint){
-        this.constraint = constraint == null ? new NoConstraint(): constraint;
+    public Tile(IConstraint constraint) {
+        this.constraint = constraint == null ? new NoConstraint() : constraint;
     }
 
     /**
-     *
      * @param dice the dice to place on
      * @throws RuleViolationException if this.getNeededDice() != null
      */
     public void setDice(Dice dice) throws RuleViolationException {
-        setDice(dice, TileConstraintType.NUMBER_COLOR);
+        setDice(dice, PlacementRestrictionType.NUMBER_COLOR);
     }
 
     /**
-     *
-     * @param dice the dice to place on
-     * @param type the constraint to check when placing the dice
+     * @param dice            the dice to place on
+     * @param restrictionType the constraint to check when placing the dice
      * @throws RuleViolationException if this.getNeededDice() != null
      */
-    public void setDice(Dice dice, TileConstraintType type) throws RuleViolationException {
-        if(this.dice != null)
+    public void setDice(Dice dice, PlacementRestrictionType restrictionType) throws RuleViolationException {
+        if (this.dice != null)
             throw new RuleViolationException(RuleViolationType.TILE_FILLED);
-        if(!isDicePositionable(dice, type))
+        if (!isDicePositionable(dice, restrictionType))
             throw new RuleViolationException(RuleViolationType.TILE_UNMATCHED);
         this.dice = dice;
     }
 
     /**
-     *
      * @return the dice placed on the tile
      */
     @Contract(pure = true)
@@ -70,7 +63,6 @@ public class Tile{
     }
 
     /**
-     *
      * @return the dice removed from the tile
      */
     public Dice removeDice() {
@@ -80,39 +72,25 @@ public class Tile{
     }
 
     /**
-     *
      * @param dice the dice to check if positionable
      * @return true if the dice can be placed with number and color constraint
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice) {
-        return isDicePositionable(dice, TileConstraintType.NUMBER_COLOR);
+        return isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR);
     }
 
     /**
-     *
      * @param dice the dice to check if positionable
      * @param type the constraint to check when placing the dice
      * @return true if the dice can be placed with number and color constraint
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, TileConstraintType type) {
-        switch (type){
-            case NUMBER:
-                return checkConstraint(dice.getNumberConstraint());
-            case COLOR:
-                return checkConstraint(dice.getColorConstraint());
-            case NUMBER_COLOR:
-                return (checkConstraint(dice.getNumberConstraint()) && checkConstraint(dice.getColorConstraint()));
-            case NONE:
-                return true;
-            default:
-                throw new IllegalArgumentException("impossible case");
-        }
+    public boolean isDicePositionable(Dice dice, PlacementRestrictionType type) {
+        return type.getPlacementRestriction().isPositionable(this, dice);
     }
 
     /**
-     *
      * @return the constraint of the tile
      */
     @Contract(pure = true)
@@ -121,7 +99,6 @@ public class Tile{
     }
 
     /**
-     *
      * @param other another constraint to check
      * @return true if the constraint of the tile matches with the other
      */
@@ -137,15 +114,15 @@ public class Tile{
      * @return true if they have the same dice and the same constraint, otherwise false
      */
     @Override
-    public boolean equals(Object obj){
-        if(obj == this)
+    public boolean equals(Object obj) {
+        if (obj == this)
             return true;
-        if(!(obj instanceof Tile))
+        if (!(obj instanceof Tile))
             return false;
         Tile other = (Tile) obj;
-        if((getDice() == null && other.getDice() != null) || (getDice() != null && other.getDice() == null))
+        if ((getDice() == null && other.getDice() != null) || (getDice() != null && other.getDice() == null))
             return false;
-        else if(getDice() == null && other.getDice() == null)
+        else if (getDice() == null && other.getDice() == null)
             return this.getConstraint().equals(other.getConstraint());
         return this.getDice().equals(other.getDice()) && this.getConstraint().equals(other.getConstraint());
     }
@@ -154,9 +131,10 @@ public class Tile{
     public String toString() {
         if (dice != null)
             return dice.toString();
-        return " " + constraint.toString()+ " ";
+        return " " + constraint.toString() + " ";
     }
 
+    @Contract("null -> null")
     public static Tile newInstance(Tile tile) {
         if (tile == null)
             return null;

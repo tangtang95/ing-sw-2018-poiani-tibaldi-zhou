@@ -48,11 +48,11 @@ public class GameManager {
      * @param token player's token
      * @throws RemoteException if player is already playing in another game
      */
-    public synchronized void joinGame(Game game, String token) throws RemoteException {
+    public synchronized void joinGame(String gameName, String token) throws RemoteException {
         if(players.contains(token))
             throw new RemoteException("Already playing in a game");
         players.add(token);
-        playersByGame.get(game.getName()).add(token);
+        playersByGame.get(gameName).add(token);
     }
 
     /**

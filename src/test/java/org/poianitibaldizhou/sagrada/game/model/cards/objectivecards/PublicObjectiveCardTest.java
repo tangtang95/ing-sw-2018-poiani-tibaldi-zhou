@@ -1,14 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.ColumnPublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
@@ -48,7 +44,7 @@ public class PublicObjectiveCardTest {
         constraints.add(new NoConstraint());
         try {
             publicObjectiveCard = new SetPublicObjectiveCard("test", "test", 2, constraints,
-                    TileConstraintType.NUMBER);
+                    ObjectiveCardType.NUMBER);
             fail("Exception expected");
         } catch (Exception e) {
 
@@ -61,7 +57,7 @@ public class PublicObjectiveCardTest {
         constraints.add(new ColorConstraint(Color.YELLOW));
         try {
             publicObjectiveCard = new SetPublicObjectiveCard("test", "test", 2, constraints,
-                    TileConstraintType.NUMBER);
+                    ObjectiveCardType.NUMBER);
             fail("Exception expected");
         } catch (Exception e) {
 
@@ -79,7 +75,7 @@ public class PublicObjectiveCardTest {
 
         try {
             publicObjectiveCard = new ColumnPublicObjectiveCard("Test", "Test",
-                    5, TileConstraintType.COLOR);
+                    5, ObjectiveCardType.COLOR);
 
             for (int i = 1; i <= 6; i++) {
                 assertEquals("No NumberConstraint expected",false,

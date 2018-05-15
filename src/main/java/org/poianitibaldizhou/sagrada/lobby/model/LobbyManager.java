@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
+import org.jetbrains.annotations.TestOnly;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +18,7 @@ public class LobbyManager {
     private long timeoutStart;
 
     // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=30s
-    private static final long DELAY_TIME = 30000;
+    private static final long DELAY_TIME = 10000;
 
     /**
      * Constructor.
@@ -185,5 +187,9 @@ public class LobbyManager {
             throw new RemoteException("No lobby Active");
         long currTime = System.currentTimeMillis();
         return DELAY_TIME - (currTime-timeoutStart);
+    }
+
+    public long getDelayTime() {
+        return DELAY_TIME;
     }
 }

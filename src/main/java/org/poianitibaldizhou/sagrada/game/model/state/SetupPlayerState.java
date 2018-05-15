@@ -1,11 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
 import java.util.*;
@@ -36,26 +37,21 @@ public class SetupPlayerState extends IStateGame {
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
 
-        GameInjector gameInjector = new GameInjector();
-        gameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-        gameInjector.injectSchemaCards(schemaCards);
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
+        GameInjector.injectSchemaCards(schemaCards);
         for (Player player : game.getPlayers()) {
             List<SchemaCard> schemaCardList = new ArrayList<>();
             for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
                 try {
                     schemaCardList.add(schemaCards.draw());
                 } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.FINE, "Error in SetupPlayerState for empty collection", e);
+                    LOGGER.log(Level.SEVERE, "Error in SetupPlayerState for empty collection", e);
                 }
             }
-            try {
-                playerSchemaCards.put(player, schemaCardList);
-                player.setPrivateObjectiveCard(privateObjectiveCards.draw());
-            } catch (EmptyCollectionException e) {
-                LOGGER.log(Level.FINE, "Error in SetupPlayerState for empty collection", e);
-            }
+            playerSchemaCards.put(player, schemaCardList);
+            game.setPrivateObjectiveCards(player, privateObjectiveCards);
         }
-        //TODO notify each player
+        //TODO notify each player for the schemaCard
     }
 
     /**
@@ -69,31 +65,34 @@ public class SetupPlayerState extends IStateGame {
     public boolean ready(Player player, SchemaCard schemaCard) {
         if (!isPlayerReady(player) && player.getSchemaCard() == null && containsSchemaCard(player, schemaCard)) {
             playersReady.add(player);
-            player.setSchemaCard(schemaCard);
+            game.setPlayerSchemaCard(player, schemaCard);
             if (game.getNumberOfPlayers() == playersReady.size()) {
                 game.setState(new SetupGameState(game));
-                game.getState().readyGame();
+                game.readyGame();
             }
             return true;
         }
         return false;
     }
 
+    @Contract(pure = true)
     public boolean isPlayerReady(Player player) {
         for (Player playerReady : playersReady) {
-            if(playerReady.equals(player))
+            if (playerReady.equals(player))
                 return true;
         }
         return false;
     }
 
-    public boolean containsSchemaCard(Player player, SchemaCard schemaCard){
+    @Contract(pure = true)
+    public boolean containsSchemaCard(Player player, SchemaCard schemaCard) {
         return playerSchemaCards.get(player).contains(schemaCard);
     }
 
-    public List<SchemaCard> getSchemaCardsOfPlayer(Player player){
+    @Contract(pure = true)
+    public List<SchemaCard> getSchemaCardsOfPlayer(Player player) {
         List<SchemaCard> schemaCards = new ArrayList<>();
-        for (SchemaCard schema: playerSchemaCards.get(player)) {
+        for (SchemaCard schema : playerSchemaCards.get(player)) {
             schemaCards.add(SchemaCard.newInstance(schema));
         }
         return schemaCards;

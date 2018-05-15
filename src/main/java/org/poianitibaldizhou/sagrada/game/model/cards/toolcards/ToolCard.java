@@ -52,18 +52,20 @@ public class ToolCard extends Card {
         boolean flag = true;
         toolCardExecutorHelper = new ToolCardExecutorHelper(observers);
         for (int i = 0; i < commands.size(); i++) {
-            if(flag == false)
+            if(!flag)
                 break;
             flag = commands.get(i).executeCommand(player, toolCardExecutorHelper, game);
         }
 
         if(flag) {
-            if (isSinglePlayer)
+            if (isSinglePlayer) {
                 for (IToolCardObserver obs : observers)
                     obs.onCardDestroy();
-            else
+            }
+            else {
                 for (IToolCardObserver obs : observers)
                     obs.onTokenChange(tokens);
+            }
         }
     }
 
@@ -75,14 +77,15 @@ public class ToolCard extends Card {
         return color;
     }
 
-    public int getCost() throws IllegalNumberOfTokensOnToolCardException {
-        if(tokens == 0)
+    public int getCost() {
+        if(tokens <= 0)
             return 1;
-        else if(tokens > 1)
-            return 2;
         else
-            throw new IllegalNumberOfTokensOnToolCardException();
+            return 2;
+    }
 
+    public void addTokens(int tokens) {
+        this.tokens += tokens;
     }
 
     public void attachToolCardObserver(IToolCardObserver observer) {

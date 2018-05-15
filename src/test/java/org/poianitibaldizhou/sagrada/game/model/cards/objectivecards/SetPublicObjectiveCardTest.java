@@ -1,12 +1,11 @@
-package org.poianitibaldizhou.sagrada.game.model.cards;
+package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
-import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SetPublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.TileConstraintType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
@@ -75,7 +74,7 @@ public class SetPublicObjectiveCardTest {
 
 
         SetPublicObjectiveCard setPublicObjectiveCard = new SetPublicObjectiveCard("Test", "Test",
-                3, allColorConstraint, TileConstraintType.COLOR);
+                3, allColorConstraint, ObjectiveCardType.COLOR);
 
         assertEquals(2*setPublicObjectiveCard.getCardPoints(), setPublicObjectiveCard.getScore(schemaCard));
     }
@@ -98,7 +97,7 @@ public class SetPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(4, Color.YELLOW), 3, 1);
 
         SetPublicObjectiveCard setPublicObjectiveCard = new SetPublicObjectiveCard("Test", "Test",
-                4, allColorConstraint, TileConstraintType.COLOR);
+                4, allColorConstraint, ObjectiveCardType.COLOR);
 
         assertEquals(setPublicObjectiveCard.getCardPoints(), setPublicObjectiveCard.getScore(schemaCard));
     }
@@ -122,7 +121,7 @@ public class SetPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(3, Color.BLUE), 3, 2);
 
         SetPublicObjectiveCard setPublicObjectiveCard = new SetPublicObjectiveCard("Test", "Test",
-                4, allNumberConstraint, TileConstraintType.NUMBER);
+                4, allNumberConstraint, ObjectiveCardType.NUMBER);
 
         assertEquals(setPublicObjectiveCard.getCardPoints(), setPublicObjectiveCard.getScore(schemaCard));
     }
@@ -147,7 +146,7 @@ public class SetPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(3, Color.BLUE), 3, 2);
 
         SetPublicObjectiveCard setPublicObjectiveCard = new SetPublicObjectiveCard("Test", "Test",
-                4, allNumberConstraint, TileConstraintType.NUMBER);
+                4, allNumberConstraint, ObjectiveCardType.NUMBER);
 
         assertEquals(2 * setPublicObjectiveCard.getCardPoints(), setPublicObjectiveCard.getScore(schemaCard));
     }
@@ -171,7 +170,7 @@ public class SetPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(3, Color.RED), 2, 3);
 
         SetPublicObjectiveCard setPublicObjectiveCard = new SetPublicObjectiveCard("Test", "Test",
-                4, pair, TileConstraintType.NUMBER);
+                4, pair, ObjectiveCardType.NUMBER);
 
         assertEquals(2 * setPublicObjectiveCard.getCardPoints(), setPublicObjectiveCard.getScore(schemaCard));
     }
@@ -195,7 +194,7 @@ public class SetPublicObjectiveCardTest {
         schemaCard.setDice(new Dice(2, Color.RED), 2, 3);
 
         SetPublicObjectiveCard setPublicObjectiveCard = new SetPublicObjectiveCard("Test", "Test",
-                4, pair, TileConstraintType.NUMBER);
+                4, pair, ObjectiveCardType.NUMBER);
 
         assertEquals(2 * setPublicObjectiveCard.getCardPoints(), setPublicObjectiveCard.getScore(schemaCard));
     }
