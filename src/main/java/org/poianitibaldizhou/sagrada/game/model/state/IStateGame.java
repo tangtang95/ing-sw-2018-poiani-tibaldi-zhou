@@ -12,6 +12,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecuto
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
+import java.rmi.RemoteException;
+
 public abstract class IStateGame {
 
     protected Game game;
@@ -41,7 +43,7 @@ public abstract class IStateGame {
     public void placeDice(Player player, Dice dice, int row, int column) throws RuleViolationException, InvalidActionException {
         throw new IllegalStateException();
     }
-    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException {
+    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException, RemoteException, InterruptedException {
         throw new IllegalStateException();
     }
 

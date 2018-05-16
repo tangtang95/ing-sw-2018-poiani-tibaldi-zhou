@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -25,6 +26,8 @@ public class AddDiceToDraftPoolTest {
     private Game game;
     @Mock
     private Player invokerPlayer;
+    @Mock
+    private DraftPool draftpool;
 
     @Before
     public void setUp() throws Exception {

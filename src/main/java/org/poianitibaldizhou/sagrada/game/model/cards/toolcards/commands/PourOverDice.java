@@ -11,13 +11,13 @@ import java.util.Objects;
 public class PourOverDice implements ICommand {
 
     /**
-     * Pour overs a certain dice in the draftpool.
+     * Pour overs a certain dice.
      * Needs a dice to pour over in toolcard, it pours it over and sets it to toolcard.
      *
      * @param player player's that used the toolcard
      * @param toolCardExecutor toolcard used
      * @param game game in which the player acts
-     * @return true
+     * @return CommandFlow.MAIN
      * @throws InterruptedException error with wait()
      */
     @Override

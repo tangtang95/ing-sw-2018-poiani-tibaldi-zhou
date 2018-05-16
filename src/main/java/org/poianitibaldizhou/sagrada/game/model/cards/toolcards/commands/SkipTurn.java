@@ -14,6 +14,8 @@ public class SkipTurn implements ICommand {
     private final int value;
 
     public SkipTurn(int i) {
+        if(i != 1 && i != 2)
+            throw new IllegalArgumentException();
         this.value = i;
     }
 

@@ -24,34 +24,6 @@ public class ToolCardLanguageParser {
     /**
      * Given a string that contains the description of the effects of a tool card, returns
      * the list of the commands associated with it.
-     * Each command needs to be separated with ";" and no additional spaces have to be present.
-     * Example
-     * "Reroll dice;Add dice to Dicebag"
-     *
-     * Wrong Example
-     * "Reroll dice; Add dice to Dicebag"
-     *
-     * @param description effects of a tool card
-     * @return list of commands triggered by description
-     * @throws IllegalArgumentException if a string isn't matching with any of the available commands.
-     */
-    @Deprecated
-    public List<ICommand> parseOldToolCardLanguage(String description) throws IllegalArgumentException {
-        List<ICommand> commands = new ArrayList<>();
-        ArrayList<String> processedText=  preprocessing(description);
-        for(String s: processedText) {
-            if(grammar.get(s) != null)
-                commands.add(grammar.get(s));
-            else
-                throw new IllegalArgumentException("Command not recognized: " + s);
-        }
-
-        return commands;
-    }
-
-    /**
-     * Given a string that contains the description of the effects of a tool card, returns
-     * the list of the commands associated with it.
      * The language supported in this method supports binary if.
      * Each command needs to be wrapped in [index-commandName], where index is the position of the command in the
      * execution flow, according to the following rules.
