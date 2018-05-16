@@ -8,7 +8,6 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
@@ -37,7 +36,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         RoundTrack roundTrack = game.getRoundTrack();
 
         for (IToolCardExecutorObserver observer : observerList) {
-            observer.notifyNeedDiceFromRoundTrack(player, roundTrack);
+            observer.notifyNeedDiceFromRoundTrack(roundTrack);
         }
 
         roundTrackDice = toolCardExecutor.getNeededDice();

@@ -2,10 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
@@ -41,7 +39,6 @@ public class RemoveDice implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException {
-        SchemaCard schemaCard = player.getSchemaCard();
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         Position position;
         Dice removed = null;
@@ -52,17 +49,17 @@ public class RemoveDice implements ICommand {
                 do {
                     color = toolCardExecutor.getNeededColor();
                     for(IToolCardExecutorObserver obs : observerList)
-                        obs.notifyNeedDicePositionOfCertainColor(player, color);
+                        obs.notifyNeedDicePositionOfCertainColor(color);
                     position = toolCardExecutor.getPosition();
 
-                } while (!schemaCard.getDice(position.getRow(), position.getColumn()).getColor().equals(color));
+                } while (!player.getSchemaCard().getDice(position.getRow(), position.getColumn()).getColor().equals(color));
             } else {
                 for (IToolCardExecutorObserver obs : observerList)
-                    obs.notifyNeedPosition(player);
+                    obs.notifyNeedPosition();
                 position = toolCardExecutor.getPosition();
             }
 
-            removed = schemaCard.removeDice(position.getRow(), position.getColumn());
+            removed = game.removeDiceFromSchemaCardPlayer(player, position.getRow(), position.getColumn());
         } while(removed == null);
         toolCardExecutor.setNeededDice(removed);
         return CommandFlow.MAIN;

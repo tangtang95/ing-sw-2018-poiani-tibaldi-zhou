@@ -113,7 +113,7 @@ public class ToolCard extends Card {
     }
 
     public List<ICommand> getCommands() {
-        return commands;
+        return new ArrayList<>(commands);
     }
 
     //TODO refactor

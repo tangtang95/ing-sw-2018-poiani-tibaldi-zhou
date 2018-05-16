@@ -4,7 +4,6 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
@@ -25,7 +24,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         for(IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedColor(player);
+            obs.notifyNeedColor();
         return CommandFlow.MAIN;
     }
 

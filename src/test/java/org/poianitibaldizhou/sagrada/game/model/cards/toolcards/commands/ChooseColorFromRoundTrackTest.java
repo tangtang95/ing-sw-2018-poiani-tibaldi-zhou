@@ -5,19 +5,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class AddDiceToDraftPoolTest {
-    private ICommand command;
+public class ChooseColorFromRoundTrackTest {
 
     @Mock
     private ToolCardExecutor executor;
@@ -25,11 +26,21 @@ public class AddDiceToDraftPoolTest {
     private Game game;
     @Mock
     private Player invokerPlayer;
+    @Mock
+    private IToolCardExecutorObserver observer1, observer2, observer3;
+
+    private ICommand command;
+    private List<IToolCardExecutorObserver> observerList;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        command = new AddDiceToDraftPool();
+        observerList = new ArrayList<>();
+        observerList.add(observer1);
+        observerList.add(observer2);
+        observerList.add(observer3);
+        when(executor.getObservers()).thenReturn(observerList);
+        command = new ChooseColorFromRoundTrack();
     }
 
     @After
@@ -41,16 +52,17 @@ public class AddDiceToDraftPoolTest {
     }
 
     @Test
-    public void executeCommandTest() throws Exception {
-        Dice dice = mock(Dice.class);
-        when(executor.getNeededDice()).thenReturn(dice);
+    public void executeCommand() throws Exception {
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, game));
-        verify(game).addDiceToDraftPool(dice);
+        for (IToolCardExecutorObserver obs: observerList) {
+            verify(obs).notifyNeedColor();
+        }
     }
 
     @Test
-    public void equalsTest() throws Exception {
-        assertEquals(new AddDiceToDraftPool(), command);
+    public void equals() throws Exception {
+        assertEquals(new ChooseColorFromRoundTrack(), command);
         assertNotEquals(new Object(), command);
     }
+
 }

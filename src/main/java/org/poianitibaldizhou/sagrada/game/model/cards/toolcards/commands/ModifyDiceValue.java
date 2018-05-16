@@ -1,14 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
+import java.util.Iterator;
 import java.util.List;
 
 public class ModifyDiceValue implements ICommand {
@@ -18,20 +19,22 @@ public class ModifyDiceValue implements ICommand {
      * Doesn't require anything in toolcard. It requires a dice in toolcard
      * It will modify it's value and puts the new Dice in toolcard.
      *
-     * @param player Player who invoked the ToolCard
+     * @param player           Player who invoked the ToolCard
      * @param toolCardExecutor ToolCard invoked that contains this command
-     * @param game Game in which the player acts
+     * @param game             Game in which the player acts
      * @return true
      * @throws RemoteException if there are network communication errors
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException {
-        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        for(IToolCardExecutorObserver obs : observerList){
-            obs.notifyNeedNewValue(player);
-        }
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
         Dice dice = toolCardExecutor.getNeededDice();
-        Integer integer = toolCardExecutor.getNeededValue();
+        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
+        for (IToolCardExecutorObserver obs : observerList) {
+            obs.notifyNeedNewValue();
+        }
+        int integer = toolCardExecutor.getNeededValue();
+        if(integer < Dice.MIN_VALUE || integer > Dice.MAX_VALUE)
+            throw new ExecutionCommandException();
         toolCardExecutor.setNeededDice(new Dice(integer, dice.getColor()));
         return CommandFlow.MAIN;
     }

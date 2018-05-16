@@ -3,9 +3,12 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
@@ -248,6 +251,15 @@ public class Game {
         return dice;
     }
 
+    public Dice removeDiceFromSchemaCardPlayer(Player player, int row, int column) {
+        return player.removeDiceFromSchemaCard(row, column);
+    }
+
+    public void setDiceOnSchemaCardPlayer(Player player, Dice dice, int row, int column,
+                                          PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
+        player.setDiceOnSchemaCard(dice, row, column, restriction, diceRestriction);
+    }
+
     public void readyGame() {
         state.readyGame();
     }
@@ -302,6 +314,7 @@ public class Game {
             return  null;
         return new Game(game);
     }
+
 
 
 }

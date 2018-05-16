@@ -5,7 +5,6 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
@@ -25,7 +24,7 @@ public class ChooseDice implements ICommand {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         List<Dice> diceList = game.getDraftPool().getDices();
         for(IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedDice(player, diceList);
+            obs.notifyNeedDice(diceList);
         return CommandFlow.MAIN;
     }
 

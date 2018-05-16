@@ -44,7 +44,7 @@ public class Player {
     public ICoin getICoins() {return this.coins;}
 
     public SchemaCard getSchemaCard() {
-        return schemaCard;
+        return SchemaCard.newInstance(schemaCard);
     }
 
     public PrivateObjectiveCard getPrivateObjectiveCard() {
@@ -85,10 +85,6 @@ public class Player {
         schemaCard.setDice(dice, row, column);
     }
 
-    public void endTurn() {
-        //TODO
-    }
-
     //SETTER
     public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
         this.privateObjectiveCard = privateObjectiveCard;
@@ -102,6 +98,11 @@ public class Player {
         this.schemaCard = schemaCard;
         if (coins instanceof FavorToken)
             coins = new FavorToken(schemaCard.getDifficulty());
+    }
+
+    public void setDiceOnSchemaCard(Dice dice, int row, int column,
+                                    PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
+        schemaCard.setDice(dice, row, column, restriction, diceRestriction);
     }
 
     /**
@@ -156,6 +157,10 @@ public class Player {
         return privateObjectiveCard.getScore(schemaCard) - schemaCard.getNumberOfEmptySpaces()*3;
     }
 
+    public Dice removeDiceFromSchemaCard(int row, int column) {
+        return schemaCard.removeDice(row, column);
+    }
+
 
     /**
      * Return favor tokens of the player
@@ -179,4 +184,7 @@ public class Player {
         newPlayer.setOutcome(player.getOutcome());
         return newPlayer;
     }
+
+
+
 }

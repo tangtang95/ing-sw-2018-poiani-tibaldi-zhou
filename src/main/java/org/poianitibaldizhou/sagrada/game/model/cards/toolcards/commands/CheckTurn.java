@@ -13,6 +13,8 @@ public class CheckTurn implements ICommand {
     private final int turn;
 
     public CheckTurn(int turn) {
+        if(turn < 1 || turn > 2)
+            throw new IllegalArgumentException("illegal value of turn");
         this.turn = turn;
     }
 
@@ -28,7 +30,7 @@ public class CheckTurn implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, ExecutionCommandException {
         TurnState turnState = (TurnState) game.getState();
-        if(turnState.isFirstTurn() != (turn == 1))
+        if(turnState.isFirstTurn() != (getTurn() == 1))
             throw new ExecutionCommandException();
         return CommandFlow.MAIN;
     }
