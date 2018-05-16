@@ -10,9 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ModifyDiceValue;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class ToolCardExecutorTest {
 
@@ -161,25 +159,61 @@ public class ToolCardExecutorTest {
     }
 
     @Test
-    public void invokeCommandsTest() throws Exception{
-        Node<ICommand> root = new Node(mock(ICommand.class));
-        Node<ICommand> firstLeft = new Node(mock(ICommand.class));
-        Node<ICommand> firstRight = new Node(mock(ICommand.class));
-        Node<ICommand> firstLeftSecondLeft = new Node(mock(ICommand.class));
-        Node<ICommand> firstLeftSecondLeftThirdLeft = new Node(mock(ICommand.class));
+    public void invokeCommandsTest1() throws Exception{
+        ICommand command = mock(ICommand.class);
+        Node<ICommand> root = spy(new Node<>(command));
+        Node<ICommand> firstLeft = spy(new Node<>(command));
+        Node<ICommand> firstRight = spy(new Node<>(command));
+        Node<ICommand> firstLeftSecondLeft = spy(new Node<>(command));
+        Node<ICommand> firstLeftSecondLeftThirdLeft = spy(new Node(command));
 
         root.setLeftChild(firstLeft);
         root.setRightChild(firstRight);
         firstLeft.setLeftChild(firstLeftSecondLeft);
         firstLeftSecondLeft.setLeftChild(firstLeftSecondLeftThirdLeft);
 
-        
+        executor = new ToolCardExecutor(root, player, game);
+
+        when(command.executeCommand(player, executor, game)).thenReturn(CommandFlow.MAIN);
+        executor.start();
+        executor.join();
+        verify(root).getData();
+        verify(firstLeft).getData();
+        verify(firstLeftSecondLeft).getData();
+        verify(firstLeftSecondLeftThirdLeft).getData();
+        verify(firstRight, times(0)).getData();
 
 
     }
 
     @Test
+    public void invokeCommandsTest2() throws Exception{
+        ICommand command = mock(ICommand.class);
+        Node<ICommand> root = spy(new Node<>(command));
+        Node<ICommand> firstLeft = spy(new Node<>(command));
+        Node<ICommand> firstRight = spy(new Node<>(command));
+        Node<ICommand> firstLeftSecondLeft = spy(new Node<>(command));
+        Node<ICommand> firstLeftSecondLeftThirdLeft = spy(new Node(command));
+
+        root.setLeftChild(firstLeft);
+        root.setRightChild(firstRight);
+        firstLeft.setLeftChild(firstLeftSecondLeft);
+        firstLeftSecondLeft.setLeftChild(firstLeftSecondLeftThirdLeft);
+
+        executor = new ToolCardExecutor(root, player, game);
+        when(command.executeCommand(player,executor,game)).thenReturn(CommandFlow.SUB);
+        executor.start();
+        executor.join();
+        verify(root).getData();
+        verify(firstLeft, times(0)).getData();
+        verify(firstLeftSecondLeft, times(0)).getData();
+        verify(firstLeftSecondLeftThirdLeft, times(0)).getData();
+        verify(firstRight).getData();
+    }
+
+    @Test
     public void newInstanceTest() throws Exception {
+        // TODO
     }
 
 }

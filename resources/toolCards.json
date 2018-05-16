@@ -33,7 +33,7 @@
     "cardName": "Pennello per Pasta Salda",
     "cardColour": "PURPLE",
     "cardDescription": "Dopo aver scelto un dado, tira nuovamente quel dado. Se non puoi piazzarlo, riponilo nella riserva",
-    "action": "[1-Choose dice][2-Reroll dice][4-If Dice placeble][8-Place dice][9-Add dice to DraftPool][16-CA][18-CA]"
+    "action": "[1-Choose dice][2-Reroll dice][4-If Dice placeable][8-Place dice][9-Add dice to DraftPool][16-CA][18-CA]"
   },
   {
     "cardName": "Martelletto",
@@ -63,7 +63,7 @@
     "cardName": "Diluente per Pasta Salda",
     "cardColour": "PURPLE",
     "cardDescription": "Dopo aver scelto un dado riponilo nel Sacchetto, poi pescane uno dal Sacchetto. Scegli il valore del nuovo dado e piazzalo, rispettando tutte le restrizioni di piazzamento",
-    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Add dice to Dicebag][8-Draw dice from Dicebag][16-Choose dice value][32-Place dice][64-CA]"
+    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Add dice to Dicebag][8-Draw dice from Dicebag][16-Modify dice value][32-Place dice][64-CA]"
   },
   {
     "cardName": "Taglierina Manuale",

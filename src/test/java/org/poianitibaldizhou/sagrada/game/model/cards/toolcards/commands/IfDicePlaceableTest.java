@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import javafx.geometry.Pos;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +13,6 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,7 +20,7 @@ import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class CheckDicePositionableTest {
+public class IfDicePlaceableTest {
     private ICommand command;
 
     @Mock
@@ -35,7 +33,7 @@ public class CheckDicePositionableTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        command = new CheckDicePositionable();
+        command = new IfDicePlaceable();
     }
 
     @After
@@ -69,7 +67,7 @@ public class CheckDicePositionableTest {
 
     @Test
     public void equals() throws Exception {
-        assertEquals(new CheckDicePositionable(), command);
+        assertEquals(new IfDicePlaceable(), command);
         assertNotEquals(new Object(), command);
     }
 

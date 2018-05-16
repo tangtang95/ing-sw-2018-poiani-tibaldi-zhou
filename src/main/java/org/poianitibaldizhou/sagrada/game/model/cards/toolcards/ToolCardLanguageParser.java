@@ -5,7 +5,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -98,7 +97,7 @@ public class ToolCardLanguageParser {
         grammar.put("Skip first turn", new SkipTurn(1));
         grammar.put("Pour over dice", new PourOverDice());
         grammar.put("Choose color from RoundTrack", new ChooseColorFromRoundTrack());
-        grammar.put("Check Dice placeble", new CheckDicePositionable());
+        grammar.put("If Dice placeable", new IfDicePlaceable());
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
         grammar.put("CC", new ClearColor());
