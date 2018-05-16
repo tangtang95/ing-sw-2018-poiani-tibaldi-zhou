@@ -15,6 +15,7 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionSt
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -155,7 +156,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * @throws InvalidActionException     if the given player is different from the currentTurnPlayer
      */
     @Override
-    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException {
+    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException, RemoteException, InterruptedException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
         toolCardExecutor = playerState.useCard(player, toolCard);
