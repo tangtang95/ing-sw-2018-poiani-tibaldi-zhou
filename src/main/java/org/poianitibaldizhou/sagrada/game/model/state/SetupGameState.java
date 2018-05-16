@@ -24,7 +24,10 @@ public class SetupGameState extends IStateGame{
 
      SetupGameState(Game game) {
         super(game);
+    }
 
+    @Override
+    public void init() {
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
@@ -38,6 +41,7 @@ public class SetupGameState extends IStateGame{
 
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
+        readyGame();
     }
 
     /**

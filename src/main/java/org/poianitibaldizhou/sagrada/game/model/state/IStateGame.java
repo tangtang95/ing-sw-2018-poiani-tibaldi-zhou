@@ -20,6 +20,7 @@ public abstract class IStateGame {
         this.game = game;
     }
 
+    public abstract void init();
     public void nextRound(){
         throw new IllegalStateException();
     }

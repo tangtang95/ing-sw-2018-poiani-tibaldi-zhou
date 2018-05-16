@@ -22,6 +22,7 @@ public class EndGameStateTest {
     private Player player1, player2, player3, player4;
 
 
+    // Need to move the test of calculate outcome to gameStrategy Test
     private IGameStrategy singlePlayerGameStrategy, multiPlayerGameStrategy;
 
     private List<Player> playerList;
@@ -61,6 +62,7 @@ public class EndGameStateTest {
         when(player3.getMultiPlayerScore()).thenReturn(player3Score);
         when(player4.getMultiPlayerScore()).thenReturn(player4Score);
         endGameState = new EndGameState(game, player1);
+        endGameState.init();
         endGameState.endGame();
         verify(game).setPlayerOutcome(player1, Outcome.WIN);
         for (Player p: playerList) {
@@ -83,6 +85,7 @@ public class EndGameStateTest {
         when(player1.getScoreFromPrivateCard()).thenReturn(1);
         when(player2.getScoreFromPrivateCard()).thenReturn(2);
         endGameState = new EndGameState(game, player1);
+        endGameState.init();
         endGameState.endGame();
         verify(game).setPlayerOutcome(player2, Outcome.WIN);
         for (Player p: playerList) {
@@ -107,6 +110,7 @@ public class EndGameStateTest {
         when(player1.getFavorTokens()).thenReturn(1);
         when(player2.getFavorTokens()).thenReturn(2);
         endGameState = new EndGameState(game, player1);
+        endGameState.init();
         endGameState.endGame();
         verify(game).setPlayerOutcome(player2, Outcome.WIN);
         for (Player p: playerList) {
@@ -132,6 +136,7 @@ public class EndGameStateTest {
         when(player1.getFavorTokens()).thenReturn(2);
         when(player2.getFavorTokens()).thenReturn(2);
         endGameState = new EndGameState(game, player1);
+        endGameState.init();
         endGameState.endGame();
         verify(game).setPlayerOutcome(player2, Outcome.WIN);
         for (Player p: playerList) {
@@ -157,6 +162,7 @@ public class EndGameStateTest {
         when(player1.getFavorTokens()).thenReturn(2);
         when(player3.getFavorTokens()).thenReturn(2);
         endGameState = new EndGameState(game, player3);
+        endGameState.init();
         endGameState.endGame();
         verify(game).setPlayerOutcome(player1, Outcome.WIN);
         for (Player p: playerList) {

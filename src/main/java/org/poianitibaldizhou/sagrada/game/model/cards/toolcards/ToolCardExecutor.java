@@ -7,13 +7,16 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class ToolCardExecutor {
+public class ToolCardExecutor extends Thread{
     private final Object diceMonitor;
     private final Object colorMonitor;
     private final Object valueMonitor;
     private final Object turnEndMonitor;
     private final Object positionMonitor;
+    private final Object executorMonitor;
 
     private Dice neededDice;
     private Color neededColor;
@@ -24,19 +27,24 @@ public class ToolCardExecutor {
 
     private Node<ICommand> commandRoot;
     private boolean isDone;
+    private Player player;
+    private Game game;
 
     /**
      * Constructor.
      * Creates an executor helper for the invocation of the various commandRoot.
-     *
      * @param commands tree of commandRoot of the toolCard invoked
+     * @param player
+     * @param game
+     *
      */
-    public ToolCardExecutor(Node<ICommand> commands) {
+    public ToolCardExecutor(Node<ICommand> commands, Player player, Game game) {
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
         turnEndMonitor = new Object();
         positionMonitor = new Object();
+        executorMonitor = new Object();
 
         neededDice = null;
         neededValue = null;
@@ -46,6 +54,8 @@ public class ToolCardExecutor {
         isDone = false;
         this.observers = new ArrayList<>();
         this.commandRoot = commands;
+        this.player = player;
+        this.game = game;
     }
 
     public void addObserver(IToolCardExecutorObserver observer) {
@@ -67,10 +77,22 @@ public class ToolCardExecutor {
         valueMonitor = new Object();
         turnEndMonitor = new Object();
         positionMonitor = new Object();
+        executorMonitor = new Object();
     }
 
-    public void invokeCommands(Player player, Game game) throws RemoteException, InterruptedException {
-        CommandFlow commandFlow = CommandFlow.MAIN;
+    @Override
+    public void run() {
+        try {
+            invokeCommands();
+        } catch (RemoteException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
+        } catch (InterruptedException e) {
+            Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
+        }
+    }
+
+    private void invokeCommands() throws RemoteException, InterruptedException {
+        CommandFlow commandFlow;
         Node<ICommand> root = commandRoot;
         do {
             try {
@@ -83,8 +105,10 @@ public class ToolCardExecutor {
                 }
             } catch (ExecutionCommandException e) {
                 // Basically nothing is needed, the commands just needs to be re-executed
+                // TODO notify
             }
         } while(root != null);
+        isDone = true;
     }
 
     public void setNeededValue(Integer neededValue) {
@@ -163,10 +187,22 @@ public class ToolCardExecutor {
     }
 
     public void waitForToolCardExecutionEnd() throws InterruptedException {
-        synchronized (this) {
+        synchronized (executorMonitor) {
             while (!isDone)
-                this.wait();
+                executorMonitor.wait();
         }
+    }
+
+    public void setIsDone(boolean isDone) {
+        synchronized (executorMonitor) {
+            this.isDone = isDone;
+            if(isDone)
+                executorMonitor.notifyAll();
+        }
+    }
+
+    public void interruptCommandsInvocation(){
+        this.interrupt();
     }
 
     public static ToolCardExecutor newInstance(ToolCardExecutor tceh) {
@@ -174,4 +210,6 @@ public class ToolCardExecutor {
             return null;
         return new ToolCardExecutor(tceh);
     }
+
+
 }

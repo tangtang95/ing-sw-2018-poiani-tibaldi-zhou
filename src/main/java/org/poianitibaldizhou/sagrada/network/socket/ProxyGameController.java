@@ -7,8 +7,6 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
 
-import java.rmi.RemoteException;
-
 public class ProxyGameController extends ProxyController implements IGameController{
 
 

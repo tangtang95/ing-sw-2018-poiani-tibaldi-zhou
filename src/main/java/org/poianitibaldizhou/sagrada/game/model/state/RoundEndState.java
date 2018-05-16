@@ -24,10 +24,17 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
         this.currentRoundPlayer = currentRoundPlayer;
     }
 
+    @Override
+    public void init() {
+        // nothing to do
+    }
+
     @Contract(pure = true)
     public int getCurrentRound(){
         return currentRound;
     }
+
+
 
     /**
      * Add all the remaining dices of the DraftPool to the RoundTrack and clear all dices of DraftPool;

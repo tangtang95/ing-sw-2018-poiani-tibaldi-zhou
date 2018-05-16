@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.io.BufferedReader;

@@ -23,7 +23,6 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
     EndGameState(Game game, Player currentRoundPlayer) {
         super(game);
         this.currentRoundPlayer = currentRoundPlayer;
-        //
     }
 
     /**
@@ -37,6 +36,12 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         for (Player player : gameState.scoreMap.keySet())
             this.scoreMap.put(Player.newInstance(player), gameState.scoreMap.get(player));
     }
+
+    @Override
+    public void init() {
+        // nothing to do
+    }
+
     @Override
     public void choosePrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
         game.getGameStrategy().selectPrivateObjectiveCard(privateObjectiveCard);

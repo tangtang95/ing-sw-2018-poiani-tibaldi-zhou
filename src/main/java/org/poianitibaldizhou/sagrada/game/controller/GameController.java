@@ -1,13 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
+import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
-import java.util.List;
 
 public class GameController extends UnicastRemoteObject implements IGameController {
 

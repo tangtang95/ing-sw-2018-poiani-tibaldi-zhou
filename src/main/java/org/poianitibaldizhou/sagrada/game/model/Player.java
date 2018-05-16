@@ -6,8 +6,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 public class Player {
     private ICoin coins;
@@ -61,9 +61,9 @@ public class Player {
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
      */
-    public ToolCardExecutor useCard(ToolCard toolCard) throws NoCoinsExpendableException {
+    public Node<ICommand> useCard(ToolCard toolCard) throws NoCoinsExpendableException {
         coins.use(toolCard);
-        return toolCard.getToolCardExecutor();
+        return toolCard.useCard();
     }
 
     /**

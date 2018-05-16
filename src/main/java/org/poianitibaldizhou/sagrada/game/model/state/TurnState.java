@@ -3,13 +3,11 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
-import org.poianitibaldizhou.sagrada.game.model.Direction;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
@@ -96,6 +94,14 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         }
     }
 
+    @Override
+    public void init() {
+        if (skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
+            //TODO notify skip player
+            nextTurn();
+        }
+    }
+
     /**
      * This method is called when the currentTurnPlayer end his turn: if it's the second turn and the currentTurnPlayer ending the turn
      * is the current currentTurnPlayer who has thrown the dices then the state goes to RoundEndState, otherwise if it's first
@@ -119,13 +125,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
                         skipTurnPlayers));
             }
         }
-        if (game.getState() instanceof TurnState) {
-            TurnState turnState = (TurnState) game.getState();
-            if (turnState.skipTurnPlayers.get(turnState.getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
-                //TODO notify skip player
-                turnState.nextTurn();
-            }
-        }
+
     }
 
 
@@ -158,9 +158,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        toolCardExecutor = playerState.useCard(player, toolCard);
+        Node<ICommand> rootCommand = playerState.useCard(player, toolCard);
+        toolCardExecutor = new ToolCardExecutor(rootCommand, player, game);
         toolCardExecutor.addObserver(observer);
-        toolCardExecutor.invokeCommands(player, game);
+        toolCardExecutor.start();
     }
 
     /**

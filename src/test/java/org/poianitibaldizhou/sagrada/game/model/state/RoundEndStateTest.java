@@ -71,6 +71,7 @@ public class RoundEndStateTest {
     public void nextRoundWhenIsNotLastRound() throws Exception {
         int round = 0;
         roundEndState = new RoundEndState(game, round, player1);
+        roundEndState.init();
         roundEndState.nextRound();
         verify(game).addRemainingDiceToRoundTrack(round);
         verify(game).clearDraftPool();
@@ -81,6 +82,7 @@ public class RoundEndStateTest {
     public void nextRoundWhenIsLastRound() throws Exception {
         int round = 9;
         roundEndState = new RoundEndState(game, round, player1);
+        roundEndState.init();
         roundEndState.nextRound();
         verify(game).addRemainingDiceToRoundTrack(round);
         verify(game).clearDraftPool();
@@ -90,6 +92,7 @@ public class RoundEndStateTest {
     @Test
     public void getCurrentPlayer() throws Exception {
         roundEndState = new RoundEndState(game, 0, player1);
+        roundEndState.init();
         assertEquals(player1, roundEndState.getCurrentRoundPlayer());
         assertNotEquals(player2, roundEndState.getCurrentRoundPlayer());
     }

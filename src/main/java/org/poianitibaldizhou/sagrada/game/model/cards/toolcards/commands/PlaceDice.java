@@ -15,6 +15,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class PlaceDice implements ICommand {
 
@@ -84,5 +85,10 @@ public class PlaceDice implements ICommand {
         PlaceDice obj = (PlaceDice) object;
         return obj.getTileConstraint() == this.getTileConstraint()
                 && obj.getDiceConstraint() == this.getDiceConstraint();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(PlaceDice.class, getTileConstraint(), getDiceConstraint());
     }
 }

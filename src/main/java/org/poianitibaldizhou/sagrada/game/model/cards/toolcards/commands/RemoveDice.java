@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class RemoveDice implements ICommand {
 
@@ -72,5 +73,10 @@ public class RemoveDice implements ICommand {
 
         RemoveDice obj = (RemoveDice)object;
         return obj.getConstraintType() == this.constraintType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(RemoveDice.class, getConstraintType());
     }
 }

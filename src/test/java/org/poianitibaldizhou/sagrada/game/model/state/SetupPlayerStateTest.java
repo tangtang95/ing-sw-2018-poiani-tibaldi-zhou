@@ -44,6 +44,7 @@ public class SetupPlayerStateTest {
         when(game.getDiceBag()).thenReturn(new DrawableCollection<>());
         when(game.getState()).thenReturn(mock(SetupGameState.class));
         setupPlayerState = new SetupPlayerState(game);
+        setupPlayerState.init();
     }
 
     @After
@@ -54,8 +55,9 @@ public class SetupPlayerStateTest {
     }
 
     @Test
-    public void testConstructor() {
+    public void initTest() {
         SetupPlayerState state = new SetupPlayerState(game);
+        state.init();
         for (Player player : playerList) {
             assertFalse(state.isPlayerReady(player));
             assertEquals("size of schemaCards", 2, state.getSchemaCardsOfPlayer(player).size());
@@ -89,7 +91,7 @@ public class SetupPlayerStateTest {
     }
 
     @Test
-    public void containsSchemaCard() throws Exception {
+        public void containsSchemaCard() throws Exception {
         List<SchemaCard> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
         assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0)));
     }

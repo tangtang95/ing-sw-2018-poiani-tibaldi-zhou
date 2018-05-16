@@ -90,7 +90,7 @@ public class ModifyDiceValueByDeltaTest {
 
         command = new ModifyDiceValueByDelta(2);
         when(dice.getNumber()).thenReturn(1);
-        for (int i = Dice.MIN_VALUE; i <= Dice.MAX_VALUE; i++) {
+        for (int i = Dice.MIN_VALUE; i <= Dice.MAX_VALUE + 2; i++) {
             when(executor.getNeededValue()).thenReturn(i);
             if(i == 3){
                 assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, game));
@@ -107,7 +107,7 @@ public class ModifyDiceValueByDeltaTest {
         }
 
         for (IToolCardExecutorObserver obs: observerList) {
-            verify(obs, times(6)).notifyNeedNewDeltaForDice(dice.getNumber(), 2);
+            verify(obs, times(8)).notifyNeedNewDeltaForDice(dice.getNumber(), 2);
         }
     }
 

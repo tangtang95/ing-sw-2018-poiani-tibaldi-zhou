@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
@@ -59,16 +61,20 @@ public class PlaceDiceTest {
     public void executeCommand() throws Exception {
         command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
         Dice dice = mock(Dice.class);
-        Position position = mock(Position.class);
+
+        // Need to create a position because doThrow has problems
+        Position position = new Position(3, 2);
         when(executor.getNeededDice()).thenReturn(dice);
         when(executor.getPosition()).thenReturn(position);
         command.executeCommand(invokerPlayer, executor, game);
         verify(game).setDiceOnSchemaCardPlayer(invokerPlayer, dice, position.getRow(), position.getColumn(),
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
 
-        doThrow(new ExecutionCommandException()).when(game)
+
+        doThrow(new RuleViolationException(RuleViolationType.TILE_UNMATCHED)).when(game)
                 .setDiceOnSchemaCardPlayer(invokerPlayer, dice, position.getRow(), position.getColumn(),
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+
         try {
             command.executeCommand(invokerPlayer, executor, game);
             fail("exception expected");
@@ -80,6 +86,11 @@ public class PlaceDiceTest {
 
     @Test
     public void equals() throws Exception {
+        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+        assertEquals(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL), command);
+        assertNotEquals(new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL), command);
+        assertNotEquals(new PlaceDice(PlacementRestrictionType.NONE, DiceRestrictionType.ISOLATED), command);
+        assertNotEquals(new Object(), command);
     }
 
 }

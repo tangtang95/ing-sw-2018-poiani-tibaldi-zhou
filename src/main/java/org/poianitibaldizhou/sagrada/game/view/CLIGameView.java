@@ -5,12 +5,13 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.cli.IScreen;
+import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
 import java.util.List;
 
-public class CLIGameView implements IGameView, IToolCardExecutorObserver, IToolCardObserver, IScreen {
+public class CLIGameView implements IToolCardExecutorObserver, IToolCardObserver, IScreen, IGameView {
 
     private Player player;
     private final transient NetworkManager networkManager;

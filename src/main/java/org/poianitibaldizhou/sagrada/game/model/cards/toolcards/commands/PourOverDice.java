@@ -6,6 +6,8 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
+import java.util.Objects;
+
 public class PourOverDice implements ICommand {
 
     /**
@@ -28,5 +30,10 @@ public class PourOverDice implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof PourOverDice;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(PourOverDice.class);
     }
 }

@@ -55,6 +55,7 @@ public class RoundStartStateTest {
         when(game.isSinglePlayer()).thenReturn(true);
         when(gameStrategy.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGameStrategy.NUMBER_OF_DICES_TO_DRAW);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
+        roundStartState.init();
         assertFalse(roundStartState.throwDices(otherPlayer));
         assertTrue(roundStartState.throwDices(currentPlayer));
         verify(game).addDicesToDraftPoolFromDiceBag();
@@ -70,6 +71,7 @@ public class RoundStartStateTest {
         when(game.getNumberOfPlayers()).thenReturn(numberOfPlayers);
         when(gameStrategy.getNumberOfDicesToDraw()).thenReturn(numberOfPlayers*2 + 1);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
+        roundStartState.init();
         assertFalse(roundStartState.throwDices(otherPlayer));
         assertTrue(roundStartState.throwDices(currentPlayer));
         verify(game).addDicesToDraftPoolFromDiceBag();
@@ -79,6 +81,7 @@ public class RoundStartStateTest {
     @Test
     public void getCurrentPlayer() throws Exception {
         roundStartState = new RoundStartState(game, 0, currentPlayer);
+        roundStartState.init();
         assertEquals(currentPlayer, roundStartState.getCurrentRoundPlayer());
         assertNotEquals(otherPlayer, roundStartState.getCurrentRoundPlayer());
     }

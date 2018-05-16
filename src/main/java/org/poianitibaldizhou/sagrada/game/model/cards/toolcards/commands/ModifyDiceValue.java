@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 import java.rmi.RemoteException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 public class ModifyDiceValue implements ICommand {
 
@@ -42,5 +43,10 @@ public class ModifyDiceValue implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof ModifyDiceValue;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ModifyDiceValue.class);
     }
 }

@@ -33,25 +33,6 @@ public class SetupPlayerState extends IStateGame {
         super(game);
         playersReady = new HashSet<>();
         playerSchemaCards = new HashMap<>();
-
-        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
-        DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
-
-        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-        GameInjector.injectSchemaCards(schemaCards);
-        for (Player player : game.getPlayers()) {
-            List<SchemaCard> schemaCardList = new ArrayList<>();
-            for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
-                try {
-                    schemaCardList.add(schemaCards.draw());
-                } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.SEVERE, "Error in SetupPlayerState for empty collection", e);
-                }
-            }
-            playerSchemaCards.put(player, schemaCardList);
-            game.setPrivateObjectiveCards(player, privateObjectiveCards);
-        }
-        //TODO notify each player for the schemaCard
     }
 
     /**
@@ -76,6 +57,29 @@ public class SetupPlayerState extends IStateGame {
 
     }
 
+    @Override
+    public void init() {
+        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
+        DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
+
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
+        GameInjector.injectSchemaCards(schemaCards);
+        for (Player player : game.getPlayers()) {
+            List<SchemaCard> schemaCardList = new ArrayList<>();
+            for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
+                try {
+                    schemaCardList.add(schemaCards.draw());
+                } catch (EmptyCollectionException e) {
+                    LOGGER.log(Level.SEVERE, "Error in SetupPlayerState for empty collection", e);
+                }
+            }
+            playerSchemaCards.put(player, schemaCardList);
+            game.setPrivateObjectiveCards(player, privateObjectiveCards);
+        }
+        //TODO notify each player for the schemaCard
+    }
+
+
     /**
      * Method of the state pattern: When the player have finished to select the schemaCard,
      * this method is invoked to set the SchemaCard to the player and when every player has readied the state
@@ -90,7 +94,6 @@ public class SetupPlayerState extends IStateGame {
             game.setPlayerSchemaCard(player, schemaCard);
             if (game.getNumberOfPlayers() == playersReady.size()) {
                 game.setState(new SetupGameState(game));
-                game.readyGame();
             }
             return true;
         }

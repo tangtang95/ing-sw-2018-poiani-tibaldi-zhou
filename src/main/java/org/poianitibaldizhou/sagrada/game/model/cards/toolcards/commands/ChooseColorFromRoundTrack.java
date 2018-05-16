@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class ChooseColorFromRoundTrack implements ICommand {
 
@@ -31,5 +32,10 @@ public class ChooseColorFromRoundTrack implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof ChooseColorFromRoundTrack;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ChooseColorFromRoundTrack.class);
     }
 }

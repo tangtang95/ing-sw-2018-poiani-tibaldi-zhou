@@ -45,9 +45,7 @@ public class ToolCard extends Card {
         return new ArrayList<>(observers);
     }
 
-    public ToolCardExecutor getToolCardExecutor() {
-        ToolCardExecutor toolCardExecutor = new ToolCardExecutor(commands);
-
+    public Node<ICommand> useCard() {
         if (isSinglePlayer) {
             for (IToolCardObserver obs : observers)
                 obs.onCardDestroy();
@@ -56,7 +54,7 @@ public class ToolCard extends Card {
                 obs.onTokenChange(tokens);
         }
 
-        return toolCardExecutor;
+        return getCommands();
     }
 
     public int getTokens() {
@@ -104,7 +102,7 @@ public class ToolCard extends Card {
     public int hashCode() {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
-    
+
 
     public Node<ICommand> getCommands() {
         return commands;

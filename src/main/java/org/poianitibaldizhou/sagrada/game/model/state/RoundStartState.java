@@ -23,8 +23,13 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      */
     RoundStartState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
-        this.currentRoundPlayer = Player.newInstance(currentRoundPlayer);
+        this.currentRoundPlayer = currentRoundPlayer;
         this.currentRound = currentRound;
+    }
+
+    @Override
+    public void init() {
+        // nothing to do
     }
 
     /**

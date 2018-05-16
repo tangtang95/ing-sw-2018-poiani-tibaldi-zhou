@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class ModifyDiceValueByDelta implements ICommand {
 
@@ -90,5 +91,10 @@ public class ModifyDiceValueByDelta implements ICommand {
 
         ModifyDiceValueByDelta obj = (ModifyDiceValueByDelta) object;
         return this.value == obj.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ModifyDiceValueByDelta.class, value);
     }
 }

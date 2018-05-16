@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
+import java.util.Objects;
 
 public class CheckTurn implements ICommand {
     private final int turn;
@@ -45,5 +46,10 @@ public class CheckTurn implements ICommand {
             return false;
         CheckTurn obj = (CheckTurn) object;
         return this.turn == obj.getTurn();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CheckTurn.class, turn);
     }
 }

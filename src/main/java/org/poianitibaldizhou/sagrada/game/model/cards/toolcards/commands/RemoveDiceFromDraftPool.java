@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 
 import java.rmi.RemoteException;
+import java.util.Objects;
 
 public class RemoveDiceFromDraftPool implements ICommand {
 
@@ -37,5 +38,10 @@ public class RemoveDiceFromDraftPool implements ICommand {
     @Override
     public boolean equals(Object o) {
         return o instanceof RemoveDiceFromDraftPool;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(RemoveDiceFromDraftPool.class);
     }
 }

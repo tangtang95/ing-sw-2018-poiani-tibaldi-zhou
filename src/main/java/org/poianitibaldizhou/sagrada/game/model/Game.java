@@ -171,6 +171,7 @@ public class Game {
 
     public void setState(IStateGame state) {
         this.state = state;
+        this.state.init();
     }
 
     public void setPrivateObjectiveCards(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
@@ -258,10 +259,6 @@ public class Game {
     public void setDiceOnSchemaCardPlayer(Player player, Dice dice, int row, int column,
                                           PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
         player.setDiceOnSchemaCard(dice, row, column, restriction, diceRestriction);
-    }
-
-    public void readyGame() {
-        state.readyGame();
     }
 
     /**

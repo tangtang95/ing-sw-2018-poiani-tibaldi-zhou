@@ -72,6 +72,7 @@ public class SetupGameStateTest {
         when(game.isSinglePlayer()).thenReturn(true);
         when(gameStrategy.getNumberOfToolCardForGame()).thenReturn(difficulty);
         setupGameState = new SetupGameState(game);
+        setupGameState.init();
         assertEquals("DiceBag size error", 90,  diceBag.size());
         assertEquals("PublicObjectiveCards size error",
                 SinglePlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS, publicObjectiveCards.size());
@@ -82,6 +83,7 @@ public class SetupGameStateTest {
     public void constructorMultiPlayerTest(){
         when(game.isSinglePlayer()).thenReturn(false);
         setupGameState = new SetupGameState(game);
+        setupGameState.init();
         assertEquals("DiceBag size error", 90,  diceBag.size());
         assertEquals("PublicObjectiveCards size error",
                 MultiPlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS, publicObjectiveCards.size());
@@ -93,14 +95,7 @@ public class SetupGameStateTest {
     public void readyGameTest() throws Exception {
         when(game.isSinglePlayer()).thenReturn(false);
         setupGameState = new SetupGameState(game);
-        /*doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                RoundStartState roundStartState = invocationOnMock.getArgument(0);
-                assertTrue(playerList.contains(roundStartState.getCurrentRoundPlayer()));
-                return null;
-            }
-        }).when(game).setState(ArgumentMatchers.any(RoundStartState.class));*/
+        setupGameState.init();
         setupGameState.readyGame();
         ArgumentCaptor<RoundStartState> argument = ArgumentCaptor.forClass(RoundStartState.class);
         verify(game).setState(argument.capture());

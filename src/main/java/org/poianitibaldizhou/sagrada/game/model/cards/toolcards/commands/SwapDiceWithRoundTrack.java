@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class SwapDiceWithRoundTrack implements ICommand {
 
@@ -54,5 +55,10 @@ public class SwapDiceWithRoundTrack implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof SwapDiceWithRoundTrack;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(SwapDiceWithRoundTrack.class);
     }
 }
