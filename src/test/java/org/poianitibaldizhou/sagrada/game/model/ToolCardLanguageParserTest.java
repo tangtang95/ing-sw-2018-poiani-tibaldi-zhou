@@ -18,18 +18,13 @@ public class ToolCardLanguageParserTest {
     private static ToolCardLanguageParser toolCardLanguageParser;
 
     @DataPoint
-    private static List<ICommand> actualCommands;
+    private static Node<ICommand> actualCommands;
 
     @BeforeClass
     public static void setUpClass() {
         toolCardLanguageParser = new ToolCardLanguageParser();
     }
-
-    @Before
-    public void setUp() {
-        actualCommands = new ArrayList<>();
-    }
-
+    
     @After
     public void tearDown() {
         actualCommands = null;
@@ -44,49 +39,44 @@ public class ToolCardLanguageParserTest {
 
     @Test
     public void testEveryPresentCommand() {
-        List<ICommand> commands = new ArrayList<>();
+        Node<ICommand> commands = new Node<>(new ChooseDice());
 
-        commands.add(new ChooseDice());
-        commands.add(new ModifyDiceValueByDelta(1));
-        commands.add(new RemoveDice(PlacementRestrictionType.NONE));
-        commands.add(new RemoveDice(PlacementRestrictionType.COLOR));
-        commands.add(new SwapDiceWithRoundTrack());
-        commands.add(new RerollDice());
-        commands.add(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL));
-        commands.add(new PlaceDice(PlacementRestrictionType.COLOR, DiceRestrictionType.NORMAL));
-        commands.add(new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL));
-        commands.add(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED));
-        commands.add(new AddDiceToDraftPool());
-        commands.add(new AddDiceToDiceBag());
-        commands.add(new DrawDiceFromDicebag());
-        commands.add(new ModifyDiceValue());
-        commands.add(new RerollDraftPool());
-        commands.add(new CheckTurn(2));
-        commands.add(new CheckTurn(1));
-        commands.add(new CheckBeforeDiceChosen());
-        commands.add(new CheckTurnEnd());
-        commands.add(new SkipTurn(2));
-        commands.add(new SkipTurn(1));
-        commands.add(new PourOverDice());
-        commands.add(new ChooseColorFromRoundTrack());
+        commands.addAtIndex(new ModifyDiceValueByDelta(1), 2);
+        commands.addAtIndex(new RemoveDice(PlacementRestrictionType.NONE),4);
+        commands.addAtIndex(new RemoveDice(PlacementRestrictionType.COLOR),8);
+        commands.addAtIndex(new SwapDiceWithRoundTrack(), 16);
+        commands.addAtIndex(new RerollDice(), 32);
+        commands.addAtIndex(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL), 64);
+        commands.addAtIndex(new PlaceDice(PlacementRestrictionType.COLOR, DiceRestrictionType.NORMAL), 128);
+        commands.addAtIndex(new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL), 256);
+        commands.addAtIndex(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED), 512);
+        commands.addAtIndex(new AddDiceToDraftPool(), 1024);
+        commands.addAtIndex(new AddDiceToDiceBag(), 2048);
+        commands.addAtIndex(new DrawDiceFromDicebag(), 4096);
+        commands.addAtIndex(new ModifyDiceValue(), 8192);
+        commands.addAtIndex(new RerollDraftPool(), 16384);
+        commands.addAtIndex(new CheckTurn(2), 32768);
+        commands.addAtIndex(new CheckTurn(1), 65536);
+        commands.addAtIndex(new CheckBeforeDiceChosen(), 131072);
+        commands.addAtIndex(new CheckTurnEnd(),262144);
+        commands.addAtIndex(new SkipTurn(2), 524288);
+        commands.addAtIndex(new SkipTurn(1), 1048576);
+        commands.addAtIndex(new PourOverDice(),2097152);
+        commands.addAtIndex(new ChooseColorFromRoundTrack(),4194304);
 
-        String commandsString = new String("Choose dice;Modify dice value by 1;" +
-                "Remove dice from schema;Remove dice of a certain color from schema;" +
-                "Swap dice with RoundTrack;Reroll dice;Place dice;Place dice ignoring number" +
-                " constraints;Place dice ignoring color constraints;Place isolated dice;" +
-                "Add dice to DraftPool;Add dice to Dicebag;Draw dice from Dicebag;" +
-                "Choose dice value;Reroll DraftPool;Check second turn;Check first turn;" +
-                "Check before choose dice;Check turn over;Skip second turn;Skip first turn;" +
-                "Pour over dice;Choose color from RoundTrack");
+        String commandsString = new String("[1-Choose dice][2-Modify dice value by 1]" +
+                "[4-Remove dice][8-Remove dice of a certain color]" +
+                "[16-Swap dice with RoundTrack][32-Reroll dice][64-Place dice][128-Place dice ignoring number" +
+                " constraints][256-Place dice ignoring color constraints][512-Place isolated dice]" +
+                "[1024-Add dice to DraftPool][2048-Add dice to Dicebag][4096-Draw dice from Dicebag]" +
+                "[8192-Modify dice value][16384-Reroll DraftPool][32768-Check second turn][65536-Check first turn]" +
+                "[131072-Check before choose dice][262144-Check turn over][524288-Skip second turn][1048576-Skip first turn]" +
+                "[2097152-Pour over dice][4194304-Choose color from RoundTrack]");
+
 
         try {
             actualCommands = toolCardLanguageParser.parseToolCard(commandsString);
-            assertEquals("Number of commands not matching", commands.size(), actualCommands.size());
-            System.out.println(actualCommands);
-            System.out.println(commands);
-            for (int i = 0; i < actualCommands.size(); i++) {
-                assertEquals("Not matchin commands ("+i+")", commands.get(i), actualCommands.get(i));
-            }
+            assertEquals(commands, actualCommands);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             fail("Exception not expected");
@@ -96,7 +86,7 @@ public class ToolCardLanguageParserTest {
     @Test
     public void testNotPresentCommand() {
         String command = "thisIsNotACommand";
-        List<ICommand> commands = null;
+        Node<ICommand> commands = null;
         try {
             commands = toolCardLanguageParser.parseToolCard(command);
             fail("Exception expected");
@@ -107,14 +97,16 @@ public class ToolCardLanguageParserTest {
 
     @Test
     public void testSingleCommand() {
-        String command = new String("Reroll dice");
-        List<ICommand> commands = new ArrayList<>();
-        commands.add(new RerollDice());
+        String command = new String("[1-Reroll dice]");
+        Node<ICommand> commands = new Node(new RerollDice());
+
+        System.out.println(commands);
+
         try {
-            List<ICommand> actualCommands = toolCardLanguageParser.parseToolCard(command);
-            assertEquals("Number of commands not matching",commands.size(),actualCommands.size());
-            assertEquals(1, actualCommands.size());
-            assertArrayEquals("Not matching commands",commands.toArray(), actualCommands.toArray());
+            Node<ICommand> actualCommands = toolCardLanguageParser.parseToolCard(command);
+            System.out.println(actualCommands);
+            assertEquals(true, commands.isRoot());
+            assertEquals(commands, actualCommands);
         } catch (IllegalArgumentException e) {
             fail("No exceptione expected");
         }

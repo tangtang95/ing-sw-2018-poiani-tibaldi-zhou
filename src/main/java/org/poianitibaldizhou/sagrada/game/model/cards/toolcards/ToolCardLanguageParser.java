@@ -5,7 +5,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ToolCardLanguageParser {
     private static Map<String, ICommand> grammar;
@@ -30,9 +33,10 @@ public class ToolCardLanguageParser {
      *
      * @param description effects of a tool card
      * @return list of commands triggered by description
-     * @throws IllegalArgumentException if a string isn't matching with any of the avaible commands.
+     * @throws IllegalArgumentException if a string isn't matching with any of the available commands.
      */
-    public List<ICommand> parseToolCard(String description) throws IllegalArgumentException {
+    @Deprecated
+    public List<ICommand> parseOldToolCardLanguage(String description) throws IllegalArgumentException {
         List<ICommand> commands = new ArrayList<>();
         ArrayList<String> processedText=  preprocessing(description);
         for(String s: processedText) {
@@ -45,10 +49,43 @@ public class ToolCardLanguageParser {
         return commands;
     }
 
-    @Deprecated
-    public Node<ICommand> parseToolCardNewLanguage(String description) throws IllegalArgumentException {
-        Node<ICommand> commands = new Node<>(null,null);
-        return commands;
+    /**
+     * Given a string that contains the description of the effects of a tool card, returns
+     * the list of the commands associated with it.
+     * The language supported in this method supports binary if.
+     * Each command needs to be wrapped in [index-commandName], where index is the position of the command in the
+     * execution flow, according to the following rules.
+     * An example could be:
+     * String string = "[1-Choose dice][2-Modify dice value by 1][4-Add dice to DraftPool][8-CA]";
+     *
+     * @param description description of the tool card that allow to construct an execution tree
+     * @return execution tree
+     * @throws IllegalArgumentException if a string isn't matching with any of the available commands.
+     */
+    public Node<ICommand> parseToolCard(String description) throws IllegalArgumentException {
+        Node<ICommand> commands_root = null;
+
+        Pattern p = Pattern.compile("\\[(.*?)\\]");
+        Matcher m = p.matcher(description);
+
+        boolean firstCheck = m.find();
+
+        if(!firstCheck)
+            throw new IllegalArgumentException("This is not a command " + description);
+
+        while(firstCheck) {
+            String temp  = m.group(1);
+            String[] c = temp.split("-");
+            if(grammar.get(c[1]) == null || c.length != 2)
+                throw new IllegalArgumentException("Command not recognized " + c[1]);
+            if(commands_root == null)
+                commands_root = new Node<>(grammar.get(c[1]));
+            else
+                commands_root.addAtIndex(grammar.get(c[1]),Integer.parseInt(c[0]));
+            firstCheck = m.find();
+        }
+
+        return commands_root;
     }
 
     /**
