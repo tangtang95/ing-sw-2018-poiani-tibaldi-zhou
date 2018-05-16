@@ -101,45 +101,11 @@ public class ToolCardLanguageParser {
         grammar.put("Check Dice placeble", new CheckDicePositionable());
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
-
-        ICommand clearColor = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededColor(null);
-            return CommandFlow.MAIN;
-        };
-        ICommand clearValue = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededValue(null);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearDice = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededDice(null);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearPosition =  (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededPosition(null);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearTurnEndCondition = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setTurnEnded(false);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearAll = (player, toolCardExecutorHelper, game) -> {
-            clearColor.executeCommand(player, toolCardExecutorHelper, game);
-            clearDice.executeCommand(player, toolCardExecutorHelper, game);
-            clearPosition.executeCommand(player, toolCardExecutorHelper, game);
-            clearTurnEndCondition.executeCommand(player, toolCardExecutorHelper, game);
-            clearValue.executeCommand(player, toolCardExecutorHelper, game);
-            return CommandFlow.MAIN;
-        };
-
-        grammar.put("CC", clearColor);
-        grammar.put("CV", clearValue);
-        grammar.put("CD", clearDice);
-        grammar.put("CP", clearPosition);
-        grammar.put("CTEC", clearTurnEndCondition);
-        grammar.put("CA", clearAll);
+        grammar.put("CC", new ClearColor());
+        grammar.put("CV", new ClearValue());
+        grammar.put("CD", new ClearDice());
+        grammar.put("CP", new ClearPosition());
+        grammar.put("CTEC", new ClearTurnEndCondition());
+        grammar.put("CA", new ClearAll());
     }
 }

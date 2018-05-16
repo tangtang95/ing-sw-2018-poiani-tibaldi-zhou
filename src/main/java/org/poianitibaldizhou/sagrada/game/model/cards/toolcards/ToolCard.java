@@ -108,7 +108,7 @@ public class ToolCard extends Card {
         return commands;
     }
 
-    //TODO refactor
+    //TODO refactor (refactor test too)
     public static ToolCard newInstance(ToolCard toolCard) {
         if (toolCard == null)
             return null;
