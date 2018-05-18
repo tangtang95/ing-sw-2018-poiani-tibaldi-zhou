@@ -63,7 +63,7 @@ public class GameManagerTest {
         gameManager.joinGame("notExistingGame", playerList.get(0));
         List<Game> games = gameManager.getGames();
         assertEquals(1, games.size());
-        assertEquals(game1.getName(), games.get(0));
+        assertEquals(game1.getName(), games.get(0).getName());
     }
 
     @Test(expected = RemoteException.class)
@@ -76,13 +76,22 @@ public class GameManagerTest {
 
     @Test
     public void testJoinGame() throws Exception {
+        List<String> list1 = new ArrayList<>();
+        list1.add(playerList.get(0));
+        list1.add(playerList.get(1));
+
+        List<String> list2 = new ArrayList<>();
+        list2.add(playerList.get(2));
+
         gameManager.addGame(game1, "game1");
+        gameManager.addGame(game2, game2.getName());
 
-        for(String player : playerList) {
-            gameManager.joinGame(game1.getName(), player);
-        }
+        gameManager.joinGame(game1.getName(), playerList.get(0));
+        gameManager.joinGame(game1.getName(), playerList.get(1));
+        gameManager.joinGame(game2.getName(), playerList.get(2));
 
-        assertEquals(playerList, gameManager.getPlayersByGame(game1.getName()));
+        assertEquals(list1, gameManager.getPlayersByGame(game1.getName()));
+        assertEquals(list2, gameManager.getPlayersByGame(game2.getName()));
     }
 
     @Test
@@ -94,13 +103,13 @@ public class GameManagerTest {
         List<Game> curr = gameManager.getGames();
         assertEquals(3, curr.size());
         int[] flags = new int[3];
-        for(Game g : curr) {
-            if(g.getName().equals("game1"))
-                flags[0]+=1;
-            if(g.getName().equals("game2"))
-                flags[1]+=1;
-            if(g.getName().equals("game3"))
-                flags[2]+=1;
+        for (Game g : curr) {
+            if (g.getName().equals("game1"))
+                flags[0] += 1;
+            if (g.getName().equals("game2"))
+                flags[1] += 1;
+            if (g.getName().equals("game3"))
+                flags[2] += 1;
         }
 
         for (int i = 0; i < 3; i++) {
@@ -109,8 +118,25 @@ public class GameManagerTest {
     }
 
     @Test
-    public void removeTest() {
+    public void removeGameTest() throws Exception {
+        gameManager.addGame(game1, game1.getName());
+        for(String player : playerList)
+            gameManager.joinGame(game1.getName(), player);
+        gameManager.terminateGame(game1.getName());
+        assertEquals(0, gameManager.getGames().size());
+        assertEquals(null,gameManager.getPlayersByGame(game1.getName()));
+    }
 
+    @Test
+    public void removeNonExistingGame() throws Exception {
+        gameManager.addGame(game1, game1.getName());
+        List<Game> prevList = gameManager.getGames();
+        gameManager.terminateGame("NonExistingGame");
+        List<Game> newList = gameManager.getGames();
+        assertEquals(prevList.size(), newList.size());
+        for (int i = 0; i < prevList.size(); i++) {
+            assertEquals(prevList.get(i).getName(), newList.get(i).getName());
+        }
     }
 
 }

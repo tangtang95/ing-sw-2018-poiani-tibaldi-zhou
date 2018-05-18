@@ -34,19 +34,6 @@ public class GameManager {
     }
 
     /**
-     * Remove a game from the list of current games, and thus all the players
-     * present in that game.
-     * If the game is not present, does nothing.
-     *
-     * @param game game to be removed
-     */
-    public synchronized void removeGame(Game game) {
-        if(games.remove(game.getName()) != null) {
-            playersByGame.remove(game.getName());
-        }
-    }
-
-    /**
      * Player joining a certain game.
      * If the game is not present, does nothing.
      *
@@ -54,7 +41,7 @@ public class GameManager {
      * @throws RemoteException if player is already playing in another game
      */
     public synchronized void joinGame(String gameName, String token) throws RemoteException {
-        if(!games.containsKey(gameName)) {
+        if(games.containsKey(gameName)) {
             if(players.contains(token))
                 throw new RemoteException("Already playing in a game");
 
@@ -67,13 +54,13 @@ public class GameManager {
      * Terminates a certain game removing all the information connected to it.
      * If the game is not present, does nothing.
      *
-     * @param game game to terminate
+     * @param gameName game to terminate
      */
-    public synchronized void terminateGame(Game game) {
-        if(games.remove(game.getName()) != null) {
-            List<String> playersPlaying = playersByGame.get(game.getName());
+    public synchronized void terminateGame(String gameName) {
+        if(games.remove(gameName) != null) {
+            List<String> playersPlaying = playersByGame.get(gameName);
             players.removeAll(playersPlaying);
-            playersByGame.remove(game.getName());
+            playersByGame.remove(gameName);
         }
     }
 
@@ -87,8 +74,16 @@ public class GameManager {
         return games.get(name);
     }
 
+    /**
+     * Returs the list of the player of a certain game.
+     * If none game with that name is present, return null
+     *
+     * @param gameName name of the game
+     * @return list of the player in gameName
+     */
     public synchronized List<String> getPlayersByGame(String gameName) {
-        return new ArrayList(playersByGame.get(gameName));
+        return games.containsKey(gameName)? new ArrayList(playersByGame.get(gameName)) : null;
+
     }
 
     @Contract(pure = true)
