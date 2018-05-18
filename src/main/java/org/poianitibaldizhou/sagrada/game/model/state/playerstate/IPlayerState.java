@@ -7,7 +7,6 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
@@ -35,5 +34,9 @@ public abstract class IPlayerState {
 
     public void endTurn() throws InvalidActionException {
         throw new InvalidActionException();
+    }
+
+    public void releaseToolCardExecution() {
+        // Do Nothing if it's not useCardState
     }
 }

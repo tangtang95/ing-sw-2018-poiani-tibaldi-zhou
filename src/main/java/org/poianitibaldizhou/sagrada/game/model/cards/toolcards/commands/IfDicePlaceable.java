@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
@@ -27,7 +27,7 @@ public class IfDicePlaceable implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
         Dice dice = toolCardExecutor.getNeededDice();
         Position position = toolCardExecutor.getPosition();
-        if(!player.getSchemaCard().isDicePositionable(dice, position.getRow(), position.getColumn())){
+        if(!player.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())){
             return CommandFlow.SUB;
         }
         return CommandFlow.MAIN;

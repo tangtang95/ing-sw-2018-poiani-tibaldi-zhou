@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;

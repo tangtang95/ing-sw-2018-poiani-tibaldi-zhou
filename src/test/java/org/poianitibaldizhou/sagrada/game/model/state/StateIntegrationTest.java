@@ -38,11 +38,11 @@ public class StateIntegrationTest {
         multiPlayerGame = new Game(tokens, "1Game");
         SchemaCard schemaCard = mock(SchemaCard.class);
         for (Player player : multiPlayerGame.getPlayers()) {
-            assertTrue(player.getPrivateObjectiveCard() != null);
+            assertTrue(player.getPrivateObjectiveCards() != null);
             multiPlayerGame.getState().ready(player, schemaCard);
         }
         for (Player player : singleGame.getPlayers()) {
-            assertTrue(player.getPrivateObjectiveCard() != null);
+            assertTrue(player.getPrivateObjectiveCards() != null);
             singleGame.getState().ready(player, schemaCard);
         }*/
 

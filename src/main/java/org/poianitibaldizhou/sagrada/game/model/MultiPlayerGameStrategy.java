@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 
 import java.util.ArrayList;
@@ -15,10 +16,10 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 3;
     public static final int NUMBER_OF_PRIVATE_OBJECTIVE_CARDS = 1;
 
-    private int numberOfPlayer;
+    private MultiPlayerGame multiPlayerGame;
 
-    public MultiPlayerGameStrategy(int numberOfPlayer){
-        this.numberOfPlayer = numberOfPlayer;
+    public MultiPlayerGameStrategy(MultiPlayerGame game){
+        this.multiPlayerGame = game;
     }
 
     @Override
@@ -38,7 +39,7 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
 
     @Override
     public int getNumberOfDicesToDraw() {
-        return numberOfPlayer*2 + 1;
+        return multiPlayerGame.getNumberOfPlayers()*2 + 1;
     }
 
     @Override
@@ -46,46 +47,41 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
         return NUMBER_OF_PRIVATE_OBJECTIVE_CARDS;
     }
 
-    @Override
-    public void selectPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
-        throw new IllegalStateException();
-    }
-
-    @Override
-    public void setPrivateObjectiveCard(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
-        try {
-            player.setPrivateObjectiveCard(privateObjectiveCards.draw());
-        } catch (EmptyCollectionException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString(), e);
-        }
-    }
-
 
     /**
      * Set the Outcome of each player; first of all it found the winner by VictoryPoints, by PrivateCard points, by
      * FavorTokens and at the end by reverse order of the current player (who has the diceBag at the last round)
      *
-     * @param game       all players of the game
      * @param scoreMap the score of each player
      * @param currentRoundPlayer the current player of the last round
      */
     @Override
-    public void setPlayersOutcome(Game game, Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
-        List<Player> players = game.getPlayers();
+    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
+        List<Player> players = multiPlayerGame.getPlayers();
         List<Player> winners = getWinnersByVictoryPoints(players, scoreMap);
         winners = getWinnersByPrivateCard(winners);
         winners = getWinnersByFavorTokens(winners);
-        Player winner = getWinnersByReverseOrder(winners, players, game.getIndexOfPlayer(currentRoundPlayer));
-        game.setPlayerOutcome(winner, Outcome.WIN);
+        Player winner = getWinnersByReverseOrder(winners, players, multiPlayerGame.getIndexOfPlayer(currentRoundPlayer));
+        multiPlayerGame.setPlayerOutcome(winner, Outcome.WIN);
         for (Player other : players) {
             if (!other.equals(winner))
-                game.setPlayerOutcome(other, Outcome.LOSE);
+                multiPlayerGame.setPlayerOutcome(other, Outcome.LOSE);
         }
     }
 
     @Override
     public boolean isSinglePlayer() {
         return false;
+    }
+
+    @Override
+    public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        multiPlayerGame.addNewPlayer(token, schemaCard, privateObjectiveCards);
+    }
+
+    @Override
+    public void notifyPlayersEndGame() {
+        multiPlayerGame.calculateOutcome();
     }
 
     /**
@@ -170,9 +166,5 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
         if (winners.contains(allPlayers.get(index)))
             return allPlayers.get(index);
         throw new IllegalArgumentException("No players founded");
-    }
-
-    public int getNumberOfPlayer() {
-        return numberOfPlayer;
     }
 }

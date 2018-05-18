@@ -11,6 +11,12 @@ public class EndTurnState extends IPlayerState {
 
     @Override
     public void endTurn() throws InvalidActionException {
-        turnState.waitUntilToolCardExecutionEnded();
+        turnState.getToolCardExecutor().setTurnEnded(true);
+        try {
+            turnState.getToolCardExecutor().waitForTurnEnd();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        turnState.nextTurn();
     }
 }
