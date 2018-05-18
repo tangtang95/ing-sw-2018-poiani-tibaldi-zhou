@@ -17,10 +17,10 @@ public class Player {
     private Outcome outcome;
 
     /**
-     * set null the player parameter:
-     * coins are the player expendable coins for using the toolCard
-     * schemaCard
-     * privateObjectiveCard
+     * Set to null the player parameters:
+     * - coins are the player expendable coins for using the toolCard
+     * - schemaCard
+     * - privateObjectiveCard
      *
      * @param token string for locating the single player during the game
      */
@@ -32,7 +32,6 @@ public class Player {
         this.outcome = Outcome.IN_GAME;
     }
 
-    //GETTER
     public String getToken() {
         return token;
     }
@@ -56,7 +55,7 @@ public class Player {
     }
 
     /**
-     * use the card and invoke the card commands
+     * Use the card and invoke the card commands
      *
      * @param toolCard the card which the player would use
      * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
@@ -66,26 +65,10 @@ public class Player {
         return toolCard.useCard();
     }
 
-    /**
-     * place if possible the dice chosen in the place chosen
-     *
-     * @param dice the dice which will be placed
-     * @param row row position (number between 0 and 3 included)
-     * @param column column position (number between 0 and 4 included)
-     * @param tileConstraint the constraint of the tile chosen
-     * @param diceConstraint the constrains of the dice
-     * @throws RuleViolationException if the rule of the schema is violated
-     */
-    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
-                          DiceRestrictionType diceConstraint) throws RuleViolationException {
-        schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
-    }
-
     public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
         schemaCard.setDice(dice, row, column);
     }
 
-    //SETTER
     public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
         this.privateObjectiveCard = privateObjectiveCard;
     }
@@ -103,6 +86,21 @@ public class Player {
     public void setDiceOnSchemaCard(Dice dice, int row, int column,
                                     PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
         schemaCard.setDice(dice, row, column, restriction, diceRestriction);
+    }
+
+    /**
+     * Place if possible the dice chosen in the place chosen
+     *
+     * @param dice the dice which will be placed
+     * @param row row position (number between 0 and 3 included)
+     * @param column column position (number between 0 and 4 included)
+     * @param tileConstraint the constraint of the tile chosen
+     * @param diceConstraint the constrains of the dice
+     * @throws RuleViolationException if the rule of the schema is violated
+     */
+    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
+                          DiceRestrictionType diceConstraint) throws RuleViolationException {
+        schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
     }
 
     /**
@@ -184,7 +182,4 @@ public class Player {
         newPlayer.setOutcome(player.getOutcome());
         return newPlayer;
     }
-
-
-
 }

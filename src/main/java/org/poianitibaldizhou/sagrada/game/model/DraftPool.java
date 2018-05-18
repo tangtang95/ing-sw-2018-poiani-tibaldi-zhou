@@ -1,12 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import java.lang.annotation.Inherited;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDraftPool;
 
 public class DraftPool {
     private List<Dice> dices;
@@ -82,14 +85,6 @@ public class DraftPool {
         dices.clear();
     }
 
-    @Override
-    public String toString() {
-        return dices.toString();
-    }
-
-    public int size() {
-        return dices.size();
-    }
 
     public static DraftPool newInstance(DraftPool draftPool) {
         if (draftPool == null)
@@ -101,4 +96,27 @@ public class DraftPool {
     }
 
 
+    @Contract(pure = true)
+    public int size() {
+        return dices.size();
+    }
+
+    @Override
+    public String toString() {
+        return dices.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof DraftPool)) {
+            return false;
+        }
+        DraftPool draftPool = (DraftPool) o;
+        return getDices().equals(draftPool.getDices())? true : false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(DraftPool.class);
+    }
 }

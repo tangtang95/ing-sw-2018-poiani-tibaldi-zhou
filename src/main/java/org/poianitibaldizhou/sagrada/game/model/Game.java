@@ -32,7 +32,6 @@ public class Game {
     private IGameStrategy gameStrategy;
     private IStateGame state;
 
-
     /**
      * Constructor for Multi player.
      * Create the Game with all the attributes initialized, create also all the player from the given tokens and
@@ -311,7 +310,4 @@ public class Game {
             return  null;
         return new Game(game);
     }
-
-
-
 }

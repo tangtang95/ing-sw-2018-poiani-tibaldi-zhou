@@ -177,7 +177,7 @@ public class LobbyManagerTest {
         }
         long time2 = lobbyManager.getTimeToTimeout();
         assertTrue(time1 > time2);
-        assertTrue(lobbyManager.getDelayTime() > time1);
+        assertTrue(lobbyManager.getDelayTime() >= time1);
         try {
             Thread.sleep(time1 + (time1/6));
         } catch (InterruptedException e) {

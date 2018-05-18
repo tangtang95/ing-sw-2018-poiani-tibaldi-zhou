@@ -14,6 +14,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor
 import java.rmi.RemoteException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -40,6 +41,7 @@ public class ClearCommandsTest {
     public void clearAll() throws InterruptedException, RemoteException, ExecutionCommandException {
         command = new ClearAll();
         assertEquals(command, new ClearAll());
+        assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
         verify(executor, times(1)).setTurnEnded(false);
         verify(executor, times(1)).setNeededPosition(null);
@@ -52,6 +54,7 @@ public class ClearCommandsTest {
     public void clearColor() throws InterruptedException, RemoteException, ExecutionCommandException {
         command = new ClearColor();
         assertEquals(command, new ClearColor());
+        assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
         verify(executor, times(1)).setNeededColor(null);
     }
@@ -60,6 +63,7 @@ public class ClearCommandsTest {
     public void clearValue() throws InterruptedException, RemoteException, ExecutionCommandException {
         command = new ClearValue();
         assertEquals(command, new ClearValue());
+        assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
         verify(executor, times(1)).setNeededValue(null);
     }
@@ -68,6 +72,7 @@ public class ClearCommandsTest {
     public void clearPosition() throws InterruptedException, RemoteException, ExecutionCommandException {
         command = new ClearPosition();
         assertEquals(command, new ClearPosition());
+        assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
         verify(executor, times(1)).setNeededPosition(null);
     }
@@ -76,7 +81,18 @@ public class ClearCommandsTest {
     public void clearTurnEndCondition() throws InterruptedException, RemoteException, ExecutionCommandException {
         command = new ClearTurnEndCondition();
         assertEquals(command, new ClearTurnEndCondition());
+        assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
         verify(executor, times(1)).setTurnEnded(false);
+    }
+
+    @Test
+    public void clearDice() throws Exception {
+        command = new ClearDice();
+        assertEquals(command, new ClearDice());
+        assertNotEquals(command, new AddDiceToDiceBagTest());
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor,game));
+        verify(executor, times(1)).setNeededDice(null);
+
     }
 }

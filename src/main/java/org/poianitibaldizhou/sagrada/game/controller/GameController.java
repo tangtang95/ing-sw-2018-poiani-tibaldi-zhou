@@ -88,7 +88,5 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setPosition(Position position, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
-
     }
 }

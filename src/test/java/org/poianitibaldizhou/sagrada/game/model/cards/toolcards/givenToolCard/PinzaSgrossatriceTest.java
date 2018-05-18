@@ -9,8 +9,6 @@ public class PinzaSgrossatriceTest {
 
     private ToolCard toolCard;
 
-
-
     @Before
     public void setUp() throws Exception {
         toolCard = new ToolCard(Color.PURPLE, "Pinza sgrossatrice", "" +
