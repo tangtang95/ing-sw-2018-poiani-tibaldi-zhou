@@ -112,7 +112,7 @@ public class DraftPool {
             return false;
         }
         DraftPool draftPool = (DraftPool) o;
-        return getDices().equals(draftPool.getDices())? true : false;
+        return getDices().equals(draftPool.getDices());
     }
 
     @Override

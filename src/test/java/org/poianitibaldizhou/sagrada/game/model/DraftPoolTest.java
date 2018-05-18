@@ -83,8 +83,17 @@ public class DraftPoolTest {
         DraftPool draftPool = new DraftPool();
         draftPool.addDice(new Dice(1, Color.PURPLE));
         assertNotEquals(dp, draftPool);
-
         assertNotEquals(dp, new AddDiceToDiceBagTest());
+
+        draftPool = new DraftPool();
+        draftPool.addDice(new Dice(5, Color.BLUE));
+        draftPool.addDice(new Dice(2, Color.BLUE));
+        draftPool.addDice(new Dice(1, Color.PURPLE));
+        draftPool.addDice(new Dice(6, Color.RED));
+        draftPool.addDice(new Dice(6, Color.RED));
+        draftPool.addDice(new Dice(3, Color.GREEN));
+
+        assertEquals(dp, draftPool);
     }
 
     @Test
