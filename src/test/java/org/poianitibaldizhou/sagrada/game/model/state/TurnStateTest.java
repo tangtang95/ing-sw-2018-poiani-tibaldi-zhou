@@ -67,6 +67,13 @@ public class TurnStateTest {
         //TODO
     }
 
+    @Test
+    public void nextTurnSinglePlayerTest() throws Exception{
+        List<Player> players = new ArrayList<>();
+        players.add(player1);
+        when(game.getPlayers()).thenReturn(players);
+
+    }
 
     @Test
     public void testNextTurnWhenIsFirstTurn() throws Exception {

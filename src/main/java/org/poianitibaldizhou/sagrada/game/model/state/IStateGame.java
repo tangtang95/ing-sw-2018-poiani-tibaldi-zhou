@@ -8,7 +8,8 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
@@ -26,17 +27,17 @@ public abstract class IStateGame {
     public void nextRound(){
         throw new IllegalStateException();
     }
-    public boolean ready(Player player, SchemaCard schemaCard){
+    public boolean ready(String token, SchemaCard schemaCard){
         throw new IllegalStateException();
     }
     public void readyGame(){
         throw new IllegalStateException();
     }
     public boolean throwDices(Player player){ throw new IllegalStateException(); }
-    public void choosePrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
+    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
         throw new IllegalStateException();
     }
-    public void endGame(){
+    public void calculateVictoryPoints(){
         throw new IllegalStateException();
     }
     public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {throw new IllegalStateException();}
@@ -47,6 +48,15 @@ public abstract class IStateGame {
         throw new IllegalStateException();
     }
 
+    public void fireExecutorEvent(ExecutorEvent event) throws InvalidActionException {
+        throw new IllegalStateException();
+    }
+
+    public void releaseToolCardExecution() {
+        throw new IllegalStateException();
+    }
+
     public static IStateGame newInstance(IStateGame iStateGame) {throw new IllegalStateException(); }
+
 
 }

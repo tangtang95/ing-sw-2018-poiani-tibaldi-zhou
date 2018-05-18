@@ -6,16 +6,13 @@ import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.omg.CORBA.CODESET_INCOMPATIBLE;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

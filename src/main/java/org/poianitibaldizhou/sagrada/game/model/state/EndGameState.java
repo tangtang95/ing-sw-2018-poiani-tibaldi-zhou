@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
@@ -39,18 +38,19 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        // nothing to do
+        game.getGameStrategy().notifyPlayersEndGame();
     }
 
     @Override
-    public void choosePrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
-        game.getGameStrategy().selectPrivateObjectiveCard(privateObjectiveCard);
+    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
+        game.selectPrivateObjectiveCard(player, privateObjectiveCard);
+        calculateVictoryPoints();
     }
 
     @Override
-    public void endGame() {
+    public void calculateVictoryPoints() {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
-        game.getGameStrategy().setPlayersOutcome(game, scoreMap, currentRoundPlayer);
+        game.getGameStrategy().setPlayersOutcome(scoreMap, currentRoundPlayer);
         //TODO notify
     }
 

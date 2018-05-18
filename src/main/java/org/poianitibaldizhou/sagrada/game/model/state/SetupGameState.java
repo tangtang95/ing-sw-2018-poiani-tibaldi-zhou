@@ -37,8 +37,8 @@ public class SetupGameState extends IStateGame{
         }catch (WrongCardInJsonFileException e){
             LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards", e);
         }
-        GameInjector.injectDiceBag(game.getDiceBag());
 
+        game.initDiceBag();
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
         readyGame();

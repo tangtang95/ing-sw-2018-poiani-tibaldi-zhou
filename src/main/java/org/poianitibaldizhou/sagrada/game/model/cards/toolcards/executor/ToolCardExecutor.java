@@ -1,7 +1,8 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
 import java.rmi.RemoteException;
@@ -26,19 +27,11 @@ public class ToolCardExecutor extends Thread{
     private List<IToolCardExecutorObserver> observers;
 
     private Node<ICommand> commandRoot;
-    private boolean isDone;
+    private boolean isExecutingCommands;
     private Player player;
     private Game game;
 
-    /**
-     * Constructor.
-     * Creates an executor helper for the invocation of the various commandRoot.
-     * @param commands tree of commandRoot of the toolCard invoked
-     * @param player
-     * @param game
-     *
-     */
-    public ToolCardExecutor(Node<ICommand> commands, Player player, Game game) {
+    public ToolCardExecutor(Game game, Player player){
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
@@ -51,11 +44,42 @@ public class ToolCardExecutor extends Thread{
         neededColor = null;
         neededPosition = null;
         turnEnd = false;
-        isDone = false;
+        isExecutingCommands = false;
         this.observers = new ArrayList<>();
-        this.commandRoot = commands;
         this.player = player;
         this.game = game;
+    }
+
+    /**
+     * Constructor.
+     * Creates an executor helper for the invocation of the various commandRoot.
+     * @param commandRoot tree of commandRoot of the toolCard invoked
+     * @param player
+     * @param game
+     *
+     */
+    public ToolCardExecutor(Node<ICommand> commandRoot, Player player, Game game) {
+        diceMonitor = new Object();
+        colorMonitor = new Object();
+        valueMonitor = new Object();
+        turnEndMonitor = new Object();
+        positionMonitor = new Object();
+        executorMonitor = new Object();
+
+        neededDice = null;
+        neededValue = null;
+        neededColor = null;
+        neededPosition = null;
+        turnEnd = false;
+        isExecutingCommands = false;
+        this.observers = new ArrayList<>();
+        this.commandRoot = commandRoot;
+        this.player = player;
+        this.game = game;
+    }
+
+    public void setCommands(Node<ICommand> commands){
+        this.commandRoot = commands;
     }
 
     public void addObserver(IToolCardExecutorObserver observer) {
@@ -81,6 +105,12 @@ public class ToolCardExecutor extends Thread{
     }
 
     @Override
+    public synchronized void start() {
+        isExecutingCommands = true;
+        super.start();
+    }
+
+    @Override
     public void run() {
         try {
             invokeCommands();
@@ -89,9 +119,14 @@ public class ToolCardExecutor extends Thread{
         } catch (InterruptedException e) {
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
         }
+        setIsExecutingCommands(false);
+        game.releaseToolCardExecution();
     }
 
     private void invokeCommands() throws RemoteException, InterruptedException {
+        if(commandRoot == null){
+            throw new IllegalStateException();
+        }
         CommandFlow commandFlow;
         Node<ICommand> root = commandRoot;
         do {
@@ -108,7 +143,6 @@ public class ToolCardExecutor extends Thread{
                 // TODO notify
             }
         } while(root != null);
-        isDone = true;
     }
 
     public void setNeededValue(Integer neededValue) {
@@ -186,18 +220,24 @@ public class ToolCardExecutor extends Thread{
         }
     }
 
-    public void waitForToolCardExecutionEnd() throws InterruptedException {
+    public void waitToolCardExecutionEnd() throws InterruptedException {
         synchronized (executorMonitor) {
-            while (!isDone)
+            while (isExecutingCommands)
                 executorMonitor.wait();
         }
     }
 
-    public void setIsDone(boolean isDone) {
+    public void setIsExecutingCommands(boolean isExecutingCommands) {
         synchronized (executorMonitor) {
-            this.isDone = isDone;
-            if(isDone)
+            this.isExecutingCommands = isExecutingCommands;
+            if(!this.isExecutingCommands)
                 executorMonitor.notifyAll();
+        }
+    }
+
+    public boolean isExecutingCommands() {
+        synchronized (executorMonitor) {
+            return isExecutingCommands;
         }
     }
 
@@ -210,6 +250,4 @@ public class ToolCardExecutor extends Thread{
             return null;
         return new ToolCardExecutor(tceh);
     }
-
-
 }

@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ModifyDiceValue;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -132,19 +133,20 @@ public class ToolCardExecutorTest {
 
     @Test
     public void waitForToolCardExecutionEndTest() throws Exception {
+        executor.setIsExecutingCommands(true);
         Thread thread = new Thread(() -> {
             try {
-                executor.waitForToolCardExecutionEnd();
+                executor.waitToolCardExecutionEnd();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
         thread.start();
         assertTrue(thread.isAlive());
-        executor.setIsDone(true);
+        executor.setIsExecutingCommands(false);
         thread.join();
         assertFalse(thread.isAlive());
-        verify(executor).waitForToolCardExecutionEnd();
+        verify(executor).waitToolCardExecutionEnd();
     }
 
     @Test
@@ -182,8 +184,7 @@ public class ToolCardExecutorTest {
         verify(firstLeftSecondLeft).getData();
         verify(firstLeftSecondLeftThirdLeft).getData();
         verify(firstRight, times(0)).getData();
-
-
+        assertEquals(false, executor.isExecutingCommands());
     }
 
     @Test
@@ -193,7 +194,7 @@ public class ToolCardExecutorTest {
         Node<ICommand> firstLeft = spy(new Node<>(command));
         Node<ICommand> firstRight = spy(new Node<>(command));
         Node<ICommand> firstLeftSecondLeft = spy(new Node<>(command));
-        Node<ICommand> firstLeftSecondLeftThirdLeft = spy(new Node(command));
+        Node<ICommand> firstLeftSecondLeftThirdLeft = spy(new Node<>(command));
 
         root.setLeftChild(firstLeft);
         root.setRightChild(firstRight);
@@ -209,6 +210,11 @@ public class ToolCardExecutorTest {
         verify(firstLeftSecondLeft, times(0)).getData();
         verify(firstLeftSecondLeftThirdLeft, times(0)).getData();
         verify(firstRight).getData();
+        assertEquals(false, executor.isExecutingCommands());
+    }
+
+    public void invokeNullCommandsTest() throws Exception{
+
     }
 
     @Test

@@ -17,7 +17,9 @@ import static org.mockito.Mockito.*;
 public class EndGameStateTest {
 
     @Mock
-    private Game game;
+    private SinglePlayerGame singlePlayerGame;
+    @Mock
+    private MultiPlayerGame multiPlayerGame;
     @Mock
     private Player player1, player2, player3, player4;
 
@@ -39,14 +41,14 @@ public class EndGameStateTest {
         playerList.add(player2);
         playerList.add(player3);
         playerList.add(player4);
-        singlePlayerGameStrategy = new SinglePlayerGameStrategy(3);
-        multiPlayerGameStrategy = new MultiPlayerGameStrategy(playerList.size());
-        when(game.getPlayers()).thenReturn(playerList);
-        when(game.getPublicObjectiveCards()).thenReturn(publicObjectiveCards);
-        when(game.getIndexOfPlayer(player1)).thenReturn(0);
-        when(game.getIndexOfPlayer(player2)).thenReturn(1);
-        when(game.getIndexOfPlayer(player3)).thenReturn(2);
-        when(game.getIndexOfPlayer(player4)).thenReturn(3);
+        singlePlayerGameStrategy = new SinglePlayerGameStrategy(singlePlayerGame);
+        multiPlayerGameStrategy = new MultiPlayerGameStrategy(multiPlayerGame);
+        when(multiPlayerGame.getPlayers()).thenReturn(playerList);
+        when(multiPlayerGame.getPublicObjectiveCards()).thenReturn(publicObjectiveCards);
+        when(multiPlayerGame.getIndexOfPlayer(player1)).thenReturn(0);
+        when(multiPlayerGame.getIndexOfPlayer(player2)).thenReturn(1);
+        when(multiPlayerGame.getIndexOfPlayer(player3)).thenReturn(2);
+        when(multiPlayerGame.getIndexOfPlayer(player4)).thenReturn(3);
     }
 
     @After
@@ -55,19 +57,19 @@ public class EndGameStateTest {
 
     @Test
     public void testPlayer1ScoreHigher(){
-        when(game.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
+        when(multiPlayerGame.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
         int player1Score = 10, player2Score = 8, player3Score = 6, player4Score = 4;
         when(player1.getMultiPlayerScore()).thenReturn(player1Score);
         when(player2.getMultiPlayerScore()).thenReturn(player2Score);
         when(player3.getMultiPlayerScore()).thenReturn(player3Score);
         when(player4.getMultiPlayerScore()).thenReturn(player4Score);
-        endGameState = new EndGameState(game, player1);
+        endGameState = new EndGameState(multiPlayerGame, player1);
         endGameState.init();
-        endGameState.endGame();
-        verify(game).setPlayerOutcome(player1, Outcome.WIN);
+        endGameState.calculateVictoryPoints();
+        verify(multiPlayerGame).setPlayerOutcome(player1, Outcome.WIN);
         for (Player p: playerList) {
             if(p != player1)
-                verify(game).setPlayerOutcome(p, Outcome.LOSE);
+                verify(multiPlayerGame).setPlayerOutcome(p, Outcome.LOSE);
         }
     }
 
@@ -76,7 +78,7 @@ public class EndGameStateTest {
      */
     @Test
     public void testPlayer1SameScorePlayer2(){
-        when(game.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
+        when(multiPlayerGame.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
         int player1Score = 10, player2Score = 10, player3Score = 6, player4Score = 4;
         when(player1.getMultiPlayerScore()).thenReturn(player1Score);
         when(player2.getMultiPlayerScore()).thenReturn(player2Score);
@@ -84,13 +86,13 @@ public class EndGameStateTest {
         when(player4.getMultiPlayerScore()).thenReturn(player4Score);
         when(player1.getScoreFromPrivateCard()).thenReturn(1);
         when(player2.getScoreFromPrivateCard()).thenReturn(2);
-        endGameState = new EndGameState(game, player1);
+        endGameState = new EndGameState(multiPlayerGame, player1);
         endGameState.init();
-        endGameState.endGame();
-        verify(game).setPlayerOutcome(player2, Outcome.WIN);
+        endGameState.calculateVictoryPoints();
+        verify(multiPlayerGame).setPlayerOutcome(player2, Outcome.WIN);
         for (Player p: playerList) {
             if(p != player2)
-                verify(game).setPlayerOutcome(p, Outcome.LOSE);
+                verify(multiPlayerGame).setPlayerOutcome(p, Outcome.LOSE);
         }
     }
 
@@ -99,7 +101,7 @@ public class EndGameStateTest {
      */
     @Test
     public void testPlayer1SameScorePlayer2andSameScoreFromPrivate(){
-        when(game.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
+        when(multiPlayerGame.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
         int player1Score = 10, player2Score = 10, player3Score = 6, player4Score = 4;
         when(player1.getMultiPlayerScore()).thenReturn(player1Score);
         when(player2.getMultiPlayerScore()).thenReturn(player2Score);
@@ -109,13 +111,13 @@ public class EndGameStateTest {
         when(player2.getScoreFromPrivateCard()).thenReturn(2);
         when(player1.getFavorTokens()).thenReturn(1);
         when(player2.getFavorTokens()).thenReturn(2);
-        endGameState = new EndGameState(game, player1);
+        endGameState = new EndGameState(multiPlayerGame, player1);
         endGameState.init();
-        endGameState.endGame();
-        verify(game).setPlayerOutcome(player2, Outcome.WIN);
+        endGameState.calculateVictoryPoints();
+        verify(multiPlayerGame).setPlayerOutcome(player2, Outcome.WIN);
         for (Player p: playerList) {
             if(p != player2)
-                verify(game).setPlayerOutcome(p, Outcome.LOSE);
+                verify(multiPlayerGame).setPlayerOutcome(p, Outcome.LOSE);
         }
     }
 
@@ -125,7 +127,7 @@ public class EndGameStateTest {
      */
     @Test
     public void testPlayer1SameScorePlayer2Everything(){
-        when(game.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
+        when(multiPlayerGame.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
         int player1Score = 10, player2Score = 10, player3Score = 10, player4Score = 4;
         when(player1.getMultiPlayerScore()).thenReturn(player1Score);
         when(player2.getMultiPlayerScore()).thenReturn(player2Score);
@@ -135,13 +137,13 @@ public class EndGameStateTest {
         when(player2.getScoreFromPrivateCard()).thenReturn(2);
         when(player1.getFavorTokens()).thenReturn(2);
         when(player2.getFavorTokens()).thenReturn(2);
-        endGameState = new EndGameState(game, player1);
+        endGameState = new EndGameState(multiPlayerGame, player1);
         endGameState.init();
-        endGameState.endGame();
-        verify(game).setPlayerOutcome(player2, Outcome.WIN);
+        endGameState.calculateVictoryPoints();
+        verify(multiPlayerGame).setPlayerOutcome(player2, Outcome.WIN);
         for (Player p: playerList) {
             if(p != player2)
-                verify(game).setPlayerOutcome(p, Outcome.LOSE);
+                verify(multiPlayerGame).setPlayerOutcome(p, Outcome.LOSE);
         }
     }
 
@@ -151,7 +153,7 @@ public class EndGameStateTest {
      */
     @Test
     public void testPlayer1SameScorePlayer3Everything(){
-        when(game.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
+        when(multiPlayerGame.getGameStrategy()).thenReturn(multiPlayerGameStrategy);
         int player1Score = 10, player2Score = 8, player3Score = 10, player4Score = 4;
         when(player1.getMultiPlayerScore()).thenReturn(player1Score);
         when(player2.getMultiPlayerScore()).thenReturn(player2Score);
@@ -161,20 +163,20 @@ public class EndGameStateTest {
         when(player3.getScoreFromPrivateCard()).thenReturn(2);
         when(player1.getFavorTokens()).thenReturn(2);
         when(player3.getFavorTokens()).thenReturn(2);
-        endGameState = new EndGameState(game, player3);
+        endGameState = new EndGameState(multiPlayerGame, player3);
         endGameState.init();
-        endGameState.endGame();
-        verify(game).setPlayerOutcome(player1, Outcome.WIN);
+        endGameState.calculateVictoryPoints();
+        verify(multiPlayerGame).setPlayerOutcome(player1, Outcome.WIN);
         for (Player p: playerList) {
             if(p != player1)
-                verify(game).setPlayerOutcome(p, Outcome.LOSE);
+                verify(multiPlayerGame).setPlayerOutcome(p, Outcome.LOSE);
         }
     }
 
 
     @Test
     public void getCurrentRoundPlayer() throws Exception {
-        endGameState = new EndGameState(game, player1);
+        endGameState = new EndGameState(multiPlayerGame, player1);
         assertEquals(player1, endGameState.getCurrentRoundPlayer());
         assertNotEquals(player2, endGameState.getCurrentRoundPlayer());
     }

@@ -25,7 +25,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
      * @param description card's description
      * @param cardPoints  card's point
      */
-    PublicObjectiveCard(String name, String description, int cardPoints, ObjectiveCardType type) {
+    PublicObjectiveCard(final String name, final String description, final int cardPoints, final ObjectiveCardType type) {
         super(name, description);
 
         this.type = type;

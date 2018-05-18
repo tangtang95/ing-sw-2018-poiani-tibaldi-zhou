@@ -2,9 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -16,29 +16,15 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
     public static final int NUMBER_OF_DICES_TO_DRAW = 4;
     public static final int NUMBER_OF_PRIVATE_OBJECTIVE_CARDS = 2;
 
-    private int gameDifficulty;
-    private List<PrivateObjectiveCard> privateObjectiveCards;
-    private PrivateObjectiveCard privateObjectiveCardSelected;
+    private SinglePlayerGame singlePlayerGame;
 
-    public SinglePlayerGameStrategy(int difficulty){
-        this.gameDifficulty = difficulty;
-        privateObjectiveCards = new ArrayList<>();
-    }
-
-    /**
-     * copy-constructor
-     *
-     * @param spgs the single player game strategy to copy
-     */
-    private SinglePlayerGameStrategy(SinglePlayerGameStrategy spgs) {
-        this.gameDifficulty = spgs.gameDifficulty;
-        this.privateObjectiveCards = new ArrayList<>(spgs.privateObjectiveCards);
-        this.privateObjectiveCardSelected = spgs.privateObjectiveCardSelected;
+    public SinglePlayerGameStrategy(SinglePlayerGame game){
+        this.singlePlayerGame = game;
     }
 
     @Override
     public int getNumberOfToolCardForGame() {
-        return gameDifficulty;
+        return singlePlayerGame.getDifficulty();
     }
 
     @Override
@@ -48,7 +34,7 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
 
     @Override
     public int getPlayerScore(Player player) {
-        return player.getSinglePlayerScore(privateObjectiveCardSelected);
+        return player.getSinglePlayerScore();
     }
 
     @Override
@@ -62,26 +48,10 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
     }
 
     @Override
-    public void selectPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
-        if(!privateObjectiveCards.contains(privateObjectiveCard))
-            throw new InvalidActionException();
-        privateObjectiveCardSelected = privateObjectiveCard;
-    }
-
-    @Override
-    public void setPrivateObjectiveCard(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
-        try {
-            this.privateObjectiveCards.add(privateObjectiveCards.draw());
-        } catch (EmptyCollectionException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString(), e);
-        }
-    }
-
-    @Override
-    public void setPlayersOutcome(Game game, Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
-        int targetScore = game.getTargetScore();
+    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
+        int targetScore = singlePlayerGame.getTargetScore();
         Outcome outcome = (scoreMap.get(currentRoundPlayer) > targetScore) ? Outcome.WIN : Outcome.LOSE;
-        game.setPlayerOutcome(currentRoundPlayer, outcome);
+        singlePlayerGame.setPlayerOutcome(currentRoundPlayer, outcome);
     }
 
     @Override
@@ -89,9 +59,13 @@ public class SinglePlayerGameStrategy implements IGameStrategy{
         return true;
     }
 
-    public static SinglePlayerGameStrategy newInstance(SinglePlayerGameStrategy spgs) {
-        if (spgs == null)
-            return null;
-        return new SinglePlayerGameStrategy(spgs);
+    @Override
+    public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        singlePlayerGame.setPlayer(token, schemaCard, privateObjectiveCards);
+    }
+
+    @Override
+    public void notifyPlayersEndGame() {
+        singlePlayerGame.requestPrivateObjectiveCardFromPlayer();
     }
 }

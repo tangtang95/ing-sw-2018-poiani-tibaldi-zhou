@@ -23,6 +23,12 @@ public class PlayerTest {
 
     @Test
     public void useCardTest() throws Exception {
+
+    }
+
+    @Test
+    public void endTurn() throws Exception {
+
     }
 
     @Test

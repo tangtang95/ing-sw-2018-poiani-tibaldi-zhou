@@ -20,30 +20,13 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class LobbyManagerTest {
-    @DataPoint
-    public static LobbyManager lobbyManager;
+    private LobbyManager lobbyManager;
 
     @Mock
-    public ILobbyObserver lobbyObserver1;
+    private ILobbyObserver lobbyObserver1, lobbyObserver2, lobbyObserver3,
+            lobbyObserver4, lobbyObserver5, lobbyObserver6;
 
-    @Mock
-    public ILobbyObserver lobbyObserver2;
-
-    @Mock
-    public ILobbyObserver lobbyObserver3;
-
-    @Mock
-    public ILobbyObserver lobbyObserver4;
-
-    @Mock
-    public ILobbyObserver lobbyObserver5;
-
-    @Mock
-    public ILobbyObserver lobbyObserver6;
-
-
-    @DataPoint
-    public static List<ILobbyObserver> observers;
+    private List<ILobbyObserver> observers;
 
     @Before
     public void setUp() {
