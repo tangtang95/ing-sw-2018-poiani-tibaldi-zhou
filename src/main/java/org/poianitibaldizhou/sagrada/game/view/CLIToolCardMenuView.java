@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
     private Player player;
@@ -30,7 +31,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
     }
 
     @Override
-    public void notifyNeedColor() throws RemoteException {
+    public void notifyNeedColor(Set<Color> colors) throws RemoteException {
 
     }
 

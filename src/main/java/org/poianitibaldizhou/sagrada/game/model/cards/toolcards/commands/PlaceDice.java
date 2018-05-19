@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
@@ -8,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -45,13 +45,13 @@ public class PlaceDice implements ICommand {
      *
      * @param player           player that invoked the toolcard: its schema card will receive a new dice
      * @param toolCardExecutor toolcard that has been invoked
-     * @param game             game in which the player acts
-     * @return true
-     * @throws InterruptedException given to
+     * @param stateGame
+     * @return CommandFlow.REPEAT if the restrictions aren't respected, CommandFlow.MAIN otherwise
+     * @throws InterruptedException given to wait() in getting parameters from the executor
      * @throws RemoteException      network communication error
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws InterruptedException, RemoteException, ExecutionCommandException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
         Dice dice;
         Position position;
 
@@ -64,10 +64,9 @@ public class PlaceDice implements ICommand {
         position = toolCardExecutor.getPosition();
 
         try {
-            game.setDiceOnSchemaCardPlayer(player, dice, position.getRow(), position.getColumn(), this.tileConstraint,
-                    this.diceConstraint);
+            toolCardExecutor.getTemporarySchemaCard().setDice(dice, position.getRow(), position.getColumn(), this.tileConstraint, this.diceConstraint);
         } catch (RuleViolationException e) {
-            throw new ExecutionCommandException(e);
+            return CommandFlow.REPEAT;
         }
 
         return CommandFlow.MAIN;

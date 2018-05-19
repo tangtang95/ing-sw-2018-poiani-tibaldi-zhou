@@ -1,14 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
@@ -19,24 +15,24 @@ import java.util.logging.Logger;
 
 public abstract class Game implements IGameStrategy{
 
-    private final List<String> tokens;
+    private final List<String> playerTokens;
     protected final List<Player> players;
-    private final RoundTrack roundTrack;
+    private RoundTrack roundTrack;
     private final List<ToolCard> toolCards;
     private final List<PublicObjectiveCard> publicObjectiveCards;
-    private final DrawableCollection<Dice> diceBag;
-    protected final DraftPool draftPool;
+    private DrawableCollection<Dice> diceBag;
+    protected DraftPool draftPool;
     private final String name;
     private IStateGame state;
 
     /**
      * Constructor for Multi player.
-     * Create the Game with all the attributes initialized, create also all the player from the given tokens and
+     * Create the Game with all the attributes initialized, create also all the player from the given playerTokens and
      * set the state to SetupPlayerState
      *
      */
-    public Game(String name, List<String> tokens) {
-        this.tokens = new ArrayList<>(tokens);
+    public Game(String name, List<String> playerTokens) {
+        this.playerTokens = new ArrayList<>(playerTokens);
         this.players = new ArrayList<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new ArrayList<>();
@@ -47,9 +43,9 @@ public abstract class Game implements IGameStrategy{
         setState(new SetupPlayerState(this));
     }
 
-    public Game(String name, String token){
-        this.tokens = new ArrayList<>();
-        this.tokens.add(token);
+    public Game(String name, String playerToken){
+        this.playerTokens = new ArrayList<>();
+        this.playerTokens.add(playerToken);
         this.players = new ArrayList<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new ArrayList<>();
@@ -140,7 +136,7 @@ public abstract class Game implements IGameStrategy{
 
     @Contract(pure = true)
     public List<String> getToken(){
-        return new ArrayList<>(tokens);
+        return new ArrayList<>(playerTokens);
     }
 
     //MODIFIER
@@ -162,24 +158,6 @@ public abstract class Game implements IGameStrategy{
         roundTrack.addDicesToRound(draftPool.getDices(), currentRound);
     }
 
-    public void clearDraftPool() {
-        draftPool.clearPool();
-    }
-
-
-    public void swapRoundTrackDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
-        roundTrack.swapDice(oldDice, newDice, round);
-    }
-
-    public void swapDraftPoolDice(Dice oldDice, Dice newDice) throws DiceNotFoundException {
-        draftPool.addDice(newDice);
-        try {
-            draftPool.useDice(oldDice);
-        } catch (EmptyCollectionException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "ERROR: draftPool is empty!");
-        }
-    }
-
     public void addToolCard(ToolCard toolCard) {
         toolCards.add(toolCard);
     }
@@ -188,59 +166,10 @@ public abstract class Game implements IGameStrategy{
         publicObjectiveCards.add(publicObjectiveCard);
     }
 
-    public void addDiceToDraftPool(Dice dice) {
-        draftPool.addDice(dice);
-    }
-
-    public void addDicesToDraftPoolFromDiceBag() {
-        for (int i = 0; i < getNumberOfDicesToDraw(); i++) {
-            try {
-                draftPool.addDice(diceBag.draw());
-            } catch (EmptyCollectionException e) {
-                Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
-            }
-        }
-    }
-
-    public void addDiceToDiceBag(Dice dice) {
-        diceBag.addElement(dice);
-    }
-
-    public void useDraftPoolDice(Dice dice) throws EmptyCollectionException, DiceNotFoundException {
-        draftPool.useDice(dice);
-    }
-
-    public void reRollDraftPool() {
-        draftPool.reRollDices();
-    }
-
-    public Dice getDiceFromDiceBag() {
-        Dice dice = null;
-        try {
-            dice = diceBag.draw();
-        } catch (EmptyCollectionException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "CRITICAL ERROR: diceBag empty");
-        }
-        return dice;
-    }
-
-    public Dice removeDiceFromSchemaCardPlayer(Player player, int row, int column) {
-        return player.removeDiceFromSchemaCard(row, column);
-    }
-
-    public void setDiceOnSchemaCardPlayer(Player player, Dice dice, int row, int column,
-                                          PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
-        player.placeDice(dice, row, column, restriction, diceRestriction);
-    }
-
     public void initDiceBag() {
         GameInjector.injectDiceBag(diceBag);
     }
-
-    public void releaseToolCardExecution() {
-        state.releaseToolCardExecution();
-    }
-
+    
     /**
      * Return the index of the player given based on the list of players
      *
@@ -276,6 +205,32 @@ public abstract class Game implements IGameStrategy{
 
     public void calculateOutcome(){
         state.calculateVictoryPoints();
+    }
+
+    public void setDraftPool(DraftPool draftPool) {
+        this.draftPool = draftPool;
+    }
+
+    public void setDiceBag(DrawableCollection<Dice> diceBag) {
+        this.diceBag = diceBag;
+    }
+
+    public void setRoundTrack(RoundTrack roundTrack) {
+        this.roundTrack = roundTrack;
+    }
+
+    public void clearDraftPool() {
+        draftPool.clearPool();
+    }
+
+    public void addDicesToDraftPoolFromDiceBag() {
+        for (int i = 0; i < getNumberOfDicesToDraw(); i++) {
+            try {
+                draftPool.addDice(diceBag.draw());
+            } catch (EmptyCollectionException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
+            }
+        }
     }
 
     /*

@@ -1,13 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -21,11 +20,12 @@ public class ModifyDiceValueByDelta implements ICommand {
      * Constructor.
      * Create a command to modify the dice value by a certain delta (increment or decrement)
      *
-     * @param value the delta value (must be greater than 0)
+     * @param value the delta value (must be greater than 0, and less then 6)
      */
     public ModifyDiceValueByDelta(int value) {
-        if(value <= 0)
-            throw new IllegalArgumentException("value attribute has to be greater than 0");
+        if (value <= 0 || value >= Dice.MAX_VALUE)
+            throw new IllegalArgumentException("value attribute has to be greater than 0, " +
+                    "has not to exceed " + (Dice.MAX_VALUE - 1));
         this.value = value;
     }
 
@@ -37,26 +37,26 @@ public class ModifyDiceValueByDelta implements ICommand {
      * The value doesn't have to be present before the method invocation: it's requested inside
      * the method.
      *
-     * @param player Player who invoked toolcard
+     * @param player           Player who invoked toolcard
      * @param toolCardExecutor ToolCard invoked that contains this command
-     * @param game Game in which the player acts
-     * @throws RemoteException network communication error
+     * @param stateGame        state in which the player acts
+     * @return CommandFlow.MAIN if methods execute correctly, CommandFlow.REPEAT if the new value doesn't respect the rules.
+     * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in  toolCard.getDice()
-     * @return true if methods execute correctly, false if the new value doesn't respect the rules.
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         toolCardExecutor.setNeededDice(dice);
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        for(IToolCardExecutorObserver obs : observerList)
+        for (IToolCardExecutorObserver obs : observerList)
             obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue());
 
         int newValue = toolCardExecutor.getNeededValue();
 
-        if(!checkNewValueValidity(newValue, dice.getNumber())) {
-            throw new ExecutionCommandException();
+        if (!checkNewValueValidity(newValue, dice.getNumber())) {
+            return CommandFlow.REPEAT;
         }
         toolCardExecutor.setNeededDice(new Dice(newValue, dice.getColor()));
         return CommandFlow.MAIN;
@@ -78,14 +78,14 @@ public class ModifyDiceValueByDelta implements ICommand {
      */
     @Contract(pure = true)
     private boolean checkNewValueValidity(int newValue, int oldValue) {
-        if(newValue < Dice.MIN_VALUE || newValue > Dice.MAX_VALUE)
+        if (newValue < Dice.MIN_VALUE || newValue > Dice.MAX_VALUE)
             return false;
         return (newValue == oldValue + this.value) || (newValue == oldValue - this.value);
     }
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof ModifyDiceValueByDelta))
+        if (!(object instanceof ModifyDiceValueByDelta))
             return false;
 
         ModifyDiceValueByDelta obj = (ModifyDiceValueByDelta) object;

@@ -1,9 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ToolCardExecutor extends Thread{
+public class ToolCardExecutor extends Thread {
+    // Monitors
     private final Object diceMonitor;
     private final Object colorMonitor;
     private final Object valueMonitor;
@@ -19,6 +21,7 @@ public class ToolCardExecutor extends Thread{
     private final Object positionMonitor;
     private final Object executorMonitor;
 
+    // Values monitorized
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
@@ -26,12 +29,17 @@ public class ToolCardExecutor extends Thread{
     private boolean turnEnd;
     private List<IToolCardExecutorObserver> observers;
 
+    // Executor's attribute
     private Node<ICommand> commandRoot;
     private boolean isExecutingCommands;
     private Player player;
+    private DraftPool temporaryDraftpool;
+    private DrawableCollection<Dice> temporaryDicebag;
+    private RoundTrack temporaryRoundtrack;
+    private SchemaCard temporarySchemaCard;
     private Game game;
 
-    public ToolCardExecutor(Game game, Player player){
+    public ToolCardExecutor(Game game, Player player) {
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
@@ -45,40 +53,22 @@ public class ToolCardExecutor extends Thread{
         neededPosition = null;
         turnEnd = false;
         isExecutingCommands = false;
+
         this.observers = new ArrayList<>();
         this.player = player;
+        this.temporaryDraftpool = game.getDraftPool();
+        this.temporaryDicebag = game.getDiceBag();
+        this.temporaryRoundtrack = game.getRoundTrack();
+        this.temporarySchemaCard = player.getSchemaCard();
         this.game = game;
     }
 
-    /**
-     * Constructor.
-     * Creates an executor helper for the invocation of the various commandRoot.
-     * @param commandRoot tree of commandRoot of the toolCard invoked
-     * @param player
-     * @param game
-     *
-     */
     public ToolCardExecutor(Node<ICommand> commandRoot, Player player, Game game) {
-        diceMonitor = new Object();
-        colorMonitor = new Object();
-        valueMonitor = new Object();
-        turnEndMonitor = new Object();
-        positionMonitor = new Object();
-        executorMonitor = new Object();
-
-        neededDice = null;
-        neededValue = null;
-        neededColor = null;
-        neededPosition = null;
-        turnEnd = false;
-        isExecutingCommands = false;
-        this.observers = new ArrayList<>();
+        this(game, player);
         this.commandRoot = commandRoot;
-        this.player = player;
-        this.game = game;
     }
 
-    public void setCommands(Node<ICommand> commands){
+    public void setCommands(Node<ICommand> commands) {
         this.commandRoot = commands;
     }
 
@@ -96,6 +86,7 @@ public class ToolCardExecutor extends Thread{
      * @param toolCardExecutor the toolCard Executor to copy
      */
     private ToolCardExecutor(ToolCardExecutor toolCardExecutor) {
+        // TODO
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
@@ -114,35 +105,38 @@ public class ToolCardExecutor extends Thread{
     public void run() {
         try {
             invokeCommands();
+            game.setDraftPool(temporaryDraftpool);
+            game.setDiceBag(temporaryDicebag);
+            ;
+            game.setRoundTrack(temporaryRoundtrack);
+            player.setSchemaCard(temporarySchemaCard);
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
         } catch (InterruptedException e) {
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
         }
         setIsExecutingCommands(false);
-        game.releaseToolCardExecution();
+        game.getState().releaseToolCardExecution();
     }
 
     private void invokeCommands() throws RemoteException, InterruptedException {
-        if(commandRoot == null){
+        if (commandRoot == null) {
             throw new IllegalStateException();
         }
         CommandFlow commandFlow;
         Node<ICommand> root = commandRoot;
         do {
-            try {
-                commandFlow = root.getData().executeCommand(player, this, game);
+            commandFlow = root.getData().executeCommand(player, this, game.getState());
 
-                if (commandFlow == CommandFlow.MAIN) {
-                    root = root.getLeftChild();
-                } else {
-                    root = root.getRightChild();
-                }
-            } catch (ExecutionCommandException e) {
-                // Basically nothing is needed, the commands just needs to be re-executed
-                // TODO notify
+            if (commandFlow == CommandFlow.MAIN) {
+                root = root.getLeftChild();
+            } else if (commandFlow == CommandFlow.SUB) {
+                root = root.getRightChild();
+            } else if (commandFlow == CommandFlow.STOP) {
+
             }
-        } while(root != null);
+
+        } while (root != null);
     }
 
     public void setNeededValue(Integer neededValue) {
@@ -230,7 +224,7 @@ public class ToolCardExecutor extends Thread{
     public void setIsExecutingCommands(boolean isExecutingCommands) {
         synchronized (executorMonitor) {
             this.isExecutingCommands = isExecutingCommands;
-            if(!this.isExecutingCommands)
+            if (!this.isExecutingCommands)
                 executorMonitor.notifyAll();
         }
     }
@@ -241,7 +235,23 @@ public class ToolCardExecutor extends Thread{
         }
     }
 
-    public void interruptCommandsInvocation(){
+    public DraftPool getTemporaryDraftpool() {
+        return temporaryDraftpool;
+    }
+
+    public DrawableCollection<Dice> getTemporaryDicebag() {
+        return temporaryDicebag;
+    }
+
+    public RoundTrack getTemporaryRoundtrack() {
+        return temporaryRoundtrack;
+    }
+
+    public SchemaCard getTemporarySchemaCard() {
+        return temporarySchemaCard;
+    }
+
+    public void interruptCommandsInvocation() {
         this.interrupt();
     }
 

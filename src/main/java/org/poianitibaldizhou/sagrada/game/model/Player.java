@@ -14,7 +14,7 @@ import java.util.List;
 public class Player{
     private ICoin coins;
     private final String token;
-    private final SchemaCard schemaCard;
+    private SchemaCard schemaCard;
     private final List<PrivateObjectiveCard> privateObjectiveCards;
     private int indexOfPrivateObjectiveCard;
     private Outcome outcome;
@@ -75,25 +75,6 @@ public class Player{
         return toolCard.useCard();
     }
 
-    /**
-     * Place if possible the dice chosen in the place chosen
-     *
-     * @param dice the dice which will be placed
-     * @param row row position (number between 0 and 3 included)
-     * @param column column position (number between 0 and 4 included)
-     * @param tileConstraint the constraint of the tile chosen
-     * @param diceConstraint the constrains of the dice
-     * @throws RuleViolationException if the rule of the schema is violated
-     */
-    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
-                          DiceRestrictionType diceConstraint) throws RuleViolationException {
-        schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
-    }
-
-    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
-        placeDice(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-    }
-
     public void setOutcome(Outcome outcome) {
         this.outcome = outcome;
     }
@@ -106,10 +87,6 @@ public class Player{
             if(privateObjectiveCards.get(i).equals(privateObjectiveCard))
                 indexOfPrivateObjectiveCard = i;
         }
-    }
-
-    public Dice removeDiceFromSchemaCard(int row, int column) {
-        return schemaCard.removeDice(row, column);
     }
 
     /**
@@ -193,4 +170,7 @@ public class Player{
         return false;
     }
 
+    public void setSchemaCard(SchemaCard schemaCard) {
+        this.schemaCard = schemaCard;
+    }
 }

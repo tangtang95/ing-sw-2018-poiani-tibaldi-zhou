@@ -1,9 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -14,7 +14,7 @@ public class SkipTurn implements ICommand {
     private final int value;
 
     public SkipTurn(int i) {
-        if(i != 1 && i != 2)
+        if (i != 1 && i != 2)
             throw new IllegalArgumentException();
         this.value = i;
     }
@@ -22,15 +22,14 @@ public class SkipTurn implements ICommand {
     /**
      * Add skip turn to the player that invoked the ToolCard
      *
-     * @param player player that invoked the ToolCard
+     * @param player           player that invoked the ToolCard
      * @param toolCardExecutor executorHelper that contains this command
-     * @param game game in which the player acts
-     * @return always the MAIN flow of the treeFlow
-     * @throws RemoteException RMI connection error
+     * @param stateGame        state in which the player acts
+     * @return CommandFlow.MAIN
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException {
-        TurnState turnState = (TurnState) game.getState();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) {
+        TurnState turnState = (TurnState) stateGame;
         turnState.addSkipTurnPlayer(player, value);
         return CommandFlow.MAIN;
     }
@@ -41,7 +40,7 @@ public class SkipTurn implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof SkipTurn))
+        if (!(object instanceof SkipTurn))
             return false;
 
         SkipTurn obj = (SkipTurn) object;

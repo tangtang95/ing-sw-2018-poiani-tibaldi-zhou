@@ -2,11 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class DrawableCollection<T>{
+public class DrawableCollection<T> {
     private List<T> collection;
 
     /**
@@ -46,7 +44,7 @@ public class DrawableCollection<T>{
      */
     public T draw() throws EmptyCollectionException {
         Random rand = new Random();
-        if(collection.isEmpty()) {
+        if (collection.isEmpty()) {
             throw new EmptyCollectionException();
         }
         int pos = Math.abs(rand.nextInt(collection.size()));
@@ -98,5 +96,56 @@ public class DrawableCollection<T>{
         if (drawableCollection == null)
             return null;
         return new DrawableCollection(drawableCollection.getCollection());
+    }
+
+    /**
+     * Two DrawableCollection are equals if they contains the same elements in the same number in any order.
+     * @param o object to compare
+     * @return true if equals, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        System.out.println("here1");
+        if (!(o instanceof DrawableCollection))
+            return false;
+
+        List<T> param = ((DrawableCollection) o).getCollection();
+
+        if (param.size() != collection.size())
+            return false;
+
+        System.out.println("here2");
+        int[] counter1 = new int[param.size()];
+        int[] counter2 = new int[param.size()];
+        int[] positions = new int[param.size()];
+
+        for (int i = 0; i < param.size(); i++) {
+            for (int j = 0; j < param.size(); j++) {
+                if (param.get(i).equals(param.get(j))) {
+                    counter1[j]++;
+                    positions[i] = j;
+                    break;
+                } else if (counter1[j] == 0) {
+                    counter1[j]++;
+                    positions[i] = j;
+                    break;
+                }
+            }
+        }
+
+        for (T elem : collection) {
+            for (int i = 0; i < param.size(); i++) {
+                if(elem.equals(param.get(i))) {
+                    counter1[positions[i]] -= 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < param.size(); i++) {
+            if(counter1[i] != 0)
+                return false;
+        }
+        return true;
     }
 }

@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -25,35 +26,43 @@ public class IfDicePlaceableTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState state;
     @Mock
     private Player invokerPlayer;
+    @Mock
+    private SchemaCard schemaCard;
+    @Mock
+    private Dice dice;
+    @Mock
+    private Position position;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new IfDicePlaceable();
+        when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
+        when(executor.getNeededDice()).thenReturn(dice);
+        when(executor.getPosition()).thenReturn(position);
     }
 
     @After
     public void tearDown() throws Exception {
         command = null;
         executor = null;
-        game = null;
+        state = null;
         invokerPlayer = null;
     }
 
     @Test
     public void executeCommand() throws Exception {
-        Dice dice = mock(Dice.class);
-        Position position = mock(Position.class);
-        when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
-        when(invokerPlayer.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())).thenReturn(false);
-        assertEquals(CommandFlow.SUB, command.executeCommand(invokerPlayer, executor, game));
+        when(executor.getTemporarySchemaCard().isDicePositionable(dice, position.getRow(), position.getColumn())).thenReturn(true);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
+    }
 
-        when(invokerPlayer.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())).thenReturn(true);
-        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, game));
+    @Test
+    public void executeCommandFailing() throws Exception {
+        when(invokerPlayer.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())).thenReturn(false);
+        assertEquals(CommandFlow.SUB, command.executeCommand(invokerPlayer, executor, state));
     }
 
     @Test

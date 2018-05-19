@@ -1,9 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
@@ -15,16 +15,15 @@ public class IfDicePlaceable implements ICommand {
      *
      * @param player player that invoked the ToolCard
      * @param toolCardExecutor executorHelper that contains this command
-     * @param game game in which the player acts
+     * @param stateGame
      * @return MAIN flow if the dice is positionable, otherwise SUB flow
      * @throws InterruptedException given by wait of getNeededDice() and getPosition()
-     * @throws RemoteException RMI connection error
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws  InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         Position position = toolCardExecutor.getPosition();
-        if(!player.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())){
+        if(!toolCardExecutor.getTemporarySchemaCard().isDicePositionable(dice, position.getRow(), position.getColumn())){
             return CommandFlow.SUB;
         }
         return CommandFlow.MAIN;
