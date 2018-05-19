@@ -112,7 +112,20 @@ public class DraftPool {
             return false;
         }
         DraftPool draftPool = (DraftPool) o;
-        return getDices().equals(draftPool.getDices())? true : false;
+        List<Dice> comparingList = draftPool.getDices();
+        int[][] counter = new int[Dice.MAX_VALUE][Color.values().length];
+        for(Dice d : dices) {
+            counter[d.getNumber()-1][d.getColor().ordinal()]+=1;
+        }
+        for(Dice d: comparingList) {
+            counter[d.getNumber()-1][d.getColor().ordinal()]-=1;
+        }
+        for (int i = 0; i < Dice.MAX_VALUE; i++) {
+            for(int j = 0; j < Color.values().length; j++)
+                if(counter[i][j] != 0)
+                    return false;
+        }
+        return true;
     }
 
     @Override
