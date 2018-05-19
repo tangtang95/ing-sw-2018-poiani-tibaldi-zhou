@@ -11,7 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import java.util.ArrayList;
 import java.util.List;
 
-public class Player {
+public class Player{
     private ICoin coins;
     private final String token;
     private final SchemaCard schemaCard;
@@ -20,17 +20,10 @@ public class Player {
     private Outcome outcome;
 
     /**
-<<<<<<< Updated upstream
      * Set to null the player parameters:
      * - coins are the player expendable coins for using the toolCard
      * - schemaCard
      * - privateObjectiveCard
-=======
-     * set null the player parameter:
-     * coins are the player expendable coins for using the toolCard
-     * schemaCard
-     * privateObjectiveCards
->>>>>>> Stashed changes
      *
      * @param token string for locating the single player during the game
      * @param schemaCard
@@ -67,6 +60,10 @@ public class Player {
         return outcome;
     }
 
+    public boolean isDicePositionableOnSchemaCard(Dice dice, int row, int column) {
+        return schemaCard.isDicePositionable(dice, row, column);
+    }
+
     /**
      * Use the card and invoke the card commands
      *
@@ -76,23 +73,6 @@ public class Player {
     public Node<ICommand> useCard(ToolCard toolCard) throws NoCoinsExpendableException {
         coins.use(toolCard);
         return toolCard.useCard();
-    }
-
-    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
-        schemaCard.setDice(dice, row, column);
-    }
-
-    public void setOutcome(Outcome outcome) {
-        this.outcome = outcome;
-    }
-
-    public void setDiceOnSchemaCard(Dice dice, int row, int column,
-                                    PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
-        schemaCard.setDice(dice, row, column, restriction, diceRestriction);
-    }
-
-    public boolean isDicePositionableOnSchemaCard(Dice dice, int row, int column) {
-        return schemaCard.isDicePositionable(dice, row, column);
     }
 
     /**
@@ -108,6 +88,28 @@ public class Player {
     public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
                           DiceRestrictionType diceConstraint) throws RuleViolationException {
         schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
+    }
+
+    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
+        placeDice(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+    }
+
+    public void setOutcome(Outcome outcome) {
+        this.outcome = outcome;
+    }
+
+
+    public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
+        if(!containsPrivateObjectiveCard(privateObjectiveCard))
+            throw new IllegalArgumentException("PrivateObjectiveCard doesn't exist in the player");
+        for (int i = 0; i < privateObjectiveCards.size(); i++) {
+            if(privateObjectiveCards.get(i).equals(privateObjectiveCard))
+                indexOfPrivateObjectiveCard = i;
+        }
+    }
+
+    public Dice removeDiceFromSchemaCard(int row, int column) {
+        return schemaCard.removeDice(row, column);
     }
 
     /**
@@ -164,10 +166,6 @@ public class Player {
                 .getScore(schemaCard) - schemaCard.getNumberOfEmptySpaces()*3;
     }
 
-    public Dice removeDiceFromSchemaCard(int row, int column) {
-        return schemaCard.removeDice(row, column);
-    }
-
 
     /**
      * Return favor tokens of the player
@@ -183,25 +181,16 @@ public class Player {
     public static Player newInstance(Player player) {
         if (player == null)
             return null;
-        return new Player(player.getToken(),player.getICoins(), player.getSchemaCard(),
-                player.getPrivateObjectiveCards());
+        return new Player(player.token,player.coins, player.schemaCard,
+                player.privateObjectiveCards);
     }
 
-
-    public boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
+    private boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
         for (int i = 0; i < privateObjectiveCards.size(); i++) {
             if (privateObjectiveCards.get(i).equals(privateObjectiveCard))
                 return true;
         }
-        return true;
+        return false;
     }
 
-    public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
-        if(!containsPrivateObjectiveCard(privateObjectiveCard))
-            throw new IllegalArgumentException("PrivateObjectiveCard doesn't exist in the player");
-        for (int i = 0; i < privateObjectiveCards.size(); i++) {
-            if(privateObjectiveCards.get(i).equals(privateObjectiveCard))
-                indexOfPrivateObjectiveCard = i;
-        }
-    }
 }

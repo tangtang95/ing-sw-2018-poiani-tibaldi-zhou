@@ -60,8 +60,8 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     private TurnState(TurnState turnState) {
         super(turnState.game);
-        this.currentRoundPlayer = Player.newInstance(turnState.getCurrentRoundPlayer());
-        this.currentTurnPlayer = Player.newInstance(turnState.getCurrentTurnPlayer());
+        this.currentRoundPlayer = turnState.currentRoundPlayer;
+        this.currentTurnPlayer = turnState.currentTurnPlayer;
         this.playerState = turnState.playerState;
         this.currentRound = turnState.currentRound;
         this.isFirstTurn = turnState.isFirstTurn;

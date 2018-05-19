@@ -1,12 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -16,8 +12,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     /**
      * Constructor.
      * Create the state of RoundStartGame
-     *
-     * @param game the game to consider
+     *  @param game the game to consider
      * @param currentRound the current round of the game
      * @param currentRoundPlayer the player who is the first player of the round
      */

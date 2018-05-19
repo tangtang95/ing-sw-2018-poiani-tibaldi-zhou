@@ -1,17 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import java.lang.annotation.Inherited;
+import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDraftPool;
-
-public class DraftPool {
+public class DraftPool{
     private List<Dice> dices;
 
     /**

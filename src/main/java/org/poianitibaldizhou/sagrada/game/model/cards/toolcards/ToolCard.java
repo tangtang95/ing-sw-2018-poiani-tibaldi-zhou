@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
@@ -8,12 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ToolCard extends Card {
+public class ToolCard extends Card{
     private Color color;
     private int tokens;
     private Node<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
+
+    public static final int LOW_COST = 1;
+    public static final int HIGH_COST = 1;
 
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
@@ -67,9 +71,9 @@ public class ToolCard extends Card {
 
     public int getCost() {
         if (tokens <= 0)
-            return 1;
+            return LOW_COST;
         else
-            return 2;
+            return HIGH_COST;
     }
 
     public void addTokens(int tokens) {
@@ -102,7 +106,6 @@ public class ToolCard extends Card {
     public int hashCode() {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
-
 
     public Node<ICommand> getCommands() {
         return commands;

@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Tile {
+public class Tile{
 
     private final IConstraint constraint;
     private Dice dice = null;

@@ -77,7 +77,7 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             playerSchemaCards.put(token, schemaCardList);
-            int numberOfPrivateObjectiveCard = game.getGameStrategy().getNumberOfPrivateObjectiveCardForGame();
+            int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
             List<PrivateObjectiveCard> privateObjectiveCardList = new ArrayList<>();
             for (int i = 0; i < numberOfPrivateObjectiveCard; i++) {
                 try {

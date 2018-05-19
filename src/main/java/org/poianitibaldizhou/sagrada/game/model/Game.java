@@ -17,7 +17,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class Game {
+public abstract class Game implements IGameStrategy{
 
     private final List<String> tokens;
     protected final List<Player> players;
@@ -27,8 +27,6 @@ public abstract class Game {
     private final DrawableCollection<Dice> diceBag;
     protected final DraftPool draftPool;
     private final String name;
-
-    protected IGameStrategy gameStrategy;
     private IStateGame state;
 
     /**
@@ -78,10 +76,6 @@ public abstract class Game {
         this.publicObjectiveCards = game.publicObjectiveCards;
         this.draftPool = DraftPool.newInstance(game.draftPool);
         this.name = game.name;
-        if (game.getGameStrategy() instanceof SinglePlayerGameStrategy)
-            this.gameStrategy = SinglePlayerGameStrategy.newInstance((SinglePlayerGameStrategy) game.getGameStrategy());
-        else
-            this.gameStrategy = new MultiPlayerGameStrategy(((MultiPlayerGameStrategy)game.getGameStrategy()).getNumberOfPlayer());
         this.diceBag = DrawableCollection.newInstance(game.getDiceBag());
         this.state = IStateGame.newInstance(game.state);
     }*/
@@ -90,11 +84,6 @@ public abstract class Game {
     @Contract(pure = true)
     public String getName() {
         return name;
-    }
-
-    @Contract(pure = true)
-    public boolean isSinglePlayer() {
-        return gameStrategy.isSinglePlayer();
     }
 
     @Contract(pure = true)
@@ -141,19 +130,12 @@ public abstract class Game {
 
     @Contract(pure = true)
     public IStateGame getState() {
-        // TODO deep copy
         return state;
     }
 
     @Contract(pure = true)
-    public DrawableCollection<Dice> getDiceBag() {
+    public DrawableCollection getDiceBag() {
         return diceBag;
-    }
-
-    @Contract(pure = true)
-    public IGameStrategy getGameStrategy() {
-        //TODO deep copy
-        return gameStrategy;
     }
 
     @Contract(pure = true)
@@ -173,7 +155,7 @@ public abstract class Game {
     }
 
     public void setPlayerSchemaCard(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        gameStrategy.addNewPlayer(token, schemaCard, privateObjectiveCards);
+        addNewPlayer(token, schemaCard, privateObjectiveCards);
     }
 
     public void addRemainingDiceToRoundTrack(int currentRound) {
@@ -211,7 +193,7 @@ public abstract class Game {
     }
 
     public void addDicesToDraftPoolFromDiceBag() {
-        for (int i = 0; i < gameStrategy.getNumberOfDicesToDraw(); i++) {
+        for (int i = 0; i < getNumberOfDicesToDraw(); i++) {
             try {
                 draftPool.addDice(diceBag.draw());
             } catch (EmptyCollectionException e) {
@@ -248,7 +230,7 @@ public abstract class Game {
 
     public void setDiceOnSchemaCardPlayer(Player player, Dice dice, int row, int column,
                                           PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
-        player.setDiceOnSchemaCard(dice, row, column, restriction, diceRestriction);
+        player.placeDice(dice, row, column, restriction, diceRestriction);
     }
 
     public void initDiceBag() {
@@ -267,8 +249,8 @@ public abstract class Game {
      */
     public int getIndexOfPlayer(Player player) {
         int indexOfPlayer = -1;
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).equals(player))
+        for (int i = 0; i < getPlayers().size(); i++) {
+            if (getPlayers().get(i).equals(player))
                 indexOfPlayer = i;
         }
         if (indexOfPlayer == -1)

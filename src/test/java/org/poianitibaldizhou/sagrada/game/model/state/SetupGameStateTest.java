@@ -37,8 +37,6 @@ public class SetupGameStateTest {
 
     @Mock
     private Game game;
-    @Mock
-    private IGameStrategy gameStrategy;
 
     @Before
     public void setUp() throws Exception {
@@ -55,7 +53,6 @@ public class SetupGameStateTest {
         when(game.getToolCards()).thenReturn(toolCards);
         when(game.getPublicObjectiveCards()).thenReturn(publicObjectiveCards);
         when(game.getPlayers()).thenReturn(playerList);
-        when(game.getGameStrategy()).thenReturn(gameStrategy);
     }
 
     @After
@@ -70,13 +67,13 @@ public class SetupGameStateTest {
     public void constructorSinglePlayerTest(){
         int difficulty = 3;
         when(game.isSinglePlayer()).thenReturn(true);
-        when(gameStrategy.getNumberOfToolCardForGame()).thenReturn(difficulty);
-        when(gameStrategy.getNumberOfPublicObjectiveCardForGame())
-                .thenReturn(SinglePlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);
+        when(game.getNumberOfToolCardForGame()).thenReturn(difficulty);
+        when(game.getNumberOfPublicObjectiveCardForGame())
+                .thenReturn(SinglePlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);
         setupGameState = new SetupGameState(game);
         setupGameState.init();
         verify(game).initDiceBag();
-        verify(game, times(SinglePlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS))
+        verify(game, times(SinglePlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS))
                 .addPublicObjectiveCard(ArgumentMatchers.any(PublicObjectiveCard.class));
         verify(game, times(difficulty)).addToolCard(ArgumentMatchers.any(ToolCard.class));
     }
@@ -84,15 +81,15 @@ public class SetupGameStateTest {
     @Test
     public void constructorMultiPlayerTest(){
         when(game.isSinglePlayer()).thenReturn(false);
-        when(gameStrategy.getNumberOfPublicObjectiveCardForGame())
-                .thenReturn(MultiPlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);
-        when(gameStrategy.getNumberOfToolCardForGame()).thenReturn(MultiPlayerGameStrategy.NUMBER_OF_TOOL_CARDS);
+        when(game.getNumberOfPublicObjectiveCardForGame())
+                .thenReturn(MultiPlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);
+        when(game.getNumberOfToolCardForGame()).thenReturn(MultiPlayerGame.NUMBER_OF_TOOL_CARDS);
         setupGameState = new SetupGameState(game);
         setupGameState.init();
         verify(game).initDiceBag();
-        verify(game, times(MultiPlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS))
+        verify(game, times(MultiPlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS))
                 .addPublicObjectiveCard(ArgumentMatchers.any(PublicObjectiveCard.class));
-        verify(game, times(MultiPlayerGameStrategy.NUMBER_OF_TOOL_CARDS)).addToolCard(ArgumentMatchers.any(ToolCard.class));
+        verify(game, times(MultiPlayerGame.NUMBER_OF_TOOL_CARDS)).addToolCard(ArgumentMatchers.any(ToolCard.class));
     }
 
     @Test

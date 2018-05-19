@@ -1,10 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.game.model.Direction;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.*;
 
 public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -47,8 +44,8 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
         game.addRemainingDiceToRoundTrack(currentRound);
         game.clearDraftPool();
 
-        Player nextPlayer = game.getPlayers().get(
-                game.getNextIndexOfPlayer(currentRoundPlayer, Direction.CLOCKWISE));
+        Player nextPlayer = (Player) game.getPlayers()
+                .get(game.getNextIndexOfPlayer(currentRoundPlayer, Direction.CLOCKWISE));
         if(currentRound < RoundTrack.LAST_ROUND)
             game.setState(new RoundStartState(game, currentRound+1, nextPlayer));
         else

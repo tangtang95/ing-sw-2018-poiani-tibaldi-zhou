@@ -25,8 +25,6 @@ public class SetupPlayerStateTest {
 
     @Mock private Game game;
 
-    @Mock private IGameStrategy gameStrategy;
-
     private String player1, player2, player3, player4;
 
     private List<String> playerList;
@@ -47,9 +45,8 @@ public class SetupPlayerStateTest {
         when(game.getToken()).thenReturn(playerList);
         when(game.getDiceBag()).thenReturn(new DrawableCollection<>());
         when(game.getState()).thenReturn(mock(SetupGameState.class));
-        when(game.getGameStrategy()).thenReturn(gameStrategy);
-        when(gameStrategy.getNumberOfPrivateObjectiveCardForGame())
-                .thenReturn(MultiPlayerGameStrategy.NUMBER_OF_PRIVATE_OBJECTIVE_CARDS);
+        when(game.getNumberOfPrivateObjectiveCardForGame())
+                .thenReturn(MultiPlayerGame.NUMBER_OF_PRIVATE_OBJECTIVE_CARDS);
         setupPlayerState = new SetupPlayerState(game);
         setupPlayerState.init();
     }

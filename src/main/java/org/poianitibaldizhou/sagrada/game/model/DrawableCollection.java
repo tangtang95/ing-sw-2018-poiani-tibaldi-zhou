@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class DrawableCollection<T> {
+public class DrawableCollection<T>{
     private List<T> collection;
 
     /**
