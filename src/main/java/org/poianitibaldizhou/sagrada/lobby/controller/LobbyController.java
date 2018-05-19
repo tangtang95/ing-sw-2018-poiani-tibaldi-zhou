@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class LobbyController extends UnicastRemoteObject implements ILobbyController {
     private final transient Map<String, ILobbyView> viewMap = new HashMap<>();
@@ -91,7 +92,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * @param token user's token
      * @param username user's name
      * @param lobbyObserver observer of the lobby for the client
-     * @throws RemoteException
+     * @throws RemoteException the remote exception
      */
     @Override
     public synchronized void join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
@@ -163,5 +164,20 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         Date date = new Date(timeout);
         DateFormat formatter =  new SimpleDateFormat("mm:ss");
         return formatter.format(date);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LobbyController)) return false;
+        if (!super.equals(o)) return false;
+        LobbyController that = (LobbyController) o;
+        return Objects.equals(viewMap, that.viewMap) &&
+                Objects.equals(database, that.database);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), viewMap, database);
     }
 }

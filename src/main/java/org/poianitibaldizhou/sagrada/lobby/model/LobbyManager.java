@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
-import org.jetbrains.annotations.TestOnly;
-
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +94,7 @@ public class LobbyManager {
      */
     public synchronized void userLeaveLobby(User user) throws RemoteException {
 
-        if(!lobby.getUserList().contains(user) || lobby == null)
+        if(!lobby.getUserList().contains(user))
             throw new RemoteException("Can't leave because user is not in the lobby");
         if(lobby.isGameStarted())
             throw new RemoteException("The lobby is started");
@@ -170,7 +168,7 @@ public class LobbyManager {
      * are greater or equal then 2, the game starts, otherwise timeout gets restarted.
      */
     public synchronized void handleTimeout() {
-        if(lobby.getPlayerNum() >= 2) {
+        if(lobby != null && lobby.getPlayerNum() >= 2) {
             lobby.gameStart();
             createLobby();
         } else {

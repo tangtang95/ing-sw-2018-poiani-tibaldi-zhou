@@ -128,7 +128,7 @@ public class ServerHandler implements Runnable {
     /**
      * Close every stream opened when the class is instantiated
      */
-    public synchronized void close() {
+    private synchronized void close() {
         try {
             inputStream.close();
             outputStream.close();

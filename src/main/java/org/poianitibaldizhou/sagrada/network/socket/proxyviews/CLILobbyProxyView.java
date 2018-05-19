@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.network.socket.messages.NotifyMessage;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
 /**
- * Proxy Pattern for the CLIView of the client
+ * Proxy Pattern for the CLIMenuView of the client
  * SERVER-SIDE
  */
 public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILobbyView {
@@ -69,7 +69,7 @@ public class CLILobbyProxyView extends ProxyView implements ILobbyObserver, ILob
     /**
      * Counter-part method err of the client-side view
      *
-     * @param err
+     * @param err error message
      */
     @Override
     public void err(String err) {

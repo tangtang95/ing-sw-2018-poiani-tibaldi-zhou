@@ -10,6 +10,5 @@ public class Client {
     public static void main(String[] args) throws RemoteException, NotBoundException {
 
         ScreenManager screenManager = new ScreenManager();
-        screenManager.pushScreen(new CLILobbyView(new NetworkManager("localhost", NetworkType.RMI),screenManager));
-    }
+        }
 }

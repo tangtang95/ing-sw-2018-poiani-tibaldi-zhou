@@ -5,13 +5,6 @@ import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.Socket;
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * Proxy Pattern for the controller of the server
  * CLIENT-SIDE
@@ -74,7 +67,6 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
      * @param token         the user's token
      * @param username      the user's username
      * @param lobbyObserver the observer of the lobby
-     * @return the lobby joined
      */
     @Override
     public void join(String token, String username, ILobbyObserver lobbyObserver) {

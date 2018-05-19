@@ -10,8 +10,7 @@ public class SockClient {
         ScreenManager screenManager = new ScreenManager();
         try {
             screenManager.pushScreen(new CLILobbyView(
-                    new NetworkManager("localhost", NetworkType.SOCKET),screenManager
-            ));
+                    new NetworkManager("localhost", NetworkType.SOCKET),screenManager));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
