@@ -3,7 +3,8 @@ package org.poianitibaldizhou.sagrada.network.socket;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
-import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
+import org.poianitibaldizhou.sagrada.network.INetworkObserver;
+
 
 /**
  * Proxy Pattern for the controller of the server
@@ -30,7 +31,7 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
      * @return the token connected to the username
      */
     @Override
-    public String login(String username, ILobbyView view) {
+    public String login(String username, INetworkObserver view) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         serverHandler.sendRequest(new Request(methodName, username, view));

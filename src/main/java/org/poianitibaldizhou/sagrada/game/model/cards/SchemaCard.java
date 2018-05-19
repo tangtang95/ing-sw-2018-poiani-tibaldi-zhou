@@ -10,7 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import java.util.Objects;
 
-public class SchemaCard {
+public class SchemaCard{
     private final String name;
     private final int difficulty;
     private Tile[][] tileMatrix;
@@ -193,12 +193,30 @@ public class SchemaCard {
     }
 
     /**
+     * Return the number of empty spaces inside the tileMatrix
+     *
+     * @return the number of empty spaces inside the tileMatrix
+     */
+    @Contract(pure = true)
+    public int getNumberOfEmptySpaces() {
+        int numberOfEmptySpaces = 0;
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if (getDice(i, j) == null)
+                    numberOfEmptySpaces++;
+            }
+        }
+        return numberOfEmptySpaces;
+    }
+
+    /**
      * Returns the deep copy of the tile requested
      *
      * @param row    the row of the tile
      * @param column the column of the tile
      * @return the tile requested by row and column
      */
+    @Contract(pure = true)
     public Tile getTile(int row, int column) {
         return Tile.newInstance(tileMatrix[row][column]);
     }
@@ -304,23 +322,6 @@ public class SchemaCard {
         return row < 0 || row > SchemaCard.NUMBER_OF_ROWS - 1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS - 1;
     }
 
-
-    /**
-     * Return the number of empty spaces inside the tileMatrix
-     *
-     * @return the number of empty spaces inside the tileMatrix
-     */
-    public int getNumberOfEmptySpaces() {
-        int numberOfEmptySpaces = 0;
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                if (getDice(i, j) == null)
-                    numberOfEmptySpaces++;
-            }
-        }
-        return numberOfEmptySpaces;
-    }
-
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -342,7 +343,7 @@ public class SchemaCard {
         Tile[][] tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                tileMatrix[i][j] = Tile.newInstance(schemaCard.getTile(i, j));
+                tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
             }
         }
         return new SchemaCard(schemaCard.getName(), schemaCard.getDifficulty(), tileMatrix);

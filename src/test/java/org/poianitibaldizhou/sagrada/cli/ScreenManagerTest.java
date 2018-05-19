@@ -65,7 +65,7 @@ public class ScreenManagerTest {
             Thread thread = screenManager.getCurrentThread();
             thread.interrupt();
             try {
-                thread.join(2000);
+                thread.join();
             } catch (InterruptedException e) {
                 fail("thread didn't end");
             }
@@ -76,7 +76,7 @@ public class ScreenManagerTest {
     }
 
     @Test
-    public void testPushScreen() {
+    public void testPushScreen() throws Exception{
         screenManager.pushScreen(screen1);
         assertEquals("Didn't push the screen1", screen1, screenManager.topScreen());
         Thread thread1 = screenManager.getCurrentThread();
@@ -84,17 +84,13 @@ public class ScreenManagerTest {
         screenManager.pushScreen(screen2);
         assertEquals("Didn't push the screen2", screen2, screenManager.topScreen());
         assertNotEquals("threads are the same", thread1, screenManager.getCurrentThread());
-        try {
-            thread1.join(2000);
-        } catch (InterruptedException e) {
-            fail("thread1 didn't end");
-        }
+        thread1.join();
         assertFalse(thread1.isAlive());
         assertTrue(screenManager.getCurrentThread().isAlive());
     }
 
     @Test
-    public void testPopScreen(){
+    public void testPopScreen() throws Exception{
         try {
             screenManager.popScreen();
             fail("exception expected");
@@ -105,21 +101,13 @@ public class ScreenManagerTest {
         Thread thread1 = screenManager.getCurrentThread();
         assertTrue(thread1.isAlive());
         screenManager.pushScreen(screen2);
-        try {
-            thread1.join(2000);
-        } catch (InterruptedException e) {
-            fail("thread1 didn't end");
-        }
+        thread1.join();
         assertFalse(thread1.isAlive());
         Thread thread2 = screenManager.getCurrentThread();
         assertTrue(thread2.isAlive());
         IScreen poppedScreen = screenManager.popScreen();
         assertEquals("screens aren't the same", screen2, poppedScreen);
-        try {
-            thread2.join(2000);
-        } catch (InterruptedException e) {
-            fail("thread1 didn't end");
-        }
+        thread2.join();
         assertFalse(thread2.isAlive());
         poppedScreen = screenManager.popScreen();
         assertEquals("screens aren't the same", screen1, poppedScreen);
@@ -127,17 +115,13 @@ public class ScreenManagerTest {
     }
 
     @Test
-    public void testReplaceScreen(){
+    public void testReplaceScreen() throws Exception{
         screenManager.pushScreen(screen1);
         Thread thread1 = screenManager.getCurrentThread();
         assertTrue(thread1.isAlive());
         screenManager.replaceScreen(screen2);
         Thread thread2 = screenManager.getCurrentThread();
-        try {
-            thread1.join(2000);
-        } catch (InterruptedException e) {
-            fail("thread1 didn't end");
-        }
+        thread1.join(2000);
         assertFalse(thread1.isAlive());
         assertTrue(thread2.isAlive());
     }

@@ -3,78 +3,68 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Game {
+public abstract class Game implements IGameStrategy{
 
-    private final List<Player> players;
+    private final List<String> tokens;
+    protected final List<Player> players;
     private final RoundTrack roundTrack;
     private final List<ToolCard> toolCards;
     private final List<PublicObjectiveCard> publicObjectiveCards;
     private final DrawableCollection<Dice> diceBag;
-    private final DraftPool draftPool;
+    protected final DraftPool draftPool;
     private final String name;
-
-    private IGameStrategy gameStrategy;
     private IStateGame state;
-
 
     /**
      * Constructor for Multi player.
      * Create the Game with all the attributes initialized, create also all the player from the given tokens and
      * set the state to SetupPlayerState
      *
-     * @param tokens the list of String token of the players
      */
-    public Game(List<String> tokens, String name) {
-        this.players = new LinkedList<>();
+    public Game(String name, List<String> tokens) {
+        this.tokens = new ArrayList<>(tokens);
+        this.players = new ArrayList<>();
         this.diceBag = new DrawableCollection<>();
-        this.toolCards = new LinkedList<>();
-        this.publicObjectiveCards = new LinkedList<>();
+        this.toolCards = new ArrayList<>();
+        this.publicObjectiveCards = new ArrayList<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
         this.name = name;
-        for (String token : tokens) {
-            players.add(new Player(token, new FavorToken()));
-        }
+        setState(new SetupPlayerState(this));
     }
 
-    /**
-     * Constructor of Single Player.
-     * Create the Game for the single player with all the attributes intialized
-     *
-     * @param singlePlayerToken the token of the single player
-     * @param difficulty        the difficulty of the game chosen by the user
-     */
-    public Game(String singlePlayerToken, int difficulty) {
-        this.players = new LinkedList<>();
+    public Game(String name, String token){
+        this.tokens = new ArrayList<>();
+        this.tokens.add(token);
+        this.players = new ArrayList<>();
         this.diceBag = new DrawableCollection<>();
-        this.toolCards = new LinkedList<>();
-        this.publicObjectiveCards = new LinkedList<>();
+        this.toolCards = new ArrayList<>();
+        this.publicObjectiveCards = new ArrayList<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
-        this.gameStrategy = new SinglePlayerGameStrategy(difficulty);
-
-        players.add(new Player(singlePlayerToken, new ExpendableDice(draftPool)));
+        this.name = name;
         setState(new SetupPlayerState(this));
-
-        name = "Single player";
     }
+
 
     /**
      * Deep-copy Constructor.
      */
+    /*
     private Game(Game game) {
         this.players = new LinkedList<>();
         for (Player p : players)
@@ -86,23 +76,14 @@ public class Game {
         this.publicObjectiveCards = game.publicObjectiveCards;
         this.draftPool = DraftPool.newInstance(game.draftPool);
         this.name = game.name;
-        if (game.getGameStrategy() instanceof SinglePlayerGameStrategy)
-            this.gameStrategy = SinglePlayerGameStrategy.newInstance((SinglePlayerGameStrategy) game.getGameStrategy());
-        else
-            this.gameStrategy = new MultiPlayerGameStrategy(((MultiPlayerGameStrategy)game.getGameStrategy()).getNumberOfPlayer());
         this.diceBag = DrawableCollection.newInstance(game.getDiceBag());
         this.state = IStateGame.newInstance(game.state);
-    }
+    }*/
 
     //GETTER
     @Contract(pure = true)
     public String getName() {
         return name;
-    }
-
-    @Contract(pure = true)
-    public boolean isSinglePlayer() {
-        return gameStrategy.isSinglePlayer();
     }
 
     @Contract(pure = true)
@@ -149,37 +130,32 @@ public class Game {
 
     @Contract(pure = true)
     public IStateGame getState() {
-        // TODO deep copy
         return state;
     }
 
     @Contract(pure = true)
-    public DrawableCollection<Dice> getDiceBag() {
-        return DrawableCollection.newInstance(diceBag);
+    public DrawableCollection getDiceBag() {
+        return diceBag;
     }
 
     @Contract(pure = true)
-    public IGameStrategy getGameStrategy() {
-        //TODO deep copy
-        return gameStrategy;
+    public List<String> getToken(){
+        return new ArrayList<>(tokens);
     }
 
     //MODIFIER
 
     public void setState(IStateGame state) {
         this.state = state;
-    }
-
-    public void setPrivateObjectiveCards(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
-        gameStrategy.setPrivateObjectiveCard(player, privateObjectiveCards);
+        this.state.init();
     }
 
     public void setPlayerOutcome(Player player, Outcome outcome) {
         players.get(getIndexOfPlayer(player)).setOutcome(outcome);
     }
 
-    public void setPlayerSchemaCard(Player player, SchemaCard schemaCard) {
-        players.get(getIndexOfPlayer(player)).setSchemaCard(schemaCard);
+    public void setPlayerSchemaCard(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        addNewPlayer(token, schemaCard, privateObjectiveCards);
     }
 
     public void addRemainingDiceToRoundTrack(int currentRound) {
@@ -217,7 +193,7 @@ public class Game {
     }
 
     public void addDicesToDraftPoolFromDiceBag() {
-        for (int i = 0; i < gameStrategy.getNumberOfDicesToDraw(); i++) {
+        for (int i = 0; i < getNumberOfDicesToDraw(); i++) {
             try {
                 draftPool.addDice(diceBag.draw());
             } catch (EmptyCollectionException e) {
@@ -248,24 +224,21 @@ public class Game {
         return dice;
     }
 
-    public void readyGame() {
-        state.readyGame();
+    public Dice removeDiceFromSchemaCardPlayer(Player player, int row, int column) {
+        return player.removeDiceFromSchemaCard(row, column);
     }
 
-    /**
-     * Return the target score for a single player game. The player score has to be higher than this to win
-     *
-     * @return the target score
-     */
-    public int getTargetScore() {
-        int targetScore = 0;
-        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-            List<Dice> dices = roundTrack.getDices(i);
-            for (Dice dice: dices) {
-                targetScore += dice.getNumber();
-            }
-        }
-        return targetScore;
+    public void setDiceOnSchemaCardPlayer(Player player, Dice dice, int row, int column,
+                                          PlacementRestrictionType restriction, DiceRestrictionType diceRestriction) throws RuleViolationException {
+        player.placeDice(dice, row, column, restriction, diceRestriction);
+    }
+
+    public void initDiceBag() {
+        GameInjector.injectDiceBag(diceBag);
+    }
+
+    public void releaseToolCardExecution() {
+        state.releaseToolCardExecution();
     }
 
     /**
@@ -276,8 +249,8 @@ public class Game {
      */
     public int getIndexOfPlayer(Player player) {
         int indexOfPlayer = -1;
-        for (int i = 0; i < players.size(); i++) {
-            if (players.get(i).equals(player))
+        for (int i = 0; i < getPlayers().size(); i++) {
+            if (getPlayers().get(i).equals(player))
                 indexOfPlayer = i;
         }
         if (indexOfPlayer == -1)
@@ -297,11 +270,18 @@ public class Game {
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
 
+    public void selectPrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) {
+        player.setPrivateObjectiveCard(privateObjectiveCard);
+    }
+
+    public void calculateOutcome(){
+        state.calculateVictoryPoints();
+    }
+
+    /*
     public static Game newInstance(Game game) {
         if (game == null)
             return  null;
         return new Game(game);
-    }
-
-
+    }*/
 }

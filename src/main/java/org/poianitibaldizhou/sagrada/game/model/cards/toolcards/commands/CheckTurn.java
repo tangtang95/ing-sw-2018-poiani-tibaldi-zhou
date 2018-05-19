@@ -4,15 +4,18 @@ import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
+import java.util.Objects;
 
 public class CheckTurn implements ICommand {
     private final int turn;
 
     public CheckTurn(int turn) {
+        if(turn < 1 || turn > 2)
+            throw new IllegalArgumentException("illegal value of turn");
         this.turn = turn;
     }
 
@@ -28,8 +31,10 @@ public class CheckTurn implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, ExecutionCommandException {
         TurnState turnState = (TurnState) game.getState();
-        if(turnState.isFirstTurn() != (turn == 1))
+        if(turnState.isFirstTurn() != (getTurn() == 1)) {
+            // TODO Maybe need to add a new flow to block the use of toolCard
             throw new ExecutionCommandException();
+        }
         return CommandFlow.MAIN;
     }
 
@@ -43,5 +48,10 @@ public class CheckTurn implements ICommand {
             return false;
         CheckTurn obj = (CheckTurn) object;
         return this.turn == obj.getTurn();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(CheckTurn.class, turn);
     }
 }

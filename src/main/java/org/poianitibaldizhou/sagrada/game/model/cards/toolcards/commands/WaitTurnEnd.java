@@ -3,7 +3,9 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+
+import java.util.Objects;
 
 public class WaitTurnEnd implements ICommand {
 
@@ -18,6 +20,7 @@ public class WaitTurnEnd implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws InterruptedException {
+        game.releaseToolCardExecution();
         toolCardExecutor.waitForTurnEnd();
         return CommandFlow.MAIN;
     }
@@ -25,5 +28,10 @@ public class WaitTurnEnd implements ICommand {
     @Override
     public boolean equals(Object o) {
         return o instanceof WaitTurnEnd;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(WaitTurnEnd.class);
     }
 }

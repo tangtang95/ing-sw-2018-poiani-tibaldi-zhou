@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
@@ -14,8 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Dependency class with:
@@ -37,8 +37,6 @@ public class SetupGameStateTest {
 
     @Mock
     private Game game;
-    @Mock
-    private IGameStrategy gameStrategy;
 
     @Before
     public void setUp() throws Exception {
@@ -55,7 +53,6 @@ public class SetupGameStateTest {
         when(game.getToolCards()).thenReturn(toolCards);
         when(game.getPublicObjectiveCards()).thenReturn(publicObjectiveCards);
         when(game.getPlayers()).thenReturn(playerList);
-        when(game.getGameStrategy()).thenReturn(gameStrategy);
     }
 
     @After
@@ -70,37 +67,35 @@ public class SetupGameStateTest {
     public void constructorSinglePlayerTest(){
         int difficulty = 3;
         when(game.isSinglePlayer()).thenReturn(true);
-        when(gameStrategy.getNumberOfToolCardForGame()).thenReturn(difficulty);
+        when(game.getNumberOfToolCardForGame()).thenReturn(difficulty);
+        when(game.getNumberOfPublicObjectiveCardForGame())
+                .thenReturn(SinglePlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);
         setupGameState = new SetupGameState(game);
-        assertEquals("DiceBag size error", 90,  diceBag.size());
-        assertEquals("PublicObjectiveCards size error",
-                SinglePlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS, publicObjectiveCards.size());
-        assertEquals("ToolCards size error", difficulty, toolCards.size());
+        setupGameState.init();
+        verify(game).initDiceBag();
+        verify(game, times(SinglePlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS))
+                .addPublicObjectiveCard(ArgumentMatchers.any(PublicObjectiveCard.class));
+        verify(game, times(difficulty)).addToolCard(ArgumentMatchers.any(ToolCard.class));
     }
 
     @Test
     public void constructorMultiPlayerTest(){
         when(game.isSinglePlayer()).thenReturn(false);
+        when(game.getNumberOfPublicObjectiveCardForGame())
+                .thenReturn(MultiPlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);
+        when(game.getNumberOfToolCardForGame()).thenReturn(MultiPlayerGame.NUMBER_OF_TOOL_CARDS);
         setupGameState = new SetupGameState(game);
-        assertEquals("DiceBag size error", 90,  diceBag.size());
-        assertEquals("PublicObjectiveCards size error",
-                MultiPlayerGameStrategy.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS, publicObjectiveCards.size());
-        assertEquals("ToolCards size error",
-                MultiPlayerGameStrategy.NUMBER_OF_TOOL_CARDS, toolCards.size());
+        setupGameState.init();
+        verify(game).initDiceBag();
+        verify(game, times(MultiPlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS))
+                .addPublicObjectiveCard(ArgumentMatchers.any(PublicObjectiveCard.class));
+        verify(game, times(MultiPlayerGame.NUMBER_OF_TOOL_CARDS)).addToolCard(ArgumentMatchers.any(ToolCard.class));
     }
 
     @Test
     public void readyGameTest() throws Exception {
         when(game.isSinglePlayer()).thenReturn(false);
         setupGameState = new SetupGameState(game);
-        /*doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
-                RoundStartState roundStartState = invocationOnMock.getArgument(0);
-                assertTrue(playerList.contains(roundStartState.getCurrentRoundPlayer()));
-                return null;
-            }
-        }).when(game).setState(ArgumentMatchers.any(RoundStartState.class));*/
         setupGameState.readyGame();
         ArgumentCaptor<RoundStartState> argument = ArgumentCaptor.forClass(RoundStartState.class);
         verify(game).setState(argument.capture());

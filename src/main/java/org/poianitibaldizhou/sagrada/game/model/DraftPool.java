@@ -1,14 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 
-public class DraftPool {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
+
+public class DraftPool{
     private List<Dice> dices;
 
     /**
@@ -82,14 +83,6 @@ public class DraftPool {
         dices.clear();
     }
 
-    @Override
-    public String toString() {
-        return dices.toString();
-    }
-
-    public int size() {
-        return dices.size();
-    }
 
     public static DraftPool newInstance(DraftPool draftPool) {
         if (draftPool == null)
@@ -101,4 +94,40 @@ public class DraftPool {
     }
 
 
+    @Contract(pure = true)
+    public int size() {
+        return dices.size();
+    }
+
+    @Override
+    public String toString() {
+        return dices.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof DraftPool)) {
+            return false;
+        }
+        DraftPool draftPool = (DraftPool) o;
+        List<Dice> comparingList = draftPool.getDices();
+        int[][] counter = new int[Dice.MAX_VALUE][Color.values().length];
+        for(Dice d : dices) {
+            counter[d.getNumber()-1][d.getColor().ordinal()]+=1;
+        }
+        for(Dice d: comparingList) {
+            counter[d.getNumber()-1][d.getColor().ordinal()]-=1;
+        }
+        for (int i = 0; i < Dice.MAX_VALUE; i++) {
+            for(int j = 0; j < Color.values().length; j++)
+                if(counter[i][j] != 0)
+                    return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(DraftPool.class);
+    }
 }

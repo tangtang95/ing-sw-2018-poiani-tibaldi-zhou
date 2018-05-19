@@ -6,6 +6,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ToolCardLanguageParser {
     private static Map<String, ICommand> grammar;
@@ -21,34 +23,40 @@ public class ToolCardLanguageParser {
     /**
      * Given a string that contains the description of the effects of a tool card, returns
      * the list of the commands associated with it.
-     * Each command needs to be separated with ";" and no additional spaces have to be present.
-     * Example
-     * "Reroll dice;Add dice to Dicebag"
+     * The language supported in this method supports binary if.
+     * Each command needs to be wrapped in [index-commandName], where index is the position of the command in the
+     * execution flow, according to the following rules.
+     * An example could be:
+     * String string = "[1-Choose dice][2-Modify dice value by 1][4-Add dice to DraftPool][8-CA]";
      *
-     * Wrong Example
-     * "Reroll dice; Add dice to Dicebag"
-     *
-     * @param description effects of a tool card
-     * @return list of commands triggered by description
-     * @throws IllegalArgumentException if a string isn't matching with any of the avaible commands.
+     * @param description description of the tool card that allow to construct an execution tree
+     * @return execution tree
+     * @throws IllegalArgumentException if a string isn't matching with any of the available commands.
      */
-    public List<ICommand> parseToolCard(String description) throws IllegalArgumentException {
-        List<ICommand> commands = new ArrayList<>();
-        ArrayList<String> processedText=  preprocessing(description);
-        for(String s: processedText) {
-            if(grammar.get(s) != null)
-                commands.add(grammar.get(s));
+    public Node<ICommand> parseToolCard(String description) throws IllegalArgumentException {
+        Node<ICommand> commands_root = null;
+
+        Pattern p = Pattern.compile("\\[(.*?)\\]");
+        Matcher m = p.matcher(description);
+
+        boolean firstCheck = m.find();
+
+        if(!firstCheck)
+            throw new IllegalArgumentException("This is not a command " + description);
+
+        while(firstCheck) {
+            String temp  = m.group(1);
+            String[] c = temp.split("-");
+            if(grammar.get(c[1]) == null || c.length != 2)
+                throw new IllegalArgumentException("Command not recognized " + c[1]);
+            if(commands_root == null)
+                commands_root = new Node<>(grammar.get(c[1]));
             else
-                throw new IllegalArgumentException("Command not recognized: " + s);
+                commands_root.addAtIndex(grammar.get(c[1]),Integer.parseInt(c[0]));
+            firstCheck = m.find();
         }
 
-        return commands;
-    }
-
-    @Deprecated
-    public Node<ICommand> parseToolCardNewLanguage(String description) throws IllegalArgumentException {
-        Node<ICommand> commands = new Node<>(null,null);
-        return commands;
+        return commands_root;
     }
 
     /**
@@ -89,48 +97,14 @@ public class ToolCardLanguageParser {
         grammar.put("Skip first turn", new SkipTurn(1));
         grammar.put("Pour over dice", new PourOverDice());
         grammar.put("Choose color from RoundTrack", new ChooseColorFromRoundTrack());
-        grammar.put("Check Dice placeble", new CheckDicePositionable());
+        grammar.put("If Dice placeable", new IfDicePlaceable());
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
-
-        ICommand clearColor = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededColor(null);
-            return CommandFlow.MAIN;
-        };
-        ICommand clearValue = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededValue(null);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearDice = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededDice(null);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearPosition =  (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setNeededPosition(null);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearTurnEndCondition = (player, toolCardExecutorHelper, game) -> {
-            toolCardExecutorHelper.setTurnEnded(false);
-            return CommandFlow.MAIN;
-        };
-
-        ICommand clearAll = (player, toolCardExecutorHelper, game) -> {
-            clearColor.executeCommand(player, toolCardExecutorHelper, game);
-            clearDice.executeCommand(player, toolCardExecutorHelper, game);
-            clearPosition.executeCommand(player, toolCardExecutorHelper, game);
-            clearTurnEndCondition.executeCommand(player, toolCardExecutorHelper, game);
-            clearValue.executeCommand(player, toolCardExecutorHelper, game);
-            return CommandFlow.MAIN;
-        };
-
-        grammar.put("CC", clearColor);
-        grammar.put("CV", clearValue);
-        grammar.put("CD", clearDice);
-        grammar.put("CP", clearPosition);
-        grammar.put("CTEC", clearTurnEndCondition);
-        grammar.put("CA", clearAll);
+        grammar.put("CC", new ClearColor());
+        grammar.put("CV", new ClearValue());
+        grammar.put("CD", new ClearDice());
+        grammar.put("CP", new ClearPosition());
+        grammar.put("CTEC", new ClearTurnEndCondition());
+        grammar.put("CA", new ClearAll());
     }
 }

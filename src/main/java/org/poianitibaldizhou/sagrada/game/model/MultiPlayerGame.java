@@ -1,24 +1,20 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class MultiPlayerGameStrategy implements IGameStrategy {
+public class MultiPlayerGame extends Game implements IGameStrategy{
 
     public static final int NUMBER_OF_TOOL_CARDS = 3;
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 3;
     public static final int NUMBER_OF_PRIVATE_OBJECTIVE_CARDS = 1;
 
-    private int numberOfPlayer;
-
-    public MultiPlayerGameStrategy(int numberOfPlayer){
-        this.numberOfPlayer = numberOfPlayer;
+    public MultiPlayerGame(String name, List<String> tokens) {
+        super(name, tokens);
     }
 
     @Override
@@ -38,7 +34,7 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
 
     @Override
     public int getNumberOfDicesToDraw() {
-        return numberOfPlayer*2 + 1;
+        return this.getNumberOfPlayers()*2 + 1;
     }
 
     @Override
@@ -46,46 +42,39 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
         return NUMBER_OF_PRIVATE_OBJECTIVE_CARDS;
     }
 
-    @Override
-    public void selectPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
-        throw new IllegalStateException();
-    }
-
-    @Override
-    public void setPrivateObjectiveCard(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards) {
-        try {
-            player.setPrivateObjectiveCard(privateObjectiveCards.draw());
-        } catch (EmptyCollectionException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString(), e);
-        }
-    }
-
 
     /**
      * Set the Outcome of each player; first of all it found the winner by VictoryPoints, by PrivateCard points, by
      * FavorTokens and at the end by reverse order of the current player (who has the diceBag at the last round)
-     *
-     * @param game       all players of the game
-     * @param scoreMap the score of each player
+     *  @param scoreMap the score of each player
      * @param currentRoundPlayer the current player of the last round
      */
     @Override
-    public void setPlayersOutcome(Game game, Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
-        List<Player> players = game.getPlayers();
+    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
         List<Player> winners = getWinnersByVictoryPoints(players, scoreMap);
         winners = getWinnersByPrivateCard(winners);
         winners = getWinnersByFavorTokens(winners);
-        Player winner = getWinnersByReverseOrder(winners, players, game.getIndexOfPlayer(currentRoundPlayer));
-        game.setPlayerOutcome(winner, Outcome.WIN);
+        Player winner = getWinnersByReverseOrder(winners, players, getIndexOfPlayer(currentRoundPlayer));
+        winner.setOutcome(Outcome.WIN);
         for (Player other : players) {
             if (!other.equals(winner))
-                game.setPlayerOutcome(other, Outcome.LOSE);
+                other.setOutcome(Outcome.LOSE);
         }
     }
 
     @Override
     public boolean isSinglePlayer() {
         return false;
+    }
+
+    @Override
+    public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        players.add(new Player(token, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
+    }
+
+    @Override
+    public void notifyPlayersEndGame() {
+        calculateOutcome();
     }
 
     /**
@@ -172,7 +161,4 @@ public class MultiPlayerGameStrategy implements IGameStrategy {
         throw new IllegalArgumentException("No players founded");
     }
 
-    public int getNumberOfPlayer() {
-        return numberOfPlayer;
-    }
 }

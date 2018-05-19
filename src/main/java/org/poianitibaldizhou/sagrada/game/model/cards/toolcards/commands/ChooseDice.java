@@ -4,12 +4,12 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class ChooseDice implements ICommand {
 
@@ -25,12 +25,17 @@ public class ChooseDice implements ICommand {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         List<Dice> diceList = game.getDraftPool().getDices();
         for(IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedDice(player, diceList);
+            obs.notifyNeedDice(diceList);
         return CommandFlow.MAIN;
     }
 
     @Override
     public boolean equals(Object object) {
         return object instanceof ChooseDice;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ChooseDice.class);
     }
 }

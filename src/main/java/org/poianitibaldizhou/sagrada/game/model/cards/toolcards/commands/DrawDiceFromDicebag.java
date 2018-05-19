@@ -4,9 +4,10 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
+import java.util.Objects;
 
 public class DrawDiceFromDicebag implements ICommand {
 
@@ -30,5 +31,10 @@ public class DrawDiceFromDicebag implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof DrawDiceFromDicebag;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(DrawDiceFromDicebag.class);
     }
 }

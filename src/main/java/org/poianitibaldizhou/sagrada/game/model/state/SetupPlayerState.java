@@ -15,8 +15,9 @@ import java.util.logging.Logger;
 
 public class SetupPlayerState extends IStateGame {
 
-    private Set<Player> playersReady;
-    private Map<Player, List<SchemaCard>> playerSchemaCards;
+    private Set<String> playersReady;
+    private Map<String, List<SchemaCard>> playerSchemaCards;
+    private Map<String, List<PrivateObjectiveCard>> privateObjectiveCardMap;
 
     public static final int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
 
@@ -33,25 +34,7 @@ public class SetupPlayerState extends IStateGame {
         super(game);
         playersReady = new HashSet<>();
         playerSchemaCards = new HashMap<>();
-
-        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
-        DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
-
-        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-        GameInjector.injectSchemaCards(schemaCards);
-        for (Player player : game.getPlayers()) {
-            List<SchemaCard> schemaCardList = new ArrayList<>();
-            for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
-                try {
-                    schemaCardList.add(schemaCards.draw());
-                } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.SEVERE, "Error in SetupPlayerState for empty collection", e);
-                }
-            }
-            playerSchemaCards.put(player, schemaCardList);
-            game.setPrivateObjectiveCards(player, privateObjectiveCards);
-        }
-        //TODO notify each player for the schemaCard
+        privateObjectiveCardMap = new HashMap<>();
     }
 
     /**
@@ -59,38 +42,71 @@ public class SetupPlayerState extends IStateGame {
      *
      * @param playerState playerState to copy
      */
+    /*
     private SetupPlayerState(SetupPlayerState playerState) {
         super(playerState.game);
         playersReady = new HashSet<>();
         playerSchemaCards = new HashMap<>();
         List<SchemaCard> schemaCardList = new ArrayList<>();
 
-        for (Player player : playerState.playerSchemaCards.keySet()) {
+        for (String token : playerState.playerSchemaCards.keySet()) {
             for (SchemaCard schemaCard : playerState.playerSchemaCards.get(player))
                 schemaCardList.add(SchemaCard.newInstance(schemaCard));
-            this.playerSchemaCards.put(Player.newInstance(player), schemaCardList);
+            this.playerSchemaCards.put(token, schemaCardList);
         }
 
         for (Player player : playerState.playersReady)
             this.playersReady.add(Player.newInstance(player));
 
+    }*/
+
+    @Override
+    public void init() {
+        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
+        DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
+
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
+        GameInjector.injectSchemaCards(schemaCards);
+        for (String token : game.getToken()) {
+            List<SchemaCard> schemaCardList = new ArrayList<>();
+            for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
+                try {
+                    schemaCardList.add(schemaCards.draw());
+                } catch (EmptyCollectionException e) {
+                    LOGGER.log(Level.SEVERE, "Error for empty collection", e);
+                }
+            }
+            playerSchemaCards.put(token, schemaCardList);
+            int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
+            List<PrivateObjectiveCard> privateObjectiveCardList = new ArrayList<>();
+            for (int i = 0; i < numberOfPrivateObjectiveCard; i++) {
+                try {
+                    privateObjectiveCardList.add(privateObjectiveCards.draw());
+                } catch (EmptyCollectionException e) {
+                    LOGGER.log(Level.SEVERE, "Error for empty collection", e);
+                }
+            }
+            privateObjectiveCardMap.put(token, privateObjectiveCardList);
+        }
+        //TODO notify each player for the schemaCard
     }
+
 
     /**
      * Method of the state pattern: When the player have finished to select the schemaCard,
      * this method is invoked to set the SchemaCard to the player and when every player has readied the state
      *
-     * @param player     the player who have selected the schemaCard
+     * @param token     the token of the player who have selected the schemaCard
      * @param schemaCard the schemaCard chosen by the player
+     * @return true if the player hasn't readied before and the schemaCard given is the correct one, false otherwise
      */
     @Override
-    public boolean ready(Player player, SchemaCard schemaCard) {
-        if (!isPlayerReady(player) && player.getSchemaCard() == null && containsSchemaCard(player, schemaCard)) {
-            playersReady.add(player);
-            game.setPlayerSchemaCard(player, schemaCard);
+    public boolean ready(String token, SchemaCard schemaCard) {
+        if (!isPlayerReady(token) && containsSchemaCard(token, schemaCard)) {
+            playersReady.add(token);
+            game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
                 game.setState(new SetupGameState(game));
-                game.readyGame();
             }
             return true;
         }
@@ -98,31 +114,27 @@ public class SetupPlayerState extends IStateGame {
     }
 
     @Contract(pure = true)
-    public boolean isPlayerReady(Player player) {
-        for (Player playerReady : playersReady) {
-            if (playerReady.equals(player))
-                return true;
-        }
-        return false;
+    public boolean isPlayerReady(String token) {
+        return playersReady.contains(token);
     }
 
     @Contract(pure = true)
-    public boolean containsSchemaCard(Player player, SchemaCard schemaCard) {
-        return playerSchemaCards.get(player).contains(schemaCard);
+    public boolean containsSchemaCard(String token, SchemaCard schemaCard) {
+        return playerSchemaCards.get(token).contains(schemaCard);
     }
 
     @Contract(pure = true)
-    public List<SchemaCard> getSchemaCardsOfPlayer(Player player) {
+    public List<SchemaCard> getSchemaCardsOfPlayer(String token) {
         List<SchemaCard> schemaCards = new ArrayList<>();
-        for (SchemaCard schema : playerSchemaCards.get(player)) {
+        for (SchemaCard schema : playerSchemaCards.get(token)) {
             schemaCards.add(SchemaCard.newInstance(schema));
         }
         return schemaCards;
     }
-
+    /*
     public static IStateGame newInstance(IStateGame sps) {
         if (sps == null)
             return null;
         return new SetupPlayerState((SetupPlayerState) sps);
-    }
+    }*/
 }

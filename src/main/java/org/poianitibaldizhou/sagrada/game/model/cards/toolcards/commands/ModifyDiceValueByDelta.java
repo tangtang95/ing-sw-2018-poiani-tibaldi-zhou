@@ -6,18 +6,26 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class ModifyDiceValueByDelta implements ICommand {
 
     private final int value;
 
+    /**
+     * Constructor.
+     * Create a command to modify the dice value by a certain delta (increment or decrement)
+     *
+     * @param value the delta value (must be greater than 0)
+     */
     public ModifyDiceValueByDelta(int value) {
+        if(value <= 0)
+            throw new IllegalArgumentException("value attribute has to be greater than 0");
         this.value = value;
     }
 
@@ -43,7 +51,7 @@ public class ModifyDiceValueByDelta implements ICommand {
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         for(IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedNewDeltaForDice(dice.getNumber(), value);
+            obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue());
 
         int newValue = toolCardExecutor.getNeededValue();
 
@@ -70,7 +78,7 @@ public class ModifyDiceValueByDelta implements ICommand {
      */
     @Contract(pure = true)
     private boolean checkNewValueValidity(int newValue, int oldValue) {
-        if(newValue < 1 || newValue > 6)
+        if(newValue < Dice.MIN_VALUE || newValue > Dice.MAX_VALUE)
             return false;
         return (newValue == oldValue + this.value) || (newValue == oldValue - this.value);
     }
@@ -82,5 +90,10 @@ public class ModifyDiceValueByDelta implements ICommand {
 
         ModifyDiceValueByDelta obj = (ModifyDiceValueByDelta) object;
         return this.value == obj.getValue();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ModifyDiceValueByDelta.class, value);
     }
 }

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
@@ -8,12 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ToolCard extends Card {
+public class ToolCard extends Card{
     private Color color;
     private int tokens;
-    private List<ICommand> commands;
+    private Node<ICommand> commands;
     private boolean isSinglePlayer;
     private List<IToolCardObserver> observers;
+
+    public static final int LOW_COST = 1;
+    public static final int HIGH_COST = 1;
+
 
     public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
         super(name, description);
@@ -38,16 +43,13 @@ public class ToolCard extends Card {
         this.commands = toolCard.getCommands();
         this.isSinglePlayer = toolCard.isSinglePlayer;
         this.observers = toolCard.getObservers();
-
     }
 
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<>(observers);
     }
 
-    public ToolCardExecutor getToolCardExecutor(){
-        ToolCardExecutor toolCardExecutor = new ToolCardExecutor(commands);
-
+    public Node<ICommand> useCard() {
         if (isSinglePlayer) {
             for (IToolCardObserver obs : observers)
                 obs.onCardDestroy();
@@ -56,7 +58,7 @@ public class ToolCard extends Card {
                 obs.onTokenChange(tokens);
         }
 
-        return toolCardExecutor;
+        return getCommands();
     }
 
     public int getTokens() {
@@ -69,9 +71,9 @@ public class ToolCard extends Card {
 
     public int getCost() {
         if (tokens <= 0)
-            return 1;
+            return LOW_COST;
         else
-            return 2;
+            return HIGH_COST;
     }
 
     public void addTokens(int tokens) {
@@ -94,29 +96,22 @@ public class ToolCard extends Card {
         return tokens == toolCard.tokens &&
                 isSinglePlayer == toolCard.isSinglePlayer &&
                 color == toolCard.color &&
-                equalsCommand(toolCard.commands) &&
+                this.commands.equals(toolCard.getCommands())&&
                 this.getName().equals(toolCard.getName()) &&
                 this.getDescription().equals(toolCard.getDescription());
     }
 
-    private boolean equalsCommand(List<ICommand> commands) {
-        for (int i = 0; i < commands.size(); i++) {
-            if (commands.get(i).getClass() != this.commands.get(i).getClass())
-                return false;
-        }
-        return true;
-    }
 
     @Override
     public int hashCode() {
         return Objects.hash(color, tokens, commands, isSinglePlayer);
     }
 
-    public List<ICommand> getCommands() {
+    public Node<ICommand> getCommands() {
         return commands;
     }
 
-    //TODO refactor
+    //TODO refactor (refactor test too)
     public static ToolCard newInstance(ToolCard toolCard) {
         if (toolCard == null)
             return null;

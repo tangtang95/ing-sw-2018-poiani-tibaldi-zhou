@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 
 import java.util.List;
@@ -13,8 +13,8 @@ public interface IGameStrategy {
     int getPlayerScore(Player player);
     int getNumberOfDicesToDraw();
     int getNumberOfPrivateObjectiveCardForGame();
-    void selectPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException;
-    void setPrivateObjectiveCard(Player player, DrawableCollection<PrivateObjectiveCard> privateObjectiveCards);
-    void setPlayersOutcome(Game game, Map<Player, Integer> scoreMap, Player currentRoundPlayer);
+    void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer);
     boolean isSinglePlayer();
+    void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards);
+    void notifyPlayersEndGame();
 }

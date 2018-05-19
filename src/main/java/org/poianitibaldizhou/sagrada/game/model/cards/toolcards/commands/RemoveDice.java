@@ -1,15 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class RemoveDice implements ICommand {
 
@@ -19,7 +19,13 @@ public class RemoveDice implements ICommand {
 
     private final PlacementRestrictionType constraintType;
 
+    /**
+     * The constructor only allow no constraint or color constraint.
+     * @param type restriction that needs to be followed for removing the dice
+     */
     public RemoveDice(PlacementRestrictionType type) {
+        if(type != PlacementRestrictionType.NONE && type != PlacementRestrictionType.COLOR)
+            throw new IllegalArgumentException("Type of restriction not allowed for this command");
         this.constraintType = type;
     }
 
@@ -40,30 +46,33 @@ public class RemoveDice implements ICommand {
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException {
-        SchemaCard schemaCard = player.getSchemaCard();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         Position position;
         Dice removed = null;
         Color color;
 
-        do {
-            if (this.constraintType == PlacementRestrictionType.COLOR) {
-                do {
-                    color = toolCardExecutor.getNeededColor();
-                    for(IToolCardExecutorObserver obs : observerList)
-                        obs.notifyNeedDicePositionOfCertainColor(player, color);
-                    position = toolCardExecutor.getPosition();
-
-                } while (!schemaCard.getDice(position.getRow(), position.getColumn()).getColor().equals(color));
-            } else {
-                for (IToolCardExecutorObserver obs : observerList)
-                    obs.notifyNeedPosition(player);
-                position = toolCardExecutor.getPosition();
+        if (this.constraintType == PlacementRestrictionType.COLOR) {
+            color = toolCardExecutor.getNeededColor();
+            for(IToolCardExecutorObserver obs : observerList)
+                obs.notifyNeedDicePositionOfCertainColor(color);
+            position = toolCardExecutor.getPosition();
+            if (!player.getSchemaCard().getDice(position.getRow(), position.getColumn()).getColor().equals(color)) {
+                toolCardExecutor.setNeededPosition(null);
+                throw new ExecutionCommandException();
             }
+        } else {
+            for (IToolCardExecutorObserver obs : observerList)
+                obs.notifyNeedPosition();
+            position = toolCardExecutor.getPosition();
+        }
 
-            removed = schemaCard.removeDice(position.getRow(), position.getColumn());
-        } while(removed == null);
+        removed = game.removeDiceFromSchemaCardPlayer(player, position.getRow(), position.getColumn());
+
+        if(removed == null) {
+            toolCardExecutor.setNeededPosition(null);
+            throw new ExecutionCommandException();
+        }
         toolCardExecutor.setNeededDice(removed);
         return CommandFlow.MAIN;
     }
@@ -75,5 +84,10 @@ public class RemoveDice implements ICommand {
 
         RemoveDice obj = (RemoveDice)object;
         return obj.getConstraintType() == this.constraintType;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(RemoveDice.class, getConstraintType());
     }
 }

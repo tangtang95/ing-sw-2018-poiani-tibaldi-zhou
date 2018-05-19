@@ -4,7 +4,9 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+
+import java.util.Objects;
 
 public class AddDiceToDiceBag implements ICommand {
 
@@ -28,5 +30,10 @@ public class AddDiceToDiceBag implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof AddDiceToDiceBag;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(AddDiceToDiceBag.class);
     }
 }

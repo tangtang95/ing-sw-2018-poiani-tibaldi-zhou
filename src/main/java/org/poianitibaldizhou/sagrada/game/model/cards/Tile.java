@@ -9,8 +9,10 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class Tile {
+public class Tile{
 
     private final IConstraint constraint;
     private Dice dice = null;
@@ -139,7 +141,13 @@ public class Tile {
         if (tile == null)
             return null;
         Tile newTile = new Tile(tile.getConstraint());
-        newTile.dice = new Dice(tile.getDice().getNumberConstraint(),tile.getDice().getColorConstraint());
+        Dice oldDice = tile.getDice();
+        if(oldDice != null)
+            try {
+                newTile.setDice(new Dice(oldDice.getNumber(), oldDice.getColor()), PlacementRestrictionType.NONE);
+            } catch (RuleViolationException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, "Shouldn't happen, There is no restriction");
+            }
         return newTile;
     }
 

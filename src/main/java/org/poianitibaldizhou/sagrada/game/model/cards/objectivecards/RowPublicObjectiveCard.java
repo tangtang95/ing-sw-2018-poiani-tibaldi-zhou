@@ -16,8 +16,8 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
     /**
      * Constructor.
      * Creates a RowPublicObjectiveCard with a name, description and points.
-     * This also requires the type of constraint on which the cards operate: a PublicObjectiveCard only deals
-     * with a single PlacementRestrictionType.
+     * This also requires the type of objectiveCard (color or number) on which the cards operate:
+     * a PublicObjectiveCard only deals with a single type.
      *  @param name card's name
      * @param description card's description
      * @param cardPoints card's point

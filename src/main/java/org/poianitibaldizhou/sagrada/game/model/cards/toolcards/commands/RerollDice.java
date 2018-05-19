@@ -4,8 +4,9 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
+import java.util.Objects;
 import java.util.Random;
 
 public class RerollDice implements ICommand {
@@ -32,5 +33,10 @@ public class RerollDice implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof RerollDice;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(RerollDice.class);
     }
 }

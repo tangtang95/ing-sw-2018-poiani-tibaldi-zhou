@@ -2,17 +2,14 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class SwapDiceWithRoundTrack implements ICommand {
 
@@ -37,7 +34,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         RoundTrack roundTrack = game.getRoundTrack();
 
         for (IToolCardExecutorObserver observer : observerList) {
-            observer.notifyNeedDiceFromRoundTrack(player, roundTrack);
+            observer.notifyNeedDiceFromRoundTrack(roundTrack);
         }
 
         roundTrackDice = toolCardExecutor.getNeededDice();
@@ -55,5 +52,10 @@ public class SwapDiceWithRoundTrack implements ICommand {
     @Override
     public boolean equals(Object object) {
         return object instanceof SwapDiceWithRoundTrack;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(SwapDiceWithRoundTrack.class);
     }
 }

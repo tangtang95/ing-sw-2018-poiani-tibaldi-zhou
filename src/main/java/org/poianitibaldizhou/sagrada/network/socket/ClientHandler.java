@@ -1,18 +1,22 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
+import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 import org.poianitibaldizhou.sagrada.network.socket.messages.NotifyMessage;
 import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
 import org.poianitibaldizhou.sagrada.network.socket.messages.Response;
-import org.poianitibaldizhou.sagrada.network.socket.proxyviews.CLILobbyProxyView;
-import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.lang.reflect.Proxy;
 import java.net.Socket;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,6 +30,8 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
+    private Set<Class> observerInterfaces;
+
     /**
      * Constructor.
      * Create a Runnable ClientHandler to handle the client request and send response and notify to the client
@@ -35,12 +41,20 @@ public class ClientHandler implements Runnable {
      */
     public ClientHandler(Socket socket, ILobbyController controller) {
         this.controller = controller;
+        initObserverClasses();
         try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
+
+    }
+
+    private void initObserverClasses(){
+        observerInterfaces = new HashSet<>();
+        observerInterfaces.add(ILobbyObserver.class);
+        observerInterfaces.add(INetworkObserver.class);
     }
 
     /**
@@ -105,10 +119,22 @@ public class ClientHandler implements Runnable {
     private void replaceObserver(Request request) {
         List<Object> parameters = request.getMethodParameters();
         for (int i = 0; i < parameters.size(); i++) {
-            if (parameters.get(i) instanceof CLILobbyView) {
-                request.replaceParameter(new CLILobbyProxyView(this, parameters.get(i).hashCode()), i);
+            Class clazz = parameters.get(i).getClass();
+            if (containsAtLeastOneInterface(clazz.getInterfaces())) {
+                request.replaceParameter(Proxy.newProxyInstance(
+                        clazz.getClassLoader(), clazz.getInterfaces(),
+                        new ProxyObserverInvocationHandler(this, parameters.get(i).hashCode())), i);
             }
         }
+    }
+
+    @Contract(pure = true)
+    private boolean containsAtLeastOneInterface(Class[] interfaces){
+        for (Class clazz: interfaces) {
+            if(observerInterfaces.contains(clazz))
+                return true;
+        }
+        return false;
     }
 
 }

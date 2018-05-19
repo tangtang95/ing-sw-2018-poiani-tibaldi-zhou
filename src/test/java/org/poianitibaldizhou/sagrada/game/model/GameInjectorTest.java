@@ -63,60 +63,60 @@ public class GameInjectorTest {
         toolCardDrawableCollection.addElement(new ToolCard(Color.PURPLE, "Pinza Sgrossatrice",
                 "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1." +
                         " Non puoi cambiare un 6 in 1 o un 1 in 6",
-                "Choose dice;Modify dice value by 1;Add dice to DraftPool;CA",true
+                "[1-Choose dice][2-Modify dice value by 1][4-Add dice to DraftPool][8-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.BLUE, "Pennello per Eglomise",
                 "Muovi un qualsiasi dado nella tua vetrata ignorando le restrizioni di colore." +
                         " Devi rispettare tutte le altre restrizioni di piazzamento"
-                ,"Remove dice;Place dice ignoring color constraints;CA",true
+                ,"[1-Remove dice][2-Place dice ignoring color constraints][4-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.RED, "Alesatore per lamina di rame",
                 "Muovi un qualsiasi dado nella tua vetrata ignorando le restrizioni di valore." +
                         " Devi rispettare tutte le altre restrizioni di piazzamento"
-                ,"Choose dice;Remove dice;Place dice ignoring number constraints",true
+                ,"[1-Remove dice][2-Place dice ignoring number constraints][4-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.YELLOW, "Lathekin",
                 "Muovi esattamente due dadi, rispettando tutte le restrizioni di piazzamento",
-                "Choose dice;Remove dice;Place dice;Choose dice;Remove dice;Place dice",true
+                "[1-Remove dice][2-Place dice][4-CA][8-Remove dice][16-Place dice][32-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.GREEN, "Taglierina circolare",
                 "Dopo aver scelto un dado, scambia quel dado con un dado sul Tracciato dei round",
-                "Choose dice;Swap dice with RoundTrack",true
+                "[1-Choose dice][2-Swap dice with RoundTrack][4-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.PURPLE, "Pennello per Pasta Salda",
                 "Dopo aver scelto un dado, tira nuovamente quel dado. Se non puoi piazzarlo," +
                         " riponilo nella riserva"
-                ,"Choose dice;Reroll dice;Check Dice placeble;Add dice to DraftPool",true
+                ,"[1-Choose dice][2-Reroll dice][4-If Dice placeable][8-Place dice][9-Add dice to DraftPool][16-CA][18-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.BLUE, "Martelletto",
                 "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante" +
                         " il tuo secondo turno, prima di scegliere il secondo dado"
-                ,"Check second turn;Check before choose dice;Reroll DraftPool",true
+                ,"[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.RED, "Tenaglia a Rotelle",
                 "Dopo il tuo primo turno scegli immediatamente un altro dado. Salta il tuo secondo " +
                         "turno in questo round"
-                ,"Check first turn;Wait turn end;Choose dice;Place dice;Skip second turn",true
+                ,"[1-Check first turn][2-Wait turn end][4-Choose dice][8-Place dice][16-Skip second turn][32-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.YELLOW, "Riga in Sughero",
                 "Dopo aver scelto un dado, piazzalo in una casella che non sia adiacente " +
                         "a un altro dado. Devi rispettare tutte le restrizioni di piazzamento",
-                "Choose dice;Place isolated dice",true
+                "[1-Choose dice][2-Place isolated dice][4-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.GREEN, "Tampone Diamantato",
                 "Dopo aver scelto un dado, giralo sulla faccia opposta. 6 diventa 1, 5 diventa 2," +
                         " 4 diventa 3, ecc.",
-                "Choose dice;Pour over dice",true
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Pour over dice][8-Add dice to DraftPool][16-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.PURPLE, "Diluente per Pasta Salda",
                 "Dopo aver scelto un dado riponilo nel Sacchetto, poi pescane uno dal Sacchetto." +
                         " Scegli il valore del nuovo dado e piazzalo, rispettando tutte le restrizioni di piazzamento",
-                "Choose dice;Add dice to Dicebag;Draw dice from Dicebag;Choose dice value;Place dice",true
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Add dice to Dicebag][8-Draw dice from Dicebag][16-Modify dice value][32-Place dice][64-CA]",true
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.BLUE, "Taglierina Manuale",
                 "Muovi fino a due dadi dello stesso colore di un solo dado sul Tracciato dei Round. " +
                         "Devi rispettare tutte le restrizioni di piazzamento",
-                "Choose color from RoundTrack;Remove dice of a certain color;Place dice;Remove dice of a certain color;Place dice",true
+                "[1-Choose color from RoundTrack][2-Remove dice of a certain color][4-Place dice][8-Remove dice of a certain color][16-Place dice][32-CA]",true
         ));
 
         GameInjector.injectToolCards(toolCardDrawableCollection1, true);

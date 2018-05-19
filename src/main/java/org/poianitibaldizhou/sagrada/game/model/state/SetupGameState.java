@@ -24,7 +24,10 @@ public class SetupGameState extends IStateGame{
 
      SetupGameState(Game game) {
         super(game);
+    }
 
+    @Override
+    public void init() {
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
@@ -34,10 +37,11 @@ public class SetupGameState extends IStateGame{
         }catch (WrongCardInJsonFileException e){
             LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards", e);
         }
-        GameInjector.injectDiceBag(game.getDiceBag());
 
+        game.initDiceBag();
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
+        readyGame();
     }
 
     /**
@@ -54,7 +58,7 @@ public class SetupGameState extends IStateGame{
      * @param toolCards the collection of every tool cards
      */
     private void injectToolCards(DrawableCollection<ToolCard> toolCards) {
-        int numberOfToolCards = game.getGameStrategy().getNumberOfToolCardForGame();
+        int numberOfToolCards = game.getNumberOfToolCardForGame();
         for (int i = 0; i < numberOfToolCards; i++) {
             try {
                 game.addToolCard(toolCards.draw());
@@ -70,7 +74,7 @@ public class SetupGameState extends IStateGame{
      * @param publicObjectiveCards the collection of every public objective cards
      */
     private void injectPublicObjectiveCards(DrawableCollection<PublicObjectiveCard> publicObjectiveCards) {
-        int numberOfPublicObjectiveCards = game.getGameStrategy().getNumberOfPublicObjectiveCardForGame();
+        int numberOfPublicObjectiveCards = game.getNumberOfPublicObjectiveCardForGame();
         for (int i = 0; i < numberOfPublicObjectiveCards; i++) {
             try {
                 game.addPublicObjectiveCard(publicObjectiveCards.draw());

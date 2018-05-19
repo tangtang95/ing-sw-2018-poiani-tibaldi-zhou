@@ -15,7 +15,6 @@ public class CLIGameView extends CLIMenuView implements IGameView {
     @Override
     public void run() {
         System.out.println("-----------------------------WELCOME-------------------------------");
-
     }
 
     @Override

@@ -14,6 +14,5 @@ public class SockClient {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        System.exit(0);
     }
 }
