@@ -44,8 +44,7 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
         game.addRemainingDiceToRoundTrack(currentRound);
         game.clearDraftPool();
 
-        Player nextPlayer = (Player) game.getPlayers()
-                .get(game.getNextIndexOfPlayer(currentRoundPlayer, Direction.CLOCKWISE));
+        Player nextPlayer = game.getNextPlayer(currentRoundPlayer, Direction.CLOCKWISE);
         if(currentRound < RoundTrack.LAST_ROUND)
             game.setState(new RoundStartState(game, currentRound+1, nextPlayer));
         else

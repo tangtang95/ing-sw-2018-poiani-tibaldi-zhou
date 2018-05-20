@@ -62,11 +62,6 @@ public class ToolCardExecutor extends Thread {
         this.observers = new ArrayList<>();
         this.player = player;
         this.turnState = turnState;
-        this.temporaryDraftpool = game.getDraftPool();
-        this.temporaryDicebag = game.getDiceBag();
-        this.temporaryRoundtrack = game.getRoundTrack();
-        this.temporarySchemaCard = player.getSchemaCard();
-        this.skipTurnPlayers = turnState.getSkipTurnPlayers();
         this.game = game;
     }
 
@@ -82,6 +77,28 @@ public class ToolCardExecutor extends Thread {
         return observers;
     }
 
+    /**
+     * Set all the temporary objects
+     */
+    private void setTemporaryObjects() {
+        this.temporaryDraftpool = game.getDraftPool();
+        this.temporaryDicebag = game.getDiceBag();
+        this.temporaryRoundtrack = game.getRoundTrack();
+        this.temporarySchemaCard = player.getSchemaCard();
+        this.skipTurnPlayers = turnState.getSkipTurnPlayers();
+    }
+
+    /**
+     * Set the modified objects saved before
+     */
+    private void updateObjects() {
+        game.setDraftPool(temporaryDraftpool);
+        game.setDiceBag(temporaryDicebag);
+        game.setRoundTrack(temporaryRoundtrack);
+        player.setSchemaCard(temporarySchemaCard);
+        turnState.setSkipTurnPlayers(skipTurnPlayers);
+    }
+
 
     @Override
     public synchronized void start() {
@@ -92,12 +109,9 @@ public class ToolCardExecutor extends Thread {
     @Override
     public void run() {
         try {
+            setTemporaryObjects();
             invokeCommands();
-            game.setDraftPool(temporaryDraftpool);
-            game.setDiceBag(temporaryDicebag);
-            game.setRoundTrack(temporaryRoundtrack);
-            player.setSchemaCard(temporarySchemaCard);
-            turnState.setSkipTurnPlayers(skipTurnPlayers);
+            updateObjects();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
         } catch (InterruptedException e) {
@@ -110,6 +124,13 @@ public class ToolCardExecutor extends Thread {
 
     }
 
+    /**
+     * Invoke the list of commands
+     *
+     * @throws RemoteException network error
+     * @throws InterruptedException if the toolCard execution is interrupted by a client command or
+     *                              because the command can't proceed
+     */
     private void invokeCommands() throws RemoteException, InterruptedException {
         if (commandRoot == null) {
             throw new IllegalStateException();
@@ -126,7 +147,7 @@ public class ToolCardExecutor extends Thread {
             } else if (commandFlow == CommandFlow.STOP) {
                 observers.forEach(IToolCardExecutorObserver::notifyCommandInterrupted);
                 throw new InterruptedException();
-            } else if (commandFlow == CommandFlow.REPEAT){
+            } else if (commandFlow == CommandFlow.REPEAT) {
                 observers.forEach(IToolCardExecutorObserver::notifyError);
             }
 
@@ -248,5 +269,5 @@ public class ToolCardExecutor extends Thread {
     public void interruptCommandsInvocation() {
         this.interrupt();
     }
-    
+
 }

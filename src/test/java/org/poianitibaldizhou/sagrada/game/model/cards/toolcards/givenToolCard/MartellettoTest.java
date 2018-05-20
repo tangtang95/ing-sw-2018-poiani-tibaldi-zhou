@@ -37,7 +37,7 @@ public class MartellettoTest {
         toolCard = new ToolCard(Color.BLUE, "Martelletto",
                 "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante" +
                         " il tuo secondo turno, prima di scegliere il secondo dado"
-                ,"[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]",false);
+                ,"[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]");
 
     }
 
@@ -57,7 +57,7 @@ public class MartellettoTest {
         turnState.init();
 
         when(game.getState()).thenReturn(turnState);
-        Node<ICommand> rootCommand = toolCard.useCard();
+        Node<ICommand> rootCommand = toolCard.getCommands();
         //verify(game).reRollDraftPool();
     }
 

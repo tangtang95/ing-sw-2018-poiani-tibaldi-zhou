@@ -3,11 +3,15 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveDiceFromDraftPool;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +50,7 @@ public class SinglePlayerGame extends Game{
     }
 
     public void setPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.add(new SinglePlayer(token, new ExpendableDice(this), schemaCard, privateObjectiveCards));
+        players.put(token, new SinglePlayer(token, new ExpendableDice(this), schemaCard, privateObjectiveCards));
     }
 
     public void requestPrivateObjectiveCardFromPlayer() {
@@ -101,6 +105,12 @@ public class SinglePlayerGame extends Game{
         Node<ICommand> useDiceCommand = new Node<>(new RemoveDiceFromDraftPool());
         Node<ICommand> clearAll = new Node<>(new ClearAll());
         useDiceCommand.setLeftChild(clearAll);
+        Node<ICommand> destroyToolCard = new Node<>((player, toolCardExecutor, turnState) -> {
+            toolCard.destroyToolCard();
+            return CommandFlow.MAIN;
+        });
+        clearAll.setLeftChild(destroyToolCard);
+
         Node<ICommand> coreToolCardCommands = toolCard.getCommands();
         clearAll.setLeftChild(coreToolCardCommands);
         return useDiceCommand;

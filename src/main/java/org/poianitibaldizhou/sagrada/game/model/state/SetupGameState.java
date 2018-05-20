@@ -31,7 +31,7 @@ public class SetupGameState extends IStateGame{
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
-        GameInjector.injectToolCards(toolCards, game.isSinglePlayer());
+        GameInjector.injectToolCards(toolCards);
         try {
             GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
         }catch (WrongCardInJsonFileException e){

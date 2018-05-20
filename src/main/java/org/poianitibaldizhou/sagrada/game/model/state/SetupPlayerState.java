@@ -5,7 +5,6 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
-import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
@@ -67,7 +66,7 @@ public class SetupPlayerState extends IStateGame {
 
         GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
         GameInjector.injectSchemaCards(schemaCards);
-        for (String token : game.getToken()) {
+        for (String token : game.getPlayersToken()) {
             List<SchemaCard> schemaCardList = new ArrayList<>();
             for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
                 try {

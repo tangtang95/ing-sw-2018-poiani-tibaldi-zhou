@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.game.model.*;
+import org.jetbrains.annotations.NotNull;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
@@ -9,22 +11,34 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ToolCard extends Card{
-    private Color color;
+/**
+ * OVERVIEW: Each instance of ToolCard has always tokens >= 0
+ */
+public class ToolCard extends Card {
+
+
+    private final Color color;
     private int tokens;
-    private Node<ICommand> commands;
-    private boolean isSinglePlayer;
-    private List<IToolCardObserver> observers;
+    private final Node<ICommand> commands;
+    private final List<IToolCardObserver> observers;
 
-    public static final int LOW_COST = 1;
-    public static final int HIGH_COST = 1;
+    private static final int LOW_COST = 1;
+    private static final int HIGH_COST = 2;
 
-
-    public ToolCard(Color color, String name, String description, String action, boolean isSinglePlayer) {
+    /**
+     * Constructor.
+     * Create a toolCard based on a color, a name, a description and an action (string of commands based on a specific
+     * language)
+     *
+     * @param color       the color of the toolCard
+     * @param name        the name of the toolCard
+     * @param description the description of the toolCard
+     * @param action      string of commands based on a specific language
+     */
+    public ToolCard(Color color, String name, String description, String action) {
         super(name, description);
         this.tokens = 0;
         this.color = color;
-        this.isSinglePlayer = isSinglePlayer;
         ToolCardLanguageParser toolCardLanguageParser = new ToolCardLanguageParser();
         commands = toolCardLanguageParser.parseToolCard(action);
         observers = new ArrayList<>();
@@ -35,49 +49,49 @@ public class ToolCard extends Card{
      *
      * @param toolCard the toolCard to copy
      */
-    //TODO refactor
-    private ToolCard(ToolCard toolCard){
-        super(toolCard.getName(),toolCard.getDescription());
+    private ToolCard(ToolCard toolCard) {
+        //TODO refactor
+        super(toolCard.getName(), toolCard.getDescription());
         this.color = toolCard.getColor();
         this.tokens = toolCard.getTokens();
         this.commands = toolCard.getCommands();
-        this.isSinglePlayer = toolCard.isSinglePlayer;
         this.observers = toolCard.getObservers();
     }
 
+    //GETTER
+    @Contract(pure = true)
     public List<IToolCardObserver> getObservers() {
         return new ArrayList<>(observers);
     }
 
-    public Node<ICommand> useCard() {
-        if (isSinglePlayer) {
-            for (IToolCardObserver obs : observers)
-                obs.onCardDestroy();
-        } else {
-            for (IToolCardObserver obs : observers)
-                obs.onTokenChange(tokens);
-        }
-
-        return getCommands();
-    }
-
+    @Contract(pure = true)
     public int getTokens() {
         return tokens;
     }
 
+    @Contract(pure = true)
     public Color getColor() {
         return color;
     }
 
+    @Contract(pure = true)
     public int getCost() {
-        if (tokens <= 0)
-            return LOW_COST;
-        else
-            return HIGH_COST;
+        return (tokens == 0) ? LOW_COST : HIGH_COST;
     }
 
-    public void addTokens(int tokens) {
+    public Node<ICommand> getCommands() {
+        // TODO deep copy (the best option)
+        return commands;
+    }
+
+    //MODIFIERS
+    public void addTokens(final int tokens) {
         this.tokens += tokens;
+        observers.forEach(obs -> obs.onTokenChange(tokens));
+    }
+
+    public void destroyToolCard() {
+        observers.forEach(IToolCardObserver::onCardDestroy);
     }
 
     public void attachToolCardObserver(IToolCardObserver observer) {
@@ -88,33 +102,29 @@ public class ToolCard extends Card{
         observers.remove(observer);
     }
 
+    /**
+     * @param o the other object to compare
+     * @return true if the toolCard has the same tokens, color, name, description and commands.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         ToolCard toolCard = (ToolCard) o;
         return tokens == toolCard.tokens &&
-                isSinglePlayer == toolCard.isSinglePlayer &&
                 color == toolCard.color &&
-                this.commands.equals(toolCard.getCommands())&&
+                this.commands.equals(toolCard.getCommands()) &&
                 this.getName().equals(toolCard.getName()) &&
                 this.getDescription().equals(toolCard.getDescription());
     }
 
-
     @Override
     public int hashCode() {
-        return Objects.hash(color, tokens, commands, isSinglePlayer);
+        return Objects.hash(getName(), getDescription(), color, tokens, commands);
     }
 
-    public Node<ICommand> getCommands() {
-        return commands;
-    }
-
-    //TODO refactor (refactor test too)
-    public static ToolCard newInstance(ToolCard toolCard) {
-        if (toolCard == null)
-            return null;
+    public static ToolCard newInstance(@NotNull ToolCard toolCard) {
         return new ToolCard(toolCard);
     }
 }

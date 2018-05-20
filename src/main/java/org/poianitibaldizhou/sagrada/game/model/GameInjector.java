@@ -45,8 +45,7 @@ public class GameInjector {
      * @param toolCardDrawableCollection DrawableCollection of ToolCard
      * @param isSinglePlayer             Game parameter for choosing the game mode (single player or multilayer)
      */
-    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection,
-                                       boolean isSinglePlayer) {
+    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -62,9 +61,7 @@ public class GameInjector {
             toolCardDrawableCollection.addElement(new ToolCard(Color.valueOf((String) toolCard.get("cardColour")),
                     (String) toolCard.get(CARD_NAME),
                     (String) toolCard.get(CARD_DESCRIPTION),
-                    (String) toolCard.get("action"),
-                    isSinglePlayer
-            ));
+                    (String) toolCard.get("action")));
         }
     }
 

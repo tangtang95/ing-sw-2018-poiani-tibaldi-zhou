@@ -2,16 +2,14 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
-import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
-import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -20,7 +18,7 @@ import java.util.logging.Logger;
 public abstract class Game implements IGameStrategy{
 
     private final List<String> playerTokens;
-    protected final List<Player> players;
+    protected final HashMap<String, Player> players;
     private RoundTrack roundTrack;
     private final List<ToolCard> toolCards;
     private final List<PublicObjectiveCard> publicObjectiveCards;
@@ -37,7 +35,7 @@ public abstract class Game implements IGameStrategy{
      */
     public Game(String name, List<String> playerTokens) {
         this.playerTokens = new ArrayList<>(playerTokens);
-        this.players = new ArrayList<>();
+        this.players = new HashMap<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new ArrayList<>();
         this.publicObjectiveCards = new ArrayList<>();
@@ -50,7 +48,7 @@ public abstract class Game implements IGameStrategy{
     public Game(String name, String playerToken){
         this.playerTokens = new ArrayList<>();
         this.playerTokens.add(playerToken);
-        this.players = new ArrayList<>();
+        this.players = new HashMap<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new ArrayList<>();
         this.publicObjectiveCards = new ArrayList<>();
@@ -89,7 +87,7 @@ public abstract class Game implements IGameStrategy{
     @Contract(pure = true)
     public List<Player> getPlayers() {
         List<Player> copyPlayers = new ArrayList<>();
-        for (Player player : players) {
+        for (Player player : players.values()) {
             copyPlayers.add(Player.newInstance(player));
         }
         return copyPlayers;
@@ -111,11 +109,7 @@ public abstract class Game implements IGameStrategy{
 
     @Contract(pure = true)
     public List<PublicObjectiveCard> getPublicObjectiveCards() {
-        List<PublicObjectiveCard> copyPublicObjectiveCards = new ArrayList<>();
-        for (PublicObjectiveCard publicObjectiveCard: publicObjectiveCards){
-            copyPublicObjectiveCards.add(publicObjectiveCard);
-        }
-        return copyPublicObjectiveCards;
+        return new ArrayList<>(publicObjectiveCards);
     }
 
     @Contract(pure = true)
@@ -140,7 +134,7 @@ public abstract class Game implements IGameStrategy{
     }
 
     @Contract(pure = true)
-    public List<String> getToken(){
+    public List<String> getPlayersToken(){
         return new ArrayList<>(playerTokens);
     }
 
@@ -156,7 +150,7 @@ public abstract class Game implements IGameStrategy{
     }
 
     public void setPlayerOutcome(Player player, Outcome outcome) {
-        players.get(getIndexOfPlayer(player)).setOutcome(outcome);
+        players.get(player.getToken()).setOutcome(outcome);
     }
 
     public void setPlayerSchemaCard(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
@@ -180,20 +174,24 @@ public abstract class Game implements IGameStrategy{
     }
     
     /**
-     * Return the index of the player given based on the list of players
+     * Return the index of the player given based on the list of tokens
      *
-     * @param player the player to find in the list of players
-     * @return the index of the list of players about the given player
+     * @param player the player to find in the list of tokens
+     * @return the index of the list of tokens about the given player
      */
-    public int getIndexOfPlayer(Player player) {
+    protected int getIndexOfPlayer(Player player) {
         int indexOfPlayer = -1;
         for (int i = 0; i < getPlayers().size(); i++) {
-            if (getPlayers().get(i).equals(player))
+            if (getPlayersToken().get(i).equals(player.getToken()))
                 indexOfPlayer = i;
         }
         if (indexOfPlayer == -1)
             throw new IllegalArgumentException("cannot find the current player in the list of players");
         return indexOfPlayer;
+    }
+
+    protected Player getPlayerByIndex(int currentIndexOfPlayer) {
+        return players.get(playerTokens.get(currentIndexOfPlayer));
     }
 
     /**
@@ -203,17 +201,18 @@ public abstract class Game implements IGameStrategy{
      * @param direction the direction of the next player (clockwise or counterclockwise)
      * @return the index of the next player
      */
-    public int getNextIndexOfPlayer(Player player, Direction direction) {
+    protected int getNextIndexOfPlayer(Player player, Direction direction) {
         int indexOfPlayer = getIndexOfPlayer(player);
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
 
-    public void selectPrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) {
-        player.setPrivateObjectiveCard(privateObjectiveCard);
+    public Player getNextPlayer(Player player, Direction direction){
+        int indexOfNextPlayer = getNextIndexOfPlayer(player, direction);
+        return players.get(playerTokens.get(indexOfNextPlayer));
     }
 
-    public void calculateOutcome(){
-        state.calculateVictoryPoints();
+    public void selectPrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) {
+        player.setPrivateObjectiveCard(privateObjectiveCard);
     }
 
     public void setDraftPool(DraftPool draftPool) {
@@ -242,8 +241,8 @@ public abstract class Game implements IGameStrategy{
         }
     }
 
-    public void setExecutor(ExecutorEvent event) {
-        event.setNeededValue(((TurnState) state).getToolCardExecutor());
+    public void setExecutor(ExecutorEvent event) throws InvalidActionException {
+        state.fireExecutorEvent(event);
     }
 
 

@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class EndTurnState extends IPlayerState {
 
@@ -9,13 +11,18 @@ public class EndTurnState extends IPlayerState {
         super(turnState);
     }
 
+    /**
+     * Notify to the toolCardExecutor that the turnState is going to endTurn and wait for the end of the
+     * execution of the toolCard if necessary. At the end go to the nexTurn
+     */
     @Override
-    public void endTurn() throws InvalidActionException {
+    public void endTurn() {
         turnState.getToolCardExecutor().setTurnEnded(true);
         try {
-            turnState.getToolCardExecutor().waitForTurnEnd();
+            turnState.getToolCardExecutor().waitToolCardExecutionEnd();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.INFO, "toolCardExecution ended");
+            Thread.currentThread().interrupt();
         }
         turnState.nextTurn();
     }

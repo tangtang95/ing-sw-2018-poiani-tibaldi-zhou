@@ -40,10 +40,14 @@ public class EndGameStateTest {
         playerList.add(player4);
         when(game.getPlayers()).thenReturn(playerList);
         when(game.getPublicObjectiveCards()).thenReturn(publicObjectiveCards);
-        when(game.getIndexOfPlayer(player1)).thenReturn(0);
-        when(game.getIndexOfPlayer(player2)).thenReturn(1);
-        when(game.getIndexOfPlayer(player3)).thenReturn(2);
-        when(game.getIndexOfPlayer(player4)).thenReturn(3);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
+        when(game.getNextPlayer(player2, Direction.CLOCKWISE)).thenReturn(player3);
+        when(game.getNextPlayer(player3, Direction.CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player4, Direction.CLOCKWISE)).thenReturn(player1);
+        when(game.getNextPlayer(player4, Direction.COUNTER_CLOCKWISE)).thenReturn(player3);
+        when(game.getNextPlayer(player3, Direction.COUNTER_CLOCKWISE)).thenReturn(player2);
+        when(game.getNextPlayer(player2, Direction.COUNTER_CLOCKWISE)).thenReturn(player1);
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
     }
 
     @After

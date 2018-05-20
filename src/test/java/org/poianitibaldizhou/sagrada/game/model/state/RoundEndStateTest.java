@@ -49,10 +49,14 @@ public class RoundEndStateTest {
         diceList.add(new Dice(1, Color.YELLOW));
         diceList.add(new Dice(5, Color.BLUE));
         when(draftPool.getDices()).thenReturn(diceList);
-        when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
-        when(game.getNextIndexOfPlayer(player2, Direction.CLOCKWISE)).thenReturn(2);
-        when(game.getNextIndexOfPlayer(player3, Direction.CLOCKWISE)).thenReturn(3);
-        when(game.getNextIndexOfPlayer(player4, Direction.CLOCKWISE)).thenReturn(0);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
+        when(game.getNextPlayer(player2, Direction.CLOCKWISE)).thenReturn(player3);
+        when(game.getNextPlayer(player3, Direction.CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player4, Direction.CLOCKWISE)).thenReturn(player1);
+        when(game.getNextPlayer(player4, Direction.COUNTER_CLOCKWISE)).thenReturn(player3);
+        when(game.getNextPlayer(player3, Direction.COUNTER_CLOCKWISE)).thenReturn(player2);
+        when(game.getNextPlayer(player2, Direction.COUNTER_CLOCKWISE)).thenReturn(player1);
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
     }
 
     @After
