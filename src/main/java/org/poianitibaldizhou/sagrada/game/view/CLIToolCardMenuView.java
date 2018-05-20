@@ -17,7 +17,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
 
     public CLIToolCardMenuView(NetworkManager networkManager, ScreenManager screenManager)
             throws RemoteException {
-        super(networkManager,screenManager);
+        super(networkManager, screenManager);
     }
 
     @Override
@@ -42,14 +42,14 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
      * if value = 1 and diceValue=6, the modified can't be 1, for instance.
      *
      * @param diceValue player that needs to choose a color
-     * @param value delta used to modify diceValue
+     * @param value     delta used to modify diceValue
      * @throws RemoteException network communication error
      */
     @Override
     public void notifyNeedNewDeltaForDice(int diceValue, int value) throws RemoteException {
-        if(this.player.equals(player)) {
+        if (this.player.equals(player)) {
             // TODO choose delta
-            System.out.println("===> Modify " + diceValue + "of +/-"+ value);
+            System.out.println("===> Modify " + diceValue + "of +/-" + value);
             int modifiedValue = 5;
             networkManager.getGameController().setNewValue(modifiedValue, gameName, toolCardName);
         }

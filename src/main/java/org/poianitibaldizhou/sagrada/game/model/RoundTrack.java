@@ -32,7 +32,6 @@ public class RoundTrack {
 
     /**
      * Copy constructor.
-     * Place a dice in the specified round of the roundTrack
      *
      * @param roundTrack the roundTrack to copy
      * @return copy of roundTrack
@@ -44,8 +43,7 @@ public class RoundTrack {
         List<Dice> diceList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
             for (Dice d : roundTrack.listOfDices.get(i))
-                diceList.add(new Dice(d.getNumber(), d.getColor()));
-            newRoundTrack.addDicesToRound(diceList, i);
+                newRoundTrack.addDiceToRound(new Dice(d.getNumber(),d.getColor()), i);
         }
         return newRoundTrack;
     }

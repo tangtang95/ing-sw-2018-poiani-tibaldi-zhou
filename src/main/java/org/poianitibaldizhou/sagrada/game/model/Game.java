@@ -7,9 +7,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -239,6 +241,11 @@ public abstract class Game implements IGameStrategy{
             }
         }
     }
+
+    public void setExecutor(ExecutorEvent event) {
+        event.setNeededValue(((TurnState) state).getToolCardExecutor());
+    }
+
 
     /*
     public static Game newInstance(Game game) {

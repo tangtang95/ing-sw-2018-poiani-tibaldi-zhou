@@ -203,7 +203,7 @@ public class SchemaCard {
     public boolean hasDiceOfColor(Color color) {
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                if(getDice(i,j).getColor().equals(color))
+                if(getDice(i,j) != null && getDice(i,j).getColor().equals(color))
                     return true;
             }
         }

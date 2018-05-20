@@ -1,6 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ColorExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.DiceExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.PositionExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ValueExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 
 import java.rmi.RemoteException;
@@ -46,7 +50,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setDice(Dice dice, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
+        game.setExecutor(new DiceExecutorEvent(diceg));
     }
 
     /**
@@ -59,7 +63,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setNewValue(int value, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
+        game.setExecutor(new ValueExecutorEvent(value));
     }
 
     /**
@@ -72,7 +76,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setColor(Color color, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
+        game.setExecutor(new ColorExecutorEvent(color));
     }
 
     /**
@@ -87,5 +91,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setPosition(Position position, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
+        game.setExecutor(new PositionExecutorEvent(position));
     }
 }
