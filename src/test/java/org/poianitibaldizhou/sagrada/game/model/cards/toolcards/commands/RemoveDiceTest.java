@@ -81,13 +81,28 @@ public class RemoveDiceTest {
     public void testExecutionFailColorConstraint() throws RemoteException, InterruptedException {
         when(executor.getPosition()).thenReturn(position);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
+        when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
         when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(new Dice(1, Color.RED));
         assertEquals(CommandFlow.REPEAT, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test
+    public void testExecutionStopCantPlaceColorConstraint() throws Exception {
+        when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(false);
+        when(executor.getNeededColor()).thenReturn(Color.BLUE);
+        assertEquals(CommandFlow.STOP, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
+    }
+
+    @Test
+    public void testExecutionStopCantPlaceNoneConstraint() throws Exception {
+        when(schemaCard.isEmpty()).thenReturn(true);
+        assertEquals(CommandFlow.STOP, removeDice.executeCommand(invokerPlayer, executor, stateGame));
+    }
+
+    @Test
     public void testExecutionFailNoneConstraint() throws RemoteException, InterruptedException {
         when(executor.getPosition()).thenReturn(position);
+        when(schemaCard.isEmpty()).thenReturn(false);
         when(schemaCard.removeDice(position.getRow(), position.getColumn())).thenReturn(null);
         assertEquals(CommandFlow.REPEAT, removeDice.executeCommand(invokerPlayer, executor, stateGame));
     }
@@ -98,6 +113,7 @@ public class RemoveDiceTest {
         when(executor.getPosition()).thenReturn(position);
         when(executor.getNeededDice()).thenReturn(dice);
         when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(dice);
+        when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
         when(schemaCard.removeDice(position.getRow(), position.getColumn())).thenReturn(dice);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
 
@@ -115,6 +131,7 @@ public class RemoveDiceTest {
     public void testExecutionSucceedNoneConstraint() throws InterruptedException, RemoteException, ExecutionCommandException {
         Dice dice = new Dice(1, Color.RED);
         when(executor.getPosition()).thenReturn(position);
+        when(schemaCard.isEmpty()).thenReturn(false);
         when(executor.getNeededDice()).thenReturn(dice);
         when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(dice);
         when(executor.getTemporarySchemaCard().removeDice(position.getRow(), position.getColumn())).thenReturn(dice);

@@ -24,7 +24,7 @@ public class DrawDiceFromDicebag implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) {
-        Dice dice = null;
+        Dice dice;
         try {
             dice = toolCardExecutor.getTemporaryDicebag().draw();
         } catch (EmptyCollectionException e) {

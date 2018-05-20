@@ -31,7 +31,6 @@ public class CheckTurn implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) {
         TurnState turnState = (TurnState) stateGame;
         if(turnState.isFirstTurn() != (getTurn() == 1)) {
-            // TODO Maybe need to add a new flow to block the use of toolCard
             return CommandFlow.STOP;
         }
         return CommandFlow.MAIN;

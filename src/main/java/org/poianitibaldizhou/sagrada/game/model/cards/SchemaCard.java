@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
@@ -10,7 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import java.util.Objects;
 
-public class SchemaCard{
+public class SchemaCard {
     private final String name;
     private final int difficulty;
     private Tile[][] tileMatrix;
@@ -39,7 +40,7 @@ public class SchemaCard{
     /**
      * copy-constructor
      *
-     * @param name card name
+     * @param name       card name
      * @param difficulty card difficulty
      * @param tileMatrix card matrix
      */
@@ -83,7 +84,7 @@ public class SchemaCard{
      * @param row             the row where to place the dice
      * @param column          the column where to place the dice
      * @param diceRestriction the constraint to check on the placement of dice
-     * @param restriction the constraint to check on the tile
+     * @param restriction     the constraint to check on the tile
      * @throws RuleViolationException if getNeededDice(row, column) != null ||
      *                                hasOrthogonalDicesSimilar() ||
      *                                (this.isEmpty() && !this.isOutOfBounds(row,column)) ||
@@ -109,8 +110,8 @@ public class SchemaCard{
                 throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
             }
             int numberOfAdjacentDices = getNumberOfAdjacentDices(row, column);
-            if(!diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(numberOfAdjacentDices)){
-                if(diceRestriction == DiceRestrictionType.NORMAL)
+            if (!diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(numberOfAdjacentDices)) {
+                if (diceRestriction == DiceRestrictionType.NORMAL)
                     throw new RuleViolationException(RuleViolationType.NO_DICE_NEAR);
                 else
                     throw new RuleViolationException(RuleViolationType.HAS_DICE_NEAR);
@@ -159,11 +160,11 @@ public class SchemaCard{
     /**
      * Check if the dice can be placed on the tile designated by row and column based on constraint given
      *
-     * @param dice           the dice to check if positionable
-     * @param row            the row of the tile
-     * @param column         the column of the tile
+     * @param dice            the dice to check if positionable
+     * @param row             the row of the tile
+     * @param column          the column of the tile
      * @param diceRestriction the constraint to check on the placement of dice
-     * @param restriction the constraint to check on the tile
+     * @param restriction     the constraint to check on the tile
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
@@ -190,6 +191,23 @@ public class SchemaCard{
             }
         }
         return true;
+    }
+
+    /**
+     * Checks if the schemacard has a dice of a certain color placed on it.
+     *
+     * @param color specified color
+     * @return true if a dice of color is present on the board, false otherwise
+     */
+    @Contract(pure = true)
+    public boolean hasDiceOfColor(Color color) {
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if(getDice(i,j).getColor().equals(color))
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -306,6 +324,29 @@ public class SchemaCard{
                         getDice(row + deltaRow, column + deltaColumn) != null)
                     numberOfAdjacentDice++;
         return numberOfAdjacentDice;
+    }
+
+
+    /**
+     * Returns true if the dice is positionable following the given restrictions somewhere on the
+     * the card, false otherwise
+     *
+     * @param dice dice that needs to be placed
+     * @param restriction placement restrictions to respect
+     * @param diceRestriction dice restrictions to repect
+     * @return true if the dice is positionable, false otherwise
+     */
+    @Contract(pure = true)
+    public boolean isDicePositionable(Dice dice, PlacementRestrictionType restriction,
+                                      DiceRestrictionType diceRestriction) {
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                if (isDicePositionable(dice, i, j, restriction, diceRestriction))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
 

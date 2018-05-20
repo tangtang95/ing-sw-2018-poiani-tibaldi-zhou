@@ -122,8 +122,6 @@ public class DrawableCollectionTest {
             } else {
                 collection2 = null;
             }
-
-
         }
 
         @Parameterized.Parameters
@@ -144,8 +142,13 @@ public class DrawableCollectionTest {
 
         @Test
         public void testEquals() {
-            System.out.println("HEREEEE");
             assertEquals(expected, collection1.equals(collection2));
+        }
+
+        @Test
+        public void testHashCode() {
+            if(collection2 != null)
+                assertEquals(expected, collection1.hashCode() == collection2.hashCode());
         }
     }
 }

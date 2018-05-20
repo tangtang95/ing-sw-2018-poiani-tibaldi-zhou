@@ -46,7 +46,8 @@ public class PlaceDice implements ICommand {
      * @param player           player that invoked the toolcard: its schema card will receive a new dice
      * @param toolCardExecutor toolcard that has been invoked
      * @param stateGame
-     * @return CommandFlow.REPEAT if the restrictions aren't respected, CommandFlow.MAIN otherwise
+     * @return CommandFlow.REPEAT if the restrictions aren't respected; CommandFlow.STOP if it's not possibile to place
+     * the dice in any position; CommandFlow.MAIN otherwise
      * @throws InterruptedException given to wait() in getting parameters from the executor
      * @throws RemoteException      network communication error
      */
@@ -56,6 +57,10 @@ public class PlaceDice implements ICommand {
         Position position;
 
         dice = toolCardExecutor.getNeededDice();
+
+        if(!(toolCardExecutor.getTemporarySchemaCard().isDicePositionable(dice, tileConstraint, diceConstraint))) {
+            return CommandFlow.STOP;
+        }
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         for (IToolCardExecutorObserver obs : observerList)

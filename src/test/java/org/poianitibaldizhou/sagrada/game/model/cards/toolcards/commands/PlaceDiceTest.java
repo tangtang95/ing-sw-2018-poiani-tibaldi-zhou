@@ -57,7 +57,9 @@ public class PlaceDiceTest {
         when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
         when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
         position = new Position(3, 2);
-    }
+        when(executor.getNeededDice()).thenReturn(dice);
+        when(executor.getPosition()).thenReturn(position);
+        }
 
     @After
     public void tearDown() throws Exception {
@@ -74,8 +76,7 @@ public class PlaceDiceTest {
     @Test
     public void executeCommandSucced() throws Exception {
         command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-        when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
         verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position.getRow(), position.getColumn(),
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
@@ -86,15 +87,21 @@ public class PlaceDiceTest {
 
     @Test
     public void executeCommandFail() throws Exception {
-        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-        when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
+        command = new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL)).thenReturn(true);
         doThrow(RuleViolationException.class).when(schemaCard).setDice(dice, position.getRow(), position.getColumn(),
-                PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+                PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
         assertEquals(CommandFlow.REPEAT, command.executeCommand(invokerPlayer, executor, stateGame));
         for (IToolCardExecutorObserver obs : observerList) {
             verify(obs, times(1)).notifyNeedPosition();
         }
+    }
+
+    @Test
+    public void executeCommandCantProceed() throws Exception {
+        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED)).thenReturn(false);
+        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer,executor,stateGame));
     }
 
     @Test

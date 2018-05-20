@@ -105,18 +105,15 @@ public class DrawableCollection<T> {
      */
     @Override
     public boolean equals(Object o) {
-        System.out.println("here1");
         if (!(o instanceof DrawableCollection))
             return false;
 
         List<T> param = ((DrawableCollection) o).getCollection();
 
-        if (param.size() != collection.size())
+        if (param.size() != this.size())
             return false;
 
-        System.out.println("here2");
         int[] counter1 = new int[param.size()];
-        int[] counter2 = new int[param.size()];
         int[] positions = new int[param.size()];
 
         for (int i = 0; i < param.size(); i++) {
@@ -133,9 +130,9 @@ public class DrawableCollection<T> {
             }
         }
 
-        for (T elem : collection) {
+        for (int j = 0; j < param.size(); j++) {
             for (int i = 0; i < param.size(); i++) {
-                if(elem.equals(param.get(i))) {
+                if (collection.get(j).equals(param.get(i))) {
                     counter1[positions[i]] -= 1;
                     break;
                 }
@@ -143,9 +140,22 @@ public class DrawableCollection<T> {
         }
 
         for (int i = 0; i < param.size(); i++) {
-            if(counter1[i] != 0)
+            if (counter1[i] != 0)
                 return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        ArrayList<T> list = new ArrayList<>(this.getCollection());
+        Collections.sort(list, Comparator.comparingInt(Object::hashCode));
+
+        for (int i = 0; i < list.size(); i++) {
+            hashCode = 31 * hashCode + (list.get(i) == null ? 0 : list.get(i).hashCode());
+        }
+
+        return hashCode;
     }
 }

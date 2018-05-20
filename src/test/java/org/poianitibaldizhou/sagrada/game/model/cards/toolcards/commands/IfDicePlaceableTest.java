@@ -10,6 +10,8 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -28,13 +30,11 @@ public class IfDicePlaceableTest {
     @Mock
     private TurnState state;
     @Mock
-    private Player invokerPlayer;
-    @Mock
     private SchemaCard schemaCard;
     @Mock
     private Dice dice;
     @Mock
-    private Position position;
+    private Player invokerPlayer;
 
     @Before
     public void setUp() throws Exception {
@@ -42,7 +42,6 @@ public class IfDicePlaceableTest {
         command = new IfDicePlaceable();
         when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
         when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
     }
 
     @After
@@ -50,18 +49,17 @@ public class IfDicePlaceableTest {
         command = null;
         executor = null;
         state = null;
-        invokerPlayer = null;
     }
 
     @Test
     public void executeCommand() throws Exception {
-        when(executor.getTemporarySchemaCard().isDicePositionable(dice, position.getRow(), position.getColumn())).thenReturn(true);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
     }
 
     @Test
     public void executeCommandFailing() throws Exception {
-        when(invokerPlayer.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())).thenReturn(false);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(false);
         assertEquals(CommandFlow.SUB, command.executeCommand(invokerPlayer, executor, state));
     }
 

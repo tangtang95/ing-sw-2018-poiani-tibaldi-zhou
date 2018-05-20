@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -43,7 +44,8 @@ public class RemoveDice implements ICommand {
      * @param toolCardExecutor toolcard invoked
      * @param stateGame        state in which the player acts
      * @return CommandFlow.REPEAT if the specified position doesn't contain a dice or if the dice contain doesn't match
-     * the specified color constraint. CommandFlow.MAIN otherwise.
+     * the specified color constraint. CommandFlow.STOP if it's not possible to remove a dice under the give
+     * CommandFlow.MAIN otherwise.
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
@@ -56,6 +58,8 @@ public class RemoveDice implements ICommand {
 
         if (this.constraintType == PlacementRestrictionType.COLOR) {
             color = toolCardExecutor.getNeededColor();
+            if(!(toolCardExecutor.getTemporarySchemaCard().hasDiceOfColor(color)))
+                return CommandFlow.STOP;
             for (IToolCardExecutorObserver obs : observerList)
                 obs.notifyNeedDicePositionOfCertainColor(color);
             position = toolCardExecutor.getPosition();
@@ -64,6 +68,8 @@ public class RemoveDice implements ICommand {
                 return CommandFlow.REPEAT;
             }
         } else {
+            if(toolCardExecutor.getTemporarySchemaCard().isEmpty())
+                return CommandFlow.STOP;
             for (IToolCardExecutorObserver obs : observerList)
                 obs.notifyNeedPosition();
             position = toolCardExecutor.getPosition();

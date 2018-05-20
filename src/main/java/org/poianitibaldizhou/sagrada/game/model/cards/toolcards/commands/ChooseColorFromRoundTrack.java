@@ -23,13 +23,15 @@ public class ChooseColorFromRoundTrack implements ICommand {
      * @param player player who invoked toolCard
      * @param toolCardExecutor toolCard invoked
      * @param stateGame state in which the player acts
-     * @return CommandFlow.MAIN
+     * @return CommandFlow.STOP if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
      * @throws RemoteException communication architecture error
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundtrack();
+        if(roundTrack.isEmpty())
+            return CommandFlow.STOP;
         Set<Color> colors = new HashSet<>();
         List<Dice> diceList;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {

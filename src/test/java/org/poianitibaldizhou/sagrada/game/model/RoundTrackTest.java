@@ -44,6 +44,7 @@ public class RoundTrackTest {
     @After
     public void tearDown() {
         roundTrack = null;
+        dices = null;
     }
 
     @Test
@@ -90,4 +91,31 @@ public class RoundTrackTest {
         }
     }
 
+    @Test
+    public void testEmptinessWithAddDice() {
+        roundTrack.addDiceToRound(dice1, 1);
+        assertEquals(false, roundTrack.isEmpty());
+
+        roundTrack.removeDiceFromRoundTrack(1, dice1);
+        assertEquals(true, roundTrack.isEmpty());
+    }
+
+    @Test
+    public void testEmptinessWithAddDices() {
+        roundTrack.addDicesToRound(dices,1);
+        assertEquals(false, roundTrack.isEmpty());
+
+        roundTrack.addDicesToRound(dices,2);
+        assertEquals(false, roundTrack.isEmpty());
+
+        for(Dice dice : dices) {
+            roundTrack.removeDiceFromRoundTrack(1, dice);
+        }
+        assertEquals(false, roundTrack.isEmpty());
+
+        for(Dice dice : dices) {
+            roundTrack.removeDiceFromRoundTrack(2, dice);
+        }
+        assertEquals(true,roundTrack.isEmpty());
+    }
 }
