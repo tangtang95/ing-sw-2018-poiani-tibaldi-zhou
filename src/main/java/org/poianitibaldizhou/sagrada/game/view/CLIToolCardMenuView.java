@@ -71,6 +71,16 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
     }
 
     @Override
+    public void notifyError() {
+        
+    }
+
+    @Override
+    public void notifyCommandInterrupted() {
+
+    }
+
+    @Override
     public void onTokenChange(int tokens) {
 
     }

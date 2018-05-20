@@ -3,10 +3,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class CheckTurn implements ICommand {
@@ -24,12 +22,11 @@ public class CheckTurn implements ICommand {
      *
      * @param player player that invoked the ToolCard
      * @param toolCardExecutor executor that processes the commands
-     * @param stateGame state in which the player acts
+     * @param turnState state in which the player acts
      * @return CommandFlow.MAIN if the turn is correct, CommandFlow.STOP otherwise
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) {
-        TurnState turnState = (TurnState) stateGame;
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         if(turnState.isFirstTurn() != (getTurn() == 1)) {
             return CommandFlow.STOP;
         }

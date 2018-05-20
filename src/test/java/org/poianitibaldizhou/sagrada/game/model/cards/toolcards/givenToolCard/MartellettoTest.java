@@ -58,9 +58,6 @@ public class MartellettoTest {
 
         when(game.getState()).thenReturn(turnState);
         Node<ICommand> rootCommand = toolCard.useCard();
-        ToolCardExecutor executor = new ToolCardExecutor(rootCommand, player1, game);
-        executor.start();
-        executor.join();
         //verify(game).reRollDraftPool();
     }
 

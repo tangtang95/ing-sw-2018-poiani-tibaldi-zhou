@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class SwapDiceWithRoundTrackTest {
     private IToolCardExecutorObserver observer3;
 
     @Mock
-    private IStateGame stateGame;
+    private TurnState stateGame;
 
     @Mock
     private Player player;

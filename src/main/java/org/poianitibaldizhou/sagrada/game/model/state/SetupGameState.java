@@ -41,14 +41,6 @@ public class SetupGameState extends IStateGame{
         game.initDiceBag();
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
-        readyGame();
-    }
-
-    /**
-     * Method of the state pattern: changes the state of the game into RoundStartState
-     */
-    @Override
-    public void readyGame() {
         game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayers())));
     }
 

@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -20,13 +20,13 @@ public class ModifyDiceValue implements ICommand {
      *
      * @param player           Player who invoked the ToolCard
      * @param toolCardExecutor ToolCard invoked that contains this command
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the value is not in range with the accepted value, CommandFlow.MAIN otherwise
      * @throws RemoteException      if there are network communication errors
      * @throws InterruptedException due to the wait() in getting values from the executor
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         for (IToolCardExecutorObserver obs : observerList) {

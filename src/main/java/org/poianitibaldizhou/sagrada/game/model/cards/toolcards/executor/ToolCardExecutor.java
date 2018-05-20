@@ -5,10 +5,13 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,9 +40,11 @@ public class ToolCardExecutor extends Thread {
     private DrawableCollection<Dice> temporaryDicebag;
     private RoundTrack temporaryRoundtrack;
     private SchemaCard temporarySchemaCard;
+    private Map<Player, Integer> skipTurnPlayers;
     private Game game;
+    private TurnState turnState;
 
-    public ToolCardExecutor(Game game, Player player) {
+    public ToolCardExecutor(Game game, Player player, TurnState turnState) {
         diceMonitor = new Object();
         colorMonitor = new Object();
         valueMonitor = new Object();
@@ -56,16 +61,13 @@ public class ToolCardExecutor extends Thread {
 
         this.observers = new ArrayList<>();
         this.player = player;
+        this.turnState = turnState;
         this.temporaryDraftpool = game.getDraftPool();
         this.temporaryDicebag = game.getDiceBag();
         this.temporaryRoundtrack = game.getRoundTrack();
         this.temporarySchemaCard = player.getSchemaCard();
+        this.skipTurnPlayers = turnState.getSkipTurnPlayers();
         this.game = game;
-    }
-
-    public ToolCardExecutor(Node<ICommand> commandRoot, Player player, Game game) {
-        this(game, player);
-        this.commandRoot = commandRoot;
     }
 
     public void setCommands(Node<ICommand> commands) {
@@ -80,20 +82,6 @@ public class ToolCardExecutor extends Thread {
         return observers;
     }
 
-    /**
-     * copy-constructor
-     *
-     * @param toolCardExecutor the toolCard Executor to copy
-     */
-    private ToolCardExecutor(ToolCardExecutor toolCardExecutor) {
-        // TODO
-        diceMonitor = new Object();
-        colorMonitor = new Object();
-        valueMonitor = new Object();
-        turnEndMonitor = new Object();
-        positionMonitor = new Object();
-        executorMonitor = new Object();
-    }
 
     @Override
     public synchronized void start() {
@@ -107,16 +95,19 @@ public class ToolCardExecutor extends Thread {
             invokeCommands();
             game.setDraftPool(temporaryDraftpool);
             game.setDiceBag(temporaryDicebag);
-            ;
             game.setRoundTrack(temporaryRoundtrack);
             player.setSchemaCard(temporarySchemaCard);
+            turnState.setSkipTurnPlayers(skipTurnPlayers);
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
         } catch (InterruptedException e) {
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
+            Thread.currentThread().interrupt();
+        } finally {
+            setIsExecutingCommands(false);
+            game.getState().releaseToolCardExecution();
         }
-        setIsExecutingCommands(false);
-        game.getState().releaseToolCardExecution();
+
     }
 
     private void invokeCommands() throws RemoteException, InterruptedException {
@@ -126,14 +117,17 @@ public class ToolCardExecutor extends Thread {
         CommandFlow commandFlow;
         Node<ICommand> root = commandRoot;
         do {
-            commandFlow = root.getData().executeCommand(player, this, game.getState());
+            commandFlow = root.getData().executeCommand(player, this, turnState);
 
             if (commandFlow == CommandFlow.MAIN) {
                 root = root.getLeftChild();
             } else if (commandFlow == CommandFlow.SUB) {
                 root = root.getRightChild();
             } else if (commandFlow == CommandFlow.STOP) {
-
+                observers.forEach(IToolCardExecutorObserver::notifyCommandInterrupted);
+                throw new InterruptedException();
+            } else if (commandFlow == CommandFlow.REPEAT){
+                observers.forEach(IToolCardExecutorObserver::notifyError);
             }
 
         } while (root != null);
@@ -254,10 +248,5 @@ public class ToolCardExecutor extends Thread {
     public void interruptCommandsInvocation() {
         this.interrupt();
     }
-
-    public static ToolCardExecutor newInstance(ToolCardExecutor tceh) {
-        if (tceh == null)
-            return null;
-        return new ToolCardExecutor(tceh);
-    }
+    
 }

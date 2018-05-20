@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.time.temporal.TemporalUnit;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.verify;
 public class ClearCommandsTest {
 
     @Mock
-    public IStateGame stateGame;
+    public TurnState stateGame;
 
     @Mock
     public Player player;

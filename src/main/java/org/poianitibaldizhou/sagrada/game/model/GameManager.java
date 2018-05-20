@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.ManagerMediator;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -14,8 +15,11 @@ public class GameManager {
     private HashMap<String, Game> games;
     private HashMap<String, List<String>> playersByGame;
     private List<String> players;
+    private final ManagerMediator managerMediator;
 
-    public GameManager() {
+    public GameManager(ManagerMediator managerMediator) {
+        this.managerMediator = managerMediator;
+        this.managerMediator.setGameManager(this);
         games = new HashMap<>();
         playersByGame = new HashMap<>();
         players = new ArrayList<>();

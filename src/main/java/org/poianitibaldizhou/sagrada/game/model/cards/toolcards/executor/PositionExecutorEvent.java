@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 
 public class PositionExecutorEvent implements ExecutorEvent {
 
-    private Position position;
+    private final Position position;
 
     public PositionExecutorEvent(Position position){
         this.position = position;

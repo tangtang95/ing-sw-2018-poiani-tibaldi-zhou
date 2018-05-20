@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
@@ -27,7 +28,7 @@ public class RemoveDiceFromDraftPoolTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private IStateGame stateGame;
+    private TurnState stateGame;
     @Mock
     private Player invokerPlayer;
 

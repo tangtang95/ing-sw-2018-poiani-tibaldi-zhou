@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
+import org.poianitibaldizhou.sagrada.network.socket.messages.GameRequest;
 
 public class ProxyGameController extends ProxyController implements IGameController{
 
@@ -22,7 +22,7 @@ public class ProxyGameController extends ProxyController implements IGameControl
 
 
     /**
-     * Player request to join a game
+     * Player GameRequest to join a game
      * @param view player's view
      * @param token player's token
      * @param gameName name of the game that player want to join
@@ -31,7 +31,7 @@ public class ProxyGameController extends ProxyController implements IGameControl
     public void joinGame(IGameView view, String token, String gameName) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, view, token, gameName));
+        serverHandler.sendRequest(new GameRequest(methodName, view, token, gameName));
     }
 
     /**
@@ -44,7 +44,7 @@ public class ProxyGameController extends ProxyController implements IGameControl
     @Override
     public void setDice(Dice dice, String gameName, String toolCardName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, dice, gameName, toolCardName));
+        serverHandler.sendRequest(new GameRequest(methodName, dice, gameName, toolCardName));
     }
 
     /**
@@ -57,7 +57,7 @@ public class ProxyGameController extends ProxyController implements IGameControl
     @Override
     public void setNewValue(int value, String gameName, String toolCardName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, value, gameName, toolCardName));
+        serverHandler.sendRequest(new GameRequest(methodName, value, gameName, toolCardName));
     }
 
     /**
@@ -70,7 +70,7 @@ public class ProxyGameController extends ProxyController implements IGameControl
     @Override
     public void setColor(Color color, String gameName, String toolCardName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, color, gameName, toolCardName));
+        serverHandler.sendRequest(new GameRequest(methodName, color, gameName, toolCardName));
     }
 
     /**
@@ -83,6 +83,6 @@ public class ProxyGameController extends ProxyController implements IGameControl
     @Override
     public void setPosition(Position position, String gameName, String toolCardName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, position, gameName, toolCardName));
+        serverHandler.sendRequest(new GameRequest(methodName, position, gameName, toolCardName));
     }
 }

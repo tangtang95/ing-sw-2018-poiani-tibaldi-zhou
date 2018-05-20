@@ -2,12 +2,17 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
-public class MultiPlayerGame extends Game implements IGameStrategy{
+public class MultiPlayerGame extends Game{
 
     public static final int NUMBER_OF_TOOL_CARDS = 3;
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 3;
@@ -25,11 +30,6 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
     @Override
     public int getNumberOfPublicObjectiveCardForGame() {
         return NUMBER_OF_PUBLIC_OBJECTIVE_CARDS;
-    }
-
-    @Override
-    public int getPlayerScore(Player player) {
-        return player.getMultiPlayerScore();
     }
 
     @Override
@@ -69,12 +69,20 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
 
     @Override
     public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.add(new Player(token, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
+        players.add(new MultiPlayer(token, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
     }
 
     @Override
     public void notifyPlayersEndGame() {
         calculateOutcome();
+    }
+
+    @Override
+    public Node<ICommand> getCompleteCommands(ToolCard toolCard) {
+        Node<ICommand> removeFavorToken = new Node<>(new RemoveFavorToken(toolCard.getCost()));
+        Node<ICommand> coreToolCardCommands = toolCard.getCommands();
+        removeFavorToken.setLeftChild(coreToolCardCommands);
+        return removeFavorToken;
     }
 
     /**
@@ -127,16 +135,11 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
     private List<Player> getWinnersByFavorTokens(List<Player> winners) {
         if (winners.size() == 1)
             return winners;
-        List<Player> favorTokensWinners = new ArrayList<>();
-        int maxFavorTokens = Integer.MIN_VALUE;
-        for (Player player : winners) {
-            maxFavorTokens = Math.max(maxFavorTokens, player.getFavorTokens());
-        }
-        for (Player player : winners) {
-            if (maxFavorTokens == player.getFavorTokens())
-                favorTokensWinners.add(player);
-        }
-        return favorTokensWinners;
+        OptionalInt maxFavorTokens = winners.stream().mapToInt(Player::getCoins).max();
+        if(!maxFavorTokens.isPresent())
+            throw new IllegalStateException();
+        return winners.stream()
+                .filter(player -> maxFavorTokens.getAsInt() == player.getCoins()).collect(Collectors.toList());
     }
 
     /**

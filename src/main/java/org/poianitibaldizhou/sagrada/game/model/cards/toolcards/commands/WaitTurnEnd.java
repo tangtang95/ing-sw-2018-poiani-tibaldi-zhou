@@ -3,9 +3,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class WaitTurnEnd implements ICommand {
@@ -15,13 +14,13 @@ public class WaitTurnEnd implements ICommand {
      *
      * @param player           player who invoked the tool card containing this command
      * @param toolCardExecutor ToolCard invoked
-     * @param stateGame        turn in which the player acts
+     * @param turnState        turn in which the player acts
      * @return CommandFlow.Main
      * @throws InterruptedException due to the wait() in waiting the end of the turn
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws InterruptedException {
-        stateGame.releaseToolCardExecution();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
+        turnState.releaseToolCardExecution();
         toolCardExecutor.waitForTurnEnd();
         return CommandFlow.MAIN;
     }

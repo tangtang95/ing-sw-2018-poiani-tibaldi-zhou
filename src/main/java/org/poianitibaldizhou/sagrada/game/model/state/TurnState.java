@@ -19,17 +19,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     private final Player currentRoundPlayer;
     private final Player currentTurnPlayer;
-    private IPlayerState playerState;
     private final int currentRound;
     private final boolean isFirstTurn;
     private final Set<IActionCommand> actionsUsed;
-    private final Map<Player, Integer> skipTurnPlayers;
     private final ToolCardExecutor toolCardExecutor;
+    private final Map<Player, Integer> skipTurnPlayers;
+
+    private IPlayerState playerState;
+
 
     /**
      * Constructor.
@@ -50,7 +53,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.actionsUsed = new HashSet<>();
         this.playerState = new SelectActionState(this);
         this.skipTurnPlayers = new HashMap<>();
-        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer);
+        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
     }
 
     /**
@@ -67,7 +70,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.isFirstTurn = turnState.isFirstTurn;
         this.actionsUsed = new HashSet<>();
         this.skipTurnPlayers = new HashMap<>();
-        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer);
+        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
     }
 
     /**
@@ -89,7 +92,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.currentTurnPlayer = currentTurnPlayer;
         this.isFirstTurn = isFirstTurn;
         this.actionsUsed = new HashSet<>();
-        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer);
+        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
         this.playerState = new SelectActionState(this);
         this.skipTurnPlayers = new HashMap<>();
         for (Player player : skipTurnPlayers.keySet()) {
@@ -137,7 +140,9 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException, RemoteException, InterruptedException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        Node<ICommand> rootCommand = playerState.useCard(player, toolCard);
+        if(!playerState.useCard(player, toolCard, game))
+            throw new InvalidActionException();
+        Node<ICommand> rootCommand = game.getCompleteCommands(toolCard);
         toolCardExecutor.setCommands(rootCommand);
         toolCardExecutor.addObserver(observer);
         toolCardExecutor.start();
@@ -170,6 +175,12 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         event.setNeededValue(toolCardExecutor);
     }
 
+    @Override
+    public void interruptToolCardExecution() {
+        if(toolCardExecutor.isExecutingCommands())
+            toolCardExecutor.interruptCommandsInvocation();
+    }
+
     /**
      * This method is called when the currentTurnPlayer end his turn: if it's the second turn and the currentTurnPlayer ending the turn
      * is the current currentTurnPlayer who has thrown the dices then the state goes to RoundEndState, otherwise if it's first
@@ -197,6 +208,15 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     public boolean hasActionUsed(PlaceDiceAction placeDiceAction) {
         return actionsUsed.contains(placeDiceAction);
+    }
+
+    public Map<Player, Integer> getSkipTurnPlayers(){
+        return new HashMap<>(skipTurnPlayers);
+    }
+
+    public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers){
+        this.skipTurnPlayers.clear();
+        this.skipTurnPlayers.putAll(skipTurnPlayers);
     }
 
     public void setPlayerState(IPlayerState playerState) {

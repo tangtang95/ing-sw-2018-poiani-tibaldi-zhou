@@ -16,4 +16,6 @@ public interface IToolCardExecutorObserver {
     void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws RemoteException;
     void notifyNeedPosition() throws RemoteException;
     void notifyNeedDicePositionOfCertainColor(Color color) throws RemoteException;
+    void notifyError();
+    void notifyCommandInterrupted();
 }

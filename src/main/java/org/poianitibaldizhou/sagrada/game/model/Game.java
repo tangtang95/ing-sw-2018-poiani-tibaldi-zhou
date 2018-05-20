@@ -6,7 +6,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.game.model.state.SetupPlayerState;
 
 import java.util.*;
@@ -40,7 +42,7 @@ public abstract class Game implements IGameStrategy{
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
         this.name = name;
-        setState(new SetupPlayerState(this));
+        setState(new ResetState(this));
     }
 
     public Game(String name, String playerToken){
@@ -53,7 +55,7 @@ public abstract class Game implements IGameStrategy{
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
         this.name = name;
-        setState(new SetupPlayerState(this));
+        setState(new ResetState(this));
     }
 
 
@@ -121,7 +123,7 @@ public abstract class Game implements IGameStrategy{
 
     @Contract(pure = true)
     public int getNumberOfPlayers() {
-        return players.size();
+        return playerTokens.size();
     }
 
     @Contract(pure = true)
@@ -130,13 +132,18 @@ public abstract class Game implements IGameStrategy{
     }
 
     @Contract(pure = true)
-    public DrawableCollection getDiceBag() {
+    public DrawableCollection<Dice> getDiceBag() {
+        // TODO deep copy
         return diceBag;
     }
 
     @Contract(pure = true)
     public List<String> getToken(){
         return new ArrayList<>(playerTokens);
+    }
+
+    public int getPlayerScore(Player player) {
+        return player.getVictoryPoints();
     }
 
     //MODIFIER

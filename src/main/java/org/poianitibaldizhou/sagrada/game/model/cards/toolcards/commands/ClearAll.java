@@ -3,9 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
-
-import java.rmi.RemoteException;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 public class ClearAll implements ICommand {
 
@@ -14,11 +12,11 @@ public class ClearAll implements ICommand {
      *
      * @param player player who invoked the toolcard
      * @param toolCardExecutor executor of the toolcard that need to be cleaned
-     * @param stateGame state in which the card is executed
+     * @param turnState state in which the card is executed
      * @return CommandFlow.MAIN
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         toolCardExecutor.setNeededDice(null);
         toolCardExecutor.setNeededPosition(null);
         toolCardExecutor.setTurnEnded(false);

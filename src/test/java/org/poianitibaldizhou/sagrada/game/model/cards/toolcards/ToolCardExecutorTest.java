@@ -29,7 +29,6 @@ public class ToolCardExecutorTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         Node<ICommand> root = new Node<>(mock(ICommand.class));
-        executor = spy(new ToolCardExecutor(root, player, game));
 
     }
 

@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
@@ -17,12 +17,12 @@ public class PourOverDice implements ICommand {
      *
      * @param player           player's that used the toolcard
      * @param toolCardExecutor toolcard used
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.MAIN
      * @throws InterruptedException error due to wait() in getting parameters from the executor
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         Dice chosenDice = toolCardExecutor.getNeededDice();
         toolCardExecutor.setNeededDice(chosenDice.pourOverDice());
         return CommandFlow.MAIN;

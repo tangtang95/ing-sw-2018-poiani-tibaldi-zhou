@@ -108,7 +108,7 @@ public class DrawableCollection<T> {
         if (!(o instanceof DrawableCollection))
             return false;
 
-        List<T> param = ((DrawableCollection) o).getCollection();
+        List param = ((DrawableCollection) o).getCollection();
 
         if (param.size() != this.size())
             return false;
@@ -150,10 +150,10 @@ public class DrawableCollection<T> {
     public int hashCode() {
         int hashCode = 1;
         ArrayList<T> list = new ArrayList<>(this.getCollection());
-        Collections.sort(list, Comparator.comparingInt(Object::hashCode));
+        list.sort(Comparator.comparingInt(Object::hashCode));
 
-        for (int i = 0; i < list.size(); i++) {
-            hashCode = 31 * hashCode + (list.get(i) == null ? 0 : list.get(i).hashCode());
+        for (T elem : list) {
+            hashCode = 31 * hashCode + (elem == null ? 0 : elem.hashCode());
         }
 
         return hashCode;

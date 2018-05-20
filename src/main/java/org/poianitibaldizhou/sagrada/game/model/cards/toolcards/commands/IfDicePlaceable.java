@@ -5,9 +5,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class IfDicePlaceable implements ICommand {
@@ -17,12 +16,12 @@ public class IfDicePlaceable implements ICommand {
      *
      * @param player           player that invoked the ToolCard
      * @param toolCardExecutor executorHelper that contains this command
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return MAIN flow if the dice is positionable, otherwise SUB flow
      * @throws InterruptedException given by wait of getNeededDice() and getPosition()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws  InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
 
         if (!toolCardExecutor.getTemporarySchemaCard().isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)) {

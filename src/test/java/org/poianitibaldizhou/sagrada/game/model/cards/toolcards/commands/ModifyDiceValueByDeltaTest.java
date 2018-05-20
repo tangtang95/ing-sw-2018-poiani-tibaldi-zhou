@@ -18,6 +18,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ public class ModifyDiceValueByDeltaTest {
         @Mock
         private ToolCardExecutor executor;
         @Mock
-        private IStateGame stateGame;
+        private TurnState stateGame;
         @Mock
         private Player invokerPlayer;
         @Mock

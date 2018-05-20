@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 public class RerollDiceTest {
     @Mock
-    private IStateGame stateGame;
+    private TurnState stateGame;
 
     @Mock
     private ToolCardExecutor executor;

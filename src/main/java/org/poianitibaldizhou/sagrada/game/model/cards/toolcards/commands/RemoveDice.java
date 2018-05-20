@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -42,7 +42,7 @@ public class RemoveDice implements ICommand {
      *
      * @param player           player that invoked the command
      * @param toolCardExecutor toolcard invoked
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the specified position doesn't contain a dice or if the dice contain doesn't match
      * the specified color constraint. CommandFlow.STOP if it's not possible to remove a dice under the give
      * CommandFlow.MAIN otherwise.
@@ -50,7 +50,7 @@ public class RemoveDice implements ICommand {
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         Position position;
         Dice removed = null;

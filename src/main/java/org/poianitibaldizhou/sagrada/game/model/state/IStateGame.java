@@ -30,7 +30,7 @@ public abstract class IStateGame {
     public boolean ready(String token, SchemaCard schemaCard){
         throw new IllegalStateException();
     }
-    public void readyGame(){
+    public void readyGame(String token){
         throw new IllegalStateException();
     }
     public boolean throwDices(Player player){ throw new IllegalStateException(); }
@@ -57,6 +57,10 @@ public abstract class IStateGame {
     }
 
     public static IStateGame newInstance(IStateGame iStateGame) {throw new IllegalStateException(); }
+
+    public void interruptToolCardExecution() {
+        throw new IllegalStateException();
+    }
 
 
 }

@@ -59,7 +59,7 @@ public class Lobby implements Serializable{
 
     /**
      * Notify that an user joined the lobby.
-     * If the number of users in the lobby is equals to MAX_PLAYER, starts the game.
+     * If the number of users in the lobby is equals to MAX_PLAYER, return true
      *
      * @param user user joined
      * @return true if the lobby if full after the player join, false otherwise@throws RemoteException
@@ -74,13 +74,7 @@ public class Lobby implements Serializable{
                 e.printStackTrace();
             }
         }
-
-        if(userList.size() == MAX_PLAYER) {
-            gameStart();
-            return true;
-        }
-
-        return false;
+        return userList.size() == MAX_PLAYER;
     }
 
     /**

@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -24,7 +25,7 @@ public abstract class IPlayerState {
         throw new InvalidActionException();
     }
 
-    public Node<ICommand> useCard(Player player, ToolCard toolCard) throws NoCoinsExpendableException, InvalidActionException {
+    public boolean useCard(Player player, ToolCard toolCard, Game game) throws NoCoinsExpendableException, InvalidActionException {
         throw new InvalidActionException();
     }
 

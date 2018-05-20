@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -23,7 +24,7 @@ public class AddDiceToDiceBagTest {
     @Mock
     private Player invokerPlayer;
     @Mock
-    private IStateGame state;
+    private TurnState state;
 
     @Before
     public void setUp() throws Exception {

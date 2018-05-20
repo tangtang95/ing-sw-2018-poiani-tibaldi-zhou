@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 
 public class DiceExecutorEvent implements ExecutorEvent {
 
-    private Dice dice;
+    private final Dice dice;
 
     public DiceExecutorEvent(Dice dice){
         this.dice = dice;

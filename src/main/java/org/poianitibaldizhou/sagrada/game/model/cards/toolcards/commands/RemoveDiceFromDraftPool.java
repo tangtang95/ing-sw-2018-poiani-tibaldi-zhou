@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
@@ -18,13 +18,13 @@ public class RemoveDiceFromDraftPool implements ICommand {
      *
      * @param player           player who invoked the toolcard
      * @param toolCardExecutor toolcard invoked
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.STOP if the dice isn't present in DraftPool, CommandFlow.MAIN otherwise
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         try {
             toolCardExecutor.getTemporaryDraftpool().useDice(dice);

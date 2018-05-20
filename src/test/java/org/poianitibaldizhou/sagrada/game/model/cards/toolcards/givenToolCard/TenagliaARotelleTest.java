@@ -76,7 +76,7 @@ public class TenagliaARotelleTest {
         turnState = new TurnState(game, 0, player1, player1, true);
         turnState.init();
         when(game.getState()).thenReturn(turnState);
-        when(player1.useCard(toolCard)).thenReturn(toolCard.getCommands());
+        when(player1.isCardUsable(toolCard)).thenReturn(true);
         doAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {

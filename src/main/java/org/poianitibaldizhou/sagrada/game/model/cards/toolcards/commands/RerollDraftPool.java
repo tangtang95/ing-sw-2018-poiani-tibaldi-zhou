@@ -3,9 +3,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class RerollDraftPool implements ICommand {
@@ -16,11 +15,11 @@ public class RerollDraftPool implements ICommand {
      *
      * @param player           player that invoked the ToolCard containing this command
      * @param toolCardExecutor ToolCard that used this command
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.MAIN
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         toolCardExecutor.getTemporaryDraftpool().reRollDices();
         return CommandFlow.MAIN;
     }

@@ -6,17 +6,18 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Player{
-    private ICoin coins;
+public abstract class Player implements IVictoryPoints {
+
+    protected final ICoin coin;
     private final String token;
-    private SchemaCard schemaCard;
-    private final List<PrivateObjectiveCard> privateObjectiveCards;
-    private int indexOfPrivateObjectiveCard;
+    protected SchemaCard schemaCard;
+    protected final List<PrivateObjectiveCard> privateObjectiveCards;
+    protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
 
     /**
@@ -29,10 +30,10 @@ public class Player{
      * @param schemaCard
      * @param privateObjectiveCards
      */
-    public Player(String token, ICoin coins, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        this.coins = coins;
+    public Player(String token, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         this.schemaCard = SchemaCard.newInstance(schemaCard);
         this.privateObjectiveCards = new ArrayList<>(privateObjectiveCards);
+        this.coin = coin;
         this.token = token;
         this.outcome = Outcome.IN_GAME;
         this.indexOfPrivateObjectiveCard = 0;
@@ -41,12 +42,6 @@ public class Player{
     public String getToken() {
         return token;
     }
-
-    public int getCoins() {
-        return coins.getCoins();
-    }
-
-    public ICoin getICoins() {return this.coins;}
 
     public SchemaCard getSchemaCard() {
         return SchemaCard.newInstance(schemaCard);
@@ -64,15 +59,44 @@ public class Player{
         return schemaCard.isDicePositionable(dice, row, column);
     }
 
+    public int getCoins() {
+        return coin.getCoins();
+    }
+
+    public void removeCoins(int cost) {
+        coin.removeCoins(cost);
+    }
+
+    public boolean isCardUsable(ToolCard toolCard) {
+        return coin.isCardUsable(toolCard);
+    }
+
     /**
-     * Use the card and invoke the card commands
+     * Return the score of the player based on the PrivateObjectiveCard
      *
-     * @param toolCard the card which the player would use
-     * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
+     * @return the score of the player only by PrivateObjectiveCard
      */
-    public Node<ICommand> useCard(ToolCard toolCard) throws NoCoinsExpendableException {
-        coins.use(toolCard);
-        return toolCard.useCard();
+    public int getScoreFromPrivateCard() {
+        return privateObjectiveCards.get(indexOfPrivateObjectiveCard).getScore(schemaCard);
+    }
+
+    /**
+     * Place if possible the dice chosen in the place chosen
+     *
+     * @param dice the dice which will be placed
+     * @param row row position (number between 0 and 3 included)
+     * @param column column position (number between 0 and 4 included)
+     * @param tileConstraint the constraint of the tile chosen
+     * @param diceConstraint the constrains of the dice
+     * @throws RuleViolationException if the rule of the schema is violated
+     */
+    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
+                          DiceRestrictionType diceConstraint) throws RuleViolationException {
+        schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
+    }
+
+    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
+        placeDice(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
     public void setOutcome(Outcome outcome) {
@@ -97,10 +121,11 @@ public class Player{
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Player))
+        if (!(obj instanceof MultiPlayer))
             return false;
-        Player other = (Player) obj;
-        return this.getToken().equals(other.getToken());
+        MultiPlayer other = (MultiPlayer) obj;
+        return this.getToken().equals(other.getToken()) && getSchemaCard().equals(other.getSchemaCard())
+                && getPrivateObjectiveCards().equals(other.getPrivateObjectiveCards()) && coin.equals(other.coin);
     }
 
     /**
@@ -110,56 +135,18 @@ public class Player{
      */
     @Override
     public int hashCode() {
-        return this.getToken().hashCode();
-    }
-
-    /**
-     * Return the score of the player based on the PrivateObjectiveCard
-     *
-     * @return the score of the player only by PrivateObjectiveCard
-     */
-    public int getScoreFromPrivateCard() {
-        return privateObjectiveCards.get(indexOfPrivateObjectiveCard).getScore(schemaCard);
-    }
-
-    /**
-     * Return the score of the player based on the PrivateObjectiveCard, the remaining favor tokens and the empty spaces
-     * of the schemaCard
-     *
-     * @return the score of the player for multiPlayerGame
-     */
-    public int getMultiPlayerScore() {
-        //getCoins should be fixed when the game is single player
-        return privateObjectiveCards.get(indexOfPrivateObjectiveCard)
-                .getScore(schemaCard) + getFavorTokens() - schemaCard.getNumberOfEmptySpaces();
-    }
-
-    /**
-     *
-     * @return the score of the player for singlePlayerGame
-     */
-    public int getSinglePlayerScore(){
-        return privateObjectiveCards.get(indexOfPrivateObjectiveCard)
-                .getScore(schemaCard) - schemaCard.getNumberOfEmptySpaces()*3;
-    }
-
-
-    /**
-     * Return favor tokens of the player
-     *
-     * @return favor tokens of the player
-     */
-    public int getFavorTokens() {
-        if (coins instanceof FavorToken)
-            return getCoins();
-        return 0;
+        return Objects.hash(MultiPlayer.class, schemaCard, privateObjectiveCards, coin);
     }
 
     public static Player newInstance(Player player) {
         if (player == null)
             return null;
-        return new Player(player.token,player.coins, player.schemaCard,
+        if(player instanceof SinglePlayer)
+            return new SinglePlayer(player.token, player.coin, player.schemaCard,
                 player.privateObjectiveCards);
+        else
+            return new MultiPlayer(player.token, player.coin, player.schemaCard,
+                    player.privateObjectiveCards);
     }
 
     private boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {

@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -18,12 +18,12 @@ public class ChooseDice implements ICommand {
      * Doesn't require anything in toolcard
      * @param player player who needs to choose a dice
      * @param toolCardExecutor toolCard that generated this effect
-     * @param stateGame state in which the card is executed
+     * @param turnState state in which the card is executed
      * @return CommandFlow.MAIN
      * @throws RemoteException due to network communication errors
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftpool().getDices();
         for(IToolCardExecutorObserver obs : observerList)

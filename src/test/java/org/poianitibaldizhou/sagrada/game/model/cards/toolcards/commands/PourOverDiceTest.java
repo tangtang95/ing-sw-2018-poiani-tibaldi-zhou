@@ -14,6 +14,7 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
@@ -26,7 +27,7 @@ public class PourOverDiceTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private IStateGame state;
+    private TurnState state;
     @Mock
     private Player invokerPlayer;
 

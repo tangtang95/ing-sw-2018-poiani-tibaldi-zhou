@@ -1,10 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PourOverDice;
 
 import java.util.Objects;
 
+@Immutable
 public class Position {
     private int row;
     private int column;

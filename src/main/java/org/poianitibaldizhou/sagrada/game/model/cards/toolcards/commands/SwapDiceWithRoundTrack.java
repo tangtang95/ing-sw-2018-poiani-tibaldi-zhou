@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -22,14 +22,14 @@ public class SwapDiceWithRoundTrack implements ICommand {
      *
      * @param player           player who invoked the command
      * @param toolCardExecutor invoked toolcard
-     * @param stateGame        state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.STOP if the draftpool
      * is empty, CommandFlow.MAIN otherwise.
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, IStateGame stateGame) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         Dice roundTrackDice;
         int round;
