@@ -42,7 +42,7 @@ public class SetupPlayerStateTest {
         playerList.add(player3);
         playerList.add(player4);
         when(game.getNumberOfPlayers()).thenReturn(playerList.size());
-        when(game.getPlayersToken()).thenReturn(playerList);
+        when(game.getUserToken()).thenReturn(playerList);
         when(game.getDiceBag()).thenReturn(new DrawableCollection<>());
         when(game.getState()).thenReturn(mock(SetupGameState.class));
         when(game.getNumberOfPrivateObjectiveCardForGame())

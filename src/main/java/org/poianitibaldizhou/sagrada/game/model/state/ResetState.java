@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 
 import java.util.HashSet;
@@ -16,11 +17,20 @@ public class ResetState extends IStateGame {
 
     @Override
     public void init() {
-
+        // Nothing to notify
     }
 
+    /**
+     * Add the token of the user to the playersReady and if the size of playersReady is equals to the number
+     * of players in the game, the game goes to the next state: SetupPlayerState
+     *
+     * @param token the token of the user who wants to ready for the game
+     * @throws InvalidActionException if the token user has already readied before
+     */
     @Override
-    public void readyGame(String token) {
+    public void readyGame(String token) throws InvalidActionException {
+        if(playersReady.contains(token))
+            throw new InvalidActionException();
         playersReady.add(token);
         if(playersReady.size() == game.getNumberOfPlayers())
             game.setState(new SetupPlayerState(game));

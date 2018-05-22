@@ -1,22 +1,25 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Player implements IVictoryPoints {
+public abstract class Player implements IVictoryPoints, Serializable {
 
     protected final ICoin coin;
-    private final String token;
+    private final User user;
     protected SchemaCard schemaCard;
-    protected final List<PrivateObjectiveCard> privateObjectiveCards;
+    protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
 
@@ -26,21 +29,22 @@ public abstract class Player implements IVictoryPoints {
      * - schemaCard
      * - privateObjectiveCard
      *
-     * @param token string for locating the single player during the game
+     * @param user the same user of the lobby
      * @param schemaCard
      * @param privateObjectiveCards
      */
-    public Player(String token, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+    public Player(User user, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         this.schemaCard = SchemaCard.newInstance(schemaCard);
         this.privateObjectiveCards = new ArrayList<>(privateObjectiveCards);
         this.coin = coin;
-        this.token = token;
+        this.user = user;
         this.outcome = Outcome.IN_GAME;
         this.indexOfPrivateObjectiveCard = 0;
     }
 
+    // GETTER
     public String getToken() {
-        return token;
+        return user.getToken();
     }
 
     public SchemaCard getSchemaCard() {
@@ -53,6 +57,11 @@ public abstract class Player implements IVictoryPoints {
 
     public Outcome getOutcome() {
         return outcome;
+    }
+
+    @Contract(pure = true)
+    public User getUser() {
+        return user;
     }
 
     public boolean isDicePositionableOnSchemaCard(Dice dice, Position position) {
@@ -141,10 +150,10 @@ public abstract class Player implements IVictoryPoints {
         if (player == null)
             return null;
         if(player instanceof SinglePlayer)
-            return new SinglePlayer(player.token, player.coin, player.schemaCard,
+            return new SinglePlayer(player.user, player.coin, player.schemaCard,
                 player.privateObjectiveCards);
         else
-            return new MultiPlayer(player.token, player.coin, player.schemaCard,
+            return new MultiPlayer(player.user, player.coin, player.schemaCard,
                     player.privateObjectiveCards);
     }
 

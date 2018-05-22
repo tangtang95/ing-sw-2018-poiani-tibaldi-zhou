@@ -14,6 +14,7 @@ public class UseCardState extends IPlayerState {
 
     public UseCardState(TurnState turnState) {
         super(turnState);
+        turnState.notifyOnUseToolCardState();
     }
 
     @Override

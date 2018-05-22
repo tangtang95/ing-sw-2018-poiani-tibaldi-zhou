@@ -17,7 +17,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * Constructor.
      * Create EndGameState to calculate the score of the players and determinate the outcomes of all players
      *
-     * @param game the current game
+     * @param game               the current game
      * @param currentRoundPlayer
      */
     EndGameState(Game game, Player currentRoundPlayer) {
@@ -39,6 +39,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
+        game.getStateObservers().forEach(obs -> obs.onEndGame(currentRoundPlayer.getUser()));
         game.notifyPlayersEndGame();
     }
 
@@ -57,7 +58,8 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
 
     /**
      * Calculate the score of the players and put it into a Map called scoreMap
-     *  @param players              all the players of the game
+     *
+     * @param players              all the players of the game
      * @param publicObjectiveCards all the publicObjective cards to get the score
      */
     private void calculateScorePlayers(List<Player> players, List<PublicObjectiveCard> publicObjectiveCards) {

@@ -99,11 +99,11 @@ public class StateIntegrationTest {
         /*
         roundStartStateTest();
         TurnState turnState;
-        System.out.println(multiPlayerGame.getCurrentPlayerRound().getPlayersToken() + " ");
+        System.out.println(multiPlayerGame.getCurrentPlayerRound().getUserToken() + " ");
         while (multiPlayerGame.getState() instanceof TurnState) {
             turnState = (TurnState) multiPlayerGame.getState();
             Objects.requireNonNull(turnState).chooseAction("endTurn");
-            System.out.println(multiPlayerGame.getCurrentPlayerRound().getPlayersToken() + " ");
+            System.out.println(multiPlayerGame.getCurrentPlayerRound().getUserToken() + " ");
             try {
                 Thread.sleep(4000);
             } catch (InterruptedException e) {

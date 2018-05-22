@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -36,37 +37,16 @@ public class SetupPlayerState extends IStateGame {
         privateObjectiveCardMap = new HashMap<>();
     }
 
-    /**
-     * Copy_constructor
-     *
-     * @param playerState playerState to copy
-     */
-    /*
-    private SetupPlayerState(SetupPlayerState playerState) {
-        super(playerState.game);
-        playersReady = new HashSet<>();
-        playerSchemaCards = new HashMap<>();
-        List<SchemaCard> schemaCardList = new ArrayList<>();
-
-        for (String token : playerState.playerSchemaCards.keySet()) {
-            for (SchemaCard schemaCard : playerState.playerSchemaCards.get(player))
-                schemaCardList.add(SchemaCard.newInstance(schemaCard));
-            this.playerSchemaCards.put(token, schemaCardList);
-        }
-
-        for (Player player : playerState.playersReady)
-            this.playersReady.add(Player.newInstance(player));
-
-    }*/
-
     @Override
     public void init() {
+        game.getStateObservers().forEach(IStateObserver::onSetupPlayer);
+
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
 
         GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
         GameInjector.injectSchemaCards(schemaCards);
-        for (String token : game.getPlayersToken()) {
+        for (String token : game.getUserToken()) {
             List<SchemaCard> schemaCardList = new ArrayList<>();
             for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
                 try {
@@ -130,10 +110,5 @@ public class SetupPlayerState extends IStateGame {
         }
         return schemaCards;
     }
-    /*
-    public static IStateGame newInstance(IStateGame sps) {
-        if (sps == null)
-            return null;
-        return new SetupPlayerState((SetupPlayerState) sps);
-    }*/
+
 }

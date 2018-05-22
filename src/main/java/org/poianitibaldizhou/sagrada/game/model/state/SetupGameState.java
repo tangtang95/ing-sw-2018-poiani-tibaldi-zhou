@@ -5,12 +5,13 @@ import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SetupGameState extends IStateGame{
+public class SetupGameState extends IStateGame {
 
     private static final Logger LOGGER = Logger.getLogger(SetupGameState.class.getName());
 
@@ -22,19 +23,21 @@ public class SetupGameState extends IStateGame{
      * @param game the current game
      */
 
-     SetupGameState(Game game) {
+    SetupGameState(Game game) {
         super(game);
     }
 
     @Override
     public void init() {
+        game.getStateObservers().forEach(IStateObserver::onSetupGame);
+
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
         GameInjector.injectToolCards(toolCards);
         try {
             GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
-        }catch (WrongCardInJsonFileException e){
+        } catch (WrongCardInJsonFileException e) {
             LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards", e);
         }
 
@@ -83,7 +86,7 @@ public class SetupGameState extends IStateGame{
      * @param players all the players of the game
      * @return return a random player from the list of players given by parameter
      */
-    private Player getRandomStartPlayer(List<Player> players){
+    private Player getRandomStartPlayer(List<Player> players) {
         DrawableCollection<Player> drawablePlayers = new DrawableCollection<>();
         drawablePlayers.addElements(players);
         Player player = null;

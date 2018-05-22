@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.List;
 
@@ -14,13 +15,13 @@ public class MultiPlayer extends Player {
      * - schemaCard
      * - privateObjectiveCard
      *
-     * @param token                 string for locating the single player during the game
+     * @param user
      * @param coin
      * @param schemaCard
      * @param privateObjectiveCards
      */
-    public MultiPlayer(String token, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        super(token, coin, schemaCard, privateObjectiveCards);
+    public MultiPlayer(User user, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        super(user, coin, schemaCard, privateObjectiveCards);
     }
 
     /**

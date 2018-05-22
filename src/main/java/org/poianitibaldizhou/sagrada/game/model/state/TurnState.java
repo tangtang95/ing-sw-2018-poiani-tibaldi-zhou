@@ -56,23 +56,6 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     /**
-     * copy_constructor
-     *
-     * @param turnState turnState to copy
-     */
-    private TurnState(TurnState turnState) {
-        super(turnState.game);
-        this.currentRoundPlayer = turnState.currentRoundPlayer;
-        this.currentTurnPlayer = turnState.currentTurnPlayer;
-        this.playerState = turnState.playerState;
-        this.currentRound = turnState.currentRound;
-        this.isFirstTurn = turnState.isFirstTurn;
-        this.actionsUsed = new HashSet<>();
-        this.skipTurnPlayers = new HashMap<>();
-        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
-    }
-
-    /**
      * Constructor.
      * Create the TurnState for the currentTurnPlayer
      *
@@ -102,10 +85,16 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        if (skipTurnPlayers.containsKey(getCurrentTurnPlayer()) && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
-            //TODO notify skip player
+        if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
+                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
+            game.getStateObservers().forEach(obs->obs.onSkipTurnState(
+                    currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
             nextTurn();
+            return;
         }
+        game.getStateObservers().forEach(obs->obs.onTurnState(
+                currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+
     }
 
 
@@ -247,11 +236,16 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-    public static IStateGame newInstance(IStateGame ts) {
-        if (ts == null)
-            return null;
-        return new TurnState((TurnState) ts);
+    public void notifyOnPlaceDiceState(){
+        game.getStateObservers().forEach(obs -> obs.onPlaceDiceState(currentTurnPlayer.getUser()));
     }
 
+    public void notifyOnUseToolCardState(){
+        game.getStateObservers().forEach(obs -> obs.onUseCardState(currentTurnPlayer.getUser()));
+    }
+
+    public void notifyOnEndTurnState(){
+        game.getStateObservers().forEach(obs -> obs.onEndGame(currentTurnPlayer.getUser()));
+    }
 
 }

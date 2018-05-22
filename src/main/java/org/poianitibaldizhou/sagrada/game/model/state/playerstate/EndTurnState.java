@@ -9,6 +9,7 @@ public class EndTurnState extends IPlayerState {
 
     public EndTurnState(TurnState turnState) {
         super(turnState);
+        turnState.notifyOnEndTurnState();
     }
 
     /**

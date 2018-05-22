@@ -8,16 +8,18 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
-import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-public abstract class Game implements IGameStrategy{
+public abstract class Game implements IGameStrategy {
 
-    private final List<String> playerTokens;
+    protected final List<User> users;
     protected final HashMap<String, Player> players;
     private RoundTrack roundTrack;
     private final List<ToolCard> toolCards;
@@ -27,56 +29,21 @@ public abstract class Game implements IGameStrategy{
     private final String name;
     private IStateGame state;
 
-    /**
-     * Constructor for Multi player.
-     * Create the Game with all the attributes initialized, create also all the player from the given playerTokens and
-     * set the state to SetupPlayerState
-     *
-     */
-    public Game(String name, List<String> playerTokens) {
-        this.playerTokens = new ArrayList<>(playerTokens);
+    private final List<IStateObserver> stateObservers;
+
+    protected Game(String name) {
+        this.name = name;
+
+        this.users = new ArrayList<>();
         this.players = new HashMap<>();
         this.diceBag = new DrawableCollection<>();
         this.toolCards = new ArrayList<>();
         this.publicObjectiveCards = new ArrayList<>();
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
-        this.name = name;
-        setState(new ResetState(this));
+
+        this.stateObservers = new ArrayList<>();
     }
-
-    public Game(String name, String playerToken){
-        this.playerTokens = new ArrayList<>();
-        this.playerTokens.add(playerToken);
-        this.players = new HashMap<>();
-        this.diceBag = new DrawableCollection<>();
-        this.toolCards = new ArrayList<>();
-        this.publicObjectiveCards = new ArrayList<>();
-        this.roundTrack = new RoundTrack();
-        this.draftPool = new DraftPool();
-        this.name = name;
-        setState(new ResetState(this));
-    }
-
-
-    /**
-     * Deep-copy Constructor.
-     */
-    /*
-    private Game(Game game) {
-        this.players = new LinkedList<>();
-        for (Player p : players)
-            this.players.add(Player.newInstance(p));
-        this.roundTrack = RoundTrack.newInstance(game.roundTrack);
-        this.toolCards = new LinkedList<>();
-        for (ToolCard t : game.getToolCards())
-            this.toolCards.add(ToolCard.newInstance(t));
-        this.publicObjectiveCards = game.publicObjectiveCards;
-        this.draftPool = DraftPool.newInstance(game.draftPool);
-        this.name = game.name;
-        this.diceBag = DrawableCollection.newInstance(game.getDiceBag());
-        this.state = IStateGame.newInstance(game.state);
-    }*/
 
     //GETTER
     @Contract(pure = true)
@@ -101,7 +68,7 @@ public abstract class Game implements IGameStrategy{
     @Contract(pure = true)
     public List<ToolCard> getToolCards() {
         List<ToolCard> copyToolCards = new ArrayList<>();
-        for (ToolCard toolCard: toolCards){
+        for (ToolCard toolCard : toolCards) {
             copyToolCards.add(ToolCard.newInstance(toolCard));
         }
         return copyToolCards;
@@ -119,7 +86,14 @@ public abstract class Game implements IGameStrategy{
 
     @Contract(pure = true)
     public int getNumberOfPlayers() {
-        return playerTokens.size();
+        return users.size();
+    }
+
+    /**
+     * @return the list of the state observers (note that the state observers are references)
+     */
+    public List<IStateObserver> getStateObservers() {
+        return new ArrayList<>(stateObservers);
     }
 
     @Contract(pure = true)
@@ -129,15 +103,24 @@ public abstract class Game implements IGameStrategy{
 
     @Contract(pure = true)
     public DrawableCollection<Dice> getDiceBag() {
-        // TODO deep copy
-        return diceBag;
+        DrawableCollection<Dice> newDiceBag = new DrawableCollection<>();
+        newDiceBag.addElements(diceBag.getCollection());
+        return newDiceBag;
     }
 
     @Contract(pure = true)
-    public List<String> getPlayersToken(){
-        return new ArrayList<>(playerTokens);
+    public List<String> getUserToken() {
+        return users.stream().map(User::getToken).collect(Collectors.toList());
     }
 
+    public User getUserByToken(final String userToken){
+        Optional<User> user = users.stream().filter(u -> u.getToken().equals(userToken)).findFirst();
+        if(!user.isPresent())
+            throw new IllegalArgumentException("Cannot find User");
+        return user.get();
+    }
+
+    @Contract(pure = true)
     public int getPlayerScore(Player player) {
         return player.getVictoryPoints();
     }
@@ -153,8 +136,9 @@ public abstract class Game implements IGameStrategy{
         players.get(player.getToken()).setOutcome(outcome);
     }
 
-    public void setPlayerSchemaCard(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        addNewPlayer(token, schemaCard, privateObjectiveCards);
+    public void setPlayerSchemaCard(String userToken, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        User user = getUserByToken(userToken);
+        addNewPlayer(user, schemaCard, privateObjectiveCards);
     }
 
     public void addRemainingDiceToRoundTrack(int currentRound) {
@@ -172,7 +156,7 @@ public abstract class Game implements IGameStrategy{
     public void initDiceBag() {
         GameInjector.injectDiceBag(diceBag);
     }
-    
+
     /**
      * Return the index of the player given based on the list of tokens
      *
@@ -182,7 +166,7 @@ public abstract class Game implements IGameStrategy{
     protected int getIndexOfPlayer(Player player) {
         int indexOfPlayer = -1;
         for (int i = 0; i < getPlayers().size(); i++) {
-            if (getPlayersToken().get(i).equals(player.getToken()))
+            if (getUserToken().get(i).equals(player.getToken()))
                 indexOfPlayer = i;
         }
         if (indexOfPlayer == -1)
@@ -191,7 +175,7 @@ public abstract class Game implements IGameStrategy{
     }
 
     protected Player getPlayerByIndex(int currentIndexOfPlayer) {
-        return players.get(playerTokens.get(currentIndexOfPlayer));
+        return players.get(users.get(currentIndexOfPlayer).getToken());
     }
 
     /**
@@ -206,9 +190,9 @@ public abstract class Game implements IGameStrategy{
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
 
-    public Player getNextPlayer(Player player, Direction direction){
+    public Player getNextPlayer(Player player, Direction direction) {
         int indexOfNextPlayer = getNextIndexOfPlayer(player, direction);
-        return players.get(playerTokens.get(indexOfNextPlayer));
+        return players.get(users.get(indexOfNextPlayer).getToken());
     }
 
     public void selectPrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) {
@@ -245,11 +229,4 @@ public abstract class Game implements IGameStrategy{
         state.fireExecutorEvent(event);
     }
 
-
-    /*
-    public static Game newInstance(Game game) {
-        if (game == null)
-            return  null;
-        return new Game(game);
-    }*/
 }

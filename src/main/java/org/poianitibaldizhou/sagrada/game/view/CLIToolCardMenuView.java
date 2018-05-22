@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
@@ -76,7 +77,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
     }
 
     @Override
-    public void notifyCommandInterrupted() {
+    public void notifyCommandInterrupted(CommandFlow error) {
 
     }
 

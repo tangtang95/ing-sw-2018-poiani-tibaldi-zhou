@@ -10,9 +10,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SchemaCard {
+public class SchemaCard implements Serializable{
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;

@@ -11,6 +11,7 @@ public class PlaceDiceState extends IPlayerState {
 
     public PlaceDiceState(TurnState turnState) {
         super(turnState);
+        turnState.notifyOnPlaceDiceState();
     }
 
     /**

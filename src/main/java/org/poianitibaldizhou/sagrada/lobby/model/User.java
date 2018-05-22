@@ -1,7 +1,12 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
-import java.io.Serializable;
+import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.jetbrains.annotations.Contract;
 
+import java.io.Serializable;
+import java.util.Objects;
+
+@Immutable
 public class User implements Serializable {
     private String name;
     private String token;
@@ -18,10 +23,12 @@ public class User implements Serializable {
         this.token = token;
     }
 
+    @Contract(pure = true)
     public String getToken() {
         return token;
     }
 
+    @Contract(pure = true)
     public String getName() {
         return name;
     }
@@ -32,6 +39,11 @@ public class User implements Serializable {
             return false;
         User u = (User)object;
         return u.getName().equals(this.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, token);
     }
 
     @Override
