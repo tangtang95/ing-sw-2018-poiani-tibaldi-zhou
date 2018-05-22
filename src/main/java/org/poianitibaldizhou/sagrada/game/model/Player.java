@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.Serializable;

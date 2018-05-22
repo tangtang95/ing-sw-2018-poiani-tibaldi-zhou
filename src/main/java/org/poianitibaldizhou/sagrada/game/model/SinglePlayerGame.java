@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveDiceFromDraftPool;
+import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 

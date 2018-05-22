@@ -44,6 +44,10 @@ public class SetupGameState extends IStateGame {
         game.initDiceBag();
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
+
+        game.getGameObservers().values().forEach(obs -> obs.onToolCardsDraw(game.getToolCards()));
+        game.getGameObservers().values().forEach(obs -> obs.onPublicObjectiveCardsDraw(game.getPublicObjectiveCards()));
+
         game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayers())));
     }
 

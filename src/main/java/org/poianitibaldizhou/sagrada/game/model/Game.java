@@ -8,7 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.*;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -29,6 +29,7 @@ public abstract class Game implements IGameStrategy {
     private final String name;
     private IStateGame state;
 
+    private final Map<String, IGameObserver> gameObservers;
     private final List<IStateObserver> stateObservers;
 
     protected Game(String name) {
@@ -42,6 +43,7 @@ public abstract class Game implements IGameStrategy {
         this.roundTrack = new RoundTrack();
         this.draftPool = new DraftPool();
 
+        this.gameObservers = new HashMap<>();
         this.stateObservers = new ArrayList<>();
     }
 
@@ -96,6 +98,10 @@ public abstract class Game implements IGameStrategy {
         return new ArrayList<>(stateObservers);
     }
 
+    public Map<String, IGameObserver> getGameObservers(){
+        return new HashMap<>(gameObservers);
+    }
+
     @Contract(pure = true)
     public IStateGame getState() {
         return state;
@@ -125,12 +131,43 @@ public abstract class Game implements IGameStrategy {
         return player.getVictoryPoints();
     }
 
+
+    // OBSERVER ATTACH
+    public void attachStateObserver(IStateObserver stateObserver){
+        stateObservers.add(stateObserver);
+    }
+
+    public void attachGameObserver(String userToken, IGameObserver gameObserver){
+        gameObservers.put(userToken, gameObserver);
+    }
+
+    public void attachRoundTrackObserver(IRoundTrackObserver roundTrackObserver){
+        // TODO
+    }
+
+    public void attachDraftPoolObserver(IDraftPoolObserver draftPoolObserver){
+        draftPool.attachObserver(draftPoolObserver);
+    }
+
+    public void attachToolCardObserver(ToolCard toolCard, IToolCardObserver toolCardObserver) throws InvalidActionException {
+        if(!toolCards.contains(toolCard)) {
+            throw new InvalidActionException();
+        }
+        toolCard.attachToolCardObserver(toolCardObserver);
+    }
+
+    public void attachDiceBagObserver(IDrawableCollectionObserver drawableCollectionObserver){
+        diceBag.attachObserver(drawableCollectionObserver);
+    }
+
     //MODIFIER
 
     public void setState(IStateGame state) {
         this.state = state;
         this.state.init();
     }
+
+
 
     public void setPlayerOutcome(Player player, Outcome outcome) {
         players.get(player.getToken()).setOutcome(outcome);

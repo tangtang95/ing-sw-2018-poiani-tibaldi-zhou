@@ -28,7 +28,7 @@ public abstract class IStateGame {
     public void nextRound(){
         throw new IllegalStateException();
     }
-    public boolean ready(String token, SchemaCard schemaCard){
+    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException {
         throw new IllegalStateException();
     }
     public void readyGame(String token) throws InvalidActionException {
