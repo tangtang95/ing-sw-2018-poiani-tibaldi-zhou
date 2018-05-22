@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
@@ -9,6 +10,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
+
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
     protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
+    private List<IPlayerObserver> observerList;
 
     /**
      * Set to null the player parameters:
@@ -30,7 +34,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
      * - schemaCard
      * - privateObjectiveCard
      *
-     * @param user the same user of the lobby
+     * @param user                  the same user of the lobby
      * @param schemaCard
      * @param privateObjectiveCards
      */
@@ -41,6 +45,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
         this.user = user;
         this.outcome = Outcome.IN_GAME;
         this.indexOfPrivateObjectiveCard = 0;
+        this.observerList = new ArrayList<>();
     }
 
     // GETTER
@@ -65,21 +70,28 @@ public abstract class Player implements IVictoryPoints, Serializable {
         return user;
     }
 
-    public boolean isDicePositionableOnSchemaCard(Dice dice, Position position) {
-        return schemaCard.isDicePositionable(dice, position);
-    }
-
     public int getCoins() {
         return coin.getCoins();
     }
 
     public void removeCoins(int cost) {
         coin.removeCoins(cost);
+        observerList.forEach(observer -> observer.onFavorTokenChange(coin.getCoins()));
     }
 
     public boolean isCardUsable(ToolCard toolCard) {
         return coin.isCardUsable(toolCard);
     }
+
+    /**
+     * It copies the list of observers, creating a new list, but not copying the single elements.
+     *
+     * @return list of observers
+     */
+    public List<IPlayerObserver> getObserverList() {
+        return new ArrayList<>(observerList);
+    }
+
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -93,8 +105,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
     /**
      * Place if possible the dice chosen in the place chosen
      *
-     * @param dice the dice which will be placed
-     * @param position row position (number between 0 and 3 included)
+     * @param dice           the dice which will be placed
+     * @param position       row position (number between 0 and 3 included)
      * @param tileConstraint the constraint of the tile chosen
      * @param diceConstraint the constrains of the dice
      * @throws RuleViolationException if the rule of the schema is violated
@@ -112,14 +124,17 @@ public abstract class Player implements IVictoryPoints, Serializable {
         this.outcome = outcome;
     }
 
-
     public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
-        if(!containsPrivateObjectiveCard(privateObjectiveCard))
+        if (!containsPrivateObjectiveCard(privateObjectiveCard))
             throw new IllegalArgumentException("PrivateObjectiveCard doesn't exist in the player");
         for (int i = 0; i < privateObjectiveCards.size(); i++) {
-            if(privateObjectiveCards.get(i).equals(privateObjectiveCard))
+            if (privateObjectiveCards.get(i).equals(privateObjectiveCard))
                 indexOfPrivateObjectiveCard = i;
         }
+    }
+
+    public void attachObserver(IPlayerObserver observer) {
+        observerList.add(observer);
     }
 
     /**
@@ -147,15 +162,20 @@ public abstract class Player implements IVictoryPoints, Serializable {
         return Objects.hash(MultiPlayer.class, schemaCard, privateObjectiveCards, coin);
     }
 
-    public static Player newInstance(Player player) {
-        if (player == null)
-            return null;
-        if(player instanceof SinglePlayer)
-            return new SinglePlayer(player.user, player.coin, player.schemaCard,
-                player.privateObjectiveCards);
+    /**
+     * Copy player in a new instance of player. Observers are copied by references.
+     *
+     * @param player player that needs to be copied
+     * @return copied player
+     */
+    public static Player newInstance(@NotNull Player player) {
+        Player newPlayer;
+        if (player instanceof SinglePlayer)
+            newPlayer = SinglePlayer.newInstance(player);
         else
-            return new MultiPlayer(player.user, player.coin, player.schemaCard,
-                    player.privateObjectiveCards);
+            newPlayer = MultiPlayer.newInstance(player);
+
+        return newPlayer;
     }
 
     private boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {

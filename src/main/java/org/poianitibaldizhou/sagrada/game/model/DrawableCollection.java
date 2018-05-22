@@ -24,8 +24,13 @@ public class DrawableCollection<T> {
         observerList.add(observer);
     }
 
+    /**
+     * Returns the list of the observers. A new list is created, but the single elements
+     * are not deep copied.
+     * @return list of observers
+     */
     public List<IDrawableCollectionObserver<T>> getObserverList() {
-        return observerList;
+        return new ArrayList<>(observerList);
     }
 
     /**

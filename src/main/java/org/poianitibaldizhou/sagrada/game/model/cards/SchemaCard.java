@@ -9,14 +9,18 @@ import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SchemaCard implements Serializable{
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
+    private final List<ISchemaCardObserver> observerList;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -32,6 +36,7 @@ public class SchemaCard implements Serializable{
         this.name = name;
         this.difficulty = difficulty;
         this.tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        this.observerList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 this.tileMatrix[i][j] = new Tile(constraints[i][j]);
@@ -40,7 +45,7 @@ public class SchemaCard implements Serializable{
     }
 
     /**
-     * copy-constructor
+     * Copy-constructor
      *
      * @param name       card name
      * @param difficulty card difficulty
@@ -50,6 +55,7 @@ public class SchemaCard implements Serializable{
         this.name = name;
         this.difficulty = difficulty;
         this.tileMatrix = tileMatrix;
+        this.observerList = new ArrayList<>();
     }
 
     //GETTER
@@ -58,6 +64,17 @@ public class SchemaCard implements Serializable{
         return name;
     }
 
+
+    /**
+     * Returns a list the list of the observers.
+     * This method creates a new instance of the list, so it is safe to modify the list, but not safe to modify
+     * the observers since is not a deep copy.
+     *
+     * @return list of observers
+     */
+    public List<ISchemaCardObserver> getObserverList() {
+        return new ArrayList<>(observerList);
+    }
 
     @Contract(pure = true)
     public int getDifficulty() {
@@ -226,6 +243,7 @@ public class SchemaCard implements Serializable{
     /**
      * Set the dice on a tile indicated by row and column based on a standard constraint
      * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
+     * It also notifies the observers that a dice has been placed in a certain position.
      *
      * @param dice     the dice to place on the schemaCard
      * @param position the row where to place the dice
@@ -241,6 +259,7 @@ public class SchemaCard implements Serializable{
     /**
      * Set the dice on a tile indicated by row and column based on a standard constraint
      * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
+     * It also notifies the observers that a dice has been placed in a certain position.
      *
      * @param dice   the dice to place on the schemaCard
      * @param row    the row where to place the dice
@@ -256,6 +275,7 @@ public class SchemaCard implements Serializable{
 
     /**
      * Set the dice on a tile indicated by row and column based on the two type of constraint given
+     * It also notifies the observers that a dice has been placed in a certain position.
      *
      * @param dice            the dice to place on the schemaCard
      * @param position        the position where to place the dice
@@ -294,11 +314,14 @@ public class SchemaCard implements Serializable{
             }
         }
         tileMatrix[position.getRow()][position.getColumn()].setDice(dice, restriction);
+
+        observerList.forEach(obs -> obs.onPlaceDice(dice, position));
     }
 
     /**
      * Set the dice on a tile indicated by row and column based on a standard constraint
-     * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
+     * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL).
+     * It also notifies the observers that a dice has been placed in a certain position.
      *
      * @param dice   the dice to place on the schemaCard
      * @param row    the row where to place the dice
@@ -318,12 +341,19 @@ public class SchemaCard implements Serializable{
 
     /**
      * Remove the dice from the tile designated by row and column
+     * It also notifies to the observers that the dice's been removed.
      *
      * @param position the position from where to remove the dice
      * @return the dice removed from the point position (if there is no dice it returns null)
      */
     public Dice removeDice(Position position) {
-        return tileMatrix[position.getRow()][position.getColumn()].removeDice();
+        Dice removedDice = tileMatrix[position.getRow()][position.getColumn()].removeDice();
+        observerList.forEach(obs -> obs.onDiceRemove(removedDice, position));
+        return removedDice;
+    }
+
+    public void attachObserver(ISchemaCardObserver observer) {
+        observerList.add(observer);
     }
 
     /**
@@ -383,6 +413,12 @@ public class SchemaCard implements Serializable{
         return row < 0 || row > SchemaCard.NUMBER_OF_ROWS - 1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS - 1;
     }
 
+    /**
+     * This creates a new instance of the schema card. Observers are not inserted in the new instance.
+     *
+     * @param schemaCard schema card that needs to be copied
+     * @return schemaCard copy
+     */
     @Contract("null -> null")
     public static SchemaCard newInstance(SchemaCard schemaCard) {
         if (schemaCard == null)

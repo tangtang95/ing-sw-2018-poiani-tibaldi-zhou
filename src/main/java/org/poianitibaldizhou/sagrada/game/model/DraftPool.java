@@ -26,12 +26,14 @@ public class DraftPool {
 
     /**
      * Returns the list of the observer of the draftpool
+     * Another list is created for this task, but the single elements are not deep
+     * copied.
      *
      * @return list of the observers listening to the draftpool
      */
     @Contract(pure = true)
     public List<IDraftPoolObserver> getObserverList() {
-        return observerList;
+        return new ArrayList<>(observerList);
     }
 
     public void attachObserver(@NotNull IDraftPoolObserver observer) {
@@ -110,8 +112,7 @@ public class DraftPool {
     }
 
     /**
-     * Creates a new instance of draftPool, copying only the dices, and not the
-     * observers.
+     * Creates a new instance of draftPool. Observers are copied for references.
      *
      * @param draftPool draftpool that needs to be copied
      * @return new instance with the same elements of draftPool
@@ -122,6 +123,7 @@ public class DraftPool {
         DraftPool newDraftPool = new DraftPool();
         List<Dice> diceList = new ArrayList<>(draftPool.getDices());
         newDraftPool.addDices(diceList);
+        draftPool.getObserverList().forEach(obs->newDraftPool.attachObserver(obs));
         return newDraftPool;
     }
 

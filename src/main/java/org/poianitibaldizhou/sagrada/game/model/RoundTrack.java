@@ -33,6 +33,7 @@ public class RoundTrack {
 
     /**
      * Copy constructor.
+     * It copies the observers for references.
      *
      * @param roundTrack the roundTrack to copy
      * @return copy of roundTrack
@@ -47,9 +48,20 @@ public class RoundTrack {
             for (Dice d : roundTrack.listOfDices.get(i))
                 newRoundTrack.addDiceToRound(new Dice(d.getNumber(), d.getColor()), i);
         }
+
+        roundTrack.getObserverList().forEach(obs -> roundTrack.attachObserver(obs));
+
         return newRoundTrack;
     }
 
+    /**
+     * Returns the a copied list of the observer. The single elements are not copied.
+     *
+     * @return copied observer list
+     */
+    public List<IRoundTrackObserver> getObserverList() {
+        return observerList;
+    }
 
     /**
      * Returns true if the RoundTrack doesn't contain any dice, false otherwise
@@ -160,6 +172,10 @@ public class RoundTrack {
             throw new DiceNotFoundException("oldDice not founded!");
     }
 
+    public void attachObserver(IRoundTrackObserver roundTrackObserver) {
+        observerList.add(roundTrackObserver);
+    }
+
     /**
      * Returns true if round belongs to [FIRST_ROUND, LAST_ROUND], false otherwise
      *
@@ -167,6 +183,6 @@ public class RoundTrack {
      * @return true if round is in the defined interval, false otherwise
      */
     private boolean isRoundAccepted(int round) {
-        return (round < FIRST_ROUND || round > LAST_ROUND) ? false : true;
+        return round >= FIRST_ROUND && round <= LAST_ROUND;
     }
 }
