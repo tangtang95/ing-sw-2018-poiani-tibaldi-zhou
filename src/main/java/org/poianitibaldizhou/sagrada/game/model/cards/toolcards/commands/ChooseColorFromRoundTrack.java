@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -22,7 +22,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
      * @param player player who invoked toolCard
      * @param toolCardExecutor toolCard invoked
      * @param turnState state in which the player acts
-     * @return CommandFlow.STOP if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
+     * @return CommandFlow.EMPTY_ROUNDTRACK if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
      * @throws RemoteException communication architecture error
      */
     @Override
@@ -30,7 +30,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundtrack();
         if(roundTrack.isEmpty())
-            return CommandFlow.STOP;
+            return CommandFlow.EMPTY_ROUNDTRACK;
         Set<Color> colors = new HashSet<>();
         List<Dice> diceList;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {

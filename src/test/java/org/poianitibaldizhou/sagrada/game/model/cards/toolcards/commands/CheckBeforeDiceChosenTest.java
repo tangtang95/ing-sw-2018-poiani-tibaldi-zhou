@@ -47,7 +47,7 @@ public class CheckBeforeDiceChosenTest {
     @Test
     public void executeCommand() throws Exception {
         when(turnState.hasActionUsed(ArgumentMatchers.any(PlaceDiceAction.class))).thenReturn(true);
-        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer, executor, turnState));
+        assertEquals(CommandFlow.DICE_ALREADY_PLACED, command.executeCommand(invokerPlayer, executor, turnState));
 
         when(turnState.hasActionUsed(ArgumentMatchers.any(PlaceDiceAction.class))).thenReturn(false);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, turnState));

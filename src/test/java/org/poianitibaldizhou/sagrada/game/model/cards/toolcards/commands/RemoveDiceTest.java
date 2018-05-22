@@ -11,7 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -87,16 +87,16 @@ public class RemoveDiceTest {
     }
 
     @Test
-    public void testExecutionStopCantPlaceColorConstraint() throws Exception {
+    public void testExecutionStopCantRemoveColorConstraint() throws Exception {
         when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(false);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
-        assertEquals(CommandFlow.STOP, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
+        assertEquals(CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test
-    public void testExecutionStopCantPlaceNoneConstraint() throws Exception {
+    public void testExecutionStopCantRemoveNoneConstraint() throws Exception {
         when(schemaCard.isEmpty()).thenReturn(true);
-        assertEquals(CommandFlow.STOP, removeDice.executeCommand(invokerPlayer, executor, stateGame));
+        assertEquals(CommandFlow.EMPTY_SCHEMACARD, removeDice.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test

@@ -19,7 +19,8 @@ public class RemoveDiceFromDraftPool implements ICommand {
      * @param player           player who invoked the toolcard
      * @param toolCardExecutor toolcard invoked
      * @param turnState        state in which the player acts
-     * @return CommandFlow.STOP if the dice isn't present in DraftPool, CommandFlow.MAIN otherwise
+     * @return CommandFlow.NOT_DICE_IN_DRAFTPOOL if the dice isn't present in DraftPool, CommandFlow_EMPTY_DRAFTPOOL if
+     * the draftpool is empty, CommandFlow.MAIN otherwise
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait()
      */
@@ -28,8 +29,10 @@ public class RemoveDiceFromDraftPool implements ICommand {
         Dice dice = toolCardExecutor.getNeededDice();
         try {
             toolCardExecutor.getTemporaryDraftpool().useDice(dice);
-        } catch (DiceNotFoundException | EmptyCollectionException e) {
-            return CommandFlow.STOP;
+        } catch (DiceNotFoundException e) {
+            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
+        } catch (EmptyCollectionException e) {
+            return CommandFlow.EMPTY_DRAFTPOOL;
         }
         return CommandFlow.MAIN;
     }

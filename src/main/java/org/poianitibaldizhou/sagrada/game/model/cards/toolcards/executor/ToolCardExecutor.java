@@ -4,12 +4,11 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -127,7 +126,7 @@ public class ToolCardExecutor extends Thread {
     /**
      * Invoke the list of commands
      *
-     * @throws RemoteException network error
+     * @throws RemoteException      network error
      * @throws InterruptedException if the toolCard execution is interrupted by a client command or
      *                              because the command can't proceed
      */
@@ -144,13 +143,12 @@ public class ToolCardExecutor extends Thread {
                 root = root.getLeftChild();
             } else if (commandFlow == CommandFlow.SUB) {
                 root = root.getRightChild();
-            } else if (commandFlow == CommandFlow.STOP) {
-                observers.forEach(IToolCardExecutorObserver::notifyCommandInterrupted);
-                throw new InterruptedException();
             } else if (commandFlow == CommandFlow.REPEAT) {
-                observers.forEach(IToolCardExecutorObserver::notifyError);
+                observers.forEach(IToolCardExecutorObserver::notifyRepeatAction);
+            } else if (commandFlow.getProtocolNumber() == 400) {
+                CommandFlow finalCommandFlow = commandFlow;
+                observers.forEach(obs -> obs.notifyCommandInterrupted(finalCommandFlow));
             }
-
         } while (root != null);
     }
 

@@ -11,7 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -99,7 +99,7 @@ public class PlaceDiceTest {
     public void executeCommandCantProceed() throws Exception {
         command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
         when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED)).thenReturn(false);
-        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer,executor,stateGame));
+        assertEquals(CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE, command.executeCommand(invokerPlayer,executor,stateGame));
     }
 
     @Test

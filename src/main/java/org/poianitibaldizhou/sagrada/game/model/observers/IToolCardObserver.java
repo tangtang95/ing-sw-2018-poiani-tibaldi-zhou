@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.observers;
 
 public interface IToolCardObserver {
 
