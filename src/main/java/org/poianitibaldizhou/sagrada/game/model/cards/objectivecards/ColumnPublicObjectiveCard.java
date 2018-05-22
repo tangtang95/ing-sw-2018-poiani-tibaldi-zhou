@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
@@ -44,10 +45,10 @@ public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
     @Override
     public int getScore(SchemaCard schema) {
         int score = 0;
-        for (int i = 0; i < SchemaCard.NUMBER_OF_COLUMNS; i++) {
+        for (int col = 0; col < SchemaCard.NUMBER_OF_COLUMNS; col++) {
             Set<Integer> valueSet = new HashSet<>();
-            for (int j = 0; j < SchemaCard.NUMBER_OF_ROWS; j++) {
-                Dice dice = schema.getDice(j,i);
+            for (int row = 0; row < SchemaCard.NUMBER_OF_ROWS; row++) {
+                Dice dice = schema.getDice(new Position(row, col));
                 if(dice != null) {
                     IConstraint constraint = (getType() == ObjectiveCardType.COLOR) ?
                             dice.getColorConstraint() : dice.getNumberConstraint();

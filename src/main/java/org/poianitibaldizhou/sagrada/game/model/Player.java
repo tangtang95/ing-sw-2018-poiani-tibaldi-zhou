@@ -55,8 +55,8 @@ public abstract class Player implements IVictoryPoints {
         return outcome;
     }
 
-    public boolean isDicePositionableOnSchemaCard(Dice dice, int row, int column) {
-        return schemaCard.isDicePositionable(dice, row, column);
+    public boolean isDicePositionableOnSchemaCard(Dice dice, Position position) {
+        return schemaCard.isDicePositionable(dice, position);
     }
 
     public int getCoins() {
@@ -84,19 +84,18 @@ public abstract class Player implements IVictoryPoints {
      * Place if possible the dice chosen in the place chosen
      *
      * @param dice the dice which will be placed
-     * @param row row position (number between 0 and 3 included)
-     * @param column column position (number between 0 and 4 included)
+     * @param position row position (number between 0 and 3 included)
      * @param tileConstraint the constraint of the tile chosen
      * @param diceConstraint the constrains of the dice
      * @throws RuleViolationException if the rule of the schema is violated
      */
-    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
+    public void placeDice(Dice dice, Position position, PlacementRestrictionType tileConstraint,
                           DiceRestrictionType diceConstraint) throws RuleViolationException {
-        schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
+        schemaCard.setDice(dice, position, tileConstraint, diceConstraint);
     }
 
-    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
-        placeDice(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+    public void placeDice(Dice dice, Position position) throws RuleViolationException {
+        placeDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
     public void setOutcome(Outcome outcome) {

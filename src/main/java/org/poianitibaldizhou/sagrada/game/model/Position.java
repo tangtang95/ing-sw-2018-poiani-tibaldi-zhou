@@ -18,9 +18,9 @@ public class Position {
      * @param row specified row
      * @param column specified column
      */
-    public Position(int row, int column) throws IllegalAccessException {
+    public Position(int row, int column) {
         if(SchemaCard.isOutOfBounds(row,column))
-            throw new IllegalAccessException();
+            throw new IllegalArgumentException("Row and column is out of bounds");
         this.row = row;
         this.column = column;
     }
@@ -31,6 +31,14 @@ public class Position {
 
     public int getRow() {
         return row;
+    }
+
+    public Position add(int row, int column) {
+        return new Position(this.row + row, this.column + column);
+    }
+
+    public Position subtract(int row, int column){
+        return new Position(this.row - row, this.column - column);
     }
 
     @Override
@@ -45,4 +53,7 @@ public class Position {
     public int hashCode() {
         return Objects.hash(row, column);
     }
+
+
+
 }

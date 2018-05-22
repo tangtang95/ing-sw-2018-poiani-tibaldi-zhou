@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -63,7 +62,7 @@ public class RemoveDice implements ICommand {
             for (IToolCardExecutorObserver obs : observerList)
                 obs.notifyNeedDicePositionOfCertainColor(color);
             position = toolCardExecutor.getPosition();
-            if (!toolCardExecutor.getTemporarySchemaCard().getDice(position.getRow(), position.getColumn()).getColor().equals(color)) {
+            if (!toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color)) {
                 toolCardExecutor.setNeededPosition(null);
                 return CommandFlow.REPEAT;
             }
@@ -75,7 +74,7 @@ public class RemoveDice implements ICommand {
             position = toolCardExecutor.getPosition();
         }
 
-        removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position.getRow(), position.getColumn());
+        removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position);
 
         if (removed == null) {
             toolCardExecutor.setNeededPosition(null);

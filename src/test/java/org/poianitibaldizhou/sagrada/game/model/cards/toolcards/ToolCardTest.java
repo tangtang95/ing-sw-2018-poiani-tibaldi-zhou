@@ -69,21 +69,6 @@ public class ToolCardTest {
     }
 
     @Test
-    public void testUseCardSingle() {
-        assertEquals(commands, toolCardSingle.getCommands());
-        for(IToolCardObserver observer : observerList)
-            verify(observer, times(1)).onCardDestroy();
-    }
-
-    @Test
-    public void testUseCardMulti() {
-        assertEquals(commands, toolCardMulti.getCommands());
-
-        for(IToolCardObserver observer : observerList)
-            verify(observer, times(1)).onTokenChange(toolCardMulti.getTokens());
-    }
-
-    @Test
     public void testEquals() {
         ToolCard toolCard;
         toolCard = new ToolCard(Color.BLUE,"testName", "testDescription",

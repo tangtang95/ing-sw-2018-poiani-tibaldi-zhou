@@ -69,7 +69,7 @@ public class PlaceDice implements ICommand {
         position = toolCardExecutor.getPosition();
 
         try {
-            toolCardExecutor.getTemporarySchemaCard().setDice(dice, position.getRow(), position.getColumn(), this.tileConstraint, this.diceConstraint);
+            toolCardExecutor.getTemporarySchemaCard().setDice(dice, position, this.tileConstraint, this.diceConstraint);
         } catch (RuleViolationException e) {
             return CommandFlow.REPEAT;
         }

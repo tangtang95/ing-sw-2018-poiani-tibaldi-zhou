@@ -13,7 +13,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -83,7 +82,7 @@ public class RemoveDiceTest {
         when(executor.getPosition()).thenReturn(position);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
         when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
-        when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(new Dice(1, Color.RED));
+        when(schemaCard.getDice(position)).thenReturn(new Dice(1, Color.RED));
         assertEquals(CommandFlow.REPEAT, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
     }
 
@@ -104,7 +103,7 @@ public class RemoveDiceTest {
     public void testExecutionFailNoneConstraint() throws RemoteException, InterruptedException {
         when(executor.getPosition()).thenReturn(position);
         when(schemaCard.isEmpty()).thenReturn(false);
-        when(schemaCard.removeDice(position.getRow(), position.getColumn())).thenReturn(null);
+        when(schemaCard.removeDice(position)).thenReturn(null);
         assertEquals(CommandFlow.REPEAT, removeDice.executeCommand(invokerPlayer, executor, stateGame));
     }
 
@@ -113,9 +112,9 @@ public class RemoveDiceTest {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getPosition()).thenReturn(position);
         when(executor.getNeededDice()).thenReturn(dice);
-        when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(dice);
+        when(schemaCard.getDice(position)).thenReturn(dice);
         when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
-        when(schemaCard.removeDice(position.getRow(), position.getColumn())).thenReturn(dice);
+        when(schemaCard.removeDice(position)).thenReturn(dice);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
 
         CommandFlow commandFlow = removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame);
@@ -134,8 +133,8 @@ public class RemoveDiceTest {
         when(executor.getPosition()).thenReturn(position);
         when(schemaCard.isEmpty()).thenReturn(false);
         when(executor.getNeededDice()).thenReturn(dice);
-        when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(dice);
-        when(executor.getTemporarySchemaCard().removeDice(position.getRow(), position.getColumn())).thenReturn(dice);
+        when(schemaCard.getDice(position)).thenReturn(dice);
+        when(executor.getTemporarySchemaCard().removeDice(position)).thenReturn(dice);
 
         CommandFlow commandFlow = removeDice.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);

@@ -49,8 +49,8 @@ public class SchemaCardTest {
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice d1 = null, d2 = null;
-                d1 = schemaCard.getDice(i, j);
-                d2 = emptySchemaCard.getDice(i, j);
+                d1 = schemaCard.getDice(new Position(i, j));
+                d2 = emptySchemaCard.getDice(new Position(i, j));
 
                 if (d1 != null && d2 == null)
                     isDifferent = true;
@@ -94,9 +94,9 @@ public class SchemaCardTest {
 
         try {
             emptySchemaCard.setDice(d1,0,1);
-            assertEquals(d1, emptySchemaCard.getDice(0,1));
-            emptySchemaCard.removeDice(0,1);
-            assertEquals(null, emptySchemaCard.getDice(0,1));
+            assertEquals(d1, emptySchemaCard.getDice(new Position(0,1)));
+            emptySchemaCard.removeDice(new Position(0,1));
+            assertEquals(null, emptySchemaCard.getDice(new Position(0,1)));
         } catch (Exception e){
             fail("no exception expected");
         }
@@ -130,7 +130,7 @@ public class SchemaCardTest {
         } catch (Exception e) {
             fail("no exception expected");
         }
-        schemaCard.removeDice(0,3);
+        schemaCard.removeDice(new Position(0,3));
 
         try {
             schemaCard.setDice(d3,0, 4);
@@ -173,7 +173,7 @@ public class SchemaCardTest {
         } catch (Exception e) {
             fail("no exception expected");
         }
-        fullSchemaCard.removeDice(0,2);
+        fullSchemaCard.removeDice(new Position(0,2));
 
         try {
             fullSchemaCard.setDice(d4,2, 4);
@@ -186,9 +186,9 @@ public class SchemaCardTest {
 
         try{
             fullSchemaCard.setDice(d4,0,2, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
-            fullSchemaCard.removeDice(0,2);
+            fullSchemaCard.removeDice(new Position(0,2));
             fullSchemaCard.setDice(d4,2,4, PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
-            fullSchemaCard.removeDice(2,4);
+            fullSchemaCard.removeDice(new Position(2,4));
             fullSchemaCard.setDice(d3,0,1, PlacementRestrictionType.COLOR, DiceRestrictionType.NORMAL);
         } catch (Exception e) {
             fail("no exception expected");
@@ -241,14 +241,14 @@ public class SchemaCardTest {
         }
         schemaCard.isDicePositionable(d1, 0, 0, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
         schemaCard.setDice(d1, 0, 0, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
-        assertEquals(d1, schemaCard.getDice(0,0));
+        assertEquals(d1, schemaCard.getDice(new Position(0,0)));
     }
 
     @Test
     public void getNumberOfEmptySpaces() throws RuleViolationException{
         assertEquals(20, emptySchemaCard.getNumberOfEmptySpaces());
         assertEquals(19, schemaCard.getNumberOfEmptySpaces());
-        schemaCard.removeDice(0, 2);
+        schemaCard.removeDice(new Position(0, 2));
 
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 1, 0);

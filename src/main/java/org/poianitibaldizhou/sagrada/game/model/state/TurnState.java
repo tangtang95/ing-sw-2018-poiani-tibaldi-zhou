@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -153,14 +152,15 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *
      * @param player the currentTurnPlayer who choose to place a dice
      * @param dice   the dice to be placed
+     * @param position
      * @throws InvalidActionException if the given player is different from the currentTurnPlayer
      * @throws RuleViolationException if the rules of placement are violated
      */
     @Override
-    public void placeDice(Player player, Dice dice, int row, int column) throws RuleViolationException, InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        playerState.placeDice(player, dice, row, column);
+        playerState.placeDice(player, dice, position);
     }
 
     @Override

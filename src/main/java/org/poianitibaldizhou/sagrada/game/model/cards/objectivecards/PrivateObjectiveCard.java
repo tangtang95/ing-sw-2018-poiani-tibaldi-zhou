@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
@@ -59,7 +60,7 @@ public class PrivateObjectiveCard extends Card implements IScore {
         int score = 0;
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                Dice dice = schema.getDice(i,j);
+                Dice dice = schema.getDice(new Position(i, j));
                 if(dice != null) {
                     if (dice.getColorConstraint().equals(colorConstraint))
                         score += dice.getNumber();
