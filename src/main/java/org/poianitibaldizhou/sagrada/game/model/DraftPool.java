@@ -109,7 +109,13 @@ public class DraftPool {
         observerList.forEach(IDraftPoolObserver::onDraftPoolClear);
     }
 
-
+    /**
+     * Creates a new instance of draftPool, copying only the dices, and not the
+     * observers.
+     *
+     * @param draftPool draftpool that needs to be copied
+     * @return new instance with the same elements of draftPool
+     */
     public static DraftPool newInstance(DraftPool draftPool) {
         if (draftPool == null)
             return null;
