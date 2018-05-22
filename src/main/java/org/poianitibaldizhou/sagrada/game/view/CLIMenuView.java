@@ -64,7 +64,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
             else {
                 return answer;
             }
-        }while (true);
+        } while (true);
     }
 
     protected void help(Map<String, Command> commandMap) {
@@ -77,7 +77,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
         for (Command com : commandMap.values())
             if (com.getCommandText().length() > maxLength)
                 maxLength = com.getCommandText().length();
-        for (int i = 0; i < commandMap.keySet().size() ; i++) {
+        for (int i = 0; i < commandMap.keySet().size(); i++) {
             command = commandMap.get(commandMap.keySet().toArray()[i].toString());
             stringBuilder.append("[");
             stringBuilder.append((i + 1));
@@ -108,7 +108,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
     }
 
     @Override
-    public void run(){
+    public void run() {
         //...//
     }
 }

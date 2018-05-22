@@ -45,7 +45,7 @@ public class FavorTokenTest {
         int numberOfFavorToken = 3;
         when(toolCard.getCost()).thenReturn(toolCardCost);
         favorToken = new FavorToken(numberOfFavorToken);
-        favorToken.use(toolCard);
+        assertEquals(true, favorToken.isCardUsable(toolCard));
         assertEquals(numberOfFavorToken - toolCardCost, favorToken.getCoins());
     }
 
@@ -58,11 +58,6 @@ public class FavorTokenTest {
         int numberOfFavorToken = 2;
         when(toolCard.getCost()).thenReturn(toolCardCost);
         favorToken = new FavorToken(numberOfFavorToken);
-        try {
-            favorToken.use(toolCard);
-            fail("exception expected");
-        } catch (NoCoinsExpendableException e){
-            assertEquals(numberOfFavorToken , favorToken.getCoins());
-        }
+        assertEquals(false, favorToken.isCardUsable(toolCard));
     }
 }

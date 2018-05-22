@@ -1,12 +1,10 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
+import org.poianitibaldizhou.sagrada.ControllerManager;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.INetworkObserver;
-import org.poianitibaldizhou.sagrada.network.socket.messages.NotifyMessage;
-import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
-import org.poianitibaldizhou.sagrada.network.socket.messages.Response;
+import org.poianitibaldizhou.sagrada.network.socket.messages.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -26,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class ClientHandler implements Runnable {
 
-    private ILobbyController controller;
+    private ControllerManager controllerManager;
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
@@ -37,10 +35,10 @@ public class ClientHandler implements Runnable {
      * Create a Runnable ClientHandler to handle the client request and send response and notify to the client
      *
      * @param socket     the socket connected to the client
-     * @param controller the "real" controller of the server
+     * @param controllerManager the controller manager of the server that contains the reference of all the controllers
      */
-    public ClientHandler(Socket socket, ILobbyController controller) {
-        this.controller = controller;
+    public ClientHandler(Socket socket, ControllerManager controllerManager) {
+        this.controllerManager = controllerManager;
         initObserverClasses();
         try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -84,10 +82,17 @@ public class ClientHandler implements Runnable {
         do {
             try {
                 object = objectInputStream.readObject();
-                if (object instanceof Request) {
+                if (object instanceof LobbyRequest) {
                     Request request = (Request) object;
                     replaceObserver(request);
-                    Object reply = request.invokeMethod(controller);
+                    Object reply = request.invokeMethod(controllerManager.getLobbyController());
+                    if (reply != null)
+                        sendResponse(new Response((Serializable) reply));
+                }
+                if (object instanceof GameRequest) {
+                    Request request = (Request) object;
+                    replaceObserver(request);
+                    Object reply = request.invokeMethod(controllerManager.getGameController());
                     if (reply != null)
                         sendResponse(new Response((Serializable) reply));
                 }

@@ -54,6 +54,10 @@ public class NumberConstraint implements IConstraint {
         return number == nc.getNumber();
     }
 
+    /**
+     *
+     * @return index value useful in an array to count the number of constraint founded
+     */
     @Override
     public int getIndexValue() {
         return getNumber() - 1;
@@ -78,7 +82,7 @@ public class NumberConstraint implements IConstraint {
     }
 
     public String toString() {
-        return "" + number;
+        return String.valueOf(number);
     }
 
     public int hashCode() {

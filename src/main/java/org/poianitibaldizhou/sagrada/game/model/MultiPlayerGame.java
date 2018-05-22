@@ -2,12 +2,21 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
 
-public class MultiPlayerGame extends Game implements IGameStrategy{
+public class MultiPlayerGame extends Game{
 
     public static final int NUMBER_OF_TOOL_CARDS = 3;
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 3;
@@ -25,11 +34,6 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
     @Override
     public int getNumberOfPublicObjectiveCardForGame() {
         return NUMBER_OF_PUBLIC_OBJECTIVE_CARDS;
-    }
-
-    @Override
-    public int getPlayerScore(Player player) {
-        return player.getMultiPlayerScore();
     }
 
     @Override
@@ -51,12 +55,13 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
      */
     @Override
     public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
-        List<Player> winners = getWinnersByVictoryPoints(players, scoreMap);
+        List<Player> listOfPlayer = new ArrayList<>(players.values());
+        List<Player> winners = getWinnersByVictoryPoints(listOfPlayer, scoreMap);
         winners = getWinnersByPrivateCard(winners);
         winners = getWinnersByFavorTokens(winners);
-        Player winner = getWinnersByReverseOrder(winners, players, getIndexOfPlayer(currentRoundPlayer));
+        Player winner = getWinnersByReverseOrder(winners, currentRoundPlayer);
         winner.setOutcome(Outcome.WIN);
-        for (Player other : players) {
+        for (Player other : listOfPlayer) {
             if (!other.equals(winner))
                 other.setOutcome(Outcome.LOSE);
         }
@@ -69,12 +74,26 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
 
     @Override
     public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.add(new Player(token, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
+        players.put(token, new MultiPlayer(token, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
     }
 
     @Override
     public void notifyPlayersEndGame() {
-        calculateOutcome();
+        getState().calculateVictoryPoints();
+    }
+
+    @Override
+    public Node<ICommand> getCompleteCommands(ToolCard toolCard) {
+        Node<ICommand> removeFavorToken = new Node<>(new RemoveFavorToken(toolCard.getCost()));
+        Node<ICommand> addTokenToolCard = new Node<>((player, toolCardExecutor, turnState) -> {
+            toolCard.addTokens(toolCard.getCost());
+            return CommandFlow.MAIN;
+        });
+        removeFavorToken.setLeftChild(addTokenToolCard);
+
+        Node<ICommand> coreToolCardCommands = toolCard.getCommands();
+        removeFavorToken.setLeftChild(coreToolCardCommands);
+        return removeFavorToken;
     }
 
     /**
@@ -127,38 +146,32 @@ public class MultiPlayerGame extends Game implements IGameStrategy{
     private List<Player> getWinnersByFavorTokens(List<Player> winners) {
         if (winners.size() == 1)
             return winners;
-        List<Player> favorTokensWinners = new ArrayList<>();
-        int maxFavorTokens = Integer.MIN_VALUE;
-        for (Player player : winners) {
-            maxFavorTokens = Math.max(maxFavorTokens, player.getFavorTokens());
-        }
-        for (Player player : winners) {
-            if (maxFavorTokens == player.getFavorTokens())
-                favorTokensWinners.add(player);
-        }
-        return favorTokensWinners;
+        OptionalInt maxFavorTokens = winners.stream().mapToInt(Player::getCoins).max();
+        if(!maxFavorTokens.isPresent())
+            throw new IllegalStateException();
+        return winners.stream()
+                .filter(player -> maxFavorTokens.getAsInt() == player.getCoins()).collect(Collectors.toList());
     }
 
     /**
      * Return the only winner by reverse order based on the current player who has the diceBag
      *
      * @param winners              the list of winners after FavorTokens
-     * @param allPlayers           the list of all players to find out if the first player is inside the list of winners given
-     * @param currentIndexOfPlayer the current index of the player who has the diceBag
+     * @param currentRoundPlayer the current player who has the diceBag
      * @return the only winner by reverse order
      */
-    private Player getWinnersByReverseOrder(List<Player> winners, List<Player> allPlayers, int currentIndexOfPlayer) {
+    private Player getWinnersByReverseOrder(List<Player> winners, Player currentRoundPlayer) {
         if (winners.size() == 1)
             return winners.get(0);
-        int index = (currentIndexOfPlayer - 1 + allPlayers.size()) % allPlayers.size();
-        while (index != currentIndexOfPlayer) {
-            if (winners.contains(allPlayers.get(index)))
-                return allPlayers.get(index);
-            index = (index - 1 + allPlayers.size()) % allPlayers.size();
+        Player nextPlayer = getNextPlayer(currentRoundPlayer, Direction.COUNTER_CLOCKWISE);
+        while (nextPlayer != currentRoundPlayer) {
+            if (winners.contains(nextPlayer))
+                return nextPlayer;
+            nextPlayer = getNextPlayer(currentRoundPlayer, Direction.COUNTER_CLOCKWISE);
         }
-        if (winners.contains(allPlayers.get(index)))
-            return allPlayers.get(index);
-        throw new IllegalArgumentException("No players founded");
+        if (winners.contains(currentRoundPlayer))
+            return currentRoundPlayer;
+        throw new IllegalStateException("SEVERE ERROR: No winners founded");
     }
 
 }

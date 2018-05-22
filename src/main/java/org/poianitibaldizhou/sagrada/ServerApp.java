@@ -1,6 +1,9 @@
 package org.poianitibaldizhou.sagrada;
 
+import org.poianitibaldizhou.sagrada.game.controller.GameController;
+import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
+import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
 
 import java.io.IOException;
@@ -19,7 +22,10 @@ public class ServerApp {
     public static final int SERVER_RMI_PORT = 1099;
 
     public static void main(String[] args) throws RemoteException {
-        LobbyController controller = new LobbyController();
+        ManagerMediator managerMediator = new ManagerMediator();
+        LobbyController lobbyController = new LobbyController(managerMediator.getLobbyManager());
+        GameController gameController = new GameController(managerMediator.getGameManager());
+        ControllerManager controllerManager = new ControllerManager(gameController, lobbyController);
         System.out.println(">>> Controller exported");
 
         new Thread(() -> {
@@ -29,7 +35,7 @@ public class ServerApp {
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
                     System.out.println(">>> socket client accepted");
-                    new Thread(new ClientHandler(clientSocket, controller)).start();
+                    new Thread(new ClientHandler(clientSocket, controllerManager)).start();
                 }
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
@@ -45,6 +51,7 @@ public class ServerApp {
         }).start();
 
         registry = LocateRegistry.getRegistry(SERVER_RMI_PORT);
-        registry.rebind("lobbycontroller", controller);
+        registry.rebind("lobbycontroller", controllerManager.getLobbyController());
+        registry.rebind("gamecontroller", controllerManager.getGameController());
     }
 }

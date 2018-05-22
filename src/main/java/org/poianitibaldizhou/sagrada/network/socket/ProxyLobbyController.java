@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
+import org.poianitibaldizhou.sagrada.network.socket.messages.LobbyRequest;
 import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 
 
@@ -24,7 +24,7 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
 
     /**
      * Counter-part method login of the server-side controller; need to add the view to the hashMap of the
-     * server handler and send the request via serverHandler
+     * server handler and send the LobbyRequest via serverHandler
      *
      * @param username user's name
      * @param view     view's name
@@ -34,23 +34,23 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     public String login(String username, INetworkObserver view) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, username, view));
+        serverHandler.sendRequest(new LobbyRequest(methodName, username, view));
         return (String) serverHandler.getResponse();
     }
 
     /**
-     * Counter-part method logout of the server-side controller; send the request via serverHandler
+     * Counter-part method logout of the server-side controller; send the LobbyRequest via serverHandler
      *
      * @param token the token of the user requesting logout
      */
     @Override
     public void logout(String token) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token));
+        serverHandler.sendRequest(new LobbyRequest(methodName, token));
     }
 
     /**
-     * Counter-part method leave of the server-side controller; send the request via serverHandler
+     * Counter-part method leave of the server-side controller; send the LobbyRequest via serverHandler
      *
      * @param token    the token of the user requesting to leave the lobby
      * @param username the username of the user requesting to leave the lobby
@@ -58,12 +58,12 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     @Override
     public void leave(String token, String username) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token, username));
+        serverHandler.sendRequest(new LobbyRequest(methodName, token, username));
     }
 
     /**
      * Counter-part method login of the server-side controller; need to add the observer to the hashMap of the
-     * server handler and send the request via serverHandler
+     * server handler and send the LobbyRequest via serverHandler
      *
      * @param token         the user's token
      * @param username      the user's username
@@ -73,18 +73,18 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     public void join(String token, String username, ILobbyObserver lobbyObserver) {
         serverHandler.addViewToHashMap(lobbyObserver.hashCode(), lobbyObserver);
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token, username, lobbyObserver));
+        serverHandler.sendRequest(new LobbyRequest(methodName, token, username, lobbyObserver));
     }
 
     /**
-     * Send a request of the user currently present in the lobby.
+     * Send a LobbyRequest of the user currently present in the lobby.
      *
      * @param token requesting user's token
      */
     @Override
     public void requestUsersInLobby(String token) {
         String methodName= Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token));
+        serverHandler.sendRequest(new LobbyRequest(methodName, token));
     }
 
     /**
@@ -95,6 +95,6 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     @Override
     public void requestTimeout(String token) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new Request(methodName, token));
+        serverHandler.sendRequest(new LobbyRequest(methodName, token));
     }
 }

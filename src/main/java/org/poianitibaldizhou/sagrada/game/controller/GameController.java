@@ -1,8 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ColorExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.DiceExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.PositionExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ValueExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -10,12 +14,12 @@ import java.util.HashMap;
 
 public class GameController extends UnicastRemoteObject implements IGameController {
 
-    private transient HashMap<String, IGameView> viewMap = new HashMap<>();
-    private transient GameManager gameManager;
+    private  final transient HashMap<String, IGameView> viewMap = new HashMap<>();
+    private final transient GameManager gameManager;
 
-    public GameController() throws RemoteException {
+    public GameController(GameManager gameManager) throws RemoteException {
         super();
-        gameManager = new GameManager();
+        this.gameManager = gameManager;
     }
 
     /**
@@ -47,7 +51,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setDice(Dice dice, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
+        try {
+            game.setExecutor(new DiceExecutorEvent(dice));
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -60,7 +68,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setNewValue(int value, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
+        try {
+            game.setExecutor(new ValueExecutorEvent(value));
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,7 +85,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setColor(Color color, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
-
+        try {
+            game.setExecutor(new ColorExecutorEvent(color));
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -88,5 +104,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setPosition(Position position, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
+        try {
+            game.setExecutor(new PositionExecutorEvent(position));
+        } catch (InvalidActionException e) {
+            e.printStackTrace();
+        }
     }
 }

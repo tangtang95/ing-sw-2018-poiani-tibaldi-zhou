@@ -41,9 +41,9 @@ public class ToolCardTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         toolCardMulti = new ToolCard(Color.RED,"testName", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", false);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         toolCardSingle = new ToolCard(Color.RED,"testName", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", true);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         commands = new Node<>(new ChooseDice());
         commands.addAtIndex(new AddDiceToDraftPool(), 2);
         commands.addAtIndex(new RerollDice(), 4);
@@ -70,14 +70,14 @@ public class ToolCardTest {
 
     @Test
     public void testUseCardSingle() {
-        assertEquals(commands, toolCardSingle.useCard());
+        assertEquals(commands, toolCardSingle.getCommands());
         for(IToolCardObserver observer : observerList)
             verify(observer, times(1)).onCardDestroy();
     }
 
     @Test
     public void testUseCardMulti() {
-        assertEquals(commands, toolCardMulti.useCard());
+        assertEquals(commands, toolCardMulti.getCommands());
 
         for(IToolCardObserver observer : observerList)
             verify(observer, times(1)).onTokenChange(toolCardMulti.getTokens());
@@ -87,27 +87,27 @@ public class ToolCardTest {
     public void testEquals() {
         ToolCard toolCard;
         toolCard = new ToolCard(Color.BLUE,"testName", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", false);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertNotEquals(toolCard, toolCardMulti);
 
         toolCard = new ToolCard(Color.RED,"testName2", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", false);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertNotEquals(toolCard, toolCardMulti);
 
         toolCard = new ToolCard(Color.RED,"testName", "testDescription2",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", false);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertNotEquals(toolCard, toolCardMulti);
 
         toolCard = new ToolCard(Color.RED,"testName", "testDescription",
-                "[1-Draw dice from Dicebag][2-Add dice to DraftPool][4-Reroll dice]", false);
+                "[1-Draw dice from Dicebag][2-Add dice to DraftPool][4-Reroll dice]");
         assertNotEquals(toolCard, toolCardMulti);
 
         toolCard = new ToolCard(Color.RED,"testName", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", true);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertNotEquals(toolCard, toolCardMulti);
 
         toolCard = new ToolCard(Color.RED,"testName", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]", false);
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertEquals(toolCard, toolCardMulti);
     }
 }

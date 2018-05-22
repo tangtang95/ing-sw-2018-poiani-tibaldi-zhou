@@ -1,32 +1,27 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class CheckBeforeDiceChosen implements ICommand {
 
     /**
-     * Check if the player has already placed a dice or not
+     * Check if the player has already placed a dice or not in the current turn.
      *
      * @param player player that invoked the ToolCard
-     * @param toolCardExecutor executorHelper that contains this command
-     * @param game game in which the player acts
-     * @return always the MAIN flow of the treeFlow
-     * @throws RemoteException RMI connection error
+     * @param toolCardExecutor executor of the Toolcard that contains this command
+     * @param turnState state
+     * @return the MAIN flow if the dice hasn't been chosen yet, STOP flow otherwise
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, ExecutionCommandException {
-        TurnState turnState = (TurnState) game.getState();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         if(turnState.hasActionUsed(new PlaceDiceAction()))
-            throw new ExecutionCommandException();
+            return CommandFlow.STOP;
         return CommandFlow.MAIN;
     }
 

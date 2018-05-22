@@ -2,11 +2,10 @@ package org.poianitibaldizhou.sagrada.lobby;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.poianitibaldizhou.sagrada.ManagerMediator;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -23,6 +22,9 @@ public class LobbyManagerTest {
     private LobbyManager lobbyManager;
 
     @Mock
+    private ManagerMediator managerMediator;
+
+    @Mock
     private ILobbyObserver lobbyObserver1, lobbyObserver2, lobbyObserver3,
             lobbyObserver4, lobbyObserver5, lobbyObserver6;
 
@@ -30,7 +32,7 @@ public class LobbyManagerTest {
 
     @Before
     public void setUp() {
-        lobbyManager = new LobbyManager();
+        lobbyManager = new LobbyManager(managerMediator);
         observers = new ArrayList<>();
         MockitoAnnotations.initMocks(this);
         observers.add(lobbyObserver1);

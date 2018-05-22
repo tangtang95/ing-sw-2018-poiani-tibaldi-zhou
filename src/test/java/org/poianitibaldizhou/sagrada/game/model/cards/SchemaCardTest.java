@@ -17,9 +17,8 @@ public class SchemaCardTest {
     private SchemaCard schemaCard ,fullSchemaCard, emptySchemaCard;
 
     @Before
-    public void setUp() {
-        Dice d1 = null;
-        d1 = new Dice(4, Color.YELLOW);
+    public void setUp() throws Exception {
+        Dice d1 = new Dice(4, Color.YELLOW);
 
         IConstraint[][] constraints = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
@@ -29,11 +28,8 @@ public class SchemaCardTest {
         }
         emptySchemaCard = new SchemaCard("test1", 1, constraints);
         schemaCard = new SchemaCard("test2", 1, constraints);
-        try {
-            schemaCard.setDice(d1,0, 2);
-        } catch (Exception e) {
-            fail("No exception expected");
-        }
+        schemaCard.setDice(d1,0, 2);
+
         constraints[0][2] = new ColorConstraint(Color.YELLOW);
         constraints[1][3] = new NumberConstraint(4);
         constraints[2][4] = new ColorConstraint(Color.RED);
@@ -71,6 +67,20 @@ public class SchemaCardTest {
     public void testIsEmpty() {
         assertFalse(schemaCard.isEmpty());
         assertTrue(emptySchemaCard.isEmpty());
+    }
+
+    @Test
+    public void testHasDiceOfColor() throws Exception{
+        for(Color c : Color.values())
+            assertFalse(emptySchemaCard.hasDiceOfColor(c));
+
+        emptySchemaCard.setDice(new Dice(5, Color.BLUE), 1,0);
+        emptySchemaCard.setDice(new Dice(3, Color.YELLOW), 1, 1);
+        assertTrue(emptySchemaCard.hasDiceOfColor(Color.BLUE));
+        assertTrue(emptySchemaCard.hasDiceOfColor(Color.YELLOW));
+        assertFalse(emptySchemaCard.hasDiceOfColor(Color.RED));
+        assertFalse(emptySchemaCard.hasDiceOfColor(Color.PURPLE));
+        assertFalse(emptySchemaCard.hasDiceOfColor(Color.GREEN));
     }
 
     @Test
@@ -183,8 +193,6 @@ public class SchemaCardTest {
         } catch (Exception e) {
             fail("no exception expected");
         }
-
-
     }
 
     @Test
@@ -215,6 +223,7 @@ public class SchemaCardTest {
 
     @Test
     public void toStringTest(){
+        // TODO this is not a test
         System.out.println(emptySchemaCard.toString() + "\n");
         System.out.println(schemaCard.toString() + "\n");
         System.out.println(fullSchemaCard.toString() + "\n");
@@ -286,5 +295,4 @@ public class SchemaCardTest {
         assertNotEquals(emptySchemaCard.hashCode(), fullSchemaCard.hashCode());
         assertNotEquals(schemaCard.hashCode(), Dice.class.hashCode());
     }
-
 }

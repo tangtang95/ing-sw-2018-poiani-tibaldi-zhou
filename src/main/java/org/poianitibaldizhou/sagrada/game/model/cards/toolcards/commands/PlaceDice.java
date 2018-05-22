@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
@@ -8,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -43,19 +43,24 @@ public class PlaceDice implements ICommand {
      * The dice is placed in the schema card of a specified player.
      * This method requires a dice in toolcard. It will ask for a position to the client.
      *
-     * @param player           player that invoked the toolcard: its schema card will receive a new dice
-     * @param toolCardExecutor toolcard that has been invoked
-     * @param game             game in which the player acts
-     * @return true
-     * @throws InterruptedException given to
+     * @param player           player that invoked the toolCard: its schema card will receive a new dice
+     * @param toolCardExecutor toolCard that has been invoked
+     * @param turnState        the state of the game
+     * @return CommandFlow.REPEAT if the restrictions aren't respected; CommandFlow.STOP if it's not possible to place
+     * the dice in any position; CommandFlow.MAIN otherwise
+     * @throws InterruptedException given to wait() in getting parameters from the executor
      * @throws RemoteException      network communication error
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws InterruptedException, RemoteException, ExecutionCommandException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         Dice dice;
         Position position;
 
         dice = toolCardExecutor.getNeededDice();
+
+        if (!(toolCardExecutor.getTemporarySchemaCard().isDicePositionable(dice, tileConstraint, diceConstraint))) {
+            return CommandFlow.STOP;
+        }
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         for (IToolCardExecutorObserver obs : observerList)
@@ -64,10 +69,9 @@ public class PlaceDice implements ICommand {
         position = toolCardExecutor.getPosition();
 
         try {
-            game.setDiceOnSchemaCardPlayer(player, dice, position.getRow(), position.getColumn(), this.tileConstraint,
-                    this.diceConstraint);
+            toolCardExecutor.getTemporarySchemaCard().setDice(dice, position.getRow(), position.getColumn(), this.tileConstraint, this.diceConstraint);
         } catch (RuleViolationException e) {
-            throw new ExecutionCommandException(e);
+            return CommandFlow.REPEAT;
         }
 
         return CommandFlow.MAIN;

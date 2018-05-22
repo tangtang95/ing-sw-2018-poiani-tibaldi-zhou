@@ -10,8 +10,11 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -25,7 +28,11 @@ public class IfDicePlaceableTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState state;
+    @Mock
+    private SchemaCard schemaCard;
+    @Mock
+    private Dice dice;
     @Mock
     private Player invokerPlayer;
 
@@ -33,27 +40,27 @@ public class IfDicePlaceableTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new IfDicePlaceable();
+        when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
+        when(executor.getNeededDice()).thenReturn(dice);
     }
 
     @After
     public void tearDown() throws Exception {
         command = null;
         executor = null;
-        game = null;
-        invokerPlayer = null;
+        state = null;
     }
 
     @Test
     public void executeCommand() throws Exception {
-        Dice dice = mock(Dice.class);
-        Position position = mock(Position.class);
-        when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
-        when(invokerPlayer.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())).thenReturn(false);
-        assertEquals(CommandFlow.SUB, command.executeCommand(invokerPlayer, executor, game));
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
+    }
 
-        when(invokerPlayer.isDicePositionableOnSchemaCard(dice, position.getRow(), position.getColumn())).thenReturn(true);
-        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, game));
+    @Test
+    public void executeCommandFailing() throws Exception {
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(false);
+        assertEquals(CommandFlow.SUB, command.executeCommand(invokerPlayer, executor, state));
     }
 
     @Test

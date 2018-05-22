@@ -3,11 +3,19 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveDiceFromDraftPool;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class SinglePlayerGame extends Game implements IGameStrategy{
+public class SinglePlayerGame extends Game{
 
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 2;
     public static final int NUMBER_OF_DICES_TO_DRAW = 4;
@@ -42,7 +50,7 @@ public class SinglePlayerGame extends Game implements IGameStrategy{
     }
 
     public void setPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.add(new Player(token, new ExpendableDice(draftPool), schemaCard, privateObjectiveCards));
+        players.put(token, new SinglePlayer(token, new ExpendableDice(this), schemaCard, privateObjectiveCards));
     }
 
     public void requestPrivateObjectiveCardFromPlayer() {
@@ -58,11 +66,6 @@ public class SinglePlayerGame extends Game implements IGameStrategy{
     @Override
     public int getNumberOfPublicObjectiveCardForGame() {
         return NUMBER_OF_PUBLIC_OBJECTIVE_CARDS;
-    }
-
-    @Override
-    public int getPlayerScore(Player player) {
-        return player.getSinglePlayerScore();
     }
 
     @Override
@@ -96,4 +99,21 @@ public class SinglePlayerGame extends Game implements IGameStrategy{
     public void notifyPlayersEndGame() {
         requestPrivateObjectiveCardFromPlayer();
     }
+
+    @Override
+    public Node<ICommand> getCompleteCommands(ToolCard toolCard) {
+        Node<ICommand> useDiceCommand = new Node<>(new RemoveDiceFromDraftPool());
+        Node<ICommand> clearAll = new Node<>(new ClearAll());
+        useDiceCommand.setLeftChild(clearAll);
+        Node<ICommand> destroyToolCard = new Node<>((player, toolCardExecutor, turnState) -> {
+            toolCard.destroyToolCard();
+            return CommandFlow.MAIN;
+        });
+        clearAll.setLeftChild(destroyToolCard);
+
+        Node<ICommand> coreToolCardCommands = toolCard.getCommands();
+        clearAll.setLeftChild(coreToolCardCommands);
+        return useDiceCommand;
+    }
+
 }

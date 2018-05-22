@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
+import org.poianitibaldizhou.sagrada.ManagerMediator;
+
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +16,21 @@ public class LobbyManager {
     private Thread timeoutThread;
     private Runnable timeout;
     private long timeoutStart;
+    private ManagerMediator managerMediator;
 
     // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=30s
-    private static final long DELAY_TIME = 10000;
+    private static final long DELAY_TIME = 60000;
 
     /**
      * Constructor.
      * Create a manager for the lobby
      *
+     * @param managerMediator
      */
-    public LobbyManager() {
+    public LobbyManager(ManagerMediator managerMediator) {
+        this.managerMediator = managerMediator;
+        this.managerMediator.setLobbyManager(this);
+
         users = new ArrayList<>();
         lobby = null;
         timeout = () -> {
@@ -49,6 +56,13 @@ public class LobbyManager {
     private synchronized void createLobby() {
         lobby = new Lobby(UUID.randomUUID().toString());
         setTimeout();
+    }
+
+    private synchronized void createGame() {
+        List<String> userTokens = new ArrayList<>();
+        lobby.getUserList().forEach((user) -> userTokens.add(user.getToken()));
+        managerMediator.createMultiPlayerGame(userTokens);
+        lobby.gameStart();
     }
 
     /**
@@ -82,6 +96,7 @@ public class LobbyManager {
             createLobby();
         lobby.observeLobby(lobbyObserver);
         if(lobby.join(user)) {
+            createGame();
             createLobby();
         }
     }
@@ -169,7 +184,7 @@ public class LobbyManager {
      */
     public synchronized void handleTimeout() {
         if(lobby != null && lobby.getPlayerNum() >= 2) {
-            lobby.gameStart();
+            createGame();
             createLobby();
         } else {
             setTimeout();

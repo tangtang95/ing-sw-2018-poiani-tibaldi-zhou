@@ -7,12 +7,11 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
@@ -29,34 +28,47 @@ public class RemoveDiceFromDraftPoolTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState stateGame;
     @Mock
     private Player invokerPlayer;
 
     private Dice dice;
+    private DraftPool draftPool;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new RemoveDiceFromDraftPool();
-        dice = new Dice(1, Color.BLUE);
+        dice = new Dice(2, Color.BLUE);
+        draftPool = new DraftPool();
+        draftPool.addDice(new Dice(5, Color.RED));
+        draftPool.addDice(new Dice(2, Color.YELLOW));
+        draftPool.addDice(dice);
+    }
+
+    @Test
+    public void executeCommandTestSuccess() throws Exception {
         when(executor.getNeededDice()).thenReturn(dice);
+        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        DraftPool newDraftPool = new DraftPool();
+        newDraftPool.addDices(draftPool.getDices());
+        newDraftPool.useDice(dice);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer,executor,stateGame));
+        assertEquals(newDraftPool, executor.getTemporaryDraftpool());
     }
 
     @Test
-    public void executeCommandTestSuccess() throws InterruptedException, RemoteException, ExecutionCommandException {
-        CommandFlow commandFlow = command.executeCommand(invokerPlayer,executor,game);
-        assertEquals(CommandFlow.MAIN, commandFlow);
+    public void executeCommandTestFailNoDiceInDraftPool() throws Exception{
+        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getNeededDice()).thenReturn(new Dice(dice.getNumber()-1, dice.getColor()));
+        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer,executor, stateGame));
     }
 
     @Test
-    public void executeCommandTestFail() throws RemoteException, InterruptedException, DiceNotFoundException, EmptyCollectionException {
-        doThrow(new DiceNotFoundException("")).when(game).useDraftPoolDice(dice);
-        try {
-            command.executeCommand(invokerPlayer,executor,game);
-            fail("Exception expected");
-        } catch (ExecutionCommandException e) {
-        }
+    public void executeCommandTestFailEmptyDraftPool() throws Exception {
+        when(executor.getNeededDice()).thenReturn(dice);
+        when(executor.getTemporaryDraftpool()).thenReturn(new DraftPool());
+        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer,executor, stateGame));
     }
 
     @Test

@@ -9,6 +9,8 @@ import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 public class RerollDiceTest {
     @Mock
-    private Game game;
+    private TurnState stateGame;
 
     @Mock
     private ToolCardExecutor executor;
@@ -40,7 +42,7 @@ public class RerollDiceTest {
     public void executeCommandTest() throws InterruptedException, RemoteException, ExecutionCommandException {
         Dice dice = new Dice(1, Color.RED);
         when(executor.getNeededDice()).thenReturn(dice);
-        CommandFlow commandFlow = command.executeCommand(invokerPlayer, executor, game);
+        CommandFlow commandFlow = command.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals(CommandFlow.MAIN, commandFlow);
         verify(executor, times(1)).getNeededDice();
         ArgumentCaptor<Dice> argumentCaptor = ArgumentCaptor.forClass(Dice.class);

@@ -1,10 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
@@ -12,18 +12,18 @@ public class AddDiceToDraftPool implements ICommand {
 
     /**
      * Add the ToolCard's dice to the DraftPool.
-     * This method requires a dice in ToolCard
+     * This method requires a dice in ToolCard, and leaves it there.
      *
      * @param player player that invoked the ToolCard
      * @param toolCardExecutor ToolCard invoked that contains this command
-     * @param game game in which the player acts
-     * @return true
+     * @param turnState
+     * @return CommandFlow.MAIN always
      * @throws InterruptedException given by wait of toolCard.getNeededDice()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws  InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
-        game.addDiceToDraftPool(dice);
+        toolCardExecutor.getTemporaryDraftpool().addDice(dice);
         return CommandFlow.MAIN;
     }
 

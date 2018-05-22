@@ -2,11 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
-public class DrawableCollection<T>{
+public class DrawableCollection<T> {
     private List<T> collection;
 
     /**
@@ -46,7 +44,7 @@ public class DrawableCollection<T>{
      */
     public T draw() throws EmptyCollectionException {
         Random rand = new Random();
-        if(collection.isEmpty()) {
+        if (collection.isEmpty()) {
             throw new EmptyCollectionException();
         }
         int pos = Math.abs(rand.nextInt(collection.size()));
@@ -98,5 +96,66 @@ public class DrawableCollection<T>{
         if (drawableCollection == null)
             return null;
         return new DrawableCollection(drawableCollection.getCollection());
+    }
+
+    /**
+     * Two DrawableCollection are equals if they contains the same elements in the same number in any order.
+     * @param o object to compare
+     * @return true if equals, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof DrawableCollection))
+            return false;
+
+        List param = ((DrawableCollection) o).getCollection();
+
+        if (param.size() != this.size())
+            return false;
+
+        int[] counter1 = new int[param.size()];
+        int[] positions = new int[param.size()];
+
+        for (int i = 0; i < param.size(); i++) {
+            for (int j = 0; j < param.size(); j++) {
+                if (param.get(i).equals(param.get(j))) {
+                    counter1[j]++;
+                    positions[i] = j;
+                    break;
+                } else if (counter1[j] == 0) {
+                    counter1[j]++;
+                    positions[i] = j;
+                    break;
+                }
+            }
+        }
+
+        for (int j = 0; j < param.size(); j++) {
+            for (int i = 0; i < param.size(); i++) {
+                if (collection.get(j).equals(param.get(i))) {
+                    counter1[positions[i]] -= 1;
+                    break;
+                }
+            }
+        }
+
+        for (int i = 0; i < param.size(); i++) {
+            if (counter1[i] != 0)
+                return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        ArrayList<T> list = new ArrayList<>(this.getCollection());
+        list.sort(Comparator.comparingInt(Object::hashCode));
+
+        for (T elem : list) {
+            hashCode = 31 * hashCode + (elem == null ? 0 : elem.hashCode());
+        }
+
+        return hashCode;
     }
 }

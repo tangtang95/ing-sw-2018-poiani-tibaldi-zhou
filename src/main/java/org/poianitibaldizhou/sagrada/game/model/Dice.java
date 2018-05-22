@@ -106,7 +106,7 @@ public class Dice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(numberConstraint, colorConstraint);
+        return Objects.hash(numberConstraint.getNumber(), colorConstraint.getColor());
     }
 
 

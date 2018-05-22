@@ -1,11 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import net.bytebuddy.description.method.ParameterList;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.poianitibaldizhou.sagrada.ManagerMediator;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -20,6 +20,9 @@ public class GameManagerTest {
     private List<String> playerList;
 
     @Mock
+    private ManagerMediator managerMediator;
+
+    @Mock
     private Game game1;
 
     @Mock
@@ -31,7 +34,7 @@ public class GameManagerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        gameManager = new GameManager();
+        gameManager = new GameManager(managerMediator);
         when(game1.getName()).thenReturn("game1");
         when(game2.getName()).thenReturn("game2");
         when(game3.getName()).thenReturn("game3");

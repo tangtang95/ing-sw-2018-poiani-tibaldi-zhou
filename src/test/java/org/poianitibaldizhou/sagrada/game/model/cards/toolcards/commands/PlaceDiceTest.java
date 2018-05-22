@@ -2,17 +2,21 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,16 +30,22 @@ public class PlaceDiceTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState stateGame;
     @Mock
     private Player invokerPlayer;
     @Mock
     private DraftPool draftPool;
     @Mock
     private IToolCardExecutorObserver observer1, observer2, observer3;
+    @Mock
+    private Dice dice;
+    @Mock
+    private SchemaCard schemaCard;
+
 
     private ICommand command;
     private List<IToolCardExecutorObserver> observerList;
+    private Position position;
 
     @Before
     public void setUp() throws Exception {
@@ -45,47 +55,58 @@ public class PlaceDiceTest {
         observerList.add(observer2);
         observerList.add(observer3);
         when(executor.getObservers()).thenReturn(observerList);
-        when(game.getDraftPool()).thenReturn(draftPool);
-    }
+        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
+        position = new Position(3, 2);
+        when(executor.getNeededDice()).thenReturn(dice);
+        when(executor.getPosition()).thenReturn(position);
+        }
 
     @After
     public void tearDown() throws Exception {
         command = null;
         executor = null;
-        game = null;
+        stateGame = null;
         invokerPlayer = null;
         draftPool = null;
         observerList = null;
+        position = null;
+        dice = null;
     }
+
     @Test
-    public void executeCommand() throws Exception {
+    public void executeCommandSucced() throws Exception {
         command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-        Dice dice = mock(Dice.class);
-
-        // Need to create a position because doThrow has problems
-        Position position = new Position(3, 2);
-        when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
-        command.executeCommand(invokerPlayer, executor, game);
-        verify(game).setDiceOnSchemaCardPlayer(invokerPlayer, dice, position.getRow(), position.getColumn(),
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
+        verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position.getRow(), position.getColumn(),
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-
-
-        doThrow(new RuleViolationException(RuleViolationType.TILE_UNMATCHED)).when(game)
-                .setDiceOnSchemaCardPlayer(invokerPlayer, dice, position.getRow(), position.getColumn(),
-                PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-
-        try {
-            command.executeCommand(invokerPlayer, executor, game);
-            fail("exception expected");
-        }catch (ExecutionCommandException e){
-            assertNotEquals(null, e);
+        for (IToolCardExecutorObserver obs : observerList) {
+            verify(obs, times(1)).notifyNeedPosition();
         }
-
     }
 
     @Test
-    public void equals() throws Exception {
+    public void executeCommandFail() throws Exception {
+        command = new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL)).thenReturn(true);
+        doThrow(RuleViolationException.class).when(schemaCard).setDice(dice, position.getRow(), position.getColumn(),
+                PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
+        assertEquals(CommandFlow.REPEAT, command.executeCommand(invokerPlayer, executor, stateGame));
+        for (IToolCardExecutorObserver obs : observerList) {
+            verify(obs, times(1)).notifyNeedPosition();
+        }
+    }
+
+    @Test
+    public void executeCommandCantProceed() throws Exception {
+        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED)).thenReturn(false);
+        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer,executor,stateGame));
+    }
+
+    @Test
+    public void equals() {
         command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
         assertEquals(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL), command);
         assertNotEquals(new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL), command);

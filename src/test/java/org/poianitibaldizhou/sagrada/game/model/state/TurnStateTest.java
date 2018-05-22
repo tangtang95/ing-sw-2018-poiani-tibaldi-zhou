@@ -3,10 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
@@ -16,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Test with dependency class:
@@ -41,6 +36,14 @@ public class TurnStateTest {
         playerList.add(player3);
         playerList.add(player4);
         when(game.getPlayers()).thenReturn(playerList);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
+        when(game.getNextPlayer(player2, Direction.CLOCKWISE)).thenReturn(player3);
+        when(game.getNextPlayer(player3, Direction.CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player4, Direction.CLOCKWISE)).thenReturn(player1);
+        when(game.getNextPlayer(player4, Direction.COUNTER_CLOCKWISE)).thenReturn(player3);
+        when(game.getNextPlayer(player3, Direction.COUNTER_CLOCKWISE)).thenReturn(player2);
+        when(game.getNextPlayer(player2, Direction.COUNTER_CLOCKWISE)).thenReturn(player1);
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
     }
 
     @After
@@ -77,11 +80,12 @@ public class TurnStateTest {
 
     @Test
     public void testNextTurnWhenIsFirstTurn() throws Exception {
-        TurnState turnState = new TurnState(game, 0,player1, player1, true);
-        when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
-        when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
+        TurnState turnState = spy(new TurnState(game, 0,player1, player1, true));
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
 
         turnState.chooseAction(player1, new EndTurnAction());
+
         ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
         verify(game).setState(argument.capture());
         assertEquals("player incorrect", player2, argument.getValue().getCurrentTurnPlayer());
@@ -90,8 +94,8 @@ public class TurnStateTest {
     @Test
     public void testNextTurnWhenIsFirstTurnButLastPlayer() throws Exception {
         TurnState turnState = new TurnState(game, 0, player2, player1, true);
-        when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
-        when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
 
         turnState.chooseAction(player1, new EndTurnAction());
         ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
@@ -103,8 +107,8 @@ public class TurnStateTest {
     @Test
     public void testNextTurnWhenIsNotFirstTurnAndCurrentPlayer() throws Exception {
         TurnState turnState = new TurnState(game, 0, player1, player1, false);
-        when(game.getNextIndexOfPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(3);
-        when(game.getNextIndexOfPlayer(player1, Direction.CLOCKWISE)).thenReturn(1);
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
 
         turnState.chooseAction(player1, new EndTurnAction());
         verify(game).setState(ArgumentMatchers.any(RoundEndState.class));

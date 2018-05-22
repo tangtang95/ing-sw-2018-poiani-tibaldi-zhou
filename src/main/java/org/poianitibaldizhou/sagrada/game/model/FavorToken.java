@@ -1,15 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.poianitibaldizhou.sagrada.exception.IllegalNumberOfTokensOnToolCardException;
-import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 public class FavorToken implements ICoin {
     private int numberOfFavorToken;
-
-    public FavorToken() {
-        this.numberOfFavorToken = 0;
-    }
 
     public FavorToken(int numberOfFavorToken) {
         this.numberOfFavorToken = numberOfFavorToken;
@@ -19,21 +13,21 @@ public class FavorToken implements ICoin {
      * if the number of favor tokens are greater of the cost of toolCard, decrement the player's number of Favor Tokens
      *
      * @param toolCard the card which the player would use
-     * @throws NoCoinsExpendableException if there aren't any expandable favor tokens
      */
     @Override
-    public void use(ToolCard toolCard) throws NoCoinsExpendableException{
-        int cost = toolCard.getCost();
-        if (numberOfFavorToken < cost)
-            throw new NoCoinsExpendableException("FavorToken.use() failed, you haven't enough FavorTokens");
-        else {
-            toolCard.addTokens(cost);
-            numberOfFavorToken = numberOfFavorToken - cost;
-        }
+    public boolean isCardUsable(ToolCard toolCard) {
+        return numberOfFavorToken >= toolCard.getCost();
     }
 
     @Override
     public int getCoins() {
         return numberOfFavorToken;
+    }
+
+    @Override
+    public void removeCoins(int cost) {
+        if(numberOfFavorToken < cost)
+            throw new IllegalArgumentException();
+        numberOfFavorToken = numberOfFavorToken - cost;
     }
 }

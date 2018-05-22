@@ -15,6 +15,7 @@ public class ColorConstraint implements IConstraint {
     /**
      * Constructor.
      * Create a ColorConstraint with the color given
+     *
      * @param color the color value for this specific object
      */
     public ColorConstraint(Color color) {
@@ -24,9 +25,10 @@ public class ColorConstraint implements IConstraint {
     /**
      * Global method.
      * Return a list of all colorConstraints for each value of enum Color
+     *
      * @return a list of all colorConstraints
      */
-    public static List<IConstraint> getAllColorConstraints(){
+    public static List<IConstraint> getAllColorConstraints() {
         List<IConstraint> allColorConstraints = new ArrayList<>();
         for (int i = 0; i < Color.values().length; i++) {
             allColorConstraints.add(new ColorConstraint(Color.values()[i]));
@@ -40,21 +42,23 @@ public class ColorConstraint implements IConstraint {
     }
 
     /**
-     *
      * @param other another constraint to match
      * @return false only if has the same constraint type and its value is different,
-     *         in the other cases it returns true
+     * in the other cases it returns true
      */
     @Override
     @Contract(pure = true)
     public boolean matches(IConstraint other) {
-        if(other instanceof NoConstraint || !(other instanceof ColorConstraint))
+        if (other instanceof NoConstraint || !(other instanceof ColorConstraint))
             return true;
         ColorConstraint cc = (ColorConstraint) other;
         return color == cc.getColor();
 
     }
 
+    /**
+     * @return index value useful in an array to count the number of constraint founded
+     */
     @Override
     public int getIndexValue() {
         return color.ordinal();
@@ -67,14 +71,14 @@ public class ColorConstraint implements IConstraint {
      * @return true if they have the same color
      */
     @Override
-    public boolean equals(Object obj){
-        if(!(obj instanceof ColorConstraint))
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ColorConstraint))
             return false;
         return this.getColor() == ((ColorConstraint) obj).getColor();
     }
 
     public String toString() {
-        return color.name().substring(0,1);
+        return color.name().substring(0, 1);
     }
 
     public int hashCode() {

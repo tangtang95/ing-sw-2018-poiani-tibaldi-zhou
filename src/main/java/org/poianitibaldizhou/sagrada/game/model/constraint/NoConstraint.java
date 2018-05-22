@@ -21,7 +21,7 @@ public class NoConstraint implements IConstraint {
 
     @Override
     public int getIndexValue() {
-        return -1;
+        throw new IllegalStateException("SEVERE ERROR: Cannot be implemented");
     }
 
     /**

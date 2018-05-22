@@ -15,9 +15,18 @@ public class PlaceDiceState extends IPlayerState {
         super(turnState);
     }
 
+    /**
+     *
+     *
+     * @param player
+     * @param dice
+     * @param row
+     * @param column
+     * @throws RuleViolationException
+     */
     @Override
     public void placeDice(Player player, Dice dice, int row, int column) throws RuleViolationException {
-        player.placeDice(dice,row,column);
+        player.getSchemaCard().setDice(dice,row,column);
         turnState.setPlayerState(new SelectActionState(turnState));
     }
 

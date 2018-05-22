@@ -11,10 +11,14 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.*;
 
@@ -23,7 +27,7 @@ public class PourOverDiceTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState state;
     @Mock
     private Player invokerPlayer;
 
@@ -39,7 +43,7 @@ public class PourOverDiceTest {
     @After
     public void tearDown() {
         command = null;
-        game = null;
+        state = null;
         invokerPlayer = null;
         executor = null;
     }
@@ -48,7 +52,7 @@ public class PourOverDiceTest {
     public void executeCommandTest() throws InterruptedException, RemoteException, ExecutionCommandException {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getNeededDice()).thenReturn(dice);
-        command.executeCommand(invokerPlayer, executor, game);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
         verify(executor, times(1)).setNeededDice(dice.pourOverDice());
     }
 

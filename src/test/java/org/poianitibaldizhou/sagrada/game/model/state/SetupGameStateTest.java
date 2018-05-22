@@ -92,14 +92,4 @@ public class SetupGameStateTest {
         verify(game, times(MultiPlayerGame.NUMBER_OF_TOOL_CARDS)).addToolCard(ArgumentMatchers.any(ToolCard.class));
     }
 
-    @Test
-    public void readyGameTest() throws Exception {
-        when(game.isSinglePlayer()).thenReturn(false);
-        setupGameState = new SetupGameState(game);
-        setupGameState.readyGame();
-        ArgumentCaptor<RoundStartState> argument = ArgumentCaptor.forClass(RoundStartState.class);
-        verify(game).setState(argument.capture());
-        assertTrue(playerList.contains(argument.getValue().getCurrentRoundPlayer()));
-    }
-
 }

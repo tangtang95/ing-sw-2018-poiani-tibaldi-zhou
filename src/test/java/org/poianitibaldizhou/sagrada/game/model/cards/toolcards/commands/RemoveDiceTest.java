@@ -13,6 +13,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -29,13 +31,16 @@ public class RemoveDiceTest {
     private ToolCardExecutor executor;
 
     @Mock
-    private Game game;
+    private TurnState stateGame;
 
     @Mock
     private Position position;
 
     @Mock
     private Player invokerPlayer;
+
+    @Mock
+    private SchemaCard schemaCard;
 
     @Mock
     private IToolCardExecutorObserver observer1, observer2, observer3;
@@ -50,7 +55,7 @@ public class RemoveDiceTest {
     private ICommand removeDice;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         removeDice = new RemoveDice(PlacementRestrictionType.NONE);
         removeDiceWithColor = new RemoveDice(PlacementRestrictionType.COLOR);
@@ -61,11 +66,12 @@ public class RemoveDiceTest {
         when(executor.getObservers()).thenReturn(observerList);
         when(position.getColumn()).thenReturn(1);
         when(position.getRow()).thenReturn(1);
+        when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
     }
 
     @After
     public void tearDown() {
-        game = null;
+        stateGame = null;
         invokerPlayer = null;
         removeDiceWithColor = null;
         removeDice = null;
@@ -76,37 +82,30 @@ public class RemoveDiceTest {
     public void testExecutionFailColorConstraint() throws RemoteException, InterruptedException {
         when(executor.getPosition()).thenReturn(position);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
-        SchemaCard schemaCard = mock(SchemaCard.class);
-        when(invokerPlayer.getSchemaCard()).thenReturn(schemaCard);
-        when(invokerPlayer.getSchemaCard().getDice(position.getRow(), position.getColumn())).thenReturn(new Dice(1, Color.RED));
-        try {
-            removeDiceWithColor.executeCommand(invokerPlayer, executor, game);
-            fail("Exception expected");
-        } catch (ExecutionCommandException e) {
-            for(IToolCardExecutorObserver obs: observerList) {
-                verify(obs, times(1)).notifyNeedDicePositionOfCertainColor(Color.BLUE);
-            }
-            verify(executor, times(1)).setNeededPosition(null);
-            verify(executor, times(1)).getNeededColor();
-            verify(executor, times(1)).getPosition();
-        }
+        when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
+        when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(new Dice(1, Color.RED));
+        assertEquals(CommandFlow.REPEAT, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
+    }
+
+    @Test
+    public void testExecutionStopCantPlaceColorConstraint() throws Exception {
+        when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(false);
+        when(executor.getNeededColor()).thenReturn(Color.BLUE);
+        assertEquals(CommandFlow.STOP, removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame));
+    }
+
+    @Test
+    public void testExecutionStopCantPlaceNoneConstraint() throws Exception {
+        when(schemaCard.isEmpty()).thenReturn(true);
+        assertEquals(CommandFlow.STOP, removeDice.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test
     public void testExecutionFailNoneConstraint() throws RemoteException, InterruptedException {
         when(executor.getPosition()).thenReturn(position);
-        when(game.removeDiceFromSchemaCardPlayer(invokerPlayer,position.getRow(),position.getColumn())).thenReturn(null);
-
-        try {
-            removeDice.executeCommand(invokerPlayer, executor, game);
-            fail("Exception expected");
-        } catch (ExecutionCommandException e) {
-            for(IToolCardExecutorObserver obs : observerList) {
-                verify(obs, times(1)).notifyNeedPosition();
-            }
-            verify(executor, times(1)).getPosition();
-            verify(executor, times(1)).setNeededPosition(null);
-        }
+        when(schemaCard.isEmpty()).thenReturn(false);
+        when(schemaCard.removeDice(position.getRow(), position.getColumn())).thenReturn(null);
+        assertEquals(CommandFlow.REPEAT, removeDice.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test
@@ -114,16 +113,14 @@ public class RemoveDiceTest {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getPosition()).thenReturn(position);
         when(executor.getNeededDice()).thenReturn(dice);
-        SchemaCard schemaCard = mock(SchemaCard.class);
-        when(invokerPlayer.getSchemaCard()).thenReturn(schemaCard);
-        when(invokerPlayer.getSchemaCard().getDice(position.getRow(), position.getColumn())).thenReturn(dice);
-        when(game.removeDiceFromSchemaCardPlayer(invokerPlayer, position.getRow(),position.getColumn())).thenReturn(dice);
+        when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(dice);
+        when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
+        when(schemaCard.removeDice(position.getRow(), position.getColumn())).thenReturn(dice);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
 
-
-        CommandFlow commandFlow = removeDiceWithColor.executeCommand(invokerPlayer, executor, game);
+        CommandFlow commandFlow = removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);
-        for(IToolCardExecutorObserver obs: observerList) {
+        for (IToolCardExecutorObserver obs : observerList) {
             verify(obs, times(1)).notifyNeedDicePositionOfCertainColor(Color.BLUE);
         }
         verify(executor, times(1)).getNeededColor();
@@ -135,15 +132,14 @@ public class RemoveDiceTest {
     public void testExecutionSucceedNoneConstraint() throws InterruptedException, RemoteException, ExecutionCommandException {
         Dice dice = new Dice(1, Color.RED);
         when(executor.getPosition()).thenReturn(position);
+        when(schemaCard.isEmpty()).thenReturn(false);
         when(executor.getNeededDice()).thenReturn(dice);
-        SchemaCard schemaCard = mock(SchemaCard.class);
-        when(invokerPlayer.getSchemaCard()).thenReturn(schemaCard);
-        when(invokerPlayer.getSchemaCard().getDice(position.getRow(), position.getColumn())).thenReturn(dice);
-        when(game.removeDiceFromSchemaCardPlayer(invokerPlayer,position.getRow(),position.getColumn())).thenReturn(dice);
+        when(schemaCard.getDice(position.getRow(), position.getColumn())).thenReturn(dice);
+        when(executor.getTemporarySchemaCard().removeDice(position.getRow(), position.getColumn())).thenReturn(dice);
 
-        CommandFlow commandFlow = removeDice.executeCommand(invokerPlayer, executor, game);
+        CommandFlow commandFlow = removeDice.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);
-        for(IToolCardExecutorObserver obs: observerList) {
+        for (IToolCardExecutorObserver obs : observerList) {
             verify(obs, times(1)).notifyNeedPosition();
         }
         verify(executor, times(1)).getPosition();
@@ -161,13 +157,13 @@ public class RemoveDiceTest {
 
     @Test
     public void constructorTest() {
-        for(PlacementRestrictionType type : PlacementRestrictionType.values()) {
-            if(type != PlacementRestrictionType.COLOR && type != PlacementRestrictionType.NONE) {
+        for (PlacementRestrictionType type : PlacementRestrictionType.values()) {
+            if (type != PlacementRestrictionType.COLOR && type != PlacementRestrictionType.NONE) {
                 RemoveDice temp = null;
                 try {
                     temp = new RemoveDice(type);
                     fail("Exception expected");
-                } catch (Exception e){
+                } catch (Exception e) {
                     assertEquals(temp, null);
                 }
             }

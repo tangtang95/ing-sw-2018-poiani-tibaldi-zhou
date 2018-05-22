@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 
 public class ColorExecutorEvent implements ExecutorEvent {
 
-    private Color color;
+    private final Color color;
 
     public ColorExecutorEvent(Color color){
         this.color = color;

@@ -3,7 +3,7 @@
     "cardName": "Pinza Sgrossatrice",
     "cardColour": "PURPLE",
     "cardDescription": "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
-    "action": "[1-Choose dice][2-Modify dice value by 1][4-Add dice to DraftPool][8-CA]"
+    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place dice][8-CA]"
   },
   {
     "cardName": "Pennello per Eglomise",
@@ -57,7 +57,7 @@
     "cardName": "Tampone Diamantato",
     "cardColour": "GREEN",
     "cardDescription": "Dopo aver scelto un dado, giralo sulla faccia opposta. 6 diventa 1, 5 diventa 2, 4 diventa 3, ecc.",
-    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Pour over dice][8-Add dice to DraftPool][16-CA]"
+    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Pour over dice][8-Place dice][16-CA]"
   },
   {
     "cardName": "Diluente per Pasta Salda",

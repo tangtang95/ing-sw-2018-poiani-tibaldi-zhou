@@ -6,11 +6,14 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -33,7 +36,7 @@ public class SwapDiceWithRoundTrackTest {
     private IToolCardExecutorObserver observer3;
 
     @Mock
-    private Game game;
+    private TurnState stateGame;
 
     @Mock
     private Player player;
@@ -44,6 +47,10 @@ public class SwapDiceWithRoundTrackTest {
     @Mock
     private RoundTrack roundTrack;
 
+    @Mock
+    private DraftPool draftPool;
+
+
     private ICommand command;
     private List<IToolCardExecutorObserver> observerList;
 
@@ -51,44 +58,50 @@ public class SwapDiceWithRoundTrackTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new SwapDiceWithRoundTrack();
+
         observerList = new ArrayList<>();
         observerList.add(observer1);
         observerList.add(observer2);
         observerList.add(observer3);
-        when(game.getRoundTrack()).thenReturn(roundTrack);
+
+        when(executor.getTemporaryRoundtrack()).thenReturn(roundTrack);
+        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
         when(executor.getObservers()).thenReturn(observerList);
     }
 
     @After
     public void tearDown() throws Exception {
         observerList = null;
-        game = null;
+        stateGame = null;
         executor = null;
         player = null;
         command = null;
     }
 
     @Test
-    public void executeCommandWithSuccessTest() throws InterruptedException, RemoteException, ExecutionCommandException {
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor,game));
+    public void executeCommandWithSuccessTest() throws Exception {
+        Dice dice = new Dice(1, Color.BLUE);
+        when(executor.getNeededDice()).thenReturn(dice);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor,stateGame ));
 
         for(IToolCardExecutorObserver obs : observerList)
             verify(obs, times(1)).notifyNeedDiceFromRoundTrack(roundTrack);
     }
 
     @Test
-    public void executeCommandFailTest() throws DiceNotFoundException, RemoteException, InterruptedException {
+    public void executeCommandFailTest() throws Exception {
         Dice dice = new Dice(1, Color.BLUE);
-        Dice roundTrackDice = new Dice(5, Color.YELLOW);
-        doThrow(new DiceNotFoundException("")).when(game).swapDraftPoolDice(dice, roundTrackDice);
-        when(executor.getNeededDice()).thenReturn(dice).thenReturn(roundTrackDice);
+        when(executor.getNeededDice()).thenReturn(dice);
+        doThrow(new DiceNotFoundException("")).when(draftPool).useDice(dice);
+        assertEquals(CommandFlow.REPEAT, command.executeCommand(player, executor, stateGame));
+    }
 
-        try {
-            command.executeCommand(player, executor, game);
-            fail("Exception expected");
-        } catch (ExecutionCommandException e) {
-
-        }
+    @Test
+    public void executeCommandEmptyDraftPool() throws Exception {
+        Dice dice = new Dice(1, Color.BLUE);
+        when(executor.getNeededDice()).thenReturn(dice);
+        doThrow(new EmptyCollectionException()).when(draftPool).useDice(dice);
+        assertEquals(CommandFlow.STOP, command.executeCommand(player,executor,stateGame));
     }
 
     @Test

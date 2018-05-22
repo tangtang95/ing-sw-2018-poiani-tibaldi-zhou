@@ -33,7 +33,7 @@ public class ToolCardLanguageParser {
      * @return execution tree
      * @throws IllegalArgumentException if a string isn't matching with any of the available commands.
      */
-    public Node<ICommand> parseToolCard(String description) throws IllegalArgumentException {
+    public Node<ICommand> parseToolCard(String description) {
         Node<ICommand> commands_root = null;
 
         Pattern p = Pattern.compile("\\[(.*?)\\]");
@@ -65,6 +65,7 @@ public class ToolCardLanguageParser {
      * @param text string that needs to be preprocessed
      * @return a list of string contained in text separeted by ";"
      */
+    @Deprecated
     private ArrayList<String> preprocessing(String text){
         return new ArrayList<>(Arrays.asList(text.split(";")));
     }

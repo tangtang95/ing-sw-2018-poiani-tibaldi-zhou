@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import com.sun.org.apache.bcel.internal.generic.ISTORE;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,15 +11,14 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -28,7 +28,7 @@ public class SkipTurnTest {
     private Player player;
 
     @Mock
-    private Game game;
+    private TurnState state;
 
     @Mock
     private ToolCardExecutor executor;
@@ -45,7 +45,7 @@ public class SkipTurnTest {
 
     @After
     public void tearDown() {
-        game = null;
+        state = null;
         skip1 = null;
         skip2 = null;
         executor = null;
@@ -55,9 +55,8 @@ public class SkipTurnTest {
     @Test
     public void testExecuteCommand() throws InterruptedException, RemoteException, ExecutionCommandException {
         TurnState turnState = mock(TurnState.class);
-        when(game.getState()).thenReturn(turnState);
-        assertEquals(CommandFlow.MAIN, skip1.executeCommand(player, executor, game));
-        assertEquals(CommandFlow.MAIN, skip2.executeCommand(player, executor, game));
+        assertEquals(CommandFlow.MAIN, skip1.executeCommand(player, executor, state));
+        assertEquals(CommandFlow.MAIN, skip2.executeCommand(player, executor, state));
     }
 
     @Test
@@ -77,11 +76,12 @@ public class SkipTurnTest {
         list.add(-1);
         
         for(Integer i : list) {
+            ICommand temp = null;
             try {
-                ICommand temp = new SkipTurn(i);
+                temp = new SkipTurn(i);
                 fail("Exception expected");
             } catch(IllegalArgumentException e) {
-                
+                assertTrue(null == temp);
             }
         }
     }

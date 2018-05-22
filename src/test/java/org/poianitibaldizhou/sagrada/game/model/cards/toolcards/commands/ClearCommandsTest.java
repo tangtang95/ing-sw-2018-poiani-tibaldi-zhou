@@ -9,8 +9,11 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
+import java.time.temporal.TemporalUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -20,7 +23,7 @@ import static org.mockito.Mockito.verify;
 public class ClearCommandsTest {
 
     @Mock
-    public Game game;
+    public TurnState stateGame;
 
     @Mock
     public Player player;
@@ -41,7 +44,8 @@ public class ClearCommandsTest {
         command = new ClearAll();
         assertEquals(command, new ClearAll());
         assertNotEquals(command, new AddDiceToDiceBagTest());
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
+        ;
         verify(executor, times(1)).setTurnEnded(false);
         verify(executor, times(1)).setNeededPosition(null);
         verify(executor, times(1)).setNeededDice(null);
@@ -54,7 +58,8 @@ public class ClearCommandsTest {
         command = new ClearColor();
         assertEquals(command, new ClearColor());
         assertNotEquals(command, new AddDiceToDiceBagTest());
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
+        ;
         verify(executor, times(1)).setNeededColor(null);
     }
 
@@ -63,7 +68,8 @@ public class ClearCommandsTest {
         command = new ClearValue();
         assertEquals(command, new ClearValue());
         assertNotEquals(command, new AddDiceToDiceBagTest());
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
+        ;
         verify(executor, times(1)).setNeededValue(null);
     }
 
@@ -72,7 +78,7 @@ public class ClearCommandsTest {
         command = new ClearPosition();
         assertEquals(command, new ClearPosition());
         assertNotEquals(command, new AddDiceToDiceBagTest());
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
         verify(executor, times(1)).setNeededPosition(null);
     }
 
@@ -81,7 +87,7 @@ public class ClearCommandsTest {
         command = new ClearTurnEndCondition();
         assertEquals(command, new ClearTurnEndCondition());
         assertNotEquals(command, new AddDiceToDiceBagTest());
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor, game));;
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
         verify(executor, times(1)).setTurnEnded(false);
     }
 
@@ -90,7 +96,7 @@ public class ClearCommandsTest {
         command = new ClearDice();
         assertEquals(command, new ClearDice());
         assertNotEquals(command, new AddDiceToDiceBagTest());
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor,game));
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
         verify(executor, times(1)).setNeededDice(null);
 
     }

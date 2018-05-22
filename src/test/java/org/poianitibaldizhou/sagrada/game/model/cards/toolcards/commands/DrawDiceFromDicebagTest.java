@@ -5,11 +5,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import sun.invoke.empty.Empty;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -18,9 +19,11 @@ public class DrawDiceFromDicebagTest {
     private ICommand command;
 
     @Mock
+    private DrawableCollection<Dice> diceBag;
+    @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState state;
     @Mock
     private Player invokerPlayer;
 
@@ -28,23 +31,30 @@ public class DrawDiceFromDicebagTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new DrawDiceFromDicebag();
+        when(executor.getTemporaryDicebag()).thenReturn(diceBag);
     }
 
     @After
     public void tearDown() throws Exception {
         command = null;
+        diceBag = null;
         executor = null;
-        game = null;
+        state = null;
         invokerPlayer = null;
     }
 
     @Test
     public void executeCommand() throws Exception {
         Dice dice = mock(Dice.class);
-        when(game.getDiceFromDiceBag()).thenReturn(dice);
-        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, game));
-        verify(game).getDiceFromDiceBag();
-        verify(executor).setNeededDice(dice);
+        when(executor.getTemporaryDicebag().draw()).thenReturn(dice);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
+        verify(executor, times(1)).setNeededDice(dice);
+    }
+
+    @Test
+    public void executeCommandDrawFromEmptyDicebag() throws Exception {
+        when(executor.getTemporaryDicebag().draw()).thenThrow(EmptyCollectionException.class);
+        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer, executor, state));
     }
 
     @Test

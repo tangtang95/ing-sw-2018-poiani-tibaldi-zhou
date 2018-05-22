@@ -17,11 +17,11 @@ import java.util.Objects;
 public class LobbyController extends UnicastRemoteObject implements ILobbyController {
     private final transient Map<String, INetworkObserver> viewMap = new HashMap<>();
 
-    private final transient LobbyManager database;
+    private final transient LobbyManager lobbyManager;
 
-    public LobbyController() throws RemoteException {
+    public LobbyController(LobbyManager lobbyManager) throws RemoteException {
         super();
-        database = new LobbyManager();
+        this.lobbyManager = lobbyManager;
     }
 
 
@@ -39,7 +39,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     public synchronized String login(String username, INetworkObserver view) throws RemoteException {
         String token = "";
         try {
-            token = database.login(username);
+            token = lobbyManager.login(username);
         } catch(RemoteException re) {
             view.err("Another user is logged with this username. Please, choose a new username.");
             return token;
@@ -58,7 +58,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public synchronized void logout(String token) throws RemoteException {
-        database.logout(token);
+        lobbyManager.logout(token);
         viewMap.get(token).ack("Logged out");
         viewMap.remove(token);
     }
@@ -76,7 +76,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
         try {
-            database.userLeaveLobby(database.getUserByToken(token));
+            lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
         } catch(RemoteException re) {
             viewMap.get(token).err("Can't leave the lobby.");
             return;
@@ -99,7 +99,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         if(!authorize(token, username))
             throw new RemoteException("Authorization failed");
         try {
-            database.userJoinLobby(lobbyObserver, database.getUserByToken(token));
+            lobbyManager.userJoinLobby(lobbyObserver, lobbyManager.getUserByToken(token));
         } catch (RemoteException re) {
             viewMap.get(token).err("You have already joined the lobby.");
             return;
@@ -116,7 +116,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     @Override
     public void requestUsersInLobby(String token) throws RemoteException {
         try {
-            viewMap.get(token).ack(database.getLobbyUsers().toString());
+            viewMap.get(token).ack(lobbyManager.getLobbyUsers().toString());
         } catch (RemoteException re) {
             viewMap.get(token).err("No lobby is active. Join to create one.");
         }
@@ -131,7 +131,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     @Override
     public void requestTimeout(String token) throws RemoteException {
         try {
-            viewMap.get(token).ack(formatTimeout(database.getTimeToTimeout()));
+            viewMap.get(token).ack(formatTimeout(lobbyManager.getTimeToTimeout()));
         } catch (RemoteException re){
             viewMap.get(token).err("None lobby is active. Join to create one.");
         }
@@ -147,7 +147,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     private boolean authorize(String token, String username) {
         User user;
         try {
-            user = database.getUserByToken(token);
+            user = lobbyManager.getUserByToken(token);
         } catch(RemoteException re) {
             return false;
         }
@@ -173,11 +173,11 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         if (!super.equals(o)) return false;
         LobbyController that = (LobbyController) o;
         return Objects.equals(viewMap, that.viewMap) &&
-                Objects.equals(database, that.database);
+                Objects.equals(lobbyManager, that.lobbyManager);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), viewMap, database);
+        return Objects.hash(super.hashCode(), viewMap, lobbyManager);
     }
 }

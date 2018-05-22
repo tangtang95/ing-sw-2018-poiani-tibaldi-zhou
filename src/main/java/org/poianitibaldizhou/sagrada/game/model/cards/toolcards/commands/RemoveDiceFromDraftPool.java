@@ -2,12 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
@@ -17,20 +16,20 @@ public class RemoveDiceFromDraftPool implements ICommand {
     /**
      * It requires a dice in the toolcard and removes it from the toolcard.
      *
-     * @param player player who invoked the toolcard
+     * @param player           player who invoked the toolcard
      * @param toolCardExecutor toolcard invoked
-     * @param game game in which the player acts
-     * @return false if dice is not present in the DraftPool, true otherwise
-     * @throws RemoteException network communication error
+     * @param turnState        state in which the player acts
+     * @return CommandFlow.STOP if the dice isn't present in DraftPool, CommandFlow.MAIN otherwise
+     * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, Game game) throws RemoteException, InterruptedException, ExecutionCommandException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         try {
-            game.useDraftPoolDice(dice);
+            toolCardExecutor.getTemporaryDraftpool().useDice(dice);
         } catch (DiceNotFoundException | EmptyCollectionException e) {
-            throw new ExecutionCommandException();
+            return CommandFlow.STOP;
         }
         return CommandFlow.MAIN;
     }

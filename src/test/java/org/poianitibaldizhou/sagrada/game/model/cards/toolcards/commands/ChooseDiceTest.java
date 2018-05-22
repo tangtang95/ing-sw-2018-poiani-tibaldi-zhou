@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ChooseDiceTest {
     @Mock
     private ToolCardExecutor executor;
     @Mock
-    private Game game;
+    private TurnState state;
     @Mock
     private Player invokerPlayer;
     @Mock
@@ -43,7 +44,7 @@ public class ChooseDiceTest {
         observerList.add(observer2);
         observerList.add(observer3);
         when(executor.getObservers()).thenReturn(observerList);
-        when(game.getDraftPool()).thenReturn(draftPool);
+        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
         command = new ChooseDice();
     }
 
@@ -51,7 +52,7 @@ public class ChooseDiceTest {
     public void tearDown() throws Exception {
         command = null;
         executor = null;
-        game = null;
+        state = null;
         invokerPlayer = null;
         draftPool = null;
         observerList = null;
@@ -63,7 +64,7 @@ public class ChooseDiceTest {
         List<Dice> dices = new ArrayList<>();
         dices.add(d1);
         when(draftPool.getDices()).thenReturn(dices);
-        command.executeCommand(invokerPlayer, executor, game);
+        command.executeCommand(invokerPlayer, executor, state);
         for (IToolCardExecutorObserver observer: observerList) {
             verify(observer).notifyNeedDice(draftPool.getDices());
         }

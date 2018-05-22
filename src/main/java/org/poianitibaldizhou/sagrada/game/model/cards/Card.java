@@ -2,8 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 public abstract class Card {
 
-    private String name;
-    private String description;
+    private final String name;
+    private final String description;
 
     protected Card(String name, String description){
         this.name = name;

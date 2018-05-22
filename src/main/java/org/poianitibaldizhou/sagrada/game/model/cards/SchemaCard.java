@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
@@ -10,10 +11,10 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import java.util.Objects;
 
-public class SchemaCard{
+public class SchemaCard {
     private final String name;
     private final int difficulty;
-    private Tile[][] tileMatrix;
+    private final Tile[][] tileMatrix;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -23,7 +24,7 @@ public class SchemaCard{
      *
      * @param name        the name of the schema card
      * @param difficulty  the difficulty of the schema card
-     * @param constraints a matrix of the constraints of the tile (NUMBER_OF_ROWS x NUMBER_OF_COLUMNS)
+     * @param constraints a matrix of constraints of the tile (NUMBER_OF_ROWS x NUMBER_OF_COLUMNS)
      */
     public SchemaCard(String name, int difficulty, IConstraint[][] constraints) {
         this.name = name;
@@ -39,7 +40,7 @@ public class SchemaCard{
     /**
      * copy-constructor
      *
-     * @param name card name
+     * @param name       card name
      * @param difficulty card difficulty
      * @param tileMatrix card matrix
      */
@@ -49,6 +50,7 @@ public class SchemaCard{
         this.tileMatrix = tileMatrix;
     }
 
+    //GETTER
     @Contract(pure = true)
     public String getName() {
         return name;
@@ -60,6 +62,138 @@ public class SchemaCard{
         return difficulty;
     }
 
+    /**
+     * Returns the dice on the tile designated by row and column
+     *
+     * @param row    the row from where to get the dice
+     * @param column the column from where to get the dice
+     * @return the dice positioned on the point (if there is no dice on the tile, then it returns null)
+     */
+    @Contract(pure = true)
+    public Dice getDice(int row, int column) {
+        return tileMatrix[row][column].getDice();
+    }
+
+    /**
+     * Return the DEEP COPY of the tile requested
+     *
+     * @param row    the row of the tile
+     * @param column the column of the tile
+     * @return the tile requested by row and column
+     */
+    @Contract(pure = true)
+    public Tile getTile(int row, int column) {
+        return Tile.newInstance(tileMatrix[row][column]);
+    }
+
+    /**
+     * Check if the dice can be placed on the tile designated by row and column based on constraint given
+     *
+     * @param dice            the dice to check if positionable
+     * @param row             the row of the tile
+     * @param column          the column of the tile
+     * @param diceRestriction the constraint to check on the placement of dice
+     * @param restriction     the constraint to check on the tile
+     * @return true if the dice can be placed on the point
+     */
+    @Contract(pure = true)
+    public boolean isDicePositionable(Dice dice, int row, int column, PlacementRestrictionType restriction,
+                                      DiceRestrictionType diceRestriction) {
+        if (isEmpty()) {
+            return isBorderPosition(row, column) && tileMatrix[row][column].isDicePositionable(dice, restriction);
+        } else {
+            return tileMatrix[row][column].isDicePositionable(dice, restriction) &&
+                    !hasOrthogonalDicesSimilar(dice, row, column) &&
+                    diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(getNumberOfAdjacentDices(row, column));
+        }
+    }
+
+    /**
+     * Check if the dice can be placed on the tile designated by row and column based on the standard constraint
+     * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
+     *
+     * @param dice   the dice to check if positionable
+     * @param row    the row of the tile
+     * @param column the column of the tile
+     * @return true if the dice can be placed on the point
+     */
+    @Contract(pure = true)
+    public boolean isDicePositionable(Dice dice, int row, int column) {
+        return isDicePositionable(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+    }
+
+    /**
+     * Returns true if the dice is positionable following the given restrictions somewhere on the
+     * the schemaCard, false otherwise
+     *
+     * @param dice dice that needs to be placed
+     * @param restriction placement restrictions to respect
+     * @param diceRestriction dice restrictions to respect
+     * @return true if the dice is positionable, false otherwise
+     */
+    @Contract(pure = true)
+    public boolean isDicePositionable(Dice dice, PlacementRestrictionType restriction,
+                                      DiceRestrictionType diceRestriction) {
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                if (isDicePositionable(dice, i, j, restriction, diceRestriction))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the number of empty spaces inside the tileMatrix
+     *
+     * @return the number of empty spaces inside the tileMatrix
+     */
+    @Contract(pure = true)
+    public int getNumberOfEmptySpaces() {
+        int numberOfEmptySpaces = 0;
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if (getDice(i, j) == null)
+                    numberOfEmptySpaces++;
+            }
+        }
+        return numberOfEmptySpaces;
+    }
+
+    /**
+     * Checks if the schemaCard has a dice of a certain color placed on it.
+     *
+     * @param color specified color
+     * @return true if a dice of color is present on the board, false otherwise
+     */
+    @Contract(pure = true)
+    public boolean hasDiceOfColor(Color color) {
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if(getDice(i,j) != null && getDice(i,j).getColor().equals(color))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @return true if the schemaCard has no dice placed in it
+     */
+    @Contract(pure = true)
+    public boolean isEmpty() {
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if (getDice(i, j) != null)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+
+    //MODIFIER
     /**
      * Set the dice on a tile indicated by row and column based on a standard constraint
      * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
@@ -83,7 +217,7 @@ public class SchemaCard{
      * @param row             the row where to place the dice
      * @param column          the column where to place the dice
      * @param diceRestriction the constraint to check on the placement of dice
-     * @param restriction the constraint to check on the tile
+     * @param restriction     the constraint to check on the tile
      * @throws RuleViolationException if getNeededDice(row, column) != null ||
      *                                hasOrthogonalDicesSimilar() ||
      *                                (this.isEmpty() && !this.isOutOfBounds(row,column)) ||
@@ -109,8 +243,8 @@ public class SchemaCard{
                 throw new RuleViolationException(RuleViolationType.SIMILAR_DICE_NEAR);
             }
             int numberOfAdjacentDices = getNumberOfAdjacentDices(row, column);
-            if(!diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(numberOfAdjacentDices)){
-                if(diceRestriction == DiceRestrictionType.NORMAL)
+            if (!diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(numberOfAdjacentDices)) {
+                if (diceRestriction == DiceRestrictionType.NORMAL)
                     throw new RuleViolationException(RuleViolationType.NO_DICE_NEAR);
                 else
                     throw new RuleViolationException(RuleViolationType.HAS_DICE_NEAR);
@@ -119,17 +253,7 @@ public class SchemaCard{
         tileMatrix[row][column].setDice(dice, restriction);
     }
 
-    /**
-     * Returns the dice on the tile designated by row and column
-     *
-     * @param row    the row from where to get the dice
-     * @param column the column from where to get the dice
-     * @return the dice positioned on the point (if there is no dice on the tile, then it returns null)
-     */
-    @Contract(pure = true)
-    public Dice getDice(int row, int column) {
-        return tileMatrix[row][column].getDice();
-    }
+
 
     /**
      * Remove the dice from the tile designated by row and column
@@ -140,85 +264,6 @@ public class SchemaCard{
      */
     public Dice removeDice(int row, int column) {
         return tileMatrix[row][column].removeDice();
-    }
-
-    /**
-     * Check if the dice can be placed on the tile designated by row and column based on the standard constraint
-     * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
-     *
-     * @param dice   the dice to check if positionable
-     * @param row    the row of the tile
-     * @param column the column of the tile
-     * @return true if the dice can be placed on the point
-     */
-    @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, int row, int column) {
-        return isDicePositionable(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-    }
-
-    /**
-     * Check if the dice can be placed on the tile designated by row and column based on constraint given
-     *
-     * @param dice           the dice to check if positionable
-     * @param row            the row of the tile
-     * @param column         the column of the tile
-     * @param diceRestriction the constraint to check on the placement of dice
-     * @param restriction the constraint to check on the tile
-     * @return true if the dice can be placed on the point
-     */
-    @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, int row, int column, PlacementRestrictionType restriction,
-                                      DiceRestrictionType diceRestriction) {
-        if (isEmpty()) {
-            return isBorderPosition(row, column) && tileMatrix[row][column].isDicePositionable(dice, restriction);
-        } else {
-            return tileMatrix[row][column].isDicePositionable(dice, restriction) &&
-                    !hasOrthogonalDicesSimilar(dice, row, column) &&
-                    diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(getNumberOfAdjacentDices(row, column));
-        }
-    }
-
-    /**
-     * @return true if the schemaCard has no dice placed in it
-     */
-    @Contract(pure = true)
-    public boolean isEmpty() {
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                if (getDice(i, j) != null)
-                    return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Return the number of empty spaces inside the tileMatrix
-     *
-     * @return the number of empty spaces inside the tileMatrix
-     */
-    @Contract(pure = true)
-    public int getNumberOfEmptySpaces() {
-        int numberOfEmptySpaces = 0;
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                if (getDice(i, j) == null)
-                    numberOfEmptySpaces++;
-            }
-        }
-        return numberOfEmptySpaces;
-    }
-
-    /**
-     * Returns the deep copy of the tile requested
-     *
-     * @param row    the row of the tile
-     * @param column the column of the tile
-     * @return the tile requested by row and column
-     */
-    @Contract(pure = true)
-    public Tile getTile(int row, int column) {
-        return Tile.newInstance(tileMatrix[row][column]);
     }
 
     /**
@@ -249,6 +294,46 @@ public class SchemaCard{
     @Override
     public int hashCode() {
         return Objects.hash(getName(), tileMatrix, getDifficulty());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("  -----   -----   -----   -----   -----  \n");
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                stringBuilder.append("|  " + tileMatrix[i][j].toString() + "  ");
+            }
+            stringBuilder.append("|\n");
+            stringBuilder.append("  -----   -----   -----   -----   -----  \n");
+        }
+        return stringBuilder.toString();
+    }
+
+    /**
+     * Given row and column, return whether or not the position is out of bounds according
+     * to the matrix tile
+     *
+     * @param row    the row of the position
+     * @param column the column of the position
+     * @return true if out of bounds, false otherwise
+     */
+    @Contract(pure = true)
+    public static boolean isOutOfBounds(int row, int column) {
+        return row < 0 || row > SchemaCard.NUMBER_OF_ROWS - 1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS - 1;
+    }
+
+    @Contract("null -> null")
+    public static SchemaCard newInstance(SchemaCard schemaCard) {
+        if (schemaCard == null)
+            return null;
+        Tile[][] tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
+            }
+        }
+        return new SchemaCard(schemaCard.getName(), schemaCard.getDifficulty(), tileMatrix);
     }
 
     /**
@@ -308,44 +393,4 @@ public class SchemaCard{
         return numberOfAdjacentDice;
     }
 
-
-    /**
-     * Given row and column, return whether or not the position is out of bounds according
-     * to the matrix tile
-     *
-     * @param row    the row of the position
-     * @param column the column of the position
-     * @return true if out of bounds, false otherwise
-     */
-    @Contract(pure = true)
-    public static boolean isOutOfBounds(int row, int column) {
-        return row < 0 || row > SchemaCard.NUMBER_OF_ROWS - 1 || column < 0 || column > SchemaCard.NUMBER_OF_COLUMNS - 1;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("  -----   -----   -----   -----   -----  \n");
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                stringBuilder.append("|  " + tileMatrix[i][j].toString() + "  ");
-            }
-            stringBuilder.append("|\n");
-            stringBuilder.append("  -----   -----   -----   -----   -----  \n");
-        }
-        return stringBuilder.toString();
-    }
-
-    @Contract("null -> null")
-    public static SchemaCard newInstance(SchemaCard schemaCard) {
-        if (schemaCard == null)
-            return null;
-        Tile[][] tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
-            }
-        }
-        return new SchemaCard(schemaCard.getName(), schemaCard.getDifficulty(), tileMatrix);
-    }
 }

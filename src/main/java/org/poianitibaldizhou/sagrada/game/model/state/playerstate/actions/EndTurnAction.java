@@ -8,8 +8,13 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class EndTurnAction implements IActionCommand{
+public class EndTurnAction implements IActionCommand {
 
+    /**
+     * Change the state of PlayerState inside the turnState to EndTurnState
+     *
+     * @param turnState the actual turnState of the game
+     */
     @Override
     public void executeAction(TurnState turnState) {
         EndTurnState endTurnState = new EndTurnState(turnState);

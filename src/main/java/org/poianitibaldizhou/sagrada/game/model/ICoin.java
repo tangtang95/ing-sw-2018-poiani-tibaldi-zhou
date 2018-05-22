@@ -7,13 +7,14 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 public interface ICoin {
 
     /**
-     * decrement the expendable coins when the player use that
      *
      * @param toolCard the card which the player would use
-     * @throws NoCoinsExpendableException if there aren't any expandable favor tokens or dices
+     * @return true if the card can be used, otherwise false
      */
-    void use(ToolCard toolCard) throws NoCoinsExpendableException;
+    boolean isCardUsable(ToolCard toolCard);
 
     int getCoins();
 
+    void removeCoins(int cost);
 }
+

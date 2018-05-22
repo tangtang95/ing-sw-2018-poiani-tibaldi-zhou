@@ -6,15 +6,21 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
+import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class RerollDraftPoolTest {
     private ICommand command;
@@ -23,20 +29,24 @@ public class RerollDraftPoolTest {
     private ToolCardExecutor executor;
 
     @Mock
-    private Game game;
+    private TurnState stateGame;
 
     @Mock
     private Player invokerPlayer;
+
+    @Mock
+    private DraftPool draftPool;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         command  = new RerollDraftPool();
+        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
     }
 
     @After
     public void tearDown() {
-        game = null;
+        stateGame = null;
         invokerPlayer = null;
         executor = null;
         command = null;
@@ -44,8 +54,7 @@ public class RerollDraftPoolTest {
 
     @Test
     public void executeCommandTest() throws InterruptedException, RemoteException, ExecutionCommandException {
-        CommandFlow commandFlow = command.executeCommand(invokerPlayer, executor, game);
-        assertEquals(CommandFlow.MAIN, commandFlow);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test

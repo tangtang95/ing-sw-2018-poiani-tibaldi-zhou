@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 
@@ -24,7 +25,7 @@ public class WaitTurnEndTest {
     private Player player;
 
     @Mock
-    private Game game;
+    private TurnState state;
 
     @Mock
     private ToolCardExecutor executor;
@@ -40,14 +41,14 @@ public class WaitTurnEndTest {
     @After
     public void tearDown() throws Exception {
         command = null;
-        game = null;
+        state = null;
         executor = null;
         player = null;
     }
 
     @Test
     public void executeCommandTest() throws InterruptedException, RemoteException, ExecutionCommandException {
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, game));
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor,state ));
         verify(executor, times(1)).waitForTurnEnd();
     }
 

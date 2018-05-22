@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Set;
 
 public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
     private Player player;
@@ -16,7 +17,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
 
     public CLIToolCardMenuView(NetworkManager networkManager, ScreenManager screenManager)
             throws RemoteException {
-        super(networkManager,screenManager);
+        super(networkManager, screenManager);
     }
 
     @Override
@@ -30,7 +31,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
     }
 
     @Override
-    public void notifyNeedColor() throws RemoteException {
+    public void notifyNeedColor(Set<Color> colors) throws RemoteException {
 
     }
 
@@ -41,14 +42,14 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
      * if value = 1 and diceValue=6, the modified can't be 1, for instance.
      *
      * @param diceValue player that needs to choose a color
-     * @param value delta used to modify diceValue
+     * @param value     delta used to modify diceValue
      * @throws RemoteException network communication error
      */
     @Override
     public void notifyNeedNewDeltaForDice(int diceValue, int value) throws RemoteException {
-        if(this.player.equals(player)) {
+        if (this.player.equals(player)) {
             // TODO choose delta
-            System.out.println("===> Modify " + diceValue + "of +/-"+ value);
+            System.out.println("===> Modify " + diceValue + "of +/-" + value);
             int modifiedValue = 5;
             networkManager.getGameController().setNewValue(modifiedValue, gameName, toolCardName);
         }
@@ -66,6 +67,16 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
 
     @Override
     public void notifyNeedDicePositionOfCertainColor(Color color) throws RemoteException {
+
+    }
+
+    @Override
+    public void notifyError() {
+        
+    }
+
+    @Override
+    public void notifyCommandInterrupted() {
 
     }
 
