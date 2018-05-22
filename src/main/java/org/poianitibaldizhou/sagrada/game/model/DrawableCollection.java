@@ -1,11 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
 
 import java.util.*;
 
 public class DrawableCollection<T> {
     private List<T> collection;
+    private List<IDrawableCollectionObserver<T>> observerList;
 
     /**
      * Constructor.
@@ -13,31 +17,33 @@ public class DrawableCollection<T> {
      */
     public DrawableCollection() {
         collection = new ArrayList<>();
+        observerList = new ArrayList<>();
     }
 
-    /**
-     * Constructor
-     * Creates a DrawableCollection initialized with collection
-     *
-     * @param collection list of elements with which initialize DrawableCollection
-     */
-    public DrawableCollection(List<T> collection) {
-        this.collection = new ArrayList<>();
-        this.collection.addAll(collection);
+    public void attachObserver(IDrawableCollectionObserver observer) {
+        observerList.add(observer);
+    }
+
+    public List<IDrawableCollectionObserver<T>> getObserverList() {
+        return observerList;
     }
 
     /**
      * Adds an element to the collection
+     * It notifies the observers that an element's been added.
      *
      * @param elem elements that needs to be added
+     * @throws NullPointerException if elem is null
      */
-    public void addElement(T elem) {
+    public void addElement(@NotNull T elem) {
         collection.add(elem);
+        observerList.forEach(obs -> obs.onElementAdd(elem));
     }
 
     /**
      * Draws a random element from DrawableCollection.
      * This removes the element from DrawableCollection.
+     * It notifies the observers that an element's been added.
      *
      * @return the drawn element
      * @throws EmptyCollectionException if DrawableCollection is empty
@@ -50,7 +56,7 @@ public class DrawableCollection<T> {
         int pos = Math.abs(rand.nextInt(collection.size()));
         T elem = collection.get(pos);
         collection.remove(pos);
-
+        observerList.forEach(obs -> obs.onElementDraw(elem));
         return elem;
     }
 
@@ -59,8 +65,9 @@ public class DrawableCollection<T> {
      *
      * @param list list of elements that need to be added
      */
-    public void addElements(List<T> list) {
+    public void addElements(@NotNull List<T> list) {
         collection.addAll(list);
+        observerList.forEach(obs -> obs.onElementsAdd(list));
     }
 
     /**
@@ -68,18 +75,19 @@ public class DrawableCollection<T> {
      *
      * @return number of elements in the collection
      */
+    @Contract(pure = true)
     public int size() {
         return collection.size();
     }
 
     /**
      * Returns an array containing the elements present in DrawableCollection
+     * The single elements are not deep copied.
      *
      * @return a generic collection array
      */
-    //TODO deep copy
-    public T[] toArray() {
-        return (T[]) collection.toArray();
+    public Object[] toArray() {
+        return collection.toArray();
     }
 
     @Override
@@ -87,19 +95,19 @@ public class DrawableCollection<T> {
         return collection.toString();
     }
 
-    //TODO deep copy
+    /**
+     * Returns the copy of the list present in the DrawableCollection.
+     * The single elements are not deep copied.
+     *
+     * @return list of elements present in this
+     */
     public List<T> getCollection() {
-        return collection;
-    }
-
-    public static DrawableCollection newInstance(DrawableCollection drawableCollection) {
-        if (drawableCollection == null)
-            return null;
-        return new DrawableCollection(drawableCollection.getCollection());
+        return new ArrayList<>(collection);
     }
 
     /**
      * Two DrawableCollection are equals if they contains the same elements in the same number in any order.
+     *
      * @param o object to compare
      * @return true if equals, false otherwise
      */
@@ -116,19 +124,7 @@ public class DrawableCollection<T> {
         int[] counter1 = new int[param.size()];
         int[] positions = new int[param.size()];
 
-        for (int i = 0; i < param.size(); i++) {
-            for (int j = 0; j < param.size(); j++) {
-                if (param.get(i).equals(param.get(j))) {
-                    counter1[j]++;
-                    positions[i] = j;
-                    break;
-                } else if (counter1[j] == 0) {
-                    counter1[j]++;
-                    positions[i] = j;
-                    break;
-                }
-            }
-        }
+        fillPositionAndCounterArray(param, counter1, positions);
 
         for (int j = 0; j < param.size(); j++) {
             for (int i = 0; i < param.size(); i++) {
@@ -157,5 +153,30 @@ public class DrawableCollection<T> {
         }
 
         return hashCode;
+    }
+
+    /**
+     * Fills counter and positions array based on the param list.
+     * In the positions array, position[i] indicates the position of the i-th element in param in the counter array.
+     * Counter array simply counts the occurrences of the elements in param
+     *
+     * @param param     fill the counter and position array based on this list
+     * @param counter   counter array to fill
+     * @param positions position array to fill
+     */
+    private void fillPositionAndCounterArray(List param, int[] counter, int[] positions) {
+        for (int i = 0; i < param.size(); i++) {
+            for (int j = 0; j < param.size(); j++) {
+                if (param.get(i).equals(param.get(j))) {
+                    counter[j]++;
+                    positions[i] = j;
+                    break;
+                } else if (counter[j] == 0) {
+                    counter[j]++;
+                    positions[i] = j;
+                    break;
+                }
+            }
+        }
     }
 }

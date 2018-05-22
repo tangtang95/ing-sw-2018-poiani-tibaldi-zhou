@@ -5,7 +5,9 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 import java.util.List;
 
 public interface IDraftPoolObserver {
-    void notifyDiceAdded(Dice dice);
-    void notifyDiceRemoved(Dice dice);
-    void notifyDicesAdded(List<Dice> dices);
+    void onDiceAdd(Dice dice);
+    void onDiceRemove(Dice dice);
+    void onDicesAdd(List<Dice> dices);
+    void onDraftPoolReroll(List<Dice> dices);
+    void onDraftPoolClear();
 }
