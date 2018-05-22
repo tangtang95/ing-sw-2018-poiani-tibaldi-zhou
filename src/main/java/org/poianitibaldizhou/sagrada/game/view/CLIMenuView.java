@@ -31,7 +31,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
             try {
                 answer = bufferManager.getConsole().readLine();
             } catch (IOException e) {
-                answer = "0";
+                return null;
             }
             if (answer.equals("help"))
                 help(commandMap);

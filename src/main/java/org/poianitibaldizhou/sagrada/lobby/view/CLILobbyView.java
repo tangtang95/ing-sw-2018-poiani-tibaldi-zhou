@@ -8,7 +8,6 @@ import org.poianitibaldizhou.sagrada.game.view.CLIMenuView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
@@ -121,7 +120,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
 
     @Override
     public void onGameStart() throws RemoteException {
-        System.out.println("\rGAME STARTED");
+        bufferManager.formatPrint("GAME STARTED", Level.HIGH);
         screenManager.replaceScreen(new CLIGameView(networkManager, screenManager));
     }
 
