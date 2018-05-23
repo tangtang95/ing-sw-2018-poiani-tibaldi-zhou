@@ -45,11 +45,14 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
             } catch (DiceNotFoundException e) {
                 cliMenuView.bufferManager.consolePrint("An error has occured when " + currentUser.getName() + " tried to remove " +
                         dice.toString() + " from the draft pool. Dice is not present in the draft pool.\n", Level.HIGH);
+                return;
             } catch (EmptyCollectionException e) {
                 cliMenuView.bufferManager.consolePrint("An error has occured when " + currentUser.getName() + " tried to remove " +
                         dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);
+                return;
             }
-        }BuildGraphic buildGraphic = new BuildGraphic();
+        }
+        BuildGraphic buildGraphic = new BuildGraphic();
         String message = cliMenuView.currentUser.getName() + " has removed a dice from the draft pool.";
         bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.LOW);
     }
