@@ -148,8 +148,6 @@ public class GameInjectorTest {
 
     @Test
     public void schemaCardInjectorTest() {
-        GameInjector.injectSchemaCards(schemaCardDrawableCollection);
-        assertEquals("Wrong size", 24, schemaCardDrawableCollection.size());
     }
 
     @Test

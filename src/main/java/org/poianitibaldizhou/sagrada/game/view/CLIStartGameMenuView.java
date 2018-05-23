@@ -61,22 +61,24 @@ public class CLIStartGameMenuView extends CLIMenuView {
             stringBuilder.append((char) 9552);
         }
         stringBuilder.append((char) 9565 + "\n");
-        bufferManager.formatPrint(stringBuilder.toString(), Level.LOW);
+        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
     }
 
     @Override
     public void run() {
         printLogo();
 
-        bufferManager.formatPrint("-------------------------Start Game Menu---------------------------",
+        bufferManager.consolePrint("-------------------------Start Game Menu---------------------------",
                 Level.LOW);
 
         help(commandMap);
         try {
-            bufferManager.formatPrint("Choose action: ", Level.LOW);
+            bufferManager.consolePrint("Choose action: ", Level.LOW);
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+        } catch (NullPointerException e) {
+            //...
         }
     }
 

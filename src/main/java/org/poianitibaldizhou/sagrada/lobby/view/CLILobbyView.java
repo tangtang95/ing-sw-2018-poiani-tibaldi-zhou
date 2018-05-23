@@ -83,7 +83,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
 
     @Override
     public void run() {
-        bufferManager.formatPrint("-----------------------Welcome to the Lobby------------------------",
+        bufferManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
                 Level.LOW);
         login();
 
@@ -93,34 +93,37 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
                 getCommand(commandMap).executeCommand();
             } catch (RemoteException e) {
                 Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+            }catch (NullPointerException e) {
+                isLoggedIn = false;
             }
         }
     }
 
     @Override
     public void ack(String ack) {
-        bufferManager.formatPrint("ACK: " + ack, Level.HIGH);
+        bufferManager.consolePrint("ACK: " + ack, Level.HIGH);
     }
 
     @Override
     public void err(String err) {
-        bufferManager.formatPrint("ERROR: " + err, Level.HIGH);
+        bufferManager.consolePrint("ERROR: " + err, Level.HIGH);
     }
 
     public void onUserJoin(User user) {
         if (!user.getName().equals(username))
-            bufferManager.formatPrint("User " + user.getName() + " joined the Lobby", Level.HIGH);
+            bufferManager.consolePrint("User " + user.getName() + " joined the Lobby", Level.HIGH);
     }
 
     @Override
     public void onUserExit(User user) {
         if (!user.getName().equals(username))
-            bufferManager.formatPrint("User " + user.getName() + " left the Lobby", Level.HIGH);
+            bufferManager.consolePrint("User " + user.getName() + " left the Lobby", Level.HIGH);
     }
 
     @Override
     public void onGameStart() throws RemoteException {
-        bufferManager.formatPrint("GAME STARTED", Level.HIGH);
+        bufferManager.consolePrint("GAME STARTED", Level.HIGH);
+        bufferManager.stopConsoleRead();
         screenManager.replaceScreen(new CLIGameView(networkManager, screenManager));
     }
 

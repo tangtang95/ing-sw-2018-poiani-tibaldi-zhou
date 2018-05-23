@@ -2,13 +2,13 @@ package org.poianitibaldizhou.sagrada.cli;
 
 import java.util.Deque;
 
-public class BufferThread extends Thread {
+public class PrintThread extends Thread {
     private final Deque<String> lowMessage;
     private final Deque<String> highMessage;
 
     private static final long BUFFER_TIME = 180;
 
-    BufferThread(Deque<String> lowMessage, Deque<String> highMessage) {
+    PrintThread(Deque<String> lowMessage, Deque<String> highMessage) {
         this.lowMessage = lowMessage;
         this.highMessage = highMessage;
     }

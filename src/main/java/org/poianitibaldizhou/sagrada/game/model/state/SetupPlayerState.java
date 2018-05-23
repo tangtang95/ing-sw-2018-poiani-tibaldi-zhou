@@ -15,10 +15,10 @@ import java.util.logging.Logger;
 public class SetupPlayerState extends IStateGame {
 
     private Set<String> playersReady;
-    private Map<String, List<SchemaCard>> playerSchemaCards;
+    private Map<String, List<List<SchemaCard>>> playerSchemaCards;
     private Map<String, List<PrivateObjectiveCard>> privateObjectiveCardMap;
 
-    public static final int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
+    private static final int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
 
     private static final Logger LOGGER = Logger.getLogger(SetupPlayerState.class.getName());
 
@@ -39,7 +39,6 @@ public class SetupPlayerState extends IStateGame {
     /**
      * Copy_constructor
      *
-     * @param playerState playerState to copy
      */
     /*
     private SetupPlayerState(SetupPlayerState playerState) {
@@ -62,12 +61,12 @@ public class SetupPlayerState extends IStateGame {
     @Override
     public void init() {
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
-        DrawableCollection<SchemaCard> schemaCards = new DrawableCollection<>();
+        DrawableCollection<List<SchemaCard>> schemaCards = new DrawableCollection<>();
 
         GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
         GameInjector.injectSchemaCards(schemaCards);
         for (String token : game.getPlayersToken()) {
-            List<SchemaCard> schemaCardList = new ArrayList<>();
+            List<List<SchemaCard>> schemaCardList = new ArrayList<>();
             for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
                 try {
                     schemaCardList.add(schemaCards.draw());
@@ -119,14 +118,20 @@ public class SetupPlayerState extends IStateGame {
 
     @Contract(pure = true)
     public boolean containsSchemaCard(String token, SchemaCard schemaCard) {
-        return playerSchemaCards.get(token).contains(schemaCard);
+        for (List<SchemaCard> schema : playerSchemaCards.get(token))
+            if (schema.contains(schemaCard))
+                return true;
+        return false;
     }
 
     @Contract(pure = true)
-    public List<SchemaCard> getSchemaCardsOfPlayer(String token) {
-        List<SchemaCard> schemaCards = new ArrayList<>();
-        for (SchemaCard schema : playerSchemaCards.get(token)) {
-            schemaCards.add(SchemaCard.newInstance(schema));
+    public List<List<SchemaCard>> getSchemaCardsOfPlayer(String token) {
+        List<List<SchemaCard>> schemaCards = new ArrayList<>();
+        for (List<SchemaCard> schema : playerSchemaCards.get(token)) {
+            List<SchemaCard> copySchema = new ArrayList<>();
+            for (SchemaCard schemaCard : schema)
+                copySchema.add(SchemaCard.newInstance(schemaCard));
+            schemaCards.add(copySchema);
         }
         return schemaCards;
     }

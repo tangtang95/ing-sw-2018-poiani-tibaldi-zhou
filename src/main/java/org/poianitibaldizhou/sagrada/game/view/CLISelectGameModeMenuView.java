@@ -38,16 +38,19 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
         goBackCommand.setCommandAction(screenManager::popScreen);
         commandMap.put(goBackCommand.getCommandText(), goBackCommand);
     }
+
     @Override
     public void run() {
-        bufferManager.formatPrint("------------------------Select Game Mode---------------------------",
+        bufferManager.consolePrint("------------------------Select Game Mode---------------------------",
                 Level.LOW);
         help(commandMap);
         try {
-            bufferManager.formatPrint("Choose the game mode or go to Start Game Menu: ", Level.LOW);
+            bufferManager.consolePrint("Choose the game mode or go to Start Game Menu: ", Level.LOW);
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+        }catch (NullPointerException e) {
+            //...
         }
     }
 

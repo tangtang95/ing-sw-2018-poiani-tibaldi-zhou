@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics;
 
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.view.CLIStartGameMenuView;
+import org.poianitibaldizhou.sagrada.game.view.CLIToolCardMenuView;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 import org.poianitibaldizhou.sagrada.network.NetworkType;
 

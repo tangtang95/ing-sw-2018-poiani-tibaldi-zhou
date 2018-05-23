@@ -35,16 +35,18 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
 
     @Override
     public void run() {
-        bufferManager.formatPrint("----------------------Select Connection Menu-----------------------",
+        bufferManager.consolePrint("----------------------Select Connection Menu-----------------------",
                 Level.LOW);
-        bufferManager.formatPrint("Current connection mode: " + networkManager.getNetworkType().name(),
+        bufferManager.consolePrint("Current connection mode: " + networkManager.getNetworkType().name(),
                 Level.LOW);
         help(commandMap);
         try {
-            bufferManager.formatPrint("Change connection mode or go to Start Game Menu: ", Level.LOW);
+            bufferManager.consolePrint("Change connection mode or go to Start Game Menu: ", Level.LOW);
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+        } catch (NullPointerException e) {
+            //...
         }
     }
 

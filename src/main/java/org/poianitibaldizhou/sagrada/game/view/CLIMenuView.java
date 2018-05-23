@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
@@ -24,45 +23,44 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
 
 
     protected Command getCommand(Map<String, Command> commandMap) {
-        String answer;
+        String[] answer = new String[1];
         int number;
 
         do {
             try {
-                answer = bufferManager.getConsole().readLine();
-            } catch (IOException e) {
-                return null;
+                bufferManager.consoleRead(answer);
+            }catch (NullPointerException e) {
+                throw new NullPointerException();
             }
-            if (answer.equals("help"))
+            if (answer[0].equals("help"))
                 help(commandMap);
             else {
                 try {
-                    number = Integer.parseInt(answer);
+                    number = Integer.parseInt(answer[0]);
                 } catch (NumberFormatException e) {
                     number = 0;
                 }
                 if (number > 0 && number <= commandMap.keySet().size())
                     return commandMap.get(commandMap.keySet().toArray()[number - 1].toString());
-                else
-                    bufferManager.formatPrint("WARNING: Command not found", Level.LOW);
+                else {
+                    bufferManager.consolePrint("WARNING: Command not found", Level.LOW);
+                }
             }
         } while (true);
     }
 
     protected String getAnswer(String question) {
-        String answer;
+        String[] answer = new String[1];
 
-        bufferManager.formatPrint(question, Level.LOW);
+        bufferManager.consolePrint(question, Level.LOW);
         do {
-            try {
-                answer = bufferManager.getConsole().readLine();
-            } catch (IOException e) {
-                answer = "help";
+            bufferManager.consoleRead(answer);
+            if (answer[0].equals("help")) {
+                bufferManager.consolePrint(question, Level.LOW);
             }
-            if (answer.equals("help"))
-                bufferManager.formatPrint(question, Level.LOW);
             else {
-                return answer;
+                if (!answer[0].equals(""))
+                    return answer[0];
             }
         } while (true);
     }
@@ -89,7 +87,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
             stringBuilder.append(command.getHelpText());
             stringBuilder.append("\n");
         }
-        bufferManager.formatPrint(stringBuilder.toString(), Level.LOW);
+        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
     }
 
     @Override

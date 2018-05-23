@@ -70,15 +70,11 @@ public class Dice {
     }
 
     public boolean hasSameColor(Dice other) {
-        if(other == null)
-            return false;
-        return this.getColorConstraint().equals(other.getColorConstraint());
+        return other != null && this.getColorConstraint().equals(other.getColorConstraint());
     }
 
     public boolean hasSameNumber(Dice other){
-        if(other == null)
-            return false;
-        return this.getNumberConstraint().equals(other.getNumberConstraint());
+        return other != null && this.getNumberConstraint().equals(other.getNumberConstraint());
     }
 
     @Override

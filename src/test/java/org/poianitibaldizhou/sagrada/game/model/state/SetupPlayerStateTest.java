@@ -70,34 +70,34 @@ public class SetupPlayerStateTest {
 
     @Test
     public void ready() throws Exception {
-        List<SchemaCard> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
-        assertTrue(setupPlayerState.ready(player1, schemaCards1.get(0)));
+        List<List<SchemaCard>> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
+        assertTrue(setupPlayerState.ready(player1, schemaCards1.get(0).get(0)));
         assertTrue(setupPlayerState.isPlayerReady(player1));
         for (String player : playerList) {
             if (player != player1)
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
 
-        assertFalse(setupPlayerState.ready(player1, schemaCards1.get(1)));
-        assertFalse(setupPlayerState.ready(player2, schemaCards1.get(0)));
-        assertTrue(setupPlayerState.ready(player2, setupPlayerState.getSchemaCardsOfPlayer(player2).get(0)));
+        assertFalse(setupPlayerState.ready(player1, schemaCards1.get(1).get(1)));
+        assertFalse(setupPlayerState.ready(player2, schemaCards1.get(0).get(0)));
+        assertTrue(setupPlayerState.ready(player2, setupPlayerState.getSchemaCardsOfPlayer(player2).get(0).get(0)));
         assertTrue(setupPlayerState.isPlayerReady(player2));
         for (String player : playerList) {
             if (player != player1 && player != player2)
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
-        assertTrue(setupPlayerState.ready(player3, setupPlayerState.getSchemaCardsOfPlayer(player3).get(0)));
+        assertTrue(setupPlayerState.ready(player3, setupPlayerState.getSchemaCardsOfPlayer(player3).get(0).get(0)));
         assertTrue(setupPlayerState.isPlayerReady(player3));
         assertFalse(setupPlayerState.isPlayerReady(player4));
-        assertTrue(setupPlayerState.ready(player4, setupPlayerState.getSchemaCardsOfPlayer(player4).get(0)));
+        assertTrue(setupPlayerState.ready(player4, setupPlayerState.getSchemaCardsOfPlayer(player4).get(0).get(0)));
         assertTrue(setupPlayerState.isPlayerReady(player4));
         verify(game).setState(ArgumentMatchers.any(SetupGameState.class));
     }
 
     @Test
         public void containsSchemaCard() throws Exception {
-        List<SchemaCard> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
-        assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0)));
+        List<List<SchemaCard>> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
+        assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0).get(0)));
     }
 
 }

@@ -19,11 +19,7 @@ public class EndTurnAction implements IActionCommand {
     public void executeAction(TurnState turnState) {
         EndTurnState endTurnState = new EndTurnState(turnState);
         turnState.setPlayerState(endTurnState);
-        try {
-            endTurnState.endTurn();
-        } catch (InvalidActionException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Shouldn't happen", e);
-        }
+        endTurnState.endTurn();
     }
 
     @Override

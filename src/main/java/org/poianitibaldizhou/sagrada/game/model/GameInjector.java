@@ -16,10 +16,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +40,6 @@ public class GameInjector {
      * a json file resources/toolCards.json
      *
      * @param toolCardDrawableCollection DrawableCollection of ToolCard
-     * @param isSinglePlayer             Game parameter for choosing the game mode (single player or multilayer)
      */
     public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
@@ -186,10 +182,12 @@ public class GameInjector {
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard
      */
-    public static void injectSchemaCards(@NotNull DrawableCollection<SchemaCard> schemaCardDrawableCollection) {
+    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
+        List<List<SchemaCard>> schemaCardFrontBack = new ArrayList<>();
+
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/schemaCards.json"));
         } catch (IOException | ParseException e) {
@@ -203,11 +201,23 @@ public class GameInjector {
             JSONArray matrix = (JSONArray) schemaCard.get("cardMatrix");
             injectSchemaMatrix(matrix, constraints);
 
-            schemaCardDrawableCollection.addElement(new SchemaCard((String) schemaCard.get(CARD_NAME),
-                    Integer.parseInt(schemaCard.get("difficulty").toString()),
-                    constraints
-            ));
+            int numberID = Integer.parseInt(schemaCard.get("id").toString());
+            try{
+                schemaCardFrontBack.get(numberID).add(new SchemaCard((String) schemaCard.get(CARD_NAME),
+                        Integer.parseInt(schemaCard.get("difficulty").toString()),
+                        constraints
+                ));
+            }catch (IndexOutOfBoundsException e) {
+                for (int i = schemaCardFrontBack.size(); i < numberID; i++) {
+                    schemaCardFrontBack.add(new ArrayList<>());
+                }
+                schemaCardFrontBack.get(numberID).add(new SchemaCard((String) schemaCard.get(CARD_NAME),
+                        Integer.parseInt(schemaCard.get("difficulty").toString()),
+                        constraints
+                ));
+            }
         }
+        schemaCardDrawableCollection.addElements(schemaCardFrontBack);
     }
 
     private static void injectSchemaMatrix(JSONArray matrix, IConstraint[][] constraints) {
