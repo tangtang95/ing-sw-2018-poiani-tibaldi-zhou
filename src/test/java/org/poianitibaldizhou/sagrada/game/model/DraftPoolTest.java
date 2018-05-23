@@ -1,24 +1,34 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
-import org.junit.experimental.theories.DataPoint;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
+import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 public class DraftPoolTest {
 
-    @DataPoint
-    public static DraftPool dp;
+    private static DraftPool dp;
+    private static List<Dice> dices;
+    private List<IDraftPoolObserver> observerList;
 
-    @DataPoint
-    public static List<Dice> dices;
+    @Mock
+    private IDraftPoolObserver observer1;
+    @Mock
+    private IDraftPoolObserver observer2;
+    @Mock
+    private IDraftPoolObserver observer3;
+
 
     @BeforeClass
     public static void setUpClass() {
@@ -26,7 +36,8 @@ public class DraftPoolTest {
     }
 
     @Before
-    public void setUp()  {
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
         dices.add(new Dice(5, Color.BLUE));
         dices.add(new Dice(2, Color.BLUE));
         dices.add(new Dice(1, Color.PURPLE));
@@ -36,12 +47,28 @@ public class DraftPoolTest {
 
         dp = new DraftPool();
         dp.addDices(dices);
+
+        observerList = new ArrayList<>();
+        observerList.add(observer1);
+        observerList.add(observer2);
+        observerList.add(observer3);
+        observerList.forEach(obs -> dp.attachObserver(obs));
+    }
+
+    @Test
+    public void testAddDices() {
+        List<Dice> diceList = new ArrayList<>();
+        diceList.add(new Dice(6, Color.GREEN));
+        diceList.add(new Dice(4, Color.RED));
+        dp.addDices(diceList);
+        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDicesAdd(diceList));
     }
 
     @After
     public void tearDown() {
         dices.removeAll(dices);
         dp = null;
+        observerList = null;
     }
 
     @AfterClass
@@ -51,10 +78,17 @@ public class DraftPoolTest {
     }
 
     @Test
+    public void testGetObserver() {
+        assertEquals(observerList, dp.getObserverList());
+    }
+
+    @Test
     public void testAddDice() {
-        dp.addDice(new Dice(5, Color.PURPLE));
-        dices.add(new Dice(5, Color.PURPLE));
+        Dice dice = new Dice(5, Color.PURPLE);
+        dp.addDice(dice);
+        dices.add(dice);
         assertEquals(dices, dp.getDices());
+        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDiceAdd(dice));
     }
 
     @Test
@@ -65,10 +99,10 @@ public class DraftPoolTest {
         assertEquals(prevList.size(), newList.size());
         int[] prevcolors = new int[Color.values().length];
         int[] newcolors = new int[Color.values().length];
-        for(Dice d: prevList) {
+        for (Dice d : prevList) {
             prevcolors[d.getColor().ordinal()] += 1;
         }
-        for(Dice d : newList) {
+        for (Dice d : newList) {
             newcolors[d.getColor().ordinal()] += 1;
         }
 
@@ -76,6 +110,7 @@ public class DraftPoolTest {
             System.out.println(prevcolors[i] + "  " + newcolors[i]);
         }
         assertArrayEquals(prevcolors, newcolors);
+        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDraftPoolReroll(dp.getDices()));
     }
 
     @Test
@@ -100,38 +135,40 @@ public class DraftPoolTest {
     public void testClear() {
         dp.clearPool();
         assertEquals(0, dp.size());
+        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDraftPoolClear());
     }
 
     @Test
     public void testNewInstance() {
         DraftPool draftPool = DraftPool.newInstance(dp);
         assertEquals(dp, draftPool);
+        assertEquals(dp.getObserverList(), draftPool.getObserverList());
     }
 
     @Test
-    public void testUseDice() {
+    public void testUseDice() throws Exception{
         int order[] = new int[]{5, 2, 1, 2, 0, 0};
         int size = dp.getDices().size();
 
-        try {
-            for (int i = 0; i < size; i++) {
-                dp.useDice(dices.get(order[i]));
-                dices.remove(order[i]);
+        for (int i = 0; i < size; i++) {
+            Dice removed = dices.get(order[i]);
+            dp.useDice(removed);
+            dices.remove(removed);
 
-                assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
-            }
-        } catch (DiceNotFoundException dnfe){
-            fail("No exception expected");
-        } catch (EmptyCollectionException ece) {
-            fail("No exception expected");
+            assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
+            dp.getObserverList().forEach(obs -> {
+                verify(obs, times(1)).onDiceRemove(removed);
+                reset(obs);
+            });
         }
+
     }
 
     @Test
     public void testEmptyException() {
         dp = new DraftPool();
         try {
-            dp.useDice(new Dice(4,Color.BLUE));
+            dp.useDice(new Dice(4, Color.BLUE));
             fail("EmptyCollectionException expected");
         } catch (DiceNotFoundException e) {
             fail("No exception expected");

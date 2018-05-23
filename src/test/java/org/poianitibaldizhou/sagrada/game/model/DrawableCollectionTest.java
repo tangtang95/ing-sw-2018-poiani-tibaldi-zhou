@@ -6,7 +6,6 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +19,9 @@ public class DrawableCollectionTest {
 
     public static class NonParameterizedPart {
 
-        public static DrawableCollection<String> drawableCollection;
+        private static DrawableCollection<String> drawableCollection;
 
-        @DataPoint
-        public static List<String> stringList;
+        private static List<String> stringList;
 
         @BeforeClass
         public static void setUpClass() {
