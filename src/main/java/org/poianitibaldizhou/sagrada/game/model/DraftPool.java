@@ -6,10 +6,12 @@ import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class DraftPool {
     private List<Dice> dices;
@@ -50,6 +52,11 @@ public class DraftPool {
         return new ArrayList<>(dices);
     }
 
+    @Contract(pure = true)
+    public List<Dice> getDices(final Color color) {
+        return dices.stream().filter(dice -> dice.getColor() == color).collect(Collectors.toList());
+    }
+
     /**
      * Adds a list of dices to the DraftPool.
      * It also notify the observers that some dices are added
@@ -57,9 +64,9 @@ public class DraftPool {
      * @param dices the list of dices that needs to be added
      * @throws NullPointerException if dices is null
      */
-    public void addDices(@NotNull List<Dice> dices) {
+    public void addDices(@NotNull List<Dice> dices) throws RemoteException {
         this.dices.addAll(dices);
-        observerList.forEach(obs -> obs.onDicesAdd(dices));
+        for (IDraftPoolObserver obs: observerList) obs.onDicesAdd(dices);
     }
 
     /**
@@ -68,9 +75,9 @@ public class DraftPool {
      * @param dice the dice that needs to be added
      * @throws NullPointerException if dice is null
      */
-    public void addDice(@NotNull Dice dice) {
+    public void addDice(@NotNull Dice dice) throws RemoteException {
         this.dices.add(dice);
-        observerList.forEach(obs -> obs.onDiceAdd(dice));
+        for (IDraftPoolObserver obs: observerList) obs.onDiceAdd(dice);
     }
 
     /**
@@ -81,34 +88,34 @@ public class DraftPool {
      * @throws EmptyCollectionException if the DraftPool is empty
      * @throws NullPointerException     if dice is null
      */
-    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException {
+    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException, RemoteException {
         if (dices.isEmpty()) {
             throw new EmptyCollectionException();
         }
         for (int i = 0; i < dices.size(); i++) {
             if (dices.get(i).equals(dice)) {
                 dices.remove(i);
-                observerList.forEach(obs -> obs.onDiceRemove(dice));
+                for (IDraftPoolObserver obs: observerList) obs.onDiceRemove(dice);
                 return;
             }
         }
         throw new DiceNotFoundException("DraftPool.useDice() failed due to non existence of the dice in the pool");
     }
 
-    public void reRollDices() {
+    public void reRollDices() throws RemoteException {
         Random random = new Random();
         for (int i = 0; i < dices.size(); i++) {
             dices.set(i, new Dice(random.nextInt(Dice.MAX_VALUE) + 1, dices.get(i).getColor()));
         }
-        observerList.forEach(obs -> obs.onDraftPoolReroll(dices));
+        for (IDraftPoolObserver obs: observerList) obs.onDraftPoolReroll(dices);
     }
 
     /**
      * Remove every dices in the draftPool
      */
-    public void clearPool() {
+    public void clearPool() throws RemoteException {
         dices.clear();
-        observerList.forEach(IDraftPoolObserver::onDraftPoolClear);
+        for (IDraftPoolObserver obs: observerList) obs.onDraftPoolClear();
     }
 
     /**
@@ -117,7 +124,7 @@ public class DraftPool {
      * @param draftPool draftpool that needs to be copied
      * @return new instance with the same elements of draftPool
      */
-    public static DraftPool newInstance(DraftPool draftPool) {
+    public static DraftPool newInstance(DraftPool draftPool) throws RemoteException {
         if (draftPool == null)
             return null;
         DraftPool newDraftPool = new DraftPool();

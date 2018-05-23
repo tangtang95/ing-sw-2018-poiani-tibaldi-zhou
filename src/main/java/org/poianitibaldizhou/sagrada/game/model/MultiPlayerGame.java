@@ -4,12 +4,14 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +30,7 @@ public class MultiPlayerGame extends Game{
      * set the state to SetupPlayerState
      *
      */
-    public MultiPlayerGame(String name, List<User> users) {
+    public MultiPlayerGame(String name, List<User> users) throws RemoteException {
         super(name);
         this.users.addAll(users);
 
@@ -87,21 +89,21 @@ public class MultiPlayerGame extends Game{
     }
 
     @Override
-    public void notifyPlayersEndGame() {
+    public void notifyPlayersEndGame() throws RemoteException {
         getState().calculateVictoryPoints();
     }
 
     @Override
-    public Node<ICommand> getCompleteCommands(ToolCard toolCard) {
+    public Node<ICommand> getPreCommands(ToolCard toolCard) {
         Node<ICommand> removeFavorToken = new Node<>(new RemoveFavorToken(toolCard.getCost()));
         Node<ICommand> addTokenToolCard = new Node<>((player, toolCardExecutor, turnState) -> {
             toolCard.addTokens(toolCard.getCost());
             return CommandFlow.MAIN;
         });
-        removeFavorToken.setLeftChild(addTokenToolCard);
+        Node<ICommand> preCommands = new Node<>(new ClearAll());
 
-        Node<ICommand> coreToolCardCommands = toolCard.getCommands();
-        removeFavorToken.setLeftChild(coreToolCardCommands);
+        removeFavorToken.setLeftChild(addTokenToolCard);
+        addTokenToolCard.setLeftChild(preCommands);
         return removeFavorToken;
     }
 

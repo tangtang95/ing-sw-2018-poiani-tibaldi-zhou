@@ -14,6 +14,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
 
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -79,7 +80,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
         observerList.forEach(observer -> observer.onFavorTokenChange(coin.getCoins()));
     }
 
-    public boolean isCardUsable(ToolCard toolCard) {
+    public boolean isCardUsable(ToolCard toolCard) throws RemoteException {
         return coin.isCardUsable(toolCard);
     }
 

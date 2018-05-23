@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class RerollDraftPool implements ICommand {
@@ -19,8 +20,8 @@ public class RerollDraftPool implements ICommand {
      * @return CommandFlow.MAIN
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
-        toolCardExecutor.getTemporaryDraftpool().reRollDices();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
+        toolCardExecutor.getTemporaryDraftPool().reRollDices();
         return CommandFlow.MAIN;
     }
 

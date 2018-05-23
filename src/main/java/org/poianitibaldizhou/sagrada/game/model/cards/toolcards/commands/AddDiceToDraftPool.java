@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class AddDiceToDraftPool implements ICommand {
@@ -21,9 +22,9 @@ public class AddDiceToDraftPool implements ICommand {
      * @throws InterruptedException given by wait of toolCard.getNeededDice()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws  InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException, RemoteException {
         Dice dice = toolCardExecutor.getNeededDice();
-        toolCardExecutor.getTemporaryDraftpool().addDice(dice);
+        toolCardExecutor.getTemporaryDraftPool().addDice(dice);
         return CommandFlow.MAIN;
     }
 

@@ -2,6 +2,10 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+
+import java.rmi.RemoteException;
 
 public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -15,38 +19,36 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
      *
      * @param game the game needed for changing state and other things to do
      */
-     RoundEndState(Game game, int currentRound, Player currentRoundPlayer) {
+    RoundEndState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
         this.currentRound = currentRound;
         this.currentRoundPlayer = currentRoundPlayer;
     }
 
     @Override
-    public void init() {
-        game.getStateObservers().forEach(obs -> obs.onRoundEnd(currentRound, currentRoundPlayer.getUser()));
+    public void init() throws RemoteException {
+        for(IStateObserver obs : game.getStateObservers()) obs.onRoundEnd(currentRound, currentRoundPlayer.getUser());
     }
 
     @Contract(pure = true)
-    public int getCurrentRound(){
+    public int getCurrentRound() {
         return currentRound;
     }
-
 
 
     /**
      * Add all the remaining dices of the DraftPool to the RoundTrack and clear all dices of DraftPool;
      * Then if the current round is less than the numberOfRounds the game will set a new RoundStartState, otherwise
      * it will set a EndGameState
-     *
      */
     @Override
-    public void nextRound() {
+    public void nextRound() throws RemoteException {
         game.addRemainingDiceToRoundTrack(currentRound);
         game.clearDraftPool();
 
         Player nextPlayer = game.getNextPlayer(currentRoundPlayer, Direction.CLOCKWISE);
-        if(currentRound < RoundTrack.LAST_ROUND)
-            game.setState(new RoundStartState(game, currentRound+1, nextPlayer));
+        if (currentRound < RoundTrack.LAST_ROUND)
+            game.setState(new RoundStartState(game, currentRound + 1, nextPlayer));
         else
             game.setState(new EndGameState(game, currentRoundPlayer));
     }
@@ -56,10 +58,4 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-    public static IStateGame newInstance(IStateGame res) {
-        if (res == null)
-            return null;
-        return new RoundEndState(res.game,((RoundEndState) res).getCurrentRound(),
-                ((RoundEndState) res).getCurrentRoundPlayer());
-    }
 }

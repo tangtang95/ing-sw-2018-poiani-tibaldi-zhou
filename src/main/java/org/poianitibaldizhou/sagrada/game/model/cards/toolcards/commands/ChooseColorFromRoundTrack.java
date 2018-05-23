@@ -28,7 +28,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundtrack();
+        RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
         if(roundTrack.isEmpty())
             return CommandFlow.EMPTY_ROUNDTRACK;
         Set<Color> colors = new HashSet<>();

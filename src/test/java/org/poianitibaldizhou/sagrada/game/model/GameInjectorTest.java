@@ -8,6 +8,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjec
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
+import java.rmi.RemoteException;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
@@ -59,7 +61,7 @@ public class GameInjectorTest {
     }
 
     @Test
-    public void toolCardInjectorTest() {
+    public void toolCardInjectorTest() throws Exception {
         toolCardDrawableCollection.addElement(new ToolCard(Color.PURPLE, "Pinza Sgrossatrice",
                 "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1." +
                         " Non puoi cambiare un 6 in 1 o un 1 in 6",
@@ -129,29 +131,30 @@ public class GameInjectorTest {
     }
 
     @Test
-    public void privateObjectiveCardInjectorTest() {
+    public void privateObjectiveCardInjectorTest() throws Exception {
         GameInjector.injectPrivateObjectiveCard(privateObjectiveCardDrawableCollection);
         assertEquals("Wrong size", 5, privateObjectiveCardDrawableCollection.size());
     }
 
     @Test
-    public void diceBagInjectorTest() {
+    public void diceBagInjectorTest() throws Exception {
         GameInjector.injectDiceBag(diceDrawableCollection);
         assertEquals("Wrong size", 90, diceDrawableCollection.size());
     }
 
     @Test
-    public void PublicObjectiveCardInjectorTest() throws WrongCardInJsonFileException {
+    public void PublicObjectiveCardInjectorTest() throws Exception {
         GameInjector.injectPublicObjectiveCards(publicObjectiveCardDrawableCollection);
         assertEquals("Wrong size", 10, publicObjectiveCardDrawableCollection.size());
     }
 
     @Test
     public void schemaCardInjectorTest() {
+        // TODO
     }
 
     @Test
-    public void NotNullAnnotationParameterTest(){
+    public void NotNullAnnotationParameterTest() throws Exception{
         DrawableCollection<Dice> diceBag = null;
         try {
             GameInjector.injectDiceBag(diceBag);

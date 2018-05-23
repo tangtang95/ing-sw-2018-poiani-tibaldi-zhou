@@ -61,8 +61,8 @@ public class SwapDiceWithRoundTrackTest {
         observerList.add(observer2);
         observerList.add(observer3);
 
-        when(executor.getTemporaryRoundtrack()).thenReturn(roundTrack);
-        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getTemporaryRoundTrack()).thenReturn(roundTrack);
+        when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
         when(executor.getObservers()).thenReturn(observerList);
     }
 

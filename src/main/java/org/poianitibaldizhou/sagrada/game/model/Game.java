@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.*;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -63,7 +64,7 @@ public abstract class Game implements IGameStrategy {
     }
 
     @Contract(pure = true)
-    public RoundTrack getRoundTrack() {
+    public RoundTrack getRoundTrack() throws RemoteException {
         return RoundTrack.newInstance(roundTrack);
     }
 
@@ -82,7 +83,7 @@ public abstract class Game implements IGameStrategy {
     }
 
     @Contract(pure = true)
-    public DraftPool getDraftPool() {
+    public DraftPool getDraftPool() throws RemoteException {
         return DraftPool.newInstance(draftPool);
     }
 
@@ -108,7 +109,7 @@ public abstract class Game implements IGameStrategy {
     }
 
     @Contract(pure = true)
-    public DrawableCollection<Dice> getDiceBag() {
+    public DrawableCollection<Dice> getDiceBag() throws RemoteException {
         DrawableCollection<Dice> newDiceBag = new DrawableCollection<>();
         newDiceBag.addElements(diceBag.getCollection());
         return newDiceBag;
@@ -162,7 +163,7 @@ public abstract class Game implements IGameStrategy {
 
     //MODIFIER
 
-    public void setState(IStateGame state) {
+    public void setState(IStateGame state) throws RemoteException {
         this.state = state;
         this.state.init();
     }
@@ -176,7 +177,7 @@ public abstract class Game implements IGameStrategy {
         addNewPlayer(user, schemaCard, privateObjectiveCards);
     }
 
-    public void addRemainingDiceToRoundTrack(int currentRound) {
+    public void addRemainingDiceToRoundTrack(int currentRound) throws RemoteException {
         roundTrack.addDicesToRound(draftPool.getDices(), currentRound);
     }
 
@@ -188,7 +189,7 @@ public abstract class Game implements IGameStrategy {
         publicObjectiveCards.add(publicObjectiveCard);
     }
 
-    public void initDiceBag() {
+    public void initDiceBag() throws RemoteException {
         GameInjector.injectDiceBag(diceBag);
     }
 
@@ -246,11 +247,11 @@ public abstract class Game implements IGameStrategy {
         this.roundTrack = roundTrack;
     }
 
-    public void clearDraftPool() {
+    public void clearDraftPool() throws RemoteException {
         draftPool.clearPool();
     }
 
-    public void addDicesToDraftPoolFromDiceBag() {
+    public void addDicesToDraftPoolFromDiceBag() throws RemoteException {
         for (int i = 0; i < getNumberOfDicesToDraw(); i++) {
             try {
                 draftPool.addDice(diceBag.draw());

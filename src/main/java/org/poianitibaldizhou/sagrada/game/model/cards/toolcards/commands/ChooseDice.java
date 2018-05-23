@@ -25,7 +25,7 @@ public class ChooseDice implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        List<Dice> diceList = toolCardExecutor.getTemporaryDraftpool().getDices();
+        List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices();
         for(IToolCardExecutorObserver obs : observerList)
             obs.notifyNeedDice(diceList);
         return CommandFlow.MAIN;

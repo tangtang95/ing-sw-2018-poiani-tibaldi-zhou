@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class DrawableCollection<T> {
@@ -45,9 +46,9 @@ public class DrawableCollection<T> {
      * @param elem elements that needs to be added
      * @throws NullPointerException if elem is null
      */
-    public void addElement(@NotNull T elem) {
+    public void addElement(@NotNull T elem) throws RemoteException {
         collection.add(elem);
-        observerList.forEach(obs -> obs.onElementAdd(elem));
+        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementAdd(elem);
     }
 
     /**
@@ -58,7 +59,7 @@ public class DrawableCollection<T> {
      * @return the drawn element
      * @throws EmptyCollectionException if DrawableCollection is empty
      */
-    public T draw() throws EmptyCollectionException {
+    public T draw() throws EmptyCollectionException, RemoteException {
         Random rand = new Random();
         if (collection.isEmpty()) {
             throw new EmptyCollectionException();
@@ -66,7 +67,7 @@ public class DrawableCollection<T> {
         int pos = Math.abs(rand.nextInt(collection.size()));
         T elem = collection.get(pos);
         collection.remove(pos);
-        observerList.forEach(obs -> obs.onElementDraw(elem));
+        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementDraw(elem);
         return elem;
     }
 
@@ -75,9 +76,9 @@ public class DrawableCollection<T> {
      *
      * @param list list of elements that need to be added
      */
-    public void addElements(@NotNull List<T> list) {
+    public void addElements(@NotNull List<T> list) throws RemoteException {
         collection.addAll(list);
-        observerList.forEach(obs -> obs.onElementsAdd(list));
+        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementsAdd(list);
     }
 
     /**

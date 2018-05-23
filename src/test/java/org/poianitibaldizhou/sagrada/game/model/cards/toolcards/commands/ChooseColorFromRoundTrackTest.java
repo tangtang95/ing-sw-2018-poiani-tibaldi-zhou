@@ -70,7 +70,7 @@ public class ChooseColorFromRoundTrackTest {
             });
         }
 
-        public ParameterizedPart(Object[] colorsParam, Object[][] roundTrackParam) {
+        public ParameterizedPart(Object[] colorsParam, Object[][] roundTrackParam) throws Exception {
             colors = new HashSet<>();
             roundTrack = new RoundTrack();
 
@@ -88,7 +88,7 @@ public class ChooseColorFromRoundTrackTest {
             observerList.add(observer2);
             observerList.add(observer3);
             when(executor.getObservers()).thenReturn(observerList);
-            when(executor.getTemporaryRoundtrack()).thenReturn(roundTrack);
+            when(executor.getTemporaryRoundTrack()).thenReturn(roundTrack);
             command = new ChooseColorFromRoundTrack();
         }
 

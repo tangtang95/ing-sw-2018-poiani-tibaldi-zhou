@@ -4,16 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
-
-import java.rmi.RemoteException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -49,17 +43,17 @@ public class RemoveDiceFromDraftPoolTest {
     @Test
     public void executeCommandTestSuccess() throws Exception {
         when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
         DraftPool newDraftPool = new DraftPool();
         newDraftPool.addDices(draftPool.getDices());
         newDraftPool.useDice(dice);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer,executor,stateGame));
-        assertEquals(newDraftPool, executor.getTemporaryDraftpool());
+        assertEquals(newDraftPool, executor.getTemporaryDraftPool());
     }
 
     @Test
     public void executeCommandTestFailNoDiceInDraftPool() throws Exception{
-        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
         when(executor.getNeededDice()).thenReturn(new Dice(dice.getNumber()-1, dice.getColor()));
         assertEquals(CommandFlow.NOT_DICE_IN_DRAFTPOOL, command.executeCommand(invokerPlayer,executor, stateGame));
     }
@@ -67,7 +61,7 @@ public class RemoveDiceFromDraftPoolTest {
     @Test
     public void executeCommandTestFailEmptyDraftPool() throws Exception {
         when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getTemporaryDraftpool()).thenReturn(new DraftPool());
+        when(executor.getTemporaryDraftPool()).thenReturn(new DraftPool());
         assertEquals(CommandFlow.EMPTY_DRAFTPOOL, command.executeCommand(invokerPlayer,executor, stateGame));
     }
 

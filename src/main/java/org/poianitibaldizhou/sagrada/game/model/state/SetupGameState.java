@@ -5,8 +5,10 @@ import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,8 +30,10 @@ public class SetupGameState extends IStateGame {
     }
 
     @Override
-    public void init() {
-        game.getStateObservers().forEach(IStateObserver::onSetupGame);
+    public void init() throws RemoteException {
+        for (IStateObserver obs: game.getStateObservers()) {
+            obs.onSetupGame();
+        }
 
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
@@ -45,8 +49,10 @@ public class SetupGameState extends IStateGame {
         this.injectToolCards(toolCards);
         this.injectPublicObjectiveCards(publicObjectiveCards);
 
-        game.getGameObservers().values().forEach(obs -> obs.onToolCardsDraw(game.getToolCards()));
-        game.getGameObservers().values().forEach(obs -> obs.onPublicObjectiveCardsDraw(game.getPublicObjectiveCards()));
+        for (IGameObserver obs: game.getGameObservers().values()) {
+            obs.onToolCardsDraw(game.getToolCards());
+            obs.onPublicObjectiveCardsDraw(game.getPublicObjectiveCards());
+        }
 
         game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayers())));
     }
@@ -56,7 +62,7 @@ public class SetupGameState extends IStateGame {
      *
      * @param toolCards the collection of every tool cards
      */
-    private void injectToolCards(DrawableCollection<ToolCard> toolCards) {
+    private void injectToolCards(DrawableCollection<ToolCard> toolCards) throws RemoteException {
         int numberOfToolCards = game.getNumberOfToolCardForGame();
         for (int i = 0; i < numberOfToolCards; i++) {
             try {
@@ -72,7 +78,7 @@ public class SetupGameState extends IStateGame {
      *
      * @param publicObjectiveCards the collection of every public objective cards
      */
-    private void injectPublicObjectiveCards(DrawableCollection<PublicObjectiveCard> publicObjectiveCards) {
+    private void injectPublicObjectiveCards(DrawableCollection<PublicObjectiveCard> publicObjectiveCards) throws RemoteException {
         int numberOfPublicObjectiveCards = game.getNumberOfPublicObjectiveCardForGame();
         for (int i = 0; i < numberOfPublicObjectiveCards; i++) {
             try {
@@ -90,7 +96,7 @@ public class SetupGameState extends IStateGame {
      * @param players all the players of the game
      * @return return a random player from the list of players given by parameter
      */
-    private Player getRandomStartPlayer(List<Player> players) {
+    private Player getRandomStartPlayer(List<Player> players) throws RemoteException {
         DrawableCollection<Player> drawablePlayers = new DrawableCollection<>();
         drawablePlayers.addElements(players);
         Player player = null;

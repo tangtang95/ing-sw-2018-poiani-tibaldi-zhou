@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class DraftPoolTest {
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws Exception{
         MockitoAnnotations.initMocks(this);
         dices.add(new Dice(5, Color.BLUE));
         dices.add(new Dice(2, Color.BLUE));
@@ -56,12 +57,18 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testAddDices() {
+    public void testAddDices() throws Exception{
         List<Dice> diceList = new ArrayList<>();
         diceList.add(new Dice(6, Color.GREEN));
         diceList.add(new Dice(4, Color.RED));
         dp.addDices(diceList);
-        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDicesAdd(diceList));
+        dp.getObserverList().forEach(obs -> {
+            try {
+                verify(obs, times(1)).onDicesAdd(diceList);
+            } catch (RemoteException e) {
+                fail("exception not excepted");
+            }
+        });
     }
 
     @After
@@ -83,16 +90,22 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testAddDice() {
+    public void testAddDice() throws Exception {
         Dice dice = new Dice(5, Color.PURPLE);
         dp.addDice(dice);
         dices.add(dice);
         assertEquals(dices, dp.getDices());
-        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDiceAdd(dice));
+        dp.getObserverList().forEach(obs -> {
+            try {
+                verify(obs, times(1)).onDiceAdd(dice);
+            } catch (RemoteException e) {
+                fail("exception not excepted");
+            }
+        });
     }
 
     @Test
-    public void testRerollDices() {
+    public void testRerollDices() throws Exception{
         List<Dice> prevList = dp.getDices();
         dp.reRollDices();
         List<Dice> newList = dp.getDices();
@@ -110,11 +123,17 @@ public class DraftPoolTest {
             System.out.println(prevcolors[i] + "  " + newcolors[i]);
         }
         assertArrayEquals(prevcolors, newcolors);
-        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDraftPoolReroll(dp.getDices()));
+        dp.getObserverList().forEach(obs -> {
+            try {
+                verify(obs, times(1)).onDraftPoolReroll(dp.getDices());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Test
-    public void testEquals() {
+    public void testEquals() throws Exception{
         DraftPool draftPool = new DraftPool();
         draftPool.addDice(new Dice(1, Color.PURPLE));
         assertNotEquals(dp, draftPool);
@@ -132,14 +151,20 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testClear() {
+    public void testClear() throws Exception{
         dp.clearPool();
         assertEquals(0, dp.size());
-        dp.getObserverList().forEach(obs -> verify(obs, times(1)).onDraftPoolClear());
+        dp.getObserverList().forEach(obs -> {
+            try {
+                verify(obs, times(1)).onDraftPoolClear();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     @Test
-    public void testNewInstance() {
+    public void testNewInstance() throws Exception{
         DraftPool draftPool = DraftPool.newInstance(dp);
         assertEquals(dp, draftPool);
         assertEquals(dp.getObserverList(), draftPool.getObserverList());
@@ -157,7 +182,11 @@ public class DraftPoolTest {
 
             assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
             dp.getObserverList().forEach(obs -> {
-                verify(obs, times(1)).onDiceRemove(removed);
+                try {
+                    verify(obs, times(1)).onDiceRemove(removed);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 reset(obs);
             });
         }
@@ -165,7 +194,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testEmptyException() {
+    public void testEmptyException() throws Exception{
         dp = new DraftPool();
         try {
             dp.useDice(new Dice(4, Color.BLUE));
@@ -178,7 +207,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testDiceNotFoundException() {
+    public void testDiceNotFoundException() throws Exception{
         try {
             dp.useDice(new Dice(1, Color.GREEN));
             fail("NotFoundException expected");

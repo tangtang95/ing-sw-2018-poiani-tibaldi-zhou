@@ -1,12 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
+
+import java.rmi.RemoteException;
 
 public class SelectActionState extends IPlayerState {
 
@@ -15,12 +12,12 @@ public class SelectActionState extends IPlayerState {
     }
 
     /**
-     * set the playerState
+     * Execute the action based on the IActionCommand, basically it changes the IPlayerState on the turnState
      *
      * @param action the operation of the player
      */
     @Override
-    public void chooseAction(IActionCommand action) {
+    public void chooseAction(IActionCommand action) throws RemoteException {
         action.executeAction(turnState);
     }
 

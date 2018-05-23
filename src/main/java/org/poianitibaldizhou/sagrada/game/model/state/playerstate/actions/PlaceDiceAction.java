@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class PlaceDiceAction implements IActionCommand{
@@ -13,7 +14,7 @@ public class PlaceDiceAction implements IActionCommand{
      * @param turnState the actual turnState of the game
      */
     @Override
-    public void executeAction(TurnState turnState) {
+    public void executeAction(TurnState turnState) throws RemoteException {
         turnState.setPlayerState(new PlaceDiceState(turnState));
     }
 
