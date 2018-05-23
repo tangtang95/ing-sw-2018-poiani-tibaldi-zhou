@@ -27,7 +27,7 @@ public abstract class IPlayerState {
         throw new InvalidActionException();
     }
 
-    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RuleViolationException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RuleViolationException, RemoteException {
         throw new InvalidActionException();
     }
 

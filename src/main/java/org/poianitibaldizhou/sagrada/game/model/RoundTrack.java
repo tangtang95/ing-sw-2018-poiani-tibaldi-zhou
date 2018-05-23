@@ -57,6 +57,7 @@ public class RoundTrack {
         return newRoundTrack;
     }
 
+    //GETTER
     /**
      * Returns the a copied list of the observer. The single elements are not copied.
      *
@@ -77,6 +78,23 @@ public class RoundTrack {
     }
 
     /**
+     * Return the list of dices of a given round.
+     * It deep copies the single elements present in RoundTrack and also the list, so it is totally "safe".
+     *
+     * @param round the round from where to get the dices
+     * @return the list of dices of a given round
+     */
+    @Contract(pure = true)
+    public List<Dice> getDices(int round) {
+        List<Dice> diceList = new ArrayList<>();
+        for (Dice dice : listOfDices.get(round)) {
+            diceList.add(new Dice(dice.getNumber(), dice.getColor()));
+        }
+        return diceList;
+    }
+
+    // MODIFIERS
+    /**
      * Place a list of dices in the specified round of the roundTrack.
      * Notifies the observers that a list of dices has been added to a certain round.
      *
@@ -88,11 +106,12 @@ public class RoundTrack {
         if (!isRoundAccepted(round))
             throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
                     "Round specified: " + round);
-        if (!isEmpty())
+        if(!dices.isEmpty()) {
             numberOfDices += dices.size();
-        listOfDices.get(round).addAll(dices);
-        for (IRoundTrackObserver obs: observerList) {
-            obs.onDicesAddToRound(dices, round);
+            listOfDices.get(round).addAll(dices);
+            for (IRoundTrackObserver obs : observerList) {
+                obs.onDicesAddToRound(dices, round);
+            }
         }
     }
 
@@ -113,22 +132,6 @@ public class RoundTrack {
         for (IRoundTrackObserver obs: observerList) {
             obs.onDiceAddToRound(dice, round);
         }
-    }
-
-    /**
-     * Return the list of dices of a given round.
-     * It deep copies the single elements present in RoundTrack and also the list, so it is totally "safe".
-     *
-     * @param round the round from where to get the dices
-     * @return the list of dices of a given round
-     */
-    @Contract(pure = true)
-    public List<Dice> getDices(int round) {
-        List<Dice> diceList = new ArrayList<>();
-        for (Dice dice : listOfDices.get(round)) {
-            diceList.add(new Dice(dice.getNumber(), dice.getColor()));
-        }
-        return diceList;
     }
 
     /**

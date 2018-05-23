@@ -182,7 +182,7 @@ public class GameInjector {
     }
 
     /**
-     * inject all SchemaCard in the DrawableCollection of SchemaCard, getting
+     * inject all SchemaCard in the DrawableCollection of List of SchemaCard, getting
      * cards from a json file resources/schemaCards.json
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard

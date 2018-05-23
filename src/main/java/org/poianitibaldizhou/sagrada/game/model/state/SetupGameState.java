@@ -29,6 +29,9 @@ public class SetupGameState extends IStateGame {
         super(game);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() throws RemoteException {
         for (IStateObserver obs: game.getStateObservers()) {
@@ -63,8 +66,7 @@ public class SetupGameState extends IStateGame {
      * @param toolCards the collection of every tool cards
      */
     private void injectToolCards(DrawableCollection<ToolCard> toolCards) throws RemoteException {
-        int numberOfToolCards = game.getNumberOfToolCardForGame();
-        for (int i = 0; i < numberOfToolCards; i++) {
+        for (int i = 0; i < game.getNumberOfToolCardForGame(); i++) {
             try {
                 game.addToolCard(toolCards.draw());
             } catch (EmptyCollectionException e) {
@@ -79,8 +81,7 @@ public class SetupGameState extends IStateGame {
      * @param publicObjectiveCards the collection of every public objective cards
      */
     private void injectPublicObjectiveCards(DrawableCollection<PublicObjectiveCard> publicObjectiveCards) throws RemoteException {
-        int numberOfPublicObjectiveCards = game.getNumberOfPublicObjectiveCardForGame();
-        for (int i = 0; i < numberOfPublicObjectiveCards; i++) {
+        for (int i = 0; i < game.getNumberOfPublicObjectiveCardForGame(); i++) {
             try {
                 game.addPublicObjectiveCard(publicObjectiveCards.draw());
             } catch (EmptyCollectionException e) {

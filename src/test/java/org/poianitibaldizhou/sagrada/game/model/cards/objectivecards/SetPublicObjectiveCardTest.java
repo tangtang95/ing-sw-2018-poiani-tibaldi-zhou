@@ -60,7 +60,7 @@ public class SetPublicObjectiveCardTest {
      * The constraints of the tuple aren't present in equal number in the SchemaCard.
      */
     @Test
-    public void testWholeColorSet() throws RuleViolationException {
+    public void testWholeColorSet() throws Exception {
         schemaCard.setDice(new Dice(2, Color.YELLOW), 0, 4);
         schemaCard.setDice(new Dice(3, Color.BLUE), 1, 4);
         schemaCard.setDice(new Dice(4, Color.GREEN), 1, 3);
@@ -84,7 +84,7 @@ public class SetPublicObjectiveCardTest {
      * The constraints of the tuple aren't present in equal number in the SchemaCard.
      */
     @Test
-    public void testWholeColorSetWithOffset() throws RuleViolationException {
+    public void testWholeColorSetWithOffset() throws Exception {
         schemaCard.setDice(new Dice(2, Color.YELLOW), 0, 1);
         schemaCard.setDice(new Dice(1, Color.BLUE), 0, 2);
         schemaCard.setDice(new Dice(3, Color.YELLOW), 0, 3);
@@ -107,7 +107,7 @@ public class SetPublicObjectiveCardTest {
      * The constraints of the tuple are present in equal number in the SchemaCard.
      */
     @Test
-    public void testWholeNumberSetWithOffset() throws RuleViolationException {
+    public void testWholeNumberSetWithOffset() throws Exception {
         schemaCard.setDice(new Dice(2, Color.YELLOW), 0, 1);
         schemaCard.setDice(new Dice(1, Color.BLUE), 0, 2);
         schemaCard.setDice(new Dice(3, Color.YELLOW), 0, 3);
@@ -131,7 +131,7 @@ public class SetPublicObjectiveCardTest {
      * The constraints of the tuple are present in equal number in the SchemaCard.
      */
     @Test
-    public void testWholeNumberSet() throws RuleViolationException {
+    public void testWholeNumberSet() throws Exception {
         schemaCard.setDice(new Dice(2, Color.YELLOW), 0, 1);
         schemaCard.setDice(new Dice(1, Color.BLUE), 0, 2);
         schemaCard.setDice(new Dice(3, Color.YELLOW), 0, 3);
@@ -156,7 +156,7 @@ public class SetPublicObjectiveCardTest {
      * The constraints of the pair are present in equal number in the SchemaCard.
      */
     @Test
-    public void testNumberSetPair() throws RuleViolationException {
+    public void testNumberSetPair() throws Exception {
         Collection<IConstraint> pair = new ArrayList<>();
         pair.add(new NumberConstraint(3));
         pair.add(new NumberConstraint(4));
@@ -180,7 +180,7 @@ public class SetPublicObjectiveCardTest {
      * The constraints of the pair aren't present in equal number in the SchemaCard.
      */
     @Test
-    public void testNumberSetPairWithOffset() throws RuleViolationException {
+    public void testNumberSetPairWithOffset() throws Exception {
         Collection<IConstraint> pair = new ArrayList<>();
         pair.add(new NumberConstraint(1));
         pair.add(new NumberConstraint(2));

@@ -30,14 +30,13 @@ public abstract class Player implements IVictoryPoints, Serializable {
     private List<IPlayerObserver> observerList;
 
     /**
-     * Set to null the player parameters:
-     * - coins are the player expendable coins for using the toolCard
-     * - schemaCard
-     * - privateObjectiveCard
+     * Constructor.
+     * Create a new player based on user, strategy coin, his schemaCard and his privataObjectiveCards
      *
-     * @param user                  the same user of the lobby
-     * @param schemaCard
-     * @param privateObjectiveCards
+     * @param user the user of the player
+     * @param coin the strategy coin for the player
+     * @param schemaCard the schemaCard of the player
+     * @param privateObjectiveCards the list of privateObjectiveCards of the player
      */
     public Player(User user, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         this.schemaCard = SchemaCard.newInstance(schemaCard);
@@ -75,15 +74,6 @@ public abstract class Player implements IVictoryPoints, Serializable {
         return coin.getCoins();
     }
 
-    public void removeCoins(int cost) {
-        coin.removeCoins(cost);
-        observerList.forEach(observer -> observer.onFavorTokenChange(coin.getCoins()));
-    }
-
-    public boolean isCardUsable(ToolCard toolCard) throws RemoteException {
-        return coin.isCardUsable(toolCard);
-    }
-
     /**
      * It copies the list of observers, creating a new list, but not copying the single elements.
      *
@@ -93,7 +83,6 @@ public abstract class Player implements IVictoryPoints, Serializable {
         return new ArrayList<>(observerList);
     }
 
-
     /**
      * Return the score of the player based on the PrivateObjectiveCard
      *
@@ -101,6 +90,43 @@ public abstract class Player implements IVictoryPoints, Serializable {
      */
     public int getScoreFromPrivateCard() {
         return privateObjectiveCards.get(indexOfPrivateObjectiveCard).getScore(schemaCard);
+    }
+
+    /**
+     * Return true if the toolCard is usable, otherwise false
+     *
+     * @param toolCard the toolCard to check if usable
+     * @return true if the toolCard is usable, otherwise false
+     * @throws RemoteException network error
+     */
+    public boolean isCardUsable(ToolCard toolCard) throws RemoteException {
+        return coin.isCardUsable(toolCard);
+    }
+
+    // SETTER
+    public void setOutcome(Outcome outcome) {
+        this.outcome = outcome;
+    }
+
+    public void attachObserver(IPlayerObserver observer) {
+        observerList.add(observer);
+    }
+
+    public void setSchemaCard(SchemaCard schemaCard) {
+        this.schemaCard = schemaCard;
+    }
+
+    /**
+     * Remove the coins by a certain cost
+     *
+     * @param cost the value to decrement the coins
+     * @throws RemoteException network error
+     */
+    public void removeCoins(int cost) throws RemoteException {
+        coin.removeCoins(cost);
+        for (IPlayerObserver playerObserver : observerList) {
+            playerObserver.onFavorTokenChange(coin.getCoins());
+        }
     }
 
     /**
@@ -113,18 +139,21 @@ public abstract class Player implements IVictoryPoints, Serializable {
      * @throws RuleViolationException if the rule of the schema is violated
      */
     public void placeDice(Dice dice, Position position, PlacementRestrictionType tileConstraint,
-                          DiceRestrictionType diceConstraint) throws RuleViolationException {
+                          DiceRestrictionType diceConstraint) throws RuleViolationException, RemoteException {
         schemaCard.setDice(dice, position, tileConstraint, diceConstraint);
     }
 
-    public void placeDice(Dice dice, Position position) throws RuleViolationException {
+    public void placeDice(Dice dice, Position position) throws RuleViolationException, RemoteException {
         placeDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
-    public void setOutcome(Outcome outcome) {
-        this.outcome = outcome;
-    }
-
+    /**
+     * Set private objective card to the player (used only in singlePlayer)
+     *
+     * @param privateObjectiveCard the private objective card chosen
+     * @throws IllegalArgumentException if the list of privateObjectiveCards of the player doesn't contain
+     *                                  privateObjectiveCard given
+     */
     public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
         if (!containsPrivateObjectiveCard(privateObjectiveCard))
             throw new IllegalArgumentException("PrivateObjectiveCard doesn't exist in the player");
@@ -132,10 +161,6 @@ public abstract class Player implements IVictoryPoints, Serializable {
             if (privateObjectiveCards.get(i).equals(privateObjectiveCard))
                 indexOfPrivateObjectiveCard = i;
         }
-    }
-
-    public void attachObserver(IPlayerObserver observer) {
-        observerList.add(observer);
     }
 
     /**
@@ -187,7 +212,4 @@ public abstract class Player implements IVictoryPoints, Serializable {
         return false;
     }
 
-    public void setSchemaCard(SchemaCard schemaCard) {
-        this.schemaCard = schemaCard;
-    }
 }

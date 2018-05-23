@@ -13,25 +13,14 @@ public class MultiPlayer extends Player {
 
 
     /**
-     * Set to null the player parameters:
-     * - coins are the player expendable coins for using the toolCard
-     * - schemaCard
-     * - privateObjectiveCard
-     *
-     * @param user
-     * @param coin
-     * @param schemaCard
-     * @param privateObjectiveCards
+     * {@inheritDoc}
      */
     public MultiPlayer(User user, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         super(user, coin, schemaCard, privateObjectiveCards);
     }
 
     /**
-     * Return the score of the player based on the PrivateObjectiveCard, the remaining favor tokens and the empty spaces
-     * of the schemaCard
-     *
-     * @return the score of the player for multiPlayerGame
+     * {@inheritDoc}
      */
     @Override
     public int getVictoryPoints() {
@@ -42,7 +31,7 @@ public class MultiPlayer extends Player {
     public static MultiPlayer newInstance(@NotNull MultiPlayer player) {
         // TODO coin new instance
         MultiPlayer newPlayer = new MultiPlayer(player.getUser(), player.coin, SchemaCard.newInstance(player.schemaCard), new ArrayList<>(player.privateObjectiveCards));
-        player.getObserverList().forEach(obs -> newPlayer.attachObserver(obs));
+        player.getObserverList().forEach(newPlayer::attachObserver);
         return newPlayer;
     }
 }

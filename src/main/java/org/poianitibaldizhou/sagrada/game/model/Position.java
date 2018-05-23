@@ -33,10 +33,21 @@ public class Position {
         return row;
     }
 
+    /**
+     * @param row the delta row to add
+     * @param column the delta column to add
+     * @return a new Position with row = this.row + row given and column = this.column + column given
+     */
     public Position add(int row, int column) {
         return new Position(this.row + row, this.column + column);
     }
 
+    /**
+     *
+     * @param row the delta row to subtract
+     * @param column the delta column to subtract
+     * @return a new Position with row = this.row - row given and column = this.column - column given
+     */
     public Position subtract(int row, int column) {
         return new Position(this.row - row, this.column - column);
     }

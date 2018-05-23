@@ -1,10 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class Node<T> {
     private Node<T> rightChild = null;
@@ -21,6 +20,7 @@ public class Node<T> {
         this.data = data;
     }
 
+    // GETTER
     public Node<T> getParent() {
         return parent;
     }
@@ -31,6 +31,21 @@ public class Node<T> {
 
     public Node<T> getLeftChild() { return leftChild;}
 
+    public T getData() {
+        return this.data;
+    }
+
+    @Contract(pure = true)
+    public boolean isRoot() {
+        return (this.parent == null);
+    }
+
+    @Contract(pure = true)
+    public boolean isLeaf() {
+        return rightChild == null && leftChild == null;
+    }
+
+    // MODIFIER
     public void setRightChild(Node<T> rightChild) {
         this.rightChild = rightChild;
         rightChild.setParent(parent);
@@ -41,20 +56,8 @@ public class Node<T> {
         leftChild.setParent(parent);
     }
 
-    public T getData() {
-        return this.data;
-    }
-
     public void setData(T data) {
         this.data = data;
-    }
-
-    public boolean isRoot() {
-        return (this.parent == null);
-    }
-
-    public boolean isLeaf() {
-        return rightChild == null && leftChild == null;
     }
 
     public void removeParent() {
@@ -71,10 +74,10 @@ public class Node<T> {
      *
      * @param elem element to add
      * @param index index of the element
-     * @throws IllegalArgumentException if current structure doesn't allow index as number
+     * @throws NullPointerException if current structure doesn't allow index as number
      */
-    public void addAtIndex(T elem, int index) throws IllegalArgumentException {
-        Stack<Integer> stack = new Stack<>();
+    public void addAtIndex(T elem, int index) {
+        Deque<Integer> stack = new ArrayDeque<>();
         Node<T> currentNode = this;
         Node<T> elemParent = this;
         int currPos;
@@ -86,20 +89,20 @@ public class Node<T> {
 
         stack.pop();
 
-        while(!stack.empty()) {
+        while(!stack.isEmpty()) {
             currPos = stack.pop();
-            if(stack.size() == 0)
+            if(stack.isEmpty())
                 elemParent = currentNode;
 
             if (currPos % 2 == 0) {
-                if(stack.size() == 0) {
-                    elemParent.setLeftChild(new Node(elem));
+                if(stack.isEmpty()) {
+                    elemParent.setLeftChild(new Node<>(elem));
                 } else {
                     currentNode = currentNode.getLeftChild();
                 }
             } else {
-                if (stack.size() == 0) {
-                    elemParent.setRightChild(new Node(elem));
+                if (stack.isEmpty()) {
+                    elemParent.setRightChild(new Node<>(elem));
                 } else {
                     currentNode = currentNode.getRightChild();
                 }
@@ -111,11 +114,12 @@ public class Node<T> {
     public boolean equals(Object o) {
         if(o == null)
             return false;
-        if(!(o instanceof Node))
+        if(!(o instanceof Node<?>))
             return false;
-        Node<T> node = (Node) o;
+        Node<?> node = (Node<?>) o;
 
-        boolean flagRight, flagLeft;
+        boolean flagRight;
+        boolean flagLeft;
         if(this.getRightChild() != null)
             flagRight = this.getRightChild().equals(node.getRightChild());
         else
@@ -126,6 +130,11 @@ public class Node<T> {
             flagLeft = node.getLeftChild() == null;
 
         return flagLeft && flagRight && this.getData().equals(node.getData());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(rightChild, leftChild, data);
     }
 
     @Override

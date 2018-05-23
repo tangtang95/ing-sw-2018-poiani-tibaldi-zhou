@@ -119,7 +119,7 @@ public abstract class IStateGame {
      *                                the placement of the dice is unsuccessful and inside the InvalidActionException
      *                                there is a RuleViolationException
      */
-    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RemoteException {
         throw new InvalidActionException();
     }
 
@@ -153,7 +153,7 @@ public abstract class IStateGame {
      *
      * @throws InvalidActionException if the state instance != TurnState
      */
-    public void interruptToolCardExecution() throws InvalidActionException {
+    public void interruptToolCardExecution(Player player) throws InvalidActionException {
         throw new InvalidActionException();
     }
 

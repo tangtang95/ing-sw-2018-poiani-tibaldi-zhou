@@ -35,7 +35,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public void init() throws RemoteException {
         for(IStateObserver obs : game.getStateObservers()) obs.onEndGame(currentRoundPlayer.getUser());
-        game.notifyPlayersEndGame();
+        game.handleEndGame();
     }
 
     /**
@@ -54,7 +54,9 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
     public void calculateVictoryPoints() throws RemoteException {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
         game.setPlayersOutcome(scoreMap, currentRoundPlayer);
-        //TODO notify
+        for(IStateObserver obs : game.getStateObservers()){
+            obs.onVictoryPointsCalculated(scoreMap);
+        }
     }
 
     /**

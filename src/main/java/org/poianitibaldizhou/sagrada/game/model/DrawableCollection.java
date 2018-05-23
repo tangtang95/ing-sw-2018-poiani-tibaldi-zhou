@@ -26,10 +26,7 @@ public class DrawableCollection<T> {
         observerList = new ArrayList<>();
     }
 
-    public void attachObserver(IDrawableCollectionObserver<T> observer) {
-        observerList.add(observer);
-    }
-
+    // GETTER
     /**
      * Returns the list of the observers. A new list is created, but the single elements
      * are not deep copied.
@@ -37,6 +34,41 @@ public class DrawableCollection<T> {
      */
     public List<IDrawableCollectionObserver<T>> getObserverList() {
         return new ArrayList<>(observerList);
+    }
+
+    /**
+     * Returns the number of elements in DrawableCollection
+     *
+     * @return number of elements in the collection
+     */
+    @Contract(pure = true)
+    public int size() {
+        return collection.size();
+    }
+
+    /**
+     * Returns an array containing the elements present in DrawableCollection
+     * The single elements are not deep copied.
+     *
+     * @return a generic collection array
+     */
+    public Object[] toArray() {
+        return collection.toArray();
+    }
+
+    /**
+     * Returns the copy of the list present in the DrawableCollection.
+     * The single elements are not deep copied.
+     *
+     * @return list of elements present in this
+     */
+    public List<T> getCollection() {
+        return new ArrayList<>(collection);
+    }
+
+    // MODIFIERS
+    public void attachObserver(IDrawableCollectionObserver<T> observer) {
+        observerList.add(observer);
     }
 
     /**
@@ -81,39 +113,9 @@ public class DrawableCollection<T> {
         for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementsAdd(list);
     }
 
-    /**
-     * Returns the number of elements in DrawableCollection
-     *
-     * @return number of elements in the collection
-     */
-    @Contract(pure = true)
-    public int size() {
-        return collection.size();
-    }
-
-    /**
-     * Returns an array containing the elements present in DrawableCollection
-     * The single elements are not deep copied.
-     *
-     * @return a generic collection array
-     */
-    public Object[] toArray() {
-        return collection.toArray();
-    }
-
     @Override
     public String toString() {
         return collection.toString();
-    }
-
-    /**
-     * Returns the copy of the list present in the DrawableCollection.
-     * The single elements are not deep copied.
-     *
-     * @return list of elements present in this
-     */
-    public List<T> getCollection() {
-        return new ArrayList<>(collection);
     }
 
     /**

@@ -45,7 +45,7 @@ public class CLISchemaCardView implements ISchemaCardObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onPlaceDice(Dice dice, Position position) {
+    public void onPlaceDice(Dice dice, Position position) throws RemoteException {
         User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             try {
@@ -65,7 +65,7 @@ public class CLISchemaCardView implements ISchemaCardObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice, Position position) {
+    public void onDiceRemove(Dice dice, Position position) throws RemoteException {
         User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             schemaCards.get(user.getName()).removeDice(position);

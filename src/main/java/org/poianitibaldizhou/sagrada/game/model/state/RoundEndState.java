@@ -25,18 +25,17 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
         this.currentRoundPlayer = currentRoundPlayer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() throws RemoteException {
-        for(IStateObserver obs : game.getStateObservers()) obs.onRoundEnd(currentRound, currentRoundPlayer.getUser());
+        for (IStateObserver obs : game.getStateObservers()) obs.onRoundEnd(currentRound, currentRoundPlayer.getUser());
     }
-
-    @Contract(pure = true)
-    public int getCurrentRound() {
-        return currentRound;
-    }
-
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Add all the remaining dices of the DraftPool to the RoundTrack and clear all dices of DraftPool;
      * Then if the current round is less than the numberOfRounds the game will set a new RoundStartState, otherwise
      * it will set a EndGameState
@@ -52,6 +51,12 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
         else
             game.setState(new EndGameState(game, currentRoundPlayer));
     }
+
+    @Contract(pure = true)
+    public int getCurrentRound() {
+        return currentRound;
+    }
+
 
     @Override
     public Player getCurrentRoundPlayer() {

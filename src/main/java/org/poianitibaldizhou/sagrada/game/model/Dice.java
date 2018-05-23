@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
@@ -42,18 +43,23 @@ public class Dice {
         this(new NumberConstraint(number), new ColorConstraint(color));
     }
 
+    // GETTER
+    @Contract(pure = true)
     public int getNumber() {
         return numberConstraint.getNumber();
     }
 
+    @Contract(pure = true)
     public Color getColor() {
         return colorConstraint.getColor();
     }
 
+    @Contract(pure = true)
     public NumberConstraint getNumberConstraint() {
         return numberConstraint;
     }
 
+    @Contract(pure = true)
     public ColorConstraint getColorConstraint() {
         return colorConstraint;
     }
@@ -64,30 +70,20 @@ public class Dice {
      * @param other the other dice to compare
      * @return true if the dices have same color or same number
      */
+    @Contract(pure = true)
     public boolean isSimilar(@NotNull Dice other) {
         return this.getColorConstraint().equals(other.getColorConstraint()) ||
                 this.getNumberConstraint().equals(other.getNumberConstraint());
     }
 
+    @Contract(pure = true)
     public boolean hasSameColor(Dice other) {
         return other != null && this.getColorConstraint().equals(other.getColorConstraint());
     }
 
+    @Contract(pure = true)
     public boolean hasSameNumber(Dice other){
         return other != null && this.getNumberConstraint().equals(other.getNumberConstraint());
-    }
-
-    @Override
-    public boolean equals(Object oth) {
-        if (!(oth instanceof Dice))
-            return false;
-        Dice o = (Dice) oth;
-        return o.getColor() == this.getColor() && o.getNumber() == this.getNumber();
-    }
-
-    @Override
-    public String toString() {
-        return "" + numberConstraint.toString() + "/" + colorConstraint.toString();
     }
 
     /**
@@ -101,9 +97,23 @@ public class Dice {
     }
 
     @Override
+    public boolean equals(Object oth) {
+        if (!(oth instanceof Dice))
+            return false;
+        Dice o = (Dice) oth;
+        return o.getColor() == this.getColor() && o.getNumber() == this.getNumber();
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(numberConstraint.getNumber(), colorConstraint.getColor());
     }
+
+    @Override
+    public String toString() {
+        return "" + numberConstraint.toString() + "/" + colorConstraint.toString();
+    }
+
 
 
 }

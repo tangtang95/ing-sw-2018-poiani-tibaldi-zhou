@@ -44,7 +44,7 @@ public class DiagonalPublicObjectiveCardTest {
      * A single column with different ColorConstraint on each column.
      */
     @Test
-    public void testScoreSingleColumnWithDifferentNumber() throws RuleViolationException {
+    public void testScoreSingleColumnWithDifferentNumber() throws Exception {
         schemaCard.setDice(new Dice(6, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(1, Color.RED), 1, 0);
         schemaCard.setDice(new Dice(5, Color.PURPLE), 2, 0);
@@ -64,7 +64,7 @@ public class DiagonalPublicObjectiveCardTest {
      * A single row with different NumberConstraint on each row.
      */
     @Test
-    public void testScoreSingleRowWithDifferentColor() throws RuleViolationException {
+    public void testScoreSingleRowWithDifferentColor() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 1, 0);
         schemaCard.setDice(new Dice(2, Color.RED), 1, 1);
         schemaCard.setDice(new Dice(3, Color.GREEN), 1, 2);
@@ -85,7 +85,7 @@ public class DiagonalPublicObjectiveCardTest {
      * Every dice has at least one diagonal dice with same number
      */
     @Test
-    public void testScoreEveryRowDifferentNumbers() throws RuleViolationException {
+    public void testScoreEveryRowDifferentNumbers() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 2);
@@ -124,7 +124,7 @@ public class DiagonalPublicObjectiveCardTest {
      * Every dice has at least one diagonal dice with same color
      */
     @Test
-    public void testScoreEveryDiagonalSameColorsDifferentNumbers() throws RuleViolationException {
+    public void testScoreEveryDiagonalSameColorsDifferentNumbers() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 2);
@@ -163,7 +163,7 @@ public class DiagonalPublicObjectiveCardTest {
      * None diagonal with same color or same number with different ColorConstraint nor NumberConstraint on each row.
      */
     @Test
-    public void testScoreNoneDiagonalDifferentColorsOrNumber() throws RuleViolationException {
+    public void testScoreNoneDiagonalDifferentColorsOrNumber() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 2);

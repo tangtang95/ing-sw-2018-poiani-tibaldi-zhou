@@ -18,7 +18,7 @@ public interface IDrawableCollectionObserver<T> extends Remote {
      *
      * @param elemList list of elements added
      */
-    void onElementsAdd(List<T> elemList);
+    void onElementsAdd(List<T> elemList) throws RemoteException;
 
 
     /**

@@ -81,9 +81,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
         this.playerState = new SelectActionState(this);
         this.skipTurnPlayers = new HashMap<>();
-        for (Player player : skipTurnPlayers.keySet()) {
-            this.skipTurnPlayers.put(player, skipTurnPlayers.get(player));
-        }
+        skipTurnPlayers.keySet().forEach(player -> this.skipTurnPlayers.put(player, skipTurnPlayers.get(player)));
 
     }
 
@@ -104,7 +102,8 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     /**
-     * Pass the operation of chooseAction to the playerState
+     * {@inheritDoc}
+     * <p>
      *
      * @param action the operation of the currentTurnPlayer
      * @throws InvalidActionException if the given player is different from the currentTurnPlayer
@@ -120,12 +119,13 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     /**
-     * Pass the operation of useCard to the playerState
+     * {@inheritDoc}
+     * <p>
      *
      * @param player   the currentTurnPlayer who choose to use the card
      * @param toolCard the toolCard to be used
-     * @throws InvalidActionException     if the given player is different from the currentTurnPlayer ||
-     *                                    there aren't expendable coins
+     * @throws InvalidActionException if the given player is different from the currentTurnPlayer ||
+     *                                there aren't expendable coins
      */
     @Override
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer)
@@ -153,7 +153,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *                                the rules of placement are violated
      */
     @Override
-    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RemoteException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
         try {
@@ -163,6 +163,11 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws InvalidActionException if the toolCardExecutor is not executing commands
+     */
     @Override
     public void fireExecutorEvent(ExecutorEvent event) throws InvalidActionException {
         if (!toolCardExecutor.isExecutingCommands())
@@ -170,15 +175,22 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         event.setNeededValue(toolCardExecutor);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @throws InvalidActionException if the player given is not equals the current turn player
+     */
     @Override
-    public void interruptToolCardExecution() {
+    public void interruptToolCardExecution(Player player) throws InvalidActionException {
+        if(!player.equals(currentTurnPlayer))
+            throw new InvalidActionException();
         if (toolCardExecutor.isExecutingCommands())
             toolCardExecutor.interruptCommandsInvocation();
     }
 
     /**
      * Release the toolCard execution from UseCardState to SelectActionState (doesn't necessarily means that the
-     * toolCard execution is ended
+     * toolCard execution is ended)
      */
     public void releaseToolCardExecution() {
         playerState.releaseToolCardExecution();
@@ -208,21 +220,13 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         }
     }
 
+    // GETTER
     public boolean hasActionUsed(PlaceDiceAction placeDiceAction) {
         return actionsUsed.contains(placeDiceAction);
     }
 
     public Map<Player, Integer> getSkipTurnPlayers() {
         return new HashMap<>(skipTurnPlayers);
-    }
-
-    public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers) {
-        this.skipTurnPlayers.clear();
-        this.skipTurnPlayers.putAll(skipTurnPlayers);
-    }
-
-    public void setPlayerState(IPlayerState playerState) {
-        this.playerState = playerState;
     }
 
     public IPlayerState getPlayerState() {
@@ -237,10 +241,9 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return isFirstTurn;
     }
 
-    public void addSkipTurnPlayer(Player player, int turn) {
-        this.skipTurnPlayers.put(player, turn);
-    }
-
+    /**
+     * @return the reference of toolCardExecutor
+     */
     public ToolCardExecutor getToolCardExecutor() {
         return toolCardExecutor;
     }
@@ -248,6 +251,20 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;
+    }
+
+    // MODIFIERS
+    public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers) {
+        this.skipTurnPlayers.clear();
+        this.skipTurnPlayers.putAll(skipTurnPlayers);
+    }
+
+    public void setPlayerState(IPlayerState playerState) {
+        this.playerState = playerState;
+    }
+
+    public void addSkipTurnPlayer(Player player, int turn) {
+        this.skipTurnPlayers.put(player, turn);
     }
 
     // NOTIFIERS

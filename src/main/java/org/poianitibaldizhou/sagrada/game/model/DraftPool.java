@@ -26,6 +26,8 @@ public class DraftPool {
         observerList = new ArrayList<>();
     }
 
+    // GETTER
+
     /**
      * Returns the list of the observer of the draftpool
      * Another list is created for this task, but the single elements are not deep
@@ -38,10 +40,6 @@ public class DraftPool {
         return new ArrayList<>(observerList);
     }
 
-    public void attachObserver(@NotNull IDraftPoolObserver observer) {
-        observerList.add(observer);
-    }
-
     /**
      * Returns the current dices present in DraftPool.
      *
@@ -52,9 +50,20 @@ public class DraftPool {
         return new ArrayList<>(dices);
     }
 
+    /**
+     * Return the list of dice with the same color of the parameter passed
+     *
+     * @param color the color requirement
+     * @return the list of dice with the color given
+     */
     @Contract(pure = true)
     public List<Dice> getDices(final Color color) {
         return dices.stream().filter(dice -> dice.getColor() == color).collect(Collectors.toList());
+    }
+
+    // MODIFIERS
+    public void attachObserver(@NotNull IDraftPoolObserver observer) {
+        observerList.add(observer);
     }
 
     /**
@@ -63,10 +72,11 @@ public class DraftPool {
      *
      * @param dices the list of dices that needs to be added
      * @throws NullPointerException if dices is null
+     * @throws RemoteException      network error
      */
     public void addDices(@NotNull List<Dice> dices) throws RemoteException {
         this.dices.addAll(dices);
-        for (IDraftPoolObserver obs: observerList) obs.onDicesAdd(dices);
+        for (IDraftPoolObserver obs : observerList) obs.onDicesAdd(dices);
     }
 
     /**
@@ -74,10 +84,11 @@ public class DraftPool {
      *
      * @param dice the dice that needs to be added
      * @throws NullPointerException if dice is null
+     * @throws RemoteException      network error
      */
     public void addDice(@NotNull Dice dice) throws RemoteException {
         this.dices.add(dice);
-        for (IDraftPoolObserver obs: observerList) obs.onDiceAdd(dice);
+        for (IDraftPoolObserver obs : observerList) obs.onDiceAdd(dice);
     }
 
     /**
@@ -87,6 +98,7 @@ public class DraftPool {
      * @throws DiceNotFoundException    if d is not present in the DraftPool
      * @throws EmptyCollectionException if the DraftPool is empty
      * @throws NullPointerException     if dice is null
+     * @throws RemoteException          network error
      */
     public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException, RemoteException {
         if (dices.isEmpty()) {
@@ -95,34 +107,42 @@ public class DraftPool {
         for (int i = 0; i < dices.size(); i++) {
             if (dices.get(i).equals(dice)) {
                 dices.remove(i);
-                for (IDraftPoolObserver obs: observerList) obs.onDiceRemove(dice);
+                for (IDraftPoolObserver obs : observerList) obs.onDiceRemove(dice);
                 return;
             }
         }
         throw new DiceNotFoundException("DraftPool.useDice() failed due to non existence of the dice in the pool");
     }
 
+    /**
+     * Re-roll every dice inside the draftPool (the color doesn't change, only the number of the dice can change)
+     *
+     * @throws RemoteException network error
+     */
     public void reRollDices() throws RemoteException {
         Random random = new Random();
         for (int i = 0; i < dices.size(); i++) {
             dices.set(i, new Dice(random.nextInt(Dice.MAX_VALUE) + 1, dices.get(i).getColor()));
         }
-        for (IDraftPoolObserver obs: observerList) obs.onDraftPoolReroll(dices);
+        for (IDraftPoolObserver obs : observerList) obs.onDraftPoolReroll(dices);
     }
 
     /**
      * Remove every dices in the draftPool
+     *
+     * @throws RemoteException network error
      */
     public void clearPool() throws RemoteException {
         dices.clear();
-        for (IDraftPoolObserver obs: observerList) obs.onDraftPoolClear();
+        for (IDraftPoolObserver obs : observerList) obs.onDraftPoolClear();
     }
 
     /**
      * Creates a new instance of draftPool. Observers are copied for references.
      *
-     * @param draftPool draftpool that needs to be copied
+     * @param draftPool draftPool that needs to be copied
      * @return new instance with the same elements of draftPool
+     * @throws RemoteException network error
      */
     public static DraftPool newInstance(DraftPool draftPool) throws RemoteException {
         if (draftPool == null)
@@ -130,7 +150,7 @@ public class DraftPool {
         DraftPool newDraftPool = new DraftPool();
         List<Dice> diceList = new ArrayList<>(draftPool.getDices());
         newDraftPool.addDices(diceList);
-        draftPool.getObserverList().forEach(obs->newDraftPool.attachObserver(obs));
+        draftPool.getObserverList().forEach(newDraftPool::attachObserver);
         return newDraftPool;
     }
 

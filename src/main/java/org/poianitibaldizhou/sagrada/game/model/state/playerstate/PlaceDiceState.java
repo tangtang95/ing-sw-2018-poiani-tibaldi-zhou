@@ -25,7 +25,7 @@ public class PlaceDiceState extends IPlayerState {
      * @throws RuleViolationException if the placement of the dice on the schemaCard of the player is unsuccessful
      */
     @Override
-    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException {
+    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, RemoteException {
         player.placeDice(dice, position);
         turnState.setPlayerState(new SelectActionState(turnState));
     }

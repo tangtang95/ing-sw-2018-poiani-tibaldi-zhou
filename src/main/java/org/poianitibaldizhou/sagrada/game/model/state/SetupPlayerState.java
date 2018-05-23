@@ -40,9 +40,12 @@ public class SetupPlayerState extends IStateGame {
         privateObjectiveCardMap = new HashMap<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() throws RemoteException {
-        for (IStateObserver obs: game.getStateObservers()) {
+        for (IStateObserver obs : game.getStateObservers()) {
             obs.onSetupPlayer();
         }
 
@@ -74,7 +77,7 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             privateObjectiveCardMap.put(token, privateObjectiveCardList);
-            if(!game.getGameObservers().containsKey(token))
+            if (!game.getGameObservers().containsKey(token))
                 throw new IllegalStateException("SEVERE ERROR: cannot find token");
             game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
         }
@@ -83,8 +86,10 @@ public class SetupPlayerState extends IStateGame {
 
 
     /**
-     * Method of the state pattern: When the player have finished to select the schemaCard,
-     * this method is invoked to set the SchemaCard to the player and when every player has readied the state
+     * {@inheritDoc}
+     * <p>
+     * When the player have finished to select the schemaCard, this method is invoked to set the SchemaCard
+     * to the player and when every player has readied the state
      *
      * @param token      the token of the player who have selected the schemaCard
      * @param schemaCard the schemaCard chosen by the player
@@ -97,7 +102,7 @@ public class SetupPlayerState extends IStateGame {
             playersReady.add(token);
             game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
-                for (IGameObserver obs: game.getGameObservers().values()) {
+                for (IGameObserver obs : game.getGameObservers().values()) {
                     obs.onPlayersCreate(game.getPlayers());
                 }
                 game.setState(new SetupGameState(game));

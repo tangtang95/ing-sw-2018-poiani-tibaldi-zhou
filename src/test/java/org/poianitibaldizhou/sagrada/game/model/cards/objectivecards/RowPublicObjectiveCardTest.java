@@ -45,7 +45,7 @@ public class RowPublicObjectiveCardTest {
      * A single row with different NumberConstraint on each row.
      */
     @Test
-    public void testScoreSingleRowWithDifferentNumber() throws RuleViolationException {
+    public void testScoreSingleRowWithDifferentNumber() throws Exception {
         schemaCard.setDice(new Dice(6, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(1, Color.RED), 0, 1);
         schemaCard.setDice(new Dice(5, Color.YELLOW), 0, 2);
@@ -69,7 +69,7 @@ public class RowPublicObjectiveCardTest {
      * A single row with different NumberConstraint on each row.
      */
     @Test
-    public void testScoreSingleColumnWithDifferentColor() throws RuleViolationException {
+    public void testScoreSingleColumnWithDifferentColor() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 1, 0);
         schemaCard.setDice(new Dice(2, Color.RED), 1, 1);
         schemaCard.setDice(new Dice(3, Color.GREEN), 1, 2);
@@ -92,7 +92,7 @@ public class RowPublicObjectiveCardTest {
      * Every row with different NumberConstraint on each row
      */
     @Test
-    public void testScoreEveryRowDifferentNumbers() throws RuleViolationException {
+    public void testScoreEveryRowDifferentNumbers() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
         schemaCard.setDice(new Dice(3, Color.YELLOW), 0, 2);
@@ -131,7 +131,7 @@ public class RowPublicObjectiveCardTest {
      * Every row with different ColorConstraint on each row.
      */
     @Test
-    public void testScoreEveryRowDifferentColors() throws RuleViolationException {
+    public void testScoreEveryRowDifferentColors() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
         schemaCard.setDice(new Dice(1, Color.PURPLE), 0, 2);
@@ -170,7 +170,7 @@ public class RowPublicObjectiveCardTest {
      * None row with different ColorConstraint nor NumberConstraint on each row.
      */
     @Test
-    public void testScoreNoneRowDifferentColorsOrNumber() throws RuleViolationException {
+    public void testScoreNoneRowDifferentColorsOrNumber() throws Exception {
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 0);
         schemaCard.setDice(new Dice(2, Color.BLUE), 0, 1);
         schemaCard.setDice(new Dice(1, Color.YELLOW), 0, 2);

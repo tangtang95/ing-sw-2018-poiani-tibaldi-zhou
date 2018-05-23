@@ -16,12 +16,18 @@ public class ResetState extends IStateGame {
         playersReady = new HashSet<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() {
         // Nothing to notify
     }
 
+
     /**
+     * {@inheritDoc}
+     * <p>
      * Add the token of the user to the playersReady and if the size of playersReady is equals to the number
      * of players in the game, the game goes to the next state: SetupPlayerState
      *
@@ -30,10 +36,10 @@ public class ResetState extends IStateGame {
      */
     @Override
     public void readyGame(String token) throws InvalidActionException, RemoteException {
-        if(playersReady.contains(token))
+        if (playersReady.contains(token))
             throw new InvalidActionException();
         playersReady.add(token);
-        if(playersReady.size() == game.getNumberOfPlayers())
+        if (playersReady.size() == game.getNumberOfPlayers())
             game.setState(new SetupPlayerState(game));
     }
 

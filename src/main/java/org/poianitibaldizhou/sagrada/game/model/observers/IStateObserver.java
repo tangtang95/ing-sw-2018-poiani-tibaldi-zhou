@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
-import org.poianitibaldizhou.sagrada.game.model.Outcome;
+import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.Remote;
@@ -99,15 +99,15 @@ public interface IStateObserver extends Remote {
      * Notify the victory points to all the players
      *
      * @param victoryPoints a map of all victory points (key: username)
-     * @throws RemoteException
+     * @throws RemoteException network error
      */
-    void onVictoryPointsCalculated(Map<String, Integer> victoryPoints) throws RemoteException;
+    void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) throws RemoteException;
 
     /**
      * Notify the winner to the observer
      *
      * @param winner the player who has won the game
-     * @throws RemoteException
+     * @throws RemoteException network error
      */
     void onResultGame(User winner) throws RemoteException;
 }

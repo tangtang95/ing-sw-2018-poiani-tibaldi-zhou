@@ -53,7 +53,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         Game game = gameManager.getGameByName(gameName);
 
         try {
-            game.setExecutor(new DiceExecutorEvent(dice));
+            game.fireExecutorEvent(new DiceExecutorEvent(dice));
         } catch (InvalidActionException e) {
             e.printStackTrace();
         }
@@ -70,7 +70,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void setNewValue(int value, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
         try {
-            game.setExecutor(new ValueExecutorEvent(value));
+            game.fireExecutorEvent(new ValueExecutorEvent(value));
         } catch (InvalidActionException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void setColor(Color color, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
         try {
-            game.setExecutor(new ColorExecutorEvent(color));
+            game.fireExecutorEvent(new ColorExecutorEvent(color));
         } catch (InvalidActionException e) {
             e.printStackTrace();
         }
@@ -106,7 +106,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void setPosition(Position position, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
         try {
-            game.setExecutor(new PositionExecutorEvent(position));
+            game.fireExecutorEvent(new PositionExecutorEvent(position));
         } catch (InvalidActionException e) {
             e.printStackTrace();
         }

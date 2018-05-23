@@ -89,7 +89,7 @@ public class MultiPlayerGame extends Game{
     }
 
     @Override
-    public void notifyPlayersEndGame() throws RemoteException {
+    public void handleEndGame() throws RemoteException {
         getState().calculateVictoryPoints();
     }
 

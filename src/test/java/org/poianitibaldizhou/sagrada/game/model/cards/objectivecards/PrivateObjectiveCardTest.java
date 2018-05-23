@@ -54,7 +54,7 @@ public class PrivateObjectiveCardTest {
      * Score should be 0.
      */
     @Test
-    public void testNoDiceOfCardColorConstraint() throws RuleViolationException {
+    public void testNoDiceOfCardColorConstraint() throws Exception {
 
         schemaCard = new SchemaCard("testNoDiceOfCardColorConstraint", 1, constraints);
         schemaCard.setDice(new Dice(4, Color.BLUE), 0,1);
@@ -73,7 +73,7 @@ public class PrivateObjectiveCardTest {
     /**
      * Test branch coverage of PrivateObjectiveCard.getMultiPlayerScore().
      */
-    public void testBranchCoverage() throws RuleViolationException {
+    public void testBranchCoverage() throws Exception {
         schemaCard = new SchemaCard("TestBranchCoverage", 3, constraints);
         schemaCard.setDice(new Dice(4, Color.BLUE),0,1);
         schemaCard.setDice(new Dice(3, Color.YELLOW), 0,2);

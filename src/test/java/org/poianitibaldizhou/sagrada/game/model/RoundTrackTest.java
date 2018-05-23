@@ -171,12 +171,12 @@ public class RoundTrackTest {
         }
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAddNull() throws Exception{
         roundTrack.addDiceToRound(null, 0);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testAddsNull() throws Exception {
         roundTrack.addDicesToRound(null, 0);
     }

@@ -104,7 +104,7 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
-    public void notifyPlayersEndGame() throws RemoteException {
+    public void handleEndGame() throws RemoteException {
         for (Player player: players.values()) {
             getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());
         }

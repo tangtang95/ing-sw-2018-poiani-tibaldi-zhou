@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Dice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BuildGraphic {
     private StringBuilder stringBuilder;
@@ -65,6 +66,14 @@ public class BuildGraphic {
 
     public BuildGraphic buildMessage(String message){
         stringBuilder.append(message).append("\n");
+        return this;
+    }
+
+    public BuildGraphic buildTable(Map<String, String> table){
+        table.forEach((key, value) -> {
+            stringBuilder.append(String.format("%10s %3s", key, value));
+            stringBuilder.append("\n");
+        });
         return this;
     }
 

@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public abstract class Game implements IGameStrategy {
+public abstract class Game implements IGame, IGameStrategy {
 
     protected final List<User> users;
     protected final HashMap<String, Player> players;
@@ -54,6 +54,11 @@ public abstract class Game implements IGameStrategy {
         return name;
     }
 
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the list of player
+     */
     @Contract(pure = true)
     public List<Player> getPlayers() {
         List<Player> copyPlayers = new ArrayList<>();
@@ -63,11 +68,22 @@ public abstract class Game implements IGameStrategy {
         return copyPlayers;
     }
 
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the roundTrack
+     * @throws RemoteException network error
+     */
     @Contract(pure = true)
     public RoundTrack getRoundTrack() throws RemoteException {
         return RoundTrack.newInstance(roundTrack);
     }
 
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the list of toolCards
+     */
     @Contract(pure = true)
     public List<ToolCard> getToolCards() {
         List<ToolCard> copyToolCards = new ArrayList<>();
@@ -82,6 +98,12 @@ public abstract class Game implements IGameStrategy {
         return new ArrayList<>(publicObjectiveCards);
     }
 
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the draftPool
+     * @throws RemoteException network error
+     */
     @Contract(pure = true)
     public DraftPool getDraftPool() throws RemoteException {
         return DraftPool.newInstance(draftPool);
@@ -93,12 +115,15 @@ public abstract class Game implements IGameStrategy {
     }
 
     /**
-     * @return the list of the state observers (note that the state observers are references)
+     * @return the list of the state observers (note that the state observers inside are references)
      */
     public List<IStateObserver> getStateObservers() {
         return new ArrayList<>(stateObservers);
     }
 
+    /**
+     * @return the map of the game observers (note that the game observers inside are references)
+     */
     public Map<String, IGameObserver> getGameObservers() {
         return new HashMap<>(gameObservers);
     }
@@ -108,11 +133,14 @@ public abstract class Game implements IGameStrategy {
         return state;
     }
 
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the diceBag
+     */
     @Contract(pure = true)
-    public DrawableCollection<Dice> getDiceBag() throws RemoteException {
-        DrawableCollection<Dice> newDiceBag = new DrawableCollection<>();
-        newDiceBag.addElements(diceBag.getCollection());
-        return newDiceBag;
+    public DrawableCollection<Dice> getDiceBag() {
+        return new DrawableCollection<>(diceBag.getCollection());
     }
 
     @Contract(pure = true)
@@ -120,10 +148,15 @@ public abstract class Game implements IGameStrategy {
         return users.stream().map(User::getToken).collect(Collectors.toList());
     }
 
+    /**
+     * @param userToken the token of the user
+     * @return the user by token
+     * @throws IllegalArgumentException if the user is not founded
+     */
     public User getUserByToken(final String userToken) {
         Optional<User> user = users.stream().filter(u -> u.getToken().equals(userToken)).findFirst();
         if (!user.isPresent())
-            throw new IllegalArgumentException("Cannot find User");
+            throw new IllegalArgumentException("SEVERE ERROR: Cannot find User");
         return user.get();
     }
 
@@ -133,7 +166,15 @@ public abstract class Game implements IGameStrategy {
     }
 
 
-    // OBSERVER ATTACH
+
+
+    // INTERFACE METHODS
+    @Override
+    public void fireExecutorEvent(ExecutorEvent event) throws InvalidActionException {
+        state.fireExecutorEvent(event);
+    }
+
+    // OBSERVER ATTACH (INTERFACE METHODS)
     public void attachStateObserver(IStateObserver stateObserver) {
         stateObservers.add(stateObserver);
     }
@@ -161,8 +202,9 @@ public abstract class Game implements IGameStrategy {
         diceBag.attachObserver(drawableCollectionObserver);
     }
 
-    //MODIFIER
 
+
+    //MODIFIER
     public void setState(IStateGame state) throws RemoteException {
         this.state = state;
         this.state.init();
@@ -260,9 +302,4 @@ public abstract class Game implements IGameStrategy {
             }
         }
     }
-
-    public void setExecutor(ExecutorEvent event) throws InvalidActionException {
-        state.fireExecutorEvent(event);
-    }
-
 }
