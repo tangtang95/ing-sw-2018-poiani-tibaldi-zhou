@@ -29,53 +29,6 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
 
     }
 
-    private StringBuilder buildGraphicDice(StringBuilder stringBuilder, List<Dice> diceList, int start, int end) {
-        for (int i = start; i < end; i++)
-            stringBuilder.append("  [").append(i + 1).append("]   ");
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9556);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9559 + " ");
-        }
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9553 + " ");
-            stringBuilder.append(diceList.get(i).toString());
-            stringBuilder.append(" " + (char) 9553 + " ");
-        }
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9562);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9565 + " ");
-        }
-        stringBuilder.append("\n");
-        return stringBuilder;
-    }
-
-    private void printListDice(List<Dice> diceList, StringBuilder stringBuilder) {
-        if (diceList.size() <= 5) {
-            bufferManager.consolePrint(buildGraphicDice(stringBuilder, diceList, 0, diceList.size()).toString(),
-                    Level.LOW);
-        } else {
-            bufferManager.consolePrint(buildGraphicDice(stringBuilder, diceList, 0, 5).toString(),
-                    Level.LOW);
-            bufferManager.consolePrint(buildGraphicDice(stringBuilder, diceList, 5, diceList.size()).toString(),
-                    Level.LOW);
-        }
-    }
-
     @Override
     public void notifyNeedDice(List<Dice> diceList) throws RemoteException {
         StringBuilder stringBuilder = new StringBuilder();
@@ -190,7 +143,8 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
     }
 
     /**
-     * Players get notified that player needs to modify a value of a certain dice by +/- value.
+     * Players get notified that a certain player needs to modify a value of a certain dice
+     * by +/- value.
      * If this is the player's CLI, he chooses the value and sends it back, nothing otherwise.
      * Note that if the modified value can't exceed Dice.MAX_VALUE nor DICE_MIN_VALUE, so
      * if value = 1 and diceValue=6, the modified can't be 1, for instance.

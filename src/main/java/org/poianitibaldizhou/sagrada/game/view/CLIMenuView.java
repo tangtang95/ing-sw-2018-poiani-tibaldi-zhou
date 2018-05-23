@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
+import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
@@ -11,6 +13,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
     protected final transient NetworkManager networkManager;
     protected final transient ScreenManager screenManager;
     protected final transient BufferManager bufferManager;
+    protected transient User currentUser;
 
     public CLIMenuView(NetworkManager networkManager, ScreenManager screenManager)
             throws RemoteException {
@@ -18,7 +21,6 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
         this.networkManager = networkManager;
         this.screenManager = screenManager;
         this.bufferManager = new BufferManager();
-
     }
 
 
@@ -88,6 +90,59 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
             stringBuilder.append("\n");
         }
         bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
+    }
+
+    public static StringBuilder buildGraphicDices(StringBuilder stringBuilder, List<Dice> diceList, int start, int end) {
+        for (int i = start; i < end; i++)
+            stringBuilder.append("  [").append(i + 1).append("]   ");
+        stringBuilder.append("\n");
+        for (int i = start; i < end; i++) {
+            stringBuilder.append((char) 9556);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9559 + " ");
+        }
+        stringBuilder.append("\n");
+        for (int i = start; i < end; i++) {
+            stringBuilder.append((char) 9553 + " ");
+            stringBuilder.append(diceList.get(i).toString());
+            stringBuilder.append(" " + (char) 9553 + " ");
+        }
+        stringBuilder.append("\n");
+        for (int i = start; i < end; i++) {
+            stringBuilder.append((char) 9562);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9552);
+            stringBuilder.append((char) 9565 + " ");
+        }
+        stringBuilder.append("\n");
+        return stringBuilder;
+    }
+
+    protected void printListDice(List<Dice> diceList, StringBuilder stringBuilder) {
+        if (diceList.size() <= 5) {
+            bufferManager.consolePrint(buildGraphicDices(stringBuilder, diceList, 0, diceList.size()).toString(),
+                    Level.LOW);
+        } else {
+            bufferManager.consolePrint(buildGraphicDices(stringBuilder, diceList, 0, 5).toString(),
+                    Level.LOW);
+            bufferManager.consolePrint(buildGraphicDices(stringBuilder, diceList, 5, diceList.size()).toString(),
+                    Level.LOW);
+        }
+    }
+
+    public static void buildGraphicDice(Dice dice, StringBuilder stringBuilder) {
+       List<Dice> diceList = new ArrayList<>();
+       diceList.add(dice);
+       buildGraphicDices(stringBuilder, diceList, 0, 1);
     }
 
     @Override
