@@ -20,7 +20,12 @@ public class DrawableCollection<T> {
         observerList = new ArrayList<>();
     }
 
-    public void attachObserver(IDrawableCollectionObserver observer) {
+    public DrawableCollection(List<T> list) {
+        collection = new ArrayList<>(list);
+        observerList = new ArrayList<>();
+    }
+
+    public void attachObserver(IDrawableCollectionObserver<T> observer) {
         observerList.add(observer);
     }
 

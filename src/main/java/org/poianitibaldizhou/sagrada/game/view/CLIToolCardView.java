@@ -101,7 +101,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
     }
 
     /**
-     * Players get notified that player needs to modify a value of a certain dice by +/- value.
+     * Players get notified that a certain player needs to modify a value of a certain dice
+     * by +/- value.
      * If this is the player's CLI, he chooses the value and sends it back, nothing otherwise.
      * Note that if the modified value can't exceed Dice.MAX_VALUE nor DICE_MIN_VALUE, so
      * if value = 1 and diceValue=6, the modified can't be 1, for instance.

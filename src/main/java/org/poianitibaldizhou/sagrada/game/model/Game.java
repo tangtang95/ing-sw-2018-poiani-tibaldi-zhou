@@ -98,7 +98,7 @@ public abstract class Game implements IGameStrategy {
         return new ArrayList<>(stateObservers);
     }
 
-    public Map<String, IGameObserver> getGameObservers(){
+    public Map<String, IGameObserver> getGameObservers() {
         return new HashMap<>(gameObservers);
     }
 
@@ -119,9 +119,9 @@ public abstract class Game implements IGameStrategy {
         return users.stream().map(User::getToken).collect(Collectors.toList());
     }
 
-    public User getUserByToken(final String userToken){
+    public User getUserByToken(final String userToken) {
         Optional<User> user = users.stream().filter(u -> u.getToken().equals(userToken)).findFirst();
-        if(!user.isPresent())
+        if (!user.isPresent())
             throw new IllegalArgumentException("Cannot find User");
         return user.get();
     }
@@ -133,30 +133,30 @@ public abstract class Game implements IGameStrategy {
 
 
     // OBSERVER ATTACH
-    public void attachStateObserver(IStateObserver stateObserver){
+    public void attachStateObserver(IStateObserver stateObserver) {
         stateObservers.add(stateObserver);
     }
 
-    public void attachGameObserver(String userToken, IGameObserver gameObserver){
+    public void attachGameObserver(String userToken, IGameObserver gameObserver) {
         gameObservers.put(userToken, gameObserver);
     }
 
-    public void attachRoundTrackObserver(IRoundTrackObserver roundTrackObserver){
+    public void attachRoundTrackObserver(IRoundTrackObserver roundTrackObserver) {
         // TODO
     }
 
-    public void attachDraftPoolObserver(IDraftPoolObserver draftPoolObserver){
+    public void attachDraftPoolObserver(IDraftPoolObserver draftPoolObserver) {
         draftPool.attachObserver(draftPoolObserver);
     }
 
     public void attachToolCardObserver(ToolCard toolCard, IToolCardObserver toolCardObserver) throws InvalidActionException {
-        if(!toolCards.contains(toolCard)) {
+        if (!toolCards.contains(toolCard)) {
             throw new InvalidActionException();
         }
         toolCard.attachToolCardObserver(toolCardObserver);
     }
 
-    public void attachDiceBagObserver(IDrawableCollectionObserver drawableCollectionObserver){
+    public void attachDiceBagObserver(IDrawableCollectionObserver<Dice> drawableCollectionObserver) {
         diceBag.attachObserver(drawableCollectionObserver);
     }
 
@@ -166,8 +166,6 @@ public abstract class Game implements IGameStrategy {
         this.state = state;
         this.state.init();
     }
-
-
 
     public void setPlayerOutcome(Player player, Outcome outcome) {
         players.get(player.getToken()).setOutcome(outcome);
@@ -200,7 +198,7 @@ public abstract class Game implements IGameStrategy {
      * @param player the player to find in the list of tokens
      * @return the index of the list of tokens about the given player
      */
-    protected int getIndexOfPlayer(Player player) {
+    private int getIndexOfPlayer(Player player) {
         int indexOfPlayer = -1;
         for (int i = 0; i < getPlayers().size(); i++) {
             if (getUserToken().get(i).equals(player.getToken()))
@@ -222,7 +220,7 @@ public abstract class Game implements IGameStrategy {
      * @param direction the direction of the next player (clockwise or counterclockwise)
      * @return the index of the next player
      */
-    protected int getNextIndexOfPlayer(Player player, Direction direction) {
+    private int getNextIndexOfPlayer(Player player, Direction direction) {
         int indexOfPlayer = getIndexOfPlayer(player);
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
