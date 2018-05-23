@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
@@ -17,21 +18,21 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
     private static final String MULTI_PLAYER = "Multi player";
     private static final String GO_BACK = "Go back";
 
-    CLISelectGameModeMenuView(NetworkManager networkManager, ScreenManager screenManager)
+    CLISelectGameModeMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
-        super(networkManager, screenManager);
+        super(networkManager, screenManager, bufferManager);
         initializeCommands();
     }
 
     private void initializeCommands() {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager)));
+                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager)));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");
         multiPlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLILobbyView(networkManager,screenManager)));
+                screenManager.replaceScreen(new CLILobbyView(networkManager,screenManager, bufferManager)));
         commandMap.put(multiPlayerCommand.getCommandText(), multiPlayerCommand);
 
         Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");

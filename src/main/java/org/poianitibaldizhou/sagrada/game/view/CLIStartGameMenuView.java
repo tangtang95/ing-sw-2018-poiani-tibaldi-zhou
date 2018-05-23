@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
@@ -18,21 +19,21 @@ public class CLIStartGameMenuView extends CLIMenuView {
     private static final String START_GAME = "Star game";
     private static final String QUIT = "Quit";
 
-    public CLIStartGameMenuView(NetworkManager networkManager, ScreenManager screenManager)
+    public CLIStartGameMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
-        super(networkManager, screenManager);
+        super(networkManager, screenManager, bufferManager);
         initializeCommands();
     }
 
     private void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-            screenManager.pushScreen(new CLIChangeConnectionMenuView(networkManager, screenManager)));
+            screenManager.pushScreen(new CLIChangeConnectionMenuView(networkManager, screenManager, bufferManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
         startGameCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLISelectGameModeMenuView(networkManager, screenManager)));
+                screenManager.pushScreen(new CLISelectGameModeMenuView(networkManager, screenManager, bufferManager)));
         commandMap.put(startGameCommand.getCommandText(), startGameCommand);
 
         Command quitCommand = new Command(QUIT, "Quit game");

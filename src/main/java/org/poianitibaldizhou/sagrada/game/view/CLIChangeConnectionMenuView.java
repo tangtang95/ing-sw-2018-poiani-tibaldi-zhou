@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
@@ -15,9 +16,9 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
 
     private static final String GO_BACK = "Go back";
 
-    CLIChangeConnectionMenuView(NetworkManager networkManager, ScreenManager screenManager)
+    CLIChangeConnectionMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
-        super(networkManager, screenManager);
+        super(networkManager, screenManager, bufferManager);
         initializeCommands();
     }
 

@@ -1,26 +1,24 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver {
     private final transient DraftPool draftPool;
-    private final CLIMenuView cliMenuView;
+    private final User currentUser;
 
-    public CLIDraftPoolView(CLIMenuView cliMenuView) throws RemoteException {
-        super(cliMenuView.networkManager, cliMenuView.screenManager);
-        this.cliMenuView = cliMenuView;
+    public CLIDraftPoolView(CLIGameView cliGameView) throws RemoteException {
+        super(cliGameView.networkManager, cliGameView.screenManager, cliGameView.bufferManager);
         draftPool = new DraftPool();
+        currentUser = cliGameView.getCurrentUser();
     }
 
     /**

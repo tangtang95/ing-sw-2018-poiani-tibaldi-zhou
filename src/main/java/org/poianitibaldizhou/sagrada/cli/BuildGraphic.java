@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,16 @@ public class BuildGraphic {
         return this;
     }
 
+    public BuildGraphic buidGraphicToolCards(List<ToolCard> toolCards) {
+        for (int i = 0; i < toolCards.size() ; i++) {
+               stringBuilder.append("[").append(i).append("]\n");
+               stringBuilder.append("Card Name: ").append(toolCards.get(i).getName()).append("\n");
+               stringBuilder.append("Color:     ").append(toolCards.get(i).getColor()).append("\n");
+               stringBuilder.append("Description:\n");
+               stringBuilder.append(toolCards.get(i).getDescription()).append("\n\n");
+        }
+        return this;
+    }
 
     @Override
     public String toString() {

@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.network.INetworkObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
 
-public interface IGameView extends INetworkObserver{
+public interface IGameView extends IGameObserver{
 }

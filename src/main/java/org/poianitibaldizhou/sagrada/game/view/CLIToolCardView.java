@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -16,16 +17,14 @@ import java.util.*;
 public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
     private final transient ToolCard toolCard;
     private final String gameName;
-    private final transient Player player;
 
-    private static final String NUMBER_WARNING = "WARNING: Number is not correct";
+    private static final String CHOOSE_DICE = "Choose a dice:";
 
-    public CLIToolCardView(CLIGameView cliGameView, ToolCard toolCards)
+    CLIToolCardView(CLIGameView cliGameView, ToolCard toolCards)
             throws RemoteException {
-        super(cliGameView.networkManager, cliGameView.screenManager);
+        super(cliGameView.networkManager, cliGameView.screenManager, cliGameView.bufferManager);
         this.toolCard = toolCards;
         this.gameName = cliGameView.getGameName();
-        this.player = cliGameView.getPlayer();
 
     }
 
@@ -37,7 +36,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
 
         bufferManager.consolePrint(buildGraphic.buildGraphicDices(diceList).toString(), Level.LOW);
         do {
-            response = getAnswer("Choose a dice:");
+            response = getAnswer(CHOOSE_DICE);
             try {
                 number = Integer.parseInt(response);
             } catch (NumberFormatException e) {
@@ -157,7 +156,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 roundNumber = -1;
             }
             if (roundNumber > 0 && roundNumber < RoundTrack.NUMBER_OF_TRACK) {
-                response = getAnswer("Choose a dice:");
+                response = getAnswer(CHOOSE_DICE);
                 try {
                     diceNumber = Integer.parseInt(response);
                 } catch (NumberFormatException e) {
@@ -194,32 +193,100 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
 
     @Override
     public void notifyNeedPosition() throws RemoteException {
-        bufferManager.consolePrint(player.getSchemaCard().toString(), Level.LOW);
+        BuildGraphic buildGraphic = new BuildGraphic();
+        String response;
+        int row;
+        int column;
 
+        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
+                buildMessage(player.getSchemaCard().toString()).toString(), Level.LOW);
+        do {
+            response = getAnswer("Insert a row: ");
+            try {
+                row = Integer.parseInt(response);
+            } catch (NumberFormatException e) {
+                row = -1;
+            }
+            if (row > 0 && row <= SchemaCard.NUMBER_OF_ROWS) {
+                response = getAnswer("Insert a column: ");
+                try {
+                    column = Integer.parseInt(response);
+                } catch (NumberFormatException e) {
+                    column = 0;
+                }
+                if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
+                    networkManager.getGameController().setPosition(new Position(row,column),gameName,
+                            toolCard.getName());
+                } else {
+                    bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                    row = -1;
+                }
+            } else {
+                bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                row = -1;
+            }
+        } while (row < 0);
     }
 
     @Override
     public void notifyNeedDicePositionOfCertainColor(Color color) throws RemoteException {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        String response;
+        int row;
+        int column;
 
+        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
+                + color.name()).
+                buildMessage(player.getSchemaCard().toString()).toString(), Level.LOW);
+        do {
+            response = getAnswer("Insert a row: ");
+            try {
+                row = Integer.parseInt(response);
+            } catch (NumberFormatException e) {
+                row = -1;
+            }
+            if (row > 0 && row <= SchemaCard.NUMBER_OF_ROWS) {
+                response = getAnswer("Insert a column: ");
+                try {
+                    column = Integer.parseInt(response);
+                } catch (NumberFormatException e) {
+                    column = 0;
+                }
+                if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
+                    networkManager.getGameController().setPosition(new Position(row,column),gameName,
+                            toolCard.getName());
+                } else {
+                    bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                    row = -1;
+                }
+            } else {
+                bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                row = -1;
+            }
+        } while (row < 0);
     }
 
     public void notifyRepeatAction() {
-
+        bufferManager.consolePrint("WARNING: There was an error with the last command\n " +
+                "which will be repeated.", Level.HIGH);
     }
 
     @Override
     public void notifyCommandInterrupted(CommandFlow error) {
-
+        bufferManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
+                toolCard.getName() + ", so you will not be able to use it this turn.", Level.HIGH);
     }
 
     @Override
     public void onTokenChange(int tokens) {
-
+        bufferManager.consolePrint("Now the Tool Card " + toolCard.getName() +
+                "have got " + tokens + "tokens on it", Level.HIGH);
     }
 
     @Override
     public void onCardDestroy() {
-
+        bufferManager.consolePrint("From now on you will no longer be able to use the Tool Card " +
+                toolCard.getName() + "in this game.", Level.HIGH);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
+import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
@@ -28,9 +29,9 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     private static final String TIMEOUT_COMMAND = "Timeout";
     private static final String LOBBY_USER_COMMAND = "Show lobby users";
 
-    public CLILobbyView(NetworkManager networkManager, ScreenManager screenManager)
+    public CLILobbyView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
-        super(networkManager, screenManager);
+        super(networkManager, screenManager, bufferManager);
         this.controller = networkManager.getLobbyController();
         this.isLoggedIn = false;
 
@@ -124,7 +125,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     public void onGameStart() throws RemoteException {
         bufferManager.consolePrint("GAME STARTED", Level.HIGH);
         bufferManager.stopConsoleRead();
-        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager));
+        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager));
     }
 
     @Override
