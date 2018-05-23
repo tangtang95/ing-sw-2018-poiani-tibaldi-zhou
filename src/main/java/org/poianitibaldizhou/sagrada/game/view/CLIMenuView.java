@@ -13,7 +13,6 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
     protected final transient NetworkManager networkManager;
     protected final transient ScreenManager screenManager;
     protected final transient BufferManager bufferManager;
-    protected transient User currentUser;
 
     public CLIMenuView(NetworkManager networkManager, ScreenManager screenManager)
             throws RemoteException {

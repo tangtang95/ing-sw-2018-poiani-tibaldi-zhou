@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
@@ -20,11 +21,17 @@ public class CLIGameView extends CLIMenuView implements IGameView {
     private List<PublicObjectiveCard> publicObjectiveCards;
     private Player player;
     private String gameName;
+    private transient User currentUser;
+
 
     public CLIGameView(NetworkManager networkManager, ScreenManager screenManager)
             throws RemoteException {
         super(networkManager, screenManager);
 
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     @Override
