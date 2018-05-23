@@ -51,6 +51,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void setDice(Dice dice, String gameName, String toolCardName) {
         Game game = gameManager.getGameByName(gameName);
+
         try {
             game.setExecutor(new DiceExecutorEvent(dice));
         } catch (InvalidActionException e) {

@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -57,23 +56,6 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     /**
-     * copy_constructor
-     *
-     * @param turnState turnState to copy
-     */
-    private TurnState(TurnState turnState) {
-        super(turnState.game);
-        this.currentRoundPlayer = turnState.currentRoundPlayer;
-        this.currentTurnPlayer = turnState.currentTurnPlayer;
-        this.playerState = turnState.playerState;
-        this.currentRound = turnState.currentRound;
-        this.isFirstTurn = turnState.isFirstTurn;
-        this.actionsUsed = new HashSet<>();
-        this.skipTurnPlayers = new HashMap<>();
-        this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
-    }
-
-    /**
      * Constructor.
      * Create the TurnState for the currentTurnPlayer
      *
@@ -103,10 +85,16 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        if (skipTurnPlayers.containsKey(getCurrentTurnPlayer()) && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
-            //TODO notify skip player
+        if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
+                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
+            game.getStateObservers().forEach(obs->obs.onSkipTurnState(
+                    currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
             nextTurn();
+            return;
         }
+        game.getStateObservers().forEach(obs->obs.onTurnState(
+                currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+
     }
 
 
@@ -153,14 +141,15 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *
      * @param player the currentTurnPlayer who choose to place a dice
      * @param dice   the dice to be placed
+     * @param position
      * @throws InvalidActionException if the given player is different from the currentTurnPlayer
      * @throws RuleViolationException if the rules of placement are violated
      */
     @Override
-    public void placeDice(Player player, Dice dice, int row, int column) throws RuleViolationException, InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        playerState.placeDice(player, dice, row, column);
+        playerState.placeDice(player, dice, position);
     }
 
     @Override
@@ -247,11 +236,16 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-    public static IStateGame newInstance(IStateGame ts) {
-        if (ts == null)
-            return null;
-        return new TurnState((TurnState) ts);
+    public void notifyOnPlaceDiceState(){
+        game.getStateObservers().forEach(obs -> obs.onPlaceDiceState(currentTurnPlayer.getUser()));
     }
 
+    public void notifyOnUseToolCardState(){
+        game.getStateObservers().forEach(obs -> obs.onUseCardState(currentTurnPlayer.getUser()));
+    }
+
+    public void notifyOnEndTurnState(){
+        game.getStateObservers().forEach(obs -> obs.onEndGame(currentTurnPlayer.getUser()));
+    }
 
 }

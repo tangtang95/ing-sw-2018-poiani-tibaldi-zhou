@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,9 +35,9 @@ public class ManagerMediator {
         return lobbyManager;
     }
 
-    public void createMultiPlayerGame(List<String> userTokens) {
+    public void createMultiPlayerGame(List<User> users) {
         String gameName = UUID.randomUUID().toString();
-        Game game= new MultiPlayerGame(gameName, userTokens);
+        Game game= new MultiPlayerGame(gameName, users);
         gameManager.addGame(game, gameName);
     }
 

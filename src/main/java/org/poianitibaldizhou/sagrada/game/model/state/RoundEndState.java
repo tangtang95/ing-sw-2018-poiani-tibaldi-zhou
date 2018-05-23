@@ -23,7 +23,7 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        // nothing to do
+        game.getStateObservers().forEach(obs -> obs.onRoundEnd(currentRound, currentRoundPlayer.getUser()));
     }
 
     @Contract(pure = true)

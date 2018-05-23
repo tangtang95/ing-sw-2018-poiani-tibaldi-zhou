@@ -1,8 +1,9 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
+package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -16,6 +17,6 @@ public interface IToolCardExecutorObserver {
     void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws RemoteException;
     void notifyNeedPosition() throws RemoteException;
     void notifyNeedDicePositionOfCertainColor(Color color) throws RemoteException;
-    void notifyError();
-    void notifyCommandInterrupted();
+    void notifyRepeatAction();
+    void notifyCommandInterrupted(CommandFlow error);
 }

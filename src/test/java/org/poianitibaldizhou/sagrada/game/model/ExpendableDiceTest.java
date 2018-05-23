@@ -1,15 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
-import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
-import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 
 import java.util.ArrayList;
@@ -18,7 +14,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

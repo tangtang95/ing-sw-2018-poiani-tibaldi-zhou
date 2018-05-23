@@ -59,9 +59,7 @@ public class LobbyManager {
     }
 
     private synchronized void createGame() {
-        List<String> userTokens = new ArrayList<>();
-        lobby.getUserList().forEach((user) -> userTokens.add(user.getToken()));
-        managerMediator.createMultiPlayerGame(userTokens);
+        managerMediator.createMultiPlayerGame(users);
         lobby.gameStart();
     }
 

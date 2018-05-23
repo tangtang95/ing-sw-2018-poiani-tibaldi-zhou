@@ -6,10 +6,11 @@ import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
@@ -27,10 +28,10 @@ public abstract class IStateGame {
     public void nextRound(){
         throw new IllegalStateException();
     }
-    public boolean ready(String token, SchemaCard schemaCard){
+    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException {
         throw new IllegalStateException();
     }
-    public void readyGame(String token){
+    public void readyGame(String token) throws InvalidActionException {
         throw new IllegalStateException();
     }
     public boolean throwDices(Player player){ throw new IllegalStateException(); }
@@ -41,7 +42,7 @@ public abstract class IStateGame {
         throw new IllegalStateException();
     }
     public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {throw new IllegalStateException();}
-    public void placeDice(Player player, Dice dice, int row, int column) throws RuleViolationException, InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, InvalidActionException {
         throw new IllegalStateException();
     }
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException, RemoteException, InterruptedException {

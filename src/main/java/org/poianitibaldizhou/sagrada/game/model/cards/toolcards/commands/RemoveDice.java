@@ -1,10 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.cli.Command;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -44,8 +43,8 @@ public class RemoveDice implements ICommand {
      * @param toolCardExecutor toolcard invoked
      * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the specified position doesn't contain a dice or if the dice contain doesn't match
-     * the specified color constraint. CommandFlow.STOP if it's not possible to remove a dice under the give
-     * CommandFlow.MAIN otherwise.
+     * the specified color constraint. CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR if none dice of the specified color
+     * is present in schemacard, CommandFlow.EMPTY_SCHEMACARD if the schemacard is empty; CommandFlow.MAIN otherwise.
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
@@ -58,24 +57,24 @@ public class RemoveDice implements ICommand {
 
         if (this.constraintType == PlacementRestrictionType.COLOR) {
             color = toolCardExecutor.getNeededColor();
-            if(!(toolCardExecutor.getTemporarySchemaCard().hasDiceOfColor(color)))
-                return CommandFlow.STOP;
+            if (!(toolCardExecutor.getTemporarySchemaCard().hasDiceOfColor(color)))
+                return CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR;
             for (IToolCardExecutorObserver obs : observerList)
                 obs.notifyNeedDicePositionOfCertainColor(color);
             position = toolCardExecutor.getPosition();
-            if (!toolCardExecutor.getTemporarySchemaCard().getDice(position.getRow(), position.getColumn()).getColor().equals(color)) {
+            if (!toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color)) {
                 toolCardExecutor.setNeededPosition(null);
                 return CommandFlow.REPEAT;
             }
         } else {
-            if(toolCardExecutor.getTemporarySchemaCard().isEmpty())
-                return CommandFlow.STOP;
+            if (toolCardExecutor.getTemporarySchemaCard().isEmpty())
+                return CommandFlow.EMPTY_SCHEMACARD;
             for (IToolCardExecutorObserver obs : observerList)
                 obs.notifyNeedPosition();
             position = toolCardExecutor.getPosition();
         }
 
-        removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position.getRow(), position.getColumn());
+        removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position);
 
         if (removed == null) {
             toolCardExecutor.setNeededPosition(null);

@@ -6,10 +6,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
+import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +22,17 @@ public class MultiPlayerGame extends Game{
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 3;
     public static final int NUMBER_OF_PRIVATE_OBJECTIVE_CARDS = 1;
 
-    public MultiPlayerGame(String name, List<String> tokens) {
-        super(name, tokens);
+    /**
+     * Constructor for Multi player.
+     * Create the Game with all the attributes initialized, create also all the player from the given users and
+     * set the state to SetupPlayerState
+     *
+     */
+    public MultiPlayerGame(String name, List<User> users) {
+        super(name);
+        this.users.addAll(users);
+
+        setState(new ResetState(this));
     }
 
     @Override
@@ -73,8 +82,8 @@ public class MultiPlayerGame extends Game{
     }
 
     @Override
-    public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.put(token, new MultiPlayer(token, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
+    public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        players.put(user.getToken(), new MultiPlayer(user, new FavorToken(schemaCard.getDifficulty()), schemaCard, privateObjectiveCards));
     }
 
     @Override

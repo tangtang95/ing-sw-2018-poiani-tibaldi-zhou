@@ -5,15 +5,9 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PinzaSgrossatriceTest {

@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -23,8 +23,8 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * @param player           player who invoked the command
      * @param toolCardExecutor invoked toolcard
      * @param turnState        state in which the player acts
-     * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.STOP if the draftpool
-     * is empty, CommandFlow.MAIN otherwise.
+     * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.EMPTY_DRAFTPOOL
+     * if the draftpool is empty, CommandFlow.MAIN otherwise.
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
@@ -50,7 +50,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         } catch (DiceNotFoundException e) {
             return CommandFlow.REPEAT;
         } catch (EmptyCollectionException e) {
-            return CommandFlow.STOP;
+            return CommandFlow.EMPTY_DRAFTPOOL;
         }
         return CommandFlow.MAIN;
     }

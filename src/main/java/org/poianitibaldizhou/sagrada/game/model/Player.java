@@ -1,24 +1,32 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
 
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Player implements IVictoryPoints {
+public abstract class Player implements IVictoryPoints, Serializable {
 
     protected final ICoin coin;
-    private final String token;
+    private final User user;
     protected SchemaCard schemaCard;
-    protected final List<PrivateObjectiveCard> privateObjectiveCards;
+    protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
+    private List<IPlayerObserver> observerList;
 
     /**
      * Set to null the player parameters:
@@ -26,21 +34,23 @@ public abstract class Player implements IVictoryPoints {
      * - schemaCard
      * - privateObjectiveCard
      *
-     * @param token string for locating the single player during the game
+     * @param user                  the same user of the lobby
      * @param schemaCard
      * @param privateObjectiveCards
      */
-    public Player(String token, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+    public Player(User user, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         this.schemaCard = SchemaCard.newInstance(schemaCard);
         this.privateObjectiveCards = new ArrayList<>(privateObjectiveCards);
         this.coin = coin;
-        this.token = token;
+        this.user = user;
         this.outcome = Outcome.IN_GAME;
         this.indexOfPrivateObjectiveCard = 0;
+        this.observerList = new ArrayList<>();
     }
 
+    // GETTER
     public String getToken() {
-        return token;
+        return user.getToken();
     }
 
     public SchemaCard getSchemaCard() {
@@ -55,8 +65,9 @@ public abstract class Player implements IVictoryPoints {
         return outcome;
     }
 
-    public boolean isDicePositionableOnSchemaCard(Dice dice, int row, int column) {
-        return schemaCard.isDicePositionable(dice, row, column);
+    @Contract(pure = true)
+    public User getUser() {
+        return user;
     }
 
     public int getCoins() {
@@ -65,11 +76,22 @@ public abstract class Player implements IVictoryPoints {
 
     public void removeCoins(int cost) {
         coin.removeCoins(cost);
+        observerList.forEach(observer -> observer.onFavorTokenChange(coin.getCoins()));
     }
 
     public boolean isCardUsable(ToolCard toolCard) {
         return coin.isCardUsable(toolCard);
     }
+
+    /**
+     * It copies the list of observers, creating a new list, but not copying the single elements.
+     *
+     * @return list of observers
+     */
+    public List<IPlayerObserver> getObserverList() {
+        return new ArrayList<>(observerList);
+    }
+
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -83,34 +105,36 @@ public abstract class Player implements IVictoryPoints {
     /**
      * Place if possible the dice chosen in the place chosen
      *
-     * @param dice the dice which will be placed
-     * @param row row position (number between 0 and 3 included)
-     * @param column column position (number between 0 and 4 included)
+     * @param dice           the dice which will be placed
+     * @param position       row position (number between 0 and 3 included)
      * @param tileConstraint the constraint of the tile chosen
      * @param diceConstraint the constrains of the dice
      * @throws RuleViolationException if the rule of the schema is violated
      */
-    public void placeDice(Dice dice, int row, int column, PlacementRestrictionType tileConstraint,
+    public void placeDice(Dice dice, Position position, PlacementRestrictionType tileConstraint,
                           DiceRestrictionType diceConstraint) throws RuleViolationException {
-        schemaCard.setDice(dice, row, column, tileConstraint, diceConstraint);
+        schemaCard.setDice(dice, position, tileConstraint, diceConstraint);
     }
 
-    public void placeDice(Dice dice, int row, int column) throws RuleViolationException {
-        placeDice(dice, row, column, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+    public void placeDice(Dice dice, Position position) throws RuleViolationException {
+        placeDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
     public void setOutcome(Outcome outcome) {
         this.outcome = outcome;
     }
 
-
     public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
-        if(!containsPrivateObjectiveCard(privateObjectiveCard))
+        if (!containsPrivateObjectiveCard(privateObjectiveCard))
             throw new IllegalArgumentException("PrivateObjectiveCard doesn't exist in the player");
         for (int i = 0; i < privateObjectiveCards.size(); i++) {
-            if(privateObjectiveCards.get(i).equals(privateObjectiveCard))
+            if (privateObjectiveCards.get(i).equals(privateObjectiveCard))
                 indexOfPrivateObjectiveCard = i;
         }
+    }
+
+    public void attachObserver(IPlayerObserver observer) {
+        observerList.add(observer);
     }
 
     /**
@@ -138,15 +162,20 @@ public abstract class Player implements IVictoryPoints {
         return Objects.hash(MultiPlayer.class, schemaCard, privateObjectiveCards, coin);
     }
 
-    public static Player newInstance(Player player) {
-        if (player == null)
-            return null;
-        if(player instanceof SinglePlayer)
-            return new SinglePlayer(player.token, player.coin, player.schemaCard,
-                player.privateObjectiveCards);
+    /**
+     * Copy player in a new instance of player. Observers are copied by references.
+     *
+     * @param player player that needs to be copied
+     * @return copied player
+     */
+    public static Player newInstance(@NotNull Player player) {
+        Player newPlayer;
+        if (player instanceof SinglePlayer)
+            newPlayer = SinglePlayer.newInstance(player);
         else
-            return new MultiPlayer(player.token, player.coin, player.schemaCard,
-                    player.privateObjectiveCards);
+            newPlayer = MultiPlayer.newInstance(player);
+
+        return newPlayer;
     }
 
     private boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {

@@ -7,15 +7,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +98,7 @@ public class SwapDiceWithRoundTrackTest {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getNeededDice()).thenReturn(dice);
         doThrow(new EmptyCollectionException()).when(draftPool).useDice(dice);
-        assertEquals(CommandFlow.STOP, command.executeCommand(player,executor,stateGame));
+        assertEquals(CommandFlow.EMPTY_DRAFTPOOL, command.executeCommand(player,executor,stateGame));
     }
 
     @Test

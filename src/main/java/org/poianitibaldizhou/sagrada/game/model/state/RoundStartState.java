@@ -24,7 +24,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        // nothing to do
+        game.getStateObservers().forEach(obs -> obs.onRoundStart(currentRound, currentRoundPlayer.getUser()));
     }
 
     /**

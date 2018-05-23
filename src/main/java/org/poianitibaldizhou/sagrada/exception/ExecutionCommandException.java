@@ -1,14 +1,17 @@
 package org.poianitibaldizhou.sagrada.exception;
 
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+
 public class ExecutionCommandException extends Exception {
 
     private Exception innerException;
+    private CommandFlow error;
 
-    public ExecutionCommandException(){
-
+    public ExecutionCommandException(CommandFlow error){
+        this.error = error;
     }
 
-    public ExecutionCommandException(RuleViolationException e) {
-        innerException = e;
+    public CommandFlow getError() {
+        return error;
     }
 }

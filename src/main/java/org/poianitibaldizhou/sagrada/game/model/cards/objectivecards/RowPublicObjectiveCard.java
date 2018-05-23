@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
@@ -46,7 +47,7 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             Set<Integer> valueSet = new HashSet<>();
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                Dice dice = schema.getDice(i,j);
+                Dice dice = schema.getDice(new Position(i, j));
                 if (dice != null) {
                     IConstraint constraint = (getType() == ObjectiveCardType.COLOR) ?
                             dice.getColorConstraint() : dice.getNumberConstraint();

@@ -47,11 +47,11 @@ public class CheckTurnTest {
 
         when(stateGame.isFirstTurn()).thenReturn(false);
         command.executeCommand(invokerPlayer, executor, stateGame);
-        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer, executor, stateGame));
+        assertEquals(CommandFlow.TURN_CHECK_FAILED, command.executeCommand(invokerPlayer, executor, stateGame));
 
         command = new CheckTurn(2);
         when(stateGame.isFirstTurn()).thenReturn(true);
-        assertEquals(CommandFlow.STOP, command.executeCommand(invokerPlayer, executor, stateGame));
+        assertEquals(CommandFlow.TURN_CHECK_FAILED, command.executeCommand(invokerPlayer, executor, stateGame));
 
         when(stateGame.isFirstTurn()).thenReturn(false);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));

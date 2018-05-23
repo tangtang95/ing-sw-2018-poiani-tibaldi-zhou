@@ -8,10 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveDiceFromDraftPool;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -23,9 +23,19 @@ public class SinglePlayerGame extends Game{
 
     private final int difficulty;
 
-    public SinglePlayerGame(String singlePlayerToken, int difficulty) {
-        super("Single Player Game", singlePlayerToken);
+    /**
+     * Constructor.
+     * Create a single player game based on difficulty and playerToken
+     * @param name the name of the game
+     * @param user the single user
+     * @param difficulty the difficulty of the game
+     */
+    public SinglePlayerGame(String name, User user, int difficulty){
+        super(name);
+        this.users.add(user);
         this.difficulty = difficulty;
+
+        setState(new ResetState(this));
     }
 
     public int getDifficulty(){
@@ -49,13 +59,8 @@ public class SinglePlayerGame extends Game{
         return targetScore;
     }
 
-    public void setPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.put(token, new SinglePlayer(token, new ExpendableDice(this), schemaCard, privateObjectiveCards));
-    }
-
-    public void requestPrivateObjectiveCardFromPlayer() {
-        players.get(0).getPrivateObjectiveCards();
-        //TODO notify observer
+    public void setPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        players.put(user.getToken(), new SinglePlayer(user, new ExpendableDice(this), schemaCard, privateObjectiveCards));
     }
 
     @Override
@@ -91,13 +96,14 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
-    public void addNewPlayer(String token, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        setPlayer(token, schemaCard, privateObjectiveCards);
+    public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+        setPlayer(user, schemaCard, privateObjectiveCards);
     }
 
     @Override
     public void notifyPlayersEndGame() {
-        requestPrivateObjectiveCardFromPlayer();
+        players.get(0).getPrivateObjectiveCards();
+        //TODO notify observer
     }
 
     @Override

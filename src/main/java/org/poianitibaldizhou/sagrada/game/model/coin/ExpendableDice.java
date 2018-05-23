@@ -1,5 +1,8 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.coin;
 
+import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 

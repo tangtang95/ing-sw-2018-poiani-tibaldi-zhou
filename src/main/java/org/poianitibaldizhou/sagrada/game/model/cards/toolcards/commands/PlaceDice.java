@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -46,7 +46,7 @@ public class PlaceDice implements ICommand {
      * @param player           player that invoked the toolCard: its schema card will receive a new dice
      * @param toolCardExecutor toolCard that has been invoked
      * @param turnState        the state of the game
-     * @return CommandFlow.REPEAT if the restrictions aren't respected; CommandFlow.STOP if it's not possible to place
+     * @return CommandFlow.REPEAT if the restrictions aren't respected; CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE if it's not possible to place
      * the dice in any position; CommandFlow.MAIN otherwise
      * @throws InterruptedException given to wait() in getting parameters from the executor
      * @throws RemoteException      network communication error
@@ -59,7 +59,7 @@ public class PlaceDice implements ICommand {
         dice = toolCardExecutor.getNeededDice();
 
         if (!(toolCardExecutor.getTemporarySchemaCard().isDicePositionable(dice, tileConstraint, diceConstraint))) {
-            return CommandFlow.STOP;
+            return CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE;
         }
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
@@ -69,7 +69,7 @@ public class PlaceDice implements ICommand {
         position = toolCardExecutor.getPosition();
 
         try {
-            toolCardExecutor.getTemporarySchemaCard().setDice(dice, position.getRow(), position.getColumn(), this.tileConstraint, this.diceConstraint);
+            toolCardExecutor.getTemporarySchemaCard().setDice(dice, position, this.tileConstraint, this.diceConstraint);
         } catch (RuleViolationException e) {
             return CommandFlow.REPEAT;
         }

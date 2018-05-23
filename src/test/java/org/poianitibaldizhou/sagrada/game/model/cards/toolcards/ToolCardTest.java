@@ -7,9 +7,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Node;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,21 +65,6 @@ public class ToolCardTest {
     public void tearDown() throws Exception {
         toolCardSingle = null;
         toolCardMulti = null;
-    }
-
-    @Test
-    public void testUseCardSingle() {
-        assertEquals(commands, toolCardSingle.getCommands());
-        for(IToolCardObserver observer : observerList)
-            verify(observer, times(1)).onCardDestroy();
-    }
-
-    @Test
-    public void testUseCardMulti() {
-        assertEquals(commands, toolCardMulti.getCommands());
-
-        for(IToolCardObserver observer : observerList)
-            verify(observer, times(1)).onTokenChange(toolCardMulti.getTokens());
     }
 
     @Test

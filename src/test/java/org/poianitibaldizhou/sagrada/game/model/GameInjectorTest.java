@@ -158,6 +158,7 @@ public class GameInjectorTest {
             fail("exception expected");
         } catch (IllegalArgumentException e){
             assertNotEquals(null, e);
+            e.printStackTrace();
         }
     }
 }
