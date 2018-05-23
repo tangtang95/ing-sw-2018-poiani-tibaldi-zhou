@@ -2,48 +2,42 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
-import java.util.Objects;
+import java.util.List;
 
-public class RemoveDiceFromDraftPool implements ICommand {
+public class PayDice implements ICommand {
 
-    /**
-     * It requires a dice in the toolcard and removes it from the toolcard.
-     *
-     * @param player           player who invoked the toolcard
-     * @param toolCardExecutor toolcard invoked
-     * @param turnState        state in which the player acts
-     * @return CommandFlow.NOT_DICE_IN_DRAFTPOOL if the dice isn't present in DraftPool, CommandFlow_EMPTY_DRAFTPOOL if
-     * the draftpool is empty, CommandFlow.MAIN otherwise
-     * @throws RemoteException      network communication error
-     * @throws InterruptedException due to wait()
-     */
+    private final Color color;
+
+    public PayDice(Color color){
+        this.color = color;
+    }
+
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+        List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices(color);
+        for (IToolCardExecutorObserver obs: toolCardExecutor.getObservers()) {
+            obs.notifyNeedDice(diceList);
+        }
+
         Dice dice = toolCardExecutor.getNeededDice();
+        if(dice.getColor() != color)
+            return CommandFlow.REPEAT;
         try {
             toolCardExecutor.getTemporaryDraftPool().useDice(dice);
         } catch (DiceNotFoundException e) {
-            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
+            return CommandFlow.REPEAT;
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DRAFTPOOL;
         }
         return CommandFlow.MAIN;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof RemoveDiceFromDraftPool;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(RemoveDiceFromDraftPool.class);
     }
 }

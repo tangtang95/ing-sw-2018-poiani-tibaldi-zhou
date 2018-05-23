@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class AddDiceToDiceBag implements ICommand {
@@ -21,7 +22,7 @@ public class AddDiceToDiceBag implements ICommand {
      * @throws InterruptedException due to the wait for toolCard.getNeededDice()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException, RemoteException {
         Dice dice = toolCardExecutor.getNeededDice();
         toolCardExecutor.getTemporaryDicebag().addElement(dice);
         return CommandFlow.MAIN;

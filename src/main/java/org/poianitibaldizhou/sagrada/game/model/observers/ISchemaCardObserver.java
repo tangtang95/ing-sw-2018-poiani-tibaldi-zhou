@@ -3,7 +3,10 @@ package org.poianitibaldizhou.sagrada.game.model.observers;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Position;
 
-public interface ISchemaCardObserver {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface ISchemaCardObserver extends Remote{
 
     /**
      * Notify that a dice's been placed in a certain position
@@ -11,7 +14,7 @@ public interface ISchemaCardObserver {
      * @param dice     dice placed
      * @param position placement position
      */
-    void onPlaceDice(Dice dice, Position position);
+    void onPlaceDice(Dice dice, Position position) throws RemoteException;
 
 
     /**
@@ -20,5 +23,5 @@ public interface ISchemaCardObserver {
      * @param dice     dice removed
      * @param position removal position
      */
-    void onDiceRemove(Dice dice, Position position);
+    void onDiceRemove(Dice dice, Position position) throws RemoteException;
 }

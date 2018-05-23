@@ -91,7 +91,6 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
         bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -15,11 +15,11 @@ public class Position {
      * Constructor.
      * It creates a position with a specified row and column.
      *
-     * @param row specified row
+     * @param row    specified row
      * @param column specified column
      */
     public Position(int row, int column) {
-        if(SchemaCard.isOutOfBounds(row,column))
+        if (SchemaCard.isOutOfBounds(row, column))
             throw new IllegalArgumentException("Row and column is out of bounds");
         this.row = row;
         this.column = column;
@@ -33,17 +33,33 @@ public class Position {
         return row;
     }
 
+    /**
+     * @param row the delta row to add
+     * @param column the delta column to add
+     * @return a new Position with row = this.row + row given and column = this.column + column given
+     */
     public Position add(int row, int column) {
         return new Position(this.row + row, this.column + column);
     }
 
-    public Position subtract(int row, int column){
+    /**
+     *
+     * @param row the delta row to subtract
+     * @param column the delta column to subtract
+     * @return a new Position with row = this.row - row given and column = this.column - column given
+     */
+    public Position subtract(int row, int column) {
         return new Position(this.row - row, this.column - column);
     }
 
     @Override
+    public String toString() {
+        return "Position: (" + getRow() +", " + getColumn() + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
-        if(!(o instanceof Position))
+        if (!(o instanceof Position))
             return false;
         Position temp = (Position) o;
         return temp.getColumn() == this.column && temp.getRow() == this.row;
@@ -53,7 +69,6 @@ public class Position {
     public int hashCode() {
         return Objects.hash(row, column);
     }
-
 
 
 }

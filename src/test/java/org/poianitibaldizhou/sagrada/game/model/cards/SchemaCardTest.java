@@ -104,7 +104,7 @@ public class SchemaCardTest {
     }
 
     @Test
-    public void testSetDiceRuleViolationException() {
+    public void testSetDiceRuleViolationException() throws Exception{
         Dice d1 = null, d2 = null, d3 = null, d4 = null, d5 = null;
         try {
             d1 = new Dice(4, Color.YELLOW);
@@ -230,7 +230,7 @@ public class SchemaCardTest {
     }
 
     @Test
-    public void testIsolatedSetDice() throws RuleViolationException {
+    public void testIsolatedSetDice() throws Exception {
         Dice d1 = new Dice(5, Color.PURPLE);
         try {
             schemaCard.isDicePositionable(d1, 0, 1, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
@@ -245,7 +245,7 @@ public class SchemaCardTest {
     }
 
     @Test
-    public void getNumberOfEmptySpaces() throws RuleViolationException{
+    public void getNumberOfEmptySpaces() throws Exception{
         assertEquals(20, emptySchemaCard.getNumberOfEmptySpaces());
         assertEquals(19, schemaCard.getNumberOfEmptySpaces());
         schemaCard.removeDice(new Position(0, 2));

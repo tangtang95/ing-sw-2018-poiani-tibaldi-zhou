@@ -7,11 +7,14 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveDiceFromDraftPool;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +33,7 @@ public class SinglePlayerGame extends Game{
      * @param user the single user
      * @param difficulty the difficulty of the game
      */
-    public SinglePlayerGame(String name, User user, int difficulty){
+    public SinglePlayerGame(String name, User user, int difficulty) throws RemoteException {
         super(name);
         this.users.add(user);
         this.difficulty = difficulty;
@@ -48,7 +51,7 @@ public class SinglePlayerGame extends Game{
      * @return the target score
      */
     @Contract(pure = true)
-    public int getTargetScore() {
+    public int getTargetScore() throws RemoteException {
         int targetScore = 0;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             List<Dice> dices = getRoundTrack().getDices(i);
@@ -84,7 +87,7 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
-    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
+    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) throws RemoteException {
         int targetScore = getTargetScore();
         Outcome outcome = (scoreMap.get(currentRoundPlayer) > targetScore) ? Outcome.WIN : Outcome.LOSE;
         setPlayerOutcome(currentRoundPlayer, outcome);
@@ -101,24 +104,23 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
-    public void notifyPlayersEndGame() {
-        players.get(0).getPrivateObjectiveCards();
-        //TODO notify observer
+    public void handleEndGame() throws RemoteException {
+        for (Player player: players.values()) {
+            getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());
+        }
     }
 
     @Override
-    public Node<ICommand> getCompleteCommands(ToolCard toolCard) {
-        Node<ICommand> useDiceCommand = new Node<>(new RemoveDiceFromDraftPool());
-        Node<ICommand> clearAll = new Node<>(new ClearAll());
-        useDiceCommand.setLeftChild(clearAll);
+    public Node<ICommand> getPreCommands(ToolCard toolCard) {
+        Node<ICommand> useDiceCommand = new Node<>(new PayDice(toolCard.getColor()));
         Node<ICommand> destroyToolCard = new Node<>((player, toolCardExecutor, turnState) -> {
             toolCard.destroyToolCard();
             return CommandFlow.MAIN;
         });
-        clearAll.setLeftChild(destroyToolCard);
 
-        Node<ICommand> coreToolCardCommands = toolCard.getCommands();
-        clearAll.setLeftChild(coreToolCardCommands);
+        Node<ICommand> clearAll = new Node<>(new ClearAll());
+        useDiceCommand.setLeftChild(destroyToolCard);
+        destroyToolCard.setLeftChild(clearAll);
         return useDiceCommand;
     }
 

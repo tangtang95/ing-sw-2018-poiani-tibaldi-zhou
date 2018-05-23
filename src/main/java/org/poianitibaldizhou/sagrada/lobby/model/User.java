@@ -9,7 +9,7 @@ import java.util.Objects;
 @Immutable
 public class User implements Serializable {
     private String name;
-    private String token;
+    private transient String token;
 
     /**
      * Constructor.

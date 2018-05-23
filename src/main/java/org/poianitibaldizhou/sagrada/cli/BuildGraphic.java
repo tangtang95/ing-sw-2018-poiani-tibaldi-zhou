@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BuildGraphic {
     private StringBuilder stringBuilder;
@@ -69,7 +70,7 @@ public class BuildGraphic {
         return this;
     }
 
-    public BuildGraphic buidGraphicToolCards(List<ToolCard> toolCards) {
+    public BuildGraphic buildGraphicToolCards(List<ToolCard> toolCards) {
         for (int i = 0; i < toolCards.size() ; i++) {
                stringBuilder.append("[").append(i).append("]\n");
                stringBuilder.append("Card Name: ").append(toolCards.get(i).getName()).append("\n");
@@ -77,6 +78,14 @@ public class BuildGraphic {
                stringBuilder.append("Description:\n");
                stringBuilder.append(toolCards.get(i).getDescription()).append("\n\n");
         }
+        return this;
+    }
+
+    public BuildGraphic buildTable(Map<String, String> table){
+        table.forEach((key, value) -> {
+            stringBuilder.append(String.format("%10s %3s", key, value));
+            stringBuilder.append("\n");
+        });
         return this;
     }
 

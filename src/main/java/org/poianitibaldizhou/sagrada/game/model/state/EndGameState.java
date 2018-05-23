@@ -5,7 +5,9 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
@@ -18,7 +20,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * Create EndGameState to calculate the score of the players and determinate the outcomes of all players
      *
      * @param game               the current game
-     * @param currentRoundPlayer
+     * @param currentRoundPlayer the current player of the round who has the diceBag
      */
     EndGameState(Game game, Player currentRoundPlayer) {
         super(game);
@@ -26,34 +28,35 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     /**
-     * copy-constructor
+     * Initialize the state by notifying the observer and
      *
-     * @param gameState the gameState to copy
+     * {@inheritDoc}
      */
-    private EndGameState(EndGameState gameState) {
-        super(gameState.game);
-        this.currentRoundPlayer = gameState.currentRoundPlayer;
-        for (Player player : gameState.scoreMap.keySet())
-            this.scoreMap.put(player, gameState.scoreMap.get(player));
+    @Override
+    public void init() throws RemoteException {
+        for(IStateObserver obs : game.getStateObservers()) obs.onEndGame(currentRoundPlayer.getUser());
+        game.handleEndGame();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void init() {
-        game.getStateObservers().forEach(obs -> obs.onEndGame(currentRoundPlayer.getUser()));
-        game.notifyPlayersEndGame();
-    }
-
-    @Override
-    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
+    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException, RemoteException {
         game.selectPrivateObjectiveCard(player, privateObjectiveCard);
         calculateVictoryPoints();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void calculateVictoryPoints() {
+    public void calculateVictoryPoints() throws RemoteException {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
         game.setPlayersOutcome(scoreMap, currentRoundPlayer);
-        //TODO notify
+        for(IStateObserver obs : game.getStateObservers()){
+            obs.onVictoryPointsCalculated(scoreMap);
+        }
     }
 
     /**
@@ -78,9 +81,4 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-    public static IStateGame newInstance(IStateGame egs) {
-        if (egs == null)
-            return null;
-        return new EndGameState((EndGameState) egs);
-    }
 }

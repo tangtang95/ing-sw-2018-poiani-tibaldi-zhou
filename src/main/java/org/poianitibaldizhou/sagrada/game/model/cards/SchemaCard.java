@@ -12,11 +12,12 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SchemaCard implements Serializable{
+public class SchemaCard implements Serializable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
@@ -128,15 +129,15 @@ public class SchemaCard implements Serializable{
      * Check if the dice can be placed on the tile designated by row and column based on constraint given
      *
      * @param dice            the dice to check if positionable
-     * @param row the row of the tile position
-     * @param column the column of the tile position
+     * @param row             the row of the tile position
+     * @param column          the column of the tile position
      * @param restriction     the constraint to check on the tile
      * @param diceRestriction the constraint to check on the placement of dice
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice, int row, int column, PlacementRestrictionType restriction,
-                                      DiceRestrictionType diceRestriction){
+                                      DiceRestrictionType diceRestriction) {
         return isDicePositionable(dice, new Position(row, column), restriction, diceRestriction);
     }
 
@@ -157,8 +158,8 @@ public class SchemaCard implements Serializable{
      * Check if the dice can be placed on the tile designated by row and column based on the standard constraint
      * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)
      *
-     * @param dice     the dice to check if positionable
-     * @param row the row of the tile position
+     * @param dice   the dice to check if positionable
+     * @param row    the row of the tile position
      * @param column the column of the tile position
      * @return true if the dice can be placed on the point
      */
@@ -252,7 +253,7 @@ public class SchemaCard implements Serializable{
      *                                this.isEmpty() && !this.isOutOfBounds(row,column) ||
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
-    public void setDice(Dice dice, Position position) throws RuleViolationException {
+    public void setDice(Dice dice, Position position) throws RuleViolationException, RemoteException {
         setDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
@@ -269,7 +270,7 @@ public class SchemaCard implements Serializable{
      *                                this.isEmpty() && !this.isOutOfBounds(row,column) ||
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
-    public void setDice(Dice dice, int row, int column) throws RuleViolationException {
+    public void setDice(Dice dice, int row, int column) throws RuleViolationException, RemoteException {
         setDice(dice, new Position(row, column));
     }
 
@@ -290,7 +291,7 @@ public class SchemaCard implements Serializable{
      *                                getNumberOfAdjacentDices() > 0
      */
     public void setDice(Dice dice, Position position, PlacementRestrictionType restriction,
-                        DiceRestrictionType diceRestriction) throws RuleViolationException {
+                        DiceRestrictionType diceRestriction) throws RuleViolationException, RemoteException {
         if (isEmpty()) {
             if (!isBorderPosition(position)) {
                 throw new RuleViolationException(RuleViolationType.NOT_BORDER_TILE);
@@ -315,7 +316,9 @@ public class SchemaCard implements Serializable{
         }
         tileMatrix[position.getRow()][position.getColumn()].setDice(dice, restriction);
 
-        observerList.forEach(obs -> obs.onPlaceDice(dice, position));
+        for (ISchemaCardObserver schemaCardObserver : observerList) {
+            schemaCardObserver.onPlaceDice(dice, position);
+        }
     }
 
     /**
@@ -323,9 +326,9 @@ public class SchemaCard implements Serializable{
      * (PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL).
      * It also notifies the observers that a dice has been placed in a certain position.
      *
-     * @param dice   the dice to place on the schemaCard
-     * @param row    the row where to place the dice
-     * @param column the column where to place the dice
+     * @param dice            the dice to place on the schemaCard
+     * @param row             the row where to place the dice
+     * @param column          the column where to place the dice
      * @param restriction     the constraint to check on the tile
      * @param diceRestriction the constraint to check on the placement of dice
      * @throws RuleViolationException if getNeededDice(row, column) != null ||
@@ -334,7 +337,7 @@ public class SchemaCard implements Serializable{
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
     public void setDice(Dice dice, int row, int column, PlacementRestrictionType restriction,
-                        DiceRestrictionType diceRestriction) throws RuleViolationException {
+                        DiceRestrictionType diceRestriction) throws RuleViolationException, RemoteException {
         setDice(dice, new Position(row, column), restriction, diceRestriction);
     }
 
@@ -346,9 +349,9 @@ public class SchemaCard implements Serializable{
      * @param position the position from where to remove the dice
      * @return the dice removed from the point position (if there is no dice it returns null)
      */
-    public Dice removeDice(Position position) {
+    public Dice removeDice(Position position) throws RemoteException {
         Dice removedDice = tileMatrix[position.getRow()][position.getColumn()].removeDice();
-        observerList.forEach(obs -> obs.onDiceRemove(removedDice, position));
+        for (ISchemaCardObserver obs : observerList) obs.onDiceRemove(removedDice, position);
         return removedDice;
     }
 

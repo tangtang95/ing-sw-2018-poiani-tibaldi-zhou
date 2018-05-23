@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.UseCardState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class UseCardAction implements IActionCommand {
@@ -13,7 +14,7 @@ public class UseCardAction implements IActionCommand {
      * @param turnState the actual turnState of the game
      */
     @Override
-    public void executeAction(TurnState turnState) {
+    public void executeAction(TurnState turnState) throws RemoteException {
         turnState.setPlayerState(new UseCardState(turnState));
     }
 

@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
 import static org.junit.Assert.*;
@@ -53,10 +54,18 @@ public class RoundStartStateTest {
         when(game.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGame.NUMBER_OF_DICES_TO_DRAW);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         roundStartState.init();
-        assertFalse(roundStartState.throwDices(otherPlayer));
-        assertTrue(roundStartState.throwDices(currentPlayer));
+        roundStartState.throwDices(currentPlayer);
         verify(game).addDicesToDraftPoolFromDiceBag();
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
+    }
+
+    @Test(expected = InvalidActionException.class)
+    public void throwDicesTestException() throws Exception{
+        when(game.isSinglePlayer()).thenReturn(true);
+        when(game.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGame.NUMBER_OF_DICES_TO_DRAW);
+        roundStartState = new RoundStartState(game, 0, currentPlayer);
+        roundStartState.init();
+        roundStartState.throwDices(otherPlayer);
     }
 
     @Test
@@ -69,8 +78,7 @@ public class RoundStartStateTest {
         when(game.getNumberOfDicesToDraw()).thenReturn(numberOfPlayers*2 + 1);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         roundStartState.init();
-        assertFalse(roundStartState.throwDices(otherPlayer));
-        assertTrue(roundStartState.throwDices(currentPlayer));
+        roundStartState.throwDices(currentPlayer);
         verify(game).addDicesToDraftPoolFromDiceBag();
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }

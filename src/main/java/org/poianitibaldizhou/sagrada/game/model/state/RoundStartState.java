@@ -1,8 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+
+import java.rmi.RemoteException;
 
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -12,8 +16,9 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     /**
      * Constructor.
      * Create the state of RoundStartGame
-     *  @param game the game to consider
-     * @param currentRound the current round of the game
+     *
+     * @param game               the game to consider
+     * @param currentRound       the current round of the game
      * @param currentRoundPlayer the player who is the first player of the round
      */
     RoundStartState(Game game, int currentRound, Player currentRoundPlayer) {
@@ -22,36 +27,32 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
         this.currentRound = currentRound;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void init() {
-        game.getStateObservers().forEach(obs -> obs.onRoundStart(currentRound, currentRoundPlayer.getUser()));
+    public void init() throws RemoteException {
+        for (IStateObserver obs : game.getStateObservers())
+            obs.onRoundStart(currentRound, currentRoundPlayer.getUser());
     }
 
     /**
+     * {@inheritDoc}
+     * <p>
      * Inject the number of dices based on the numberOfPlayers or the type of game (single player or multi player) and
      * set the state of the game to the TurnState
-     *
-     * @param player the player who has called the throw dices (in the view)
      */
     @Override
-    public boolean throwDices(Player player) {
-        if(currentRoundPlayer.equals(player)) {
-            game.addDicesToDraftPoolFromDiceBag();
-            game.setState(new TurnState(game, currentRound, currentRoundPlayer, player,true));
-            return true;
-        }
-        return false;
+    public void throwDices(Player player) throws RemoteException, InvalidActionException {
+        if (!currentRoundPlayer.equals(player))
+            throw new InvalidActionException();
+        game.addDicesToDraftPoolFromDiceBag();
+        game.setState(new TurnState(game, currentRound, currentRoundPlayer, player, true));
     }
 
     @Contract(pure = true)
-    public Player getCurrentRoundPlayer(){
+    public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;
     }
 
-    public static IStateGame newInstance(IStateGame rss) {
-        if (rss == null)
-            return null;
-        return new RoundStartState(rss.game, ((RoundStartState)(rss)).currentRound,
-                ((RoundStartState)(rss)).currentRoundPlayer);
-    }
 }

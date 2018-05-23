@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -86,13 +87,13 @@ public class ToolCard extends Card {
     }
 
     //MODIFIERS
-    public void addTokens(final int tokens) {
+    public void addTokens(final int tokens) throws RemoteException {
         this.tokens += tokens;
-        observers.forEach(obs -> obs.onTokenChange(tokens));
+        for(IToolCardObserver obs : observers) obs.onTokenChange(tokens);
     }
 
-    public void destroyToolCard() {
-        observers.forEach(IToolCardObserver::onCardDestroy);
+    public void destroyToolCard() throws RemoteException {
+        for(IToolCardObserver obs : observers) obs.onCardDestroy();
     }
 
     public void attachToolCardObserver(IToolCardObserver observer) {

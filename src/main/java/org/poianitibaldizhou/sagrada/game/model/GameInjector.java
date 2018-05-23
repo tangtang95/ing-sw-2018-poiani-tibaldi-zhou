@@ -17,6 +17,11 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Objects;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,7 +46,7 @@ public class GameInjector {
      *
      * @param toolCardDrawableCollection DrawableCollection of ToolCard
      */
-    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) {
+    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) throws RemoteException {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -67,7 +72,7 @@ public class GameInjector {
      *
      * @param diceBag DrawableCollection of Dice not null
      */
-    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) {
+    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) throws RemoteException {
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
@@ -85,7 +90,7 @@ public class GameInjector {
      */
     public static void injectPublicObjectiveCards(
             @NotNull DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection)
-            throws WrongCardInJsonFileException {
+            throws WrongCardInJsonFileException, RemoteException {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -157,7 +162,7 @@ public class GameInjector {
      * @param privateObjectiveCardDrawableCollection DrawableCollection of PrivateObjectiveCard
      */
     public static void injectPrivateObjectiveCard(
-            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) {
+            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) throws RemoteException {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -177,12 +182,12 @@ public class GameInjector {
     }
 
     /**
-     * inject all SchemaCard in the DrawableCollection of SchemaCard, getting
+     * inject all SchemaCard in the DrawableCollection of List of SchemaCard, getting
      * cards from a json file resources/schemaCards.json
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard
      */
-    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) {
+    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) throws RemoteException {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;

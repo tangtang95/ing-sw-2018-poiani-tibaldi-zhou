@@ -8,8 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
+import java.rmi.RemoteException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,9 +40,14 @@ public class SetupPlayerState extends IStateGame {
         privateObjectiveCardMap = new HashMap<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void init() {
-        game.getStateObservers().forEach(IStateObserver::onSetupPlayer);
+    public void init() throws RemoteException {
+        for (IStateObserver obs : game.getStateObservers()) {
+            obs.onSetupPlayer();
+        }
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<List<SchemaCard>> schemaCards = new DrawableCollection<>();
@@ -70,16 +77,19 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             privateObjectiveCardMap.put(token, privateObjectiveCardList);
+            if (!game.getGameObservers().containsKey(token))
+                throw new IllegalStateException("SEVERE ERROR: cannot find token");
             game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
-
         }
 
     }
 
 
     /**
-     * Method of the state pattern: When the player have finished to select the schemaCard,
-     * this method is invoked to set the SchemaCard to the player and when every player has readied the state
+     * {@inheritDoc}
+     * <p>
+     * When the player have finished to select the schemaCard, this method is invoked to set the SchemaCard
+     * to the player and when every player has readied the state
      *
      * @param token      the token of the player who have selected the schemaCard
      * @param schemaCard the schemaCard chosen by the player
@@ -87,14 +97,17 @@ public class SetupPlayerState extends IStateGame {
      *                                the schemaCard given is the wrong one
      */
     @Override
-    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException {
+    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException, RemoteException {
         if (!isPlayerReady(token) && containsSchemaCard(token, schemaCard)) {
             playersReady.add(token);
             game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
-                game.getGameObservers().values().forEach(obs -> obs.onPlayersCreate(game.getPlayers()));
+                for (IGameObserver obs : game.getGameObservers().values()) {
+                    obs.onPlayersCreate(game.getPlayers());
+                }
                 game.setState(new SetupGameState(game));
             }
+            return;
         }
         throw new InvalidActionException();
     }

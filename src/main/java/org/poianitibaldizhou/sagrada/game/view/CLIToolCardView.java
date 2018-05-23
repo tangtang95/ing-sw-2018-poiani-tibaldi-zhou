@@ -16,6 +16,7 @@ import java.util.*;
 
 public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
     private final transient ToolCard toolCard;
+    private final transient SchemaCard schemaCard;
     private final String gameName;
 
     private static final String CHOOSE_DICE = "Choose a dice:";
@@ -25,6 +26,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         super(cliGameView.networkManager, cliGameView.screenManager, cliGameView.bufferManager);
         this.toolCard = toolCards;
         this.gameName = cliGameView.getGameName();
+        this.schemaCard = cliGameView.getCliSchemaCardView().getSchemaCard(cliGameView.getCurrentUser().getName());
 
     }
 
@@ -199,7 +201,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         int column;
 
         bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
-                buildMessage(player.getSchemaCard().toString()).toString(), Level.LOW);
+                buildMessage(schemaCard.toString()).toString(), Level.LOW);
         do {
             response = getAnswer("Insert a row: ");
             try {
@@ -237,7 +239,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
 
         bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
                 + color.name()).
-                buildMessage(player.getSchemaCard().toString()).toString(), Level.LOW);
+                buildMessage(schemaCard.toString()).toString(), Level.LOW);
         do {
             response = getAnswer("Insert a row: ");
             try {

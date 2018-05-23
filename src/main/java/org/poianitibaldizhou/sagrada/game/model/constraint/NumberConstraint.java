@@ -10,6 +10,7 @@ import java.util.Objects;
 
 @Immutable
 public class NumberConstraint implements IConstraint {
+
     private int number;
 
     /**
@@ -40,9 +41,7 @@ public class NumberConstraint implements IConstraint {
     }
 
     /**
-     * @param other another constraint to match
-     * @return false only if has the same constraint type and its value is different,
-     * in the other cases it returns true
+     * {@inheritDoc}
      */
     @Override
     @Contract(pure = true)
@@ -55,8 +54,8 @@ public class NumberConstraint implements IConstraint {
     }
 
     /**
-     *
-     * @return index value useful in an array to count the number of constraint founded
+     * {@inheritDoc}
+     * @return a value from Dice.MIN_VALUE - 1 to DICE_MAX_VALUE - 1 based on this.number
      */
     @Override
     public int getIndexValue() {

@@ -19,8 +19,9 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     private List<ToolCard> toolCards;
     private List<PublicObjectiveCard> publicObjectiveCards;
-    private User currentUser;
+    private transient User currentUser;
     private String gameName;
+    private CLISchemaCardView cliSchemaCardView;
 
     private static final String PLACE_DICE = "Place dice";
     private static final String PLAY_TOOL_CARD = "Play Tool Card";
@@ -36,8 +37,8 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     public CLIGameView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
-
-     initializeCommands();
+        this.cliSchemaCardView = new CLISchemaCardView(this,bufferManager);
+        initializeCommands();
     }
 
 
@@ -73,7 +74,7 @@ public class CLIGameView extends CLIMenuView implements IGameView{
         String response;
         int number;
 
-        bufferManager.consolePrint(buildGraphic.buidGraphicToolCards(toolCards).toString(), Level.HIGH);
+        bufferManager.consolePrint(buildGraphic.buildGraphicToolCards(toolCards).toString(), Level.HIGH);
         do {
             response = getAnswer("Choose a Tool Card:");
             try {
@@ -110,6 +111,11 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     }
 
     @Override
+    public void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) throws RemoteException {
+
+    }
+
+    @Override
     public void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards) {
 
     }
@@ -125,5 +131,9 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     public String getGameName() {
         return gameName;
+    }
+
+    public CLISchemaCardView getCliSchemaCardView() {
+        return cliSchemaCardView;
     }
 }

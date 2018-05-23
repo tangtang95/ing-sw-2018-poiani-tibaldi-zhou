@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
 
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class DrawableCollection<T> {
@@ -25,10 +26,7 @@ public class DrawableCollection<T> {
         observerList = new ArrayList<>();
     }
 
-    public void attachObserver(IDrawableCollectionObserver<T> observer) {
-        observerList.add(observer);
-    }
-
+    // GETTER
     /**
      * Returns the list of the observers. A new list is created, but the single elements
      * are not deep copied.
@@ -36,48 +34,6 @@ public class DrawableCollection<T> {
      */
     public List<IDrawableCollectionObserver<T>> getObserverList() {
         return new ArrayList<>(observerList);
-    }
-
-    /**
-     * Adds an element to the collection
-     * It notifies the observers that an element's been added.
-     *
-     * @param elem elements that needs to be added
-     * @throws NullPointerException if elem is null
-     */
-    public void addElement(@NotNull T elem) {
-        collection.add(elem);
-        observerList.forEach(obs -> obs.onElementAdd(elem));
-    }
-
-    /**
-     * Draws a random element from DrawableCollection.
-     * This removes the element from DrawableCollection.
-     * It notifies the observers that an element's been added.
-     *
-     * @return the drawn element
-     * @throws EmptyCollectionException if DrawableCollection is empty
-     */
-    public T draw() throws EmptyCollectionException {
-        Random rand = new Random();
-        if (collection.isEmpty()) {
-            throw new EmptyCollectionException();
-        }
-        int pos = Math.abs(rand.nextInt(collection.size()));
-        T elem = collection.get(pos);
-        collection.remove(pos);
-        observerList.forEach(obs -> obs.onElementDraw(elem));
-        return elem;
-    }
-
-    /**
-     * Adds a list of elements to DrawableCollection.
-     *
-     * @param list list of elements that need to be added
-     */
-    public void addElements(@NotNull List<T> list) {
-        collection.addAll(list);
-        observerList.forEach(obs -> obs.onElementsAdd(list));
     }
 
     /**
@@ -100,11 +56,6 @@ public class DrawableCollection<T> {
         return collection.toArray();
     }
 
-    @Override
-    public String toString() {
-        return collection.toString();
-    }
-
     /**
      * Returns the copy of the list present in the DrawableCollection.
      * The single elements are not deep copied.
@@ -113,6 +64,58 @@ public class DrawableCollection<T> {
      */
     public List<T> getCollection() {
         return new ArrayList<>(collection);
+    }
+
+    // MODIFIERS
+    public void attachObserver(IDrawableCollectionObserver<T> observer) {
+        observerList.add(observer);
+    }
+
+    /**
+     * Adds an element to the collection
+     * It notifies the observers that an element's been added.
+     *
+     * @param elem elements that needs to be added
+     * @throws NullPointerException if elem is null
+     */
+    public void addElement(@NotNull T elem) throws RemoteException {
+        collection.add(elem);
+        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementAdd(elem);
+    }
+
+    /**
+     * Draws a random element from DrawableCollection.
+     * This removes the element from DrawableCollection.
+     * It notifies the observers that an element's been added.
+     *
+     * @return the drawn element
+     * @throws EmptyCollectionException if DrawableCollection is empty
+     */
+    public T draw() throws EmptyCollectionException, RemoteException {
+        Random rand = new Random();
+        if (collection.isEmpty()) {
+            throw new EmptyCollectionException();
+        }
+        int pos = Math.abs(rand.nextInt(collection.size()));
+        T elem = collection.get(pos);
+        collection.remove(pos);
+        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementDraw(elem);
+        return elem;
+    }
+
+    /**
+     * Adds a list of elements to DrawableCollection.
+     *
+     * @param list list of elements that need to be added
+     */
+    public void addElements(@NotNull List<T> list) throws RemoteException {
+        collection.addAll(list);
+        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementsAdd(list);
+    }
+
+    @Override
+    public String toString() {
+        return collection.toString();
     }
 
     /**

@@ -6,21 +6,21 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 
+import java.rmi.RemoteException;
+
 public class ExpendableDice implements ICoin {
 
-    private final Game game;
+    private final transient Game game;
 
     public ExpendableDice(Game game) {
         this.game = game;
     }
 
     /**
-     * if there's a dice expendable for the ToolCard is deleted from the DraftPoll
-     *
-     * @param toolCard the card which the player would use
+     * {@inheritDoc}
      */
     @Override
-    public boolean isCardUsable(ToolCard toolCard) {
+    public boolean isCardUsable(ToolCard toolCard) throws RemoteException {
         DraftPool draftPool = game.getDraftPool();
         final ColorConstraint colorConstraint = new ColorConstraint(toolCard.getColor());
         return draftPool.getDices().stream()

@@ -8,6 +8,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
+import java.rmi.RemoteException;
+
 
 public abstract class IPlayerState {
 
@@ -17,19 +19,19 @@ public abstract class IPlayerState {
         this.turnState = turnState;
     }
 
-    public void chooseAction(IActionCommand action) throws InvalidActionException {
+    public void chooseAction(IActionCommand action) throws InvalidActionException, RemoteException {
         throw new InvalidActionException();
     }
 
-    public boolean useCard(Player player, ToolCard toolCard, Game game) throws NoCoinsExpendableException, InvalidActionException {
+    public boolean useCard(Player player, ToolCard toolCard) throws NoCoinsExpendableException, InvalidActionException, RemoteException {
         throw new InvalidActionException();
     }
 
-    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RuleViolationException, RemoteException {
         throw new InvalidActionException();
     }
 
-    public void endTurn() throws InvalidActionException {
+    public void endTurn() throws InvalidActionException, RemoteException {
         throw new InvalidActionException();
     }
 

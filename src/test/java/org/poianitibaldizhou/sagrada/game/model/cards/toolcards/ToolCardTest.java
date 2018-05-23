@@ -88,10 +88,7 @@ public class ToolCardTest {
 
         toolCard = new ToolCard(Color.RED,"testName", "testDescription",
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
-        assertNotEquals(toolCard, toolCardMulti);
-
-        toolCard = new ToolCard(Color.RED,"testName", "testDescription",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertEquals(toolCard, toolCardMulti);
+
     }
 }

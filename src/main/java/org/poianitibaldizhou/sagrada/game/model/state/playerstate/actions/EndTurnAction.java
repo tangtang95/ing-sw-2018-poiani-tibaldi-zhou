@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,7 @@ public class EndTurnAction implements IActionCommand {
      * @param turnState the actual turnState of the game
      */
     @Override
-    public void executeAction(TurnState turnState) {
+    public void executeAction(TurnState turnState) throws RemoteException {
         EndTurnState endTurnState = new EndTurnState(turnState);
         turnState.setPlayerState(endTurnState);
         endTurnState.endTurn();

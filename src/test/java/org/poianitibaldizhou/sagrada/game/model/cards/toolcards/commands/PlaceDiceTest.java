@@ -52,7 +52,7 @@ public class PlaceDiceTest {
         observerList.add(observer2);
         observerList.add(observer3);
         when(executor.getObservers()).thenReturn(observerList);
-        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
         when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
         position = new Position(3, 2);
         when(executor.getNeededDice()).thenReturn(dice);

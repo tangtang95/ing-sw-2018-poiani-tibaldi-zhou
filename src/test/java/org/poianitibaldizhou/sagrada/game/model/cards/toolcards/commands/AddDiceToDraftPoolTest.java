@@ -8,7 +8,6 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.*;
@@ -32,7 +31,7 @@ public class AddDiceToDraftPoolTest {
         draftPool = new DraftPool();
         draftPool.addDice(new Dice(1, Color.PURPLE));
         draftPool.addDice(new Dice(1,Color.RED));
-        when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+        when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
     }
 
     @After
@@ -51,7 +50,7 @@ public class AddDiceToDraftPoolTest {
         tempDraftPool.addDice(dice);
         when(executor.getNeededDice()).thenReturn(dice);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
-        assertEquals(tempDraftPool, executor.getTemporaryDraftpool());
+        assertEquals(tempDraftPool, executor.getTemporaryDraftPool());
     }
 
     @Test

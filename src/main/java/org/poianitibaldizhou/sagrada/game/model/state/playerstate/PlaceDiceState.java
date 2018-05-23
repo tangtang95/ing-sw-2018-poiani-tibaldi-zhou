@@ -6,10 +6,12 @@ import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
+
 public class PlaceDiceState extends IPlayerState {
 
 
-    public PlaceDiceState(TurnState turnState) {
+    public PlaceDiceState(TurnState turnState) throws RemoteException {
         super(turnState);
         turnState.notifyOnPlaceDiceState();
     }
@@ -19,11 +21,11 @@ public class PlaceDiceState extends IPlayerState {
      *
      * @param player the player that wants to place a dice on his schemaCard
      * @param dice the dice to place
-     * @param position
-     * @throws RuleViolationException
+     * @param position the position that the dice needs to be placed
+     * @throws RuleViolationException if the placement of the dice on the schemaCard of the player is unsuccessful
      */
     @Override
-    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException {
+    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, RemoteException {
         player.placeDice(dice, position);
         turnState.setPlayerState(new SelectActionState(turnState));
     }

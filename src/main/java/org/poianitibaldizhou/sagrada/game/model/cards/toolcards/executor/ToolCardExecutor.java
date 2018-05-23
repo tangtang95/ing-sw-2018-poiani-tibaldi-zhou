@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ToolCardExecutor extends Thread {
+public class ToolCardExecutor {
     // Monitors
     private final Object diceMonitor;
     private final Object colorMonitor;
@@ -32,16 +32,19 @@ public class ToolCardExecutor extends Thread {
     private List<IToolCardExecutorObserver> observers;
 
     // Executor's attribute
-    private Node<ICommand> commandRoot;
+    private Node<ICommand> coreCommands;
+    private Node<ICommand> preCommands;
+    private Thread runCommandsThread;
     private boolean isExecutingCommands;
     private Player player;
-    private DraftPool temporaryDraftpool;
+    private DraftPool temporaryDraftPool;
     private DrawableCollection<Dice> temporaryDicebag;
-    private RoundTrack temporaryRoundtrack;
+    private RoundTrack temporaryRoundTrack;
     private SchemaCard temporarySchemaCard;
     private Map<Player, Integer> skipTurnPlayers;
     private Game game;
     private TurnState turnState;
+
 
     public ToolCardExecutor(Game game, Player player, TurnState turnState) {
         diceMonitor = new Object();
@@ -58,15 +61,19 @@ public class ToolCardExecutor extends Thread {
         turnEnd = false;
         isExecutingCommands = false;
 
+        this.coreCommands = null;
+        this.preCommands = null;
         this.observers = new ArrayList<>();
         this.player = player;
         this.turnState = turnState;
         this.game = game;
     }
 
-    public void setCommands(Node<ICommand> commands) {
-        this.commandRoot = commands;
+    public void setCoreCommands(Node<ICommand> commands) {
+        this.coreCommands = commands;
     }
+
+    public void setPreCommands(Node<ICommand> commands) { this.preCommands = commands; }
 
     public void addObserver(IToolCardExecutorObserver observer) {
         this.observers.add(observer);
@@ -79,10 +86,10 @@ public class ToolCardExecutor extends Thread {
     /**
      * Set all the temporary objects
      */
-    private void setTemporaryObjects() {
-        this.temporaryDraftpool = game.getDraftPool();
+    private void setTemporaryObjects() throws RemoteException {
+        this.temporaryDraftPool = game.getDraftPool();
         this.temporaryDicebag = game.getDiceBag();
-        this.temporaryRoundtrack = game.getRoundTrack();
+        this.temporaryRoundTrack = game.getRoundTrack();
         this.temporarySchemaCard = player.getSchemaCard();
         this.skipTurnPlayers = turnState.getSkipTurnPlayers();
     }
@@ -91,36 +98,32 @@ public class ToolCardExecutor extends Thread {
      * Set the modified objects saved before
      */
     private void updateObjects() {
-        game.setDraftPool(temporaryDraftpool);
+        game.setDraftPool(temporaryDraftPool);
         game.setDiceBag(temporaryDicebag);
-        game.setRoundTrack(temporaryRoundtrack);
+        game.setRoundTrack(temporaryRoundTrack);
         player.setSchemaCard(temporarySchemaCard);
         turnState.setSkipTurnPlayers(skipTurnPlayers);
     }
 
-
-    @Override
-    public synchronized void start() {
-        isExecutingCommands = true;
-        super.start();
-    }
-
-    @Override
-    public void run() {
+    public void runCommands() throws RemoteException {
+        runCommandsThread = Thread.currentThread();
+        if(coreCommands == null || preCommands == null){
+            throw new IllegalStateException("SEVERE ERROR: Need to set the commands before starting the thread");
+        }
+        setIsExecutingCommands(true);
         try {
+            invokeCommands(preCommands);
             setTemporaryObjects();
-            invokeCommands();
+            invokeCommands(coreCommands);
             updateObjects();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
         } catch (InterruptedException e) {
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
             Thread.currentThread().interrupt();
         } finally {
             setIsExecutingCommands(false);
-            game.getState().releaseToolCardExecution();
+            turnState.releaseToolCardExecution();
         }
-
+        runCommandsThread = null;
     }
 
     /**
@@ -130,12 +133,9 @@ public class ToolCardExecutor extends Thread {
      * @throws InterruptedException if the toolCard execution is interrupted by a client command or
      *                              because the command can't proceed
      */
-    private void invokeCommands() throws RemoteException, InterruptedException {
-        if (commandRoot == null) {
-            throw new IllegalStateException();
-        }
+    private void invokeCommands(Node<ICommand> commands) throws RemoteException, InterruptedException {
         CommandFlow commandFlow;
-        Node<ICommand> root = commandRoot;
+        Node<ICommand> root = commands;
         do {
             commandFlow = root.getData().executeCommand(player, this, turnState);
 
@@ -146,7 +146,7 @@ public class ToolCardExecutor extends Thread {
             } else if (commandFlow == CommandFlow.REPEAT) {
                 observers.forEach(IToolCardExecutorObserver::notifyRepeatAction);
             } else if (commandFlow.getProtocolNumber() == 400) {
-                CommandFlow finalCommandFlow = commandFlow;
+                final CommandFlow finalCommandFlow = commandFlow;
                 observers.forEach(obs -> obs.notifyCommandInterrupted(finalCommandFlow));
             }
         } while (root != null);
@@ -248,16 +248,16 @@ public class ToolCardExecutor extends Thread {
         }
     }
 
-    public DraftPool getTemporaryDraftpool() {
-        return temporaryDraftpool;
+    public DraftPool getTemporaryDraftPool() {
+        return temporaryDraftPool;
     }
 
     public DrawableCollection<Dice> getTemporaryDicebag() {
         return temporaryDicebag;
     }
 
-    public RoundTrack getTemporaryRoundtrack() {
-        return temporaryRoundtrack;
+    public RoundTrack getTemporaryRoundTrack() {
+        return temporaryRoundTrack;
     }
 
     public SchemaCard getTemporarySchemaCard() {
@@ -265,7 +265,9 @@ public class ToolCardExecutor extends Thread {
     }
 
     public void interruptCommandsInvocation() {
-        this.interrupt();
+        if(runCommandsThread == null)
+            throw new IllegalStateException("SEVERE ERROR: cannot interrupt non-existent this.runCommandsThread");
+        runCommandsThread.interrupt();
     }
 
 }
