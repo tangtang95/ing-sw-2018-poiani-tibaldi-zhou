@@ -43,7 +43,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
                 if (number > 0 && number <= commandMap.keySet().size())
                     return commandMap.get(commandMap.keySet().toArray()[number - 1].toString());
                 else {
-                    bufferManager.consolePrint("WARNING: Command not found", Level.LOW);
+                    bufferManager.consolePrint("WARNING: Command not found", Level.HIGH);
                 }
             }
         } while (true);

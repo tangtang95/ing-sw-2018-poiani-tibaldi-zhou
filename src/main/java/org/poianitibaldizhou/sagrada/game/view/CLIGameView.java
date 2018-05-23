@@ -19,6 +19,7 @@ public class CLIGameView extends CLIMenuView implements IGameView {
     private List<ToolCard> toolCards;
     private List<PublicObjectiveCard> publicObjectiveCards;
     private Player player;
+    private String gameName;
 
     public CLIGameView(NetworkManager networkManager, ScreenManager screenManager)
             throws RemoteException {
@@ -42,5 +43,13 @@ public class CLIGameView extends CLIMenuView implements IGameView {
     @Override
     public void err(String err) throws RemoteException {
 
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

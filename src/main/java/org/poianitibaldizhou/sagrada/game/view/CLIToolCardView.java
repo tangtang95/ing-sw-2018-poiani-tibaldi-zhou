@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -9,80 +9,33 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
+public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
     private final transient ToolCard toolCard;
     private final String gameName;
+    private final transient Player player;
 
     private static final String NUMBER_WARNING = "WARNING: Number is not correct";
 
-    public CLIToolCardMenuView(NetworkManager networkManager, ScreenManager screenManager, ToolCard toolCards,
-                               String gameName)
+    public CLIToolCardView(CLIGameView cliGameView, ToolCard toolCards)
             throws RemoteException {
-        super(networkManager, screenManager);
+        super(cliGameView.networkManager, cliGameView.screenManager);
         this.toolCard = toolCards;
-        this.gameName = gameName;
+        this.gameName = cliGameView.getGameName();
+        this.player = cliGameView.getPlayer();
 
-    }
-
-    private StringBuilder buildGraphicDice(StringBuilder stringBuilder, List<Dice> diceList, int start, int end) {
-        for (int i = start; i < end; i++)
-            stringBuilder.append("  [").append(i + 1).append("]   ");
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9556);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9559 + " ");
-        }
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9553 + " ");
-            stringBuilder.append(diceList.get(i).toString());
-            stringBuilder.append(" " + (char) 9553 + " ");
-        }
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9562);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9565 + " ");
-        }
-        stringBuilder.append("\n");
-        return stringBuilder;
-    }
-
-    private void printListDice(List<Dice> diceList, StringBuilder stringBuilder) {
-        if (diceList.size() <= 5) {
-            bufferManager.consolePrint(buildGraphicDice(stringBuilder, diceList, 0, diceList.size()).toString(),
-                    Level.LOW);
-        } else {
-            bufferManager.consolePrint(buildGraphicDice(stringBuilder, diceList, 0, 5).toString(),
-                    Level.LOW);
-            bufferManager.consolePrint(buildGraphicDice(stringBuilder, diceList, 5, diceList.size()).toString(),
-                    Level.LOW);
-        }
     }
 
     @Override
     public void notifyNeedDice(List<Dice> diceList) throws RemoteException {
-        StringBuilder stringBuilder = new StringBuilder();
+        BuildGraphic buildGraphic = new BuildGraphic();
         String response;
         int number;
 
-        printListDice(diceList, stringBuilder);
+        bufferManager.consolePrint(buildGraphic.buildGraphicDices(diceList).toString(), Level.LOW);
         do {
             response = getAnswer("Choose a dice:");
             try {
@@ -147,48 +100,6 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
         } while (number < 0);
     }
 
-    private Set<Integer> createDeltaSetDice(int diceValue, int value) {
-        Set<Integer> intSet = new HashSet<>();
-        boolean enable;
-        int startNumber;
-
-        enable = diceValue == Dice.MAX_VALUE || diceValue == Dice.MIN_VALUE;
-
-        if (value >= diceValue) {
-            if (enable) {
-                intSet.add(2);
-                intSet.add(3);
-                intSet.add(4);
-                intSet.add(5);
-            } else {
-                for (int i = 1; i <= Dice.MAX_VALUE; i++) {
-                    if (i != diceValue)
-                        intSet.add(i);
-                }
-            }
-            return intSet;
-        }
-
-        for (int i = diceValue + 1; i < diceValue + value; i++) {
-            if (i < Dice.MAX_VALUE || (i == Dice.MAX_VALUE && !enable))
-                intSet.add(i);
-            else if (i % (Dice.MAX_VALUE + 1 )> 1 || (i % (Dice.MAX_VALUE + 1) == Dice.MIN_VALUE && !enable))
-                intSet.add(i % Dice.MAX_VALUE);
-        }
-
-        startNumber = diceValue - value <= 0 ? (Dice.MAX_VALUE + 1) * 2 - diceValue + value - 1 :
-                (Dice.MAX_VALUE + 1) * 2 + diceValue - value;
-
-        for (int i = startNumber; i < startNumber + value; i++) {
-            if ((i % (Dice.MAX_VALUE + 1)  < value - 1 && i % (Dice.MAX_VALUE + 1)  != 0)
-                    || (i % (Dice.MAX_VALUE + 1) == Dice.MIN_VALUE && !enable))
-                intSet.add(i);
-            else if (i % (Dice.MAX_VALUE + 1) > value || (i % (Dice.MAX_VALUE + 1 ) == Dice.MAX_VALUE && !enable))
-                intSet.add(i % Dice.MAX_VALUE);
-        }
-        return intSet;
-    }
-
     /**
      * Players get notified that player needs to modify a value of a certain dice by +/- value.
      * If this is the player's CLI, he chooses the value and sends it back, nothing otherwise.
@@ -206,7 +117,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
         int minNumber;
         int maxNumber;
 
-        minNumber = diceValue - value <= 0 ? ((value - diceValue) % 6) + 1 : diceValue - value;
+        minNumber = diceValue - value <= 0 ? (Dice.MAX_VALUE + 1 ) * 2 - value + diceValue - 1 : diceValue - value;
         maxNumber = diceValue + value > 6 ? (diceValue + value) % 6 : diceValue + value;
 
         if (minNumber > maxNumber) {
@@ -217,13 +128,13 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
         }
 
         do {
-            response = getAnswer("Choose a number between 1 and 6:");
+            response = getAnswer("Choose the number " + minNumber + " or " + maxNumber + ":");
             try {
                 number = Integer.parseInt(response);
             } catch (NumberFormatException e) {
                 number = -1;
             }
-            if (number >= minNumber && number <= maxNumber) {
+            if (number == minNumber || number == maxNumber) {
                 networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
@@ -268,12 +179,13 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
 
     @Override
     public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws RemoteException {
-        StringBuilder stringBuilder = new StringBuilder();
+        BuildGraphic buildGraphic = new BuildGraphic();
 
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             List<Dice> diceList = roundTrack.getDices(i);
-            bufferManager.consolePrint("Round " + i + 1 + "\n", Level.LOW);
-            printListDice(diceList, stringBuilder);
+            bufferManager.consolePrint(
+                    buildGraphic.buildMessage("Round " + i + 1 + "\n").buildGraphicDices(diceList).toString()
+                    , Level.LOW);
         }
 
         readRoundTrackParameters(roundTrack);
@@ -281,6 +193,7 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
 
     @Override
     public void notifyNeedPosition() throws RemoteException {
+        bufferManager.consolePrint(player.getSchemaCard().toString(), Level.LOW);
 
     }
 
@@ -311,9 +224,9 @@ public class CLIToolCardMenuView extends CLIMenuView implements IToolCardExecuto
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIToolCardMenuView)) return false;
+        if (!(o instanceof CLIToolCardView)) return false;
         if (!super.equals(o)) return false;
-        CLIToolCardMenuView that = (CLIToolCardMenuView) o;
+        CLIToolCardView that = (CLIToolCardView) o;
         return Objects.equals(toolCard, that.toolCard);
     }
 
