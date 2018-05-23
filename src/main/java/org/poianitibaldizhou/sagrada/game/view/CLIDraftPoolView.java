@@ -1,16 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver {
@@ -31,9 +29,9 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
         synchronized (draftPool) {
             draftPool.addDice(dice);
         }
-        StringBuilder stringBuilder = new StringBuilder(currentUser.getName() + " has added a dice to the draft pool.\n");
-        buildGraphicDice(dice, stringBuilder);
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
+        String message = cliMenuView.currentUser.getName() + " has added a dice to the draft pool";
+        BuildGraphic buildGraphic = new BuildGraphic();
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.LOW);
     }
 
     /**
@@ -49,12 +47,11 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
                         dice.toString() + " from the draft pool. Dice is not present in the draft pool.\n", Level.HIGH);
             } catch (EmptyCollectionException e) {
                 cliMenuView.bufferManager.consolePrint("An error has occured when " + currentUser.getName() + " tried to remove " +
-                        dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);;
+                        dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);
             }
-        }
-        StringBuilder stringBuilder = new StringBuilder(currentUser.getName() + " has removed a dice from the draft pool.\n");
-        buildGraphicDice(dice, stringBuilder);
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
+        }BuildGraphic buildGraphic = new BuildGraphic();
+        String message = cliMenuView.currentUser.getName() + " has removed a dice from the draft pool.";
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.LOW);
     }
 
     /**
@@ -65,9 +62,9 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
         synchronized (draftPool) {
             draftPool.addDices(dices);
         }
-        StringBuilder stringBuilder = new StringBuilder(currentUser.getName() + " has added a set of dices to the draft pool.\n");
-        buildGraphicDices(stringBuilder, dices, 0, dices.size());
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
+        BuildGraphic buildGraphic = new BuildGraphic();
+        String message = cliMenuView.currentUser.getName() + " has added a set of dices to the draft pool.";
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(dices).toString(), Level.LOW);
     }
 
     /**
@@ -79,9 +76,9 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
             draftPool.clearPool();
             draftPool.addDices(dices);
         }
-        StringBuilder stringBuilder = new StringBuilder(currentUser.getName() + " has re-rolled the draft pool.\n");
-        buildGraphicDices(stringBuilder, dices, 0, dices.size());
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
+        BuildGraphic buildGraphic = new BuildGraphic();
+        String message = (cliMenuView.currentUser.getName() + " has re-rolled the draft pool.");
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(dices).toString(), Level.LOW);
     }
 
     /**
@@ -92,11 +89,8 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
         synchronized (draftPool) {
             draftPool.clearPool();
         }
-        StringBuilder stringBuilder = new StringBuilder(currentUser.getName() + " has cleared the draft pool.\n");
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
-    }
-
-    public static void buildGraphicsDraftPool(StringBuilder stringBuilder) {
-        // TODO
+        BuildGraphic buildGraphic = new BuildGraphic();
+        String message = (cliMenuView.currentUser.getName() + " has cleared the draft pool.");
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.LOW);
     }
 }

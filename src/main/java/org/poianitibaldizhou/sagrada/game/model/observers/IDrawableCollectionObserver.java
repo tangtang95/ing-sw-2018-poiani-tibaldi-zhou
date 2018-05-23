@@ -13,9 +13,9 @@ public interface IDrawableCollectionObserver<T> {
     /**
      * Notify that a list of elements has been added to the DrawableCollection
      *
-     * @param elem list of elements added
+     * @param elemList list of elements added
      */
-    void onElementsAdd(List<T> elem);
+    void onElementsAdd(List<T> elemList);
 
     /**
      * Notify that an element has been removed from the DrawableCollection
