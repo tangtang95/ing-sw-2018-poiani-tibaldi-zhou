@@ -59,7 +59,11 @@ public class LobbyManager {
     }
 
     private synchronized void createGame() {
-        managerMediator.createMultiPlayerGame(users);
+        try {
+            managerMediator.createMultiPlayerGame(users);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
         lobby.gameStart();
     }
 

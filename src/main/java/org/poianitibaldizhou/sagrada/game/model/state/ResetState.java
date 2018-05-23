@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 
+import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,7 +29,7 @@ public class ResetState extends IStateGame {
      * @throws InvalidActionException if the token user has already readied before
      */
     @Override
-    public void readyGame(String token) throws InvalidActionException {
+    public void readyGame(String token) throws InvalidActionException, RemoteException {
         if(playersReady.contains(token))
             throw new InvalidActionException();
         playersReady.add(token);

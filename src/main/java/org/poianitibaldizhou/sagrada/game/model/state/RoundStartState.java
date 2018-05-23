@@ -1,8 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+
+import java.rmi.RemoteException;
 
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -23,8 +27,8 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     @Override
-    public void init() {
-        game.getStateObservers().forEach(obs -> obs.onRoundStart(currentRound, currentRoundPlayer.getUser()));
+    public void init() throws RemoteException {
+        for (IStateObserver obs : game.getStateObservers()) obs.onRoundStart(currentRound, currentRoundPlayer.getUser());
     }
 
     /**
@@ -34,13 +38,11 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      * @param player the player who has called the throw dices (in the view)
      */
     @Override
-    public boolean throwDices(Player player) {
-        if(currentRoundPlayer.equals(player)) {
-            game.addDicesToDraftPoolFromDiceBag();
-            game.setState(new TurnState(game, currentRound, currentRoundPlayer, player,true));
-            return true;
-        }
-        return false;
+    public void throwDices(Player player) throws RemoteException, InvalidActionException {
+        if(!currentRoundPlayer.equals(player))
+            throw new InvalidActionException();
+        game.addDicesToDraftPoolFromDiceBag();
+        game.setState(new TurnState(game, currentRound, currentRoundPlayer, player,true));
     }
 
     @Contract(pure = true)
@@ -48,10 +50,4 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-    public static IStateGame newInstance(IStateGame rss) {
-        if (rss == null)
-            return null;
-        return new RoundStartState(rss.game, ((RoundStartState)(rss)).currentRound,
-                ((RoundStartState)(rss)).currentRoundPlayer);
-    }
 }

@@ -64,7 +64,7 @@ public class SetupGameStateTest {
     }
 
     @Test
-    public void constructorSinglePlayerTest(){
+    public void constructorSinglePlayerTest() throws Exception{
         int difficulty = 3;
         when(game.isSinglePlayer()).thenReturn(true);
         when(game.getNumberOfToolCardForGame()).thenReturn(difficulty);
@@ -79,7 +79,7 @@ public class SetupGameStateTest {
     }
 
     @Test
-    public void constructorMultiPlayerTest(){
+    public void constructorMultiPlayerTest() throws Exception{
         when(game.isSinglePlayer()).thenReturn(false);
         when(game.getNumberOfPublicObjectiveCardForGame())
                 .thenReturn(MultiPlayerGame.NUMBER_OF_PUBLIC_OBJECTIVE_CARDS);

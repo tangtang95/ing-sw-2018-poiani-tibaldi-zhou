@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class ManagerMediator {
         return lobbyManager;
     }
 
-    public void createMultiPlayerGame(List<User> users) {
+    public void createMultiPlayerGame(List<User> users) throws RemoteException {
         String gameName = UUID.randomUUID().toString();
         Game game= new MultiPlayerGame(gameName, users);
         gameManager.addGame(game, gameName);

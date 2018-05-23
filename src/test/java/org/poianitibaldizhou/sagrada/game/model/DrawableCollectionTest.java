@@ -25,7 +25,7 @@ public class DrawableCollectionTest {
 
         @BeforeClass
         public static void setUpClass() {
-            stringList = new ArrayList();
+            stringList = new ArrayList<>();
         }
 
         @AfterClass
@@ -35,23 +35,24 @@ public class DrawableCollectionTest {
         }
 
         @Before
-        public void setUp() {
+        public void setUp() throws Exception{
             for (int i = 0; i < 5; i++) {
                 stringList.add("string" + i);
             }
-            drawableCollection = new DrawableCollection<String>(stringList);
+            drawableCollection = new DrawableCollection<>();
+            drawableCollection.addElements(stringList);
         }
 
         @After
         public void tearDown() {
-            stringList.removeAll(stringList);
+            stringList.clear();
             drawableCollection = null;
         }
 
         @Test
-        public void testAddElementAndDraw() {
-            drawableCollection.addElement(new String("stringX"));
-            stringList.add(new String("stringX"));
+        public void testAddElementAndDraw() throws Exception{
+            drawableCollection.addElement("stringX");
+            stringList.add("stringX");
             assertArrayEquals("Error adding a single element", stringList.toArray(), drawableCollection.toArray());
 
             int initial_size = drawableCollection.size();
@@ -68,7 +69,7 @@ public class DrawableCollectionTest {
         }
 
         @Test
-        public void testDrawException() {
+        public void testDrawException() throws Exception{
             int size = drawableCollection.size();
             try {
                 for (int i = 0; i < size + 1; i++) {
@@ -82,7 +83,7 @@ public class DrawableCollectionTest {
         }
 
         @Test
-        public void testAddElementsMethod() {
+        public void testAddElementsMethod() throws Exception{
             List<String> newStrings = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
                 newStrings.add("newString" + i);
@@ -103,7 +104,7 @@ public class DrawableCollectionTest {
         private DrawableCollection<String> collection2;
         private boolean expected;
 
-        public ParameterizedPart(boolean expected, Object[] list1, Object[] list2) {
+        public ParameterizedPart(boolean expected, Object[] list1, Object[] list2) throws Exception{
             this.expected = expected;
             collection2 = new DrawableCollection<>();
             if(list1 != null) {

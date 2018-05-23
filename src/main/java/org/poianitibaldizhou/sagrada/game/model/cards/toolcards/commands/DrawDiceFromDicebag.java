@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class DrawDiceFromDicebag implements ICommand {
@@ -22,7 +23,7 @@ public class DrawDiceFromDicebag implements ICommand {
      * @return CommandFlow.EMPTY_DICEBAG in the DiceBag is empty, CommandFlow.MAIN otherwise
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
         Dice dice;
         try {
             dice = toolCardExecutor.getTemporaryDicebag().draw();

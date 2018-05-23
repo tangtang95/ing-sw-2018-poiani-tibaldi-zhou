@@ -11,14 +11,18 @@ import java.util.Objects;
 public class NoConstraint implements IConstraint {
 
     /**
-     * @param other another constraint to match
-     * @return return always true because it has no constraint
+     * {@inheritDoc}
+     * @return always true, because it matches with everything
      */
     @Override
     public boolean matches(IConstraint other) {
         return true;
     }
 
+
+    /**
+     * @throws IllegalStateException always, cannot be implemented for NoConstraint
+     */
     @Override
     public int getIndexValue() {
         throw new IllegalStateException("SEVERE ERROR: Cannot be implemented");

@@ -34,7 +34,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         Dice roundTrackDice;
         int round;
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundtrack();
+        RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
 
         for (IToolCardExecutorObserver observer : observerList) {
             observer.notifyNeedDiceFromRoundTrack(roundTrack);
@@ -44,8 +44,8 @@ public class SwapDiceWithRoundTrack implements ICommand {
         round = toolCardExecutor.getNeededValue();
 
         try {
-            toolCardExecutor.getTemporaryDraftpool().useDice(dice);
-            toolCardExecutor.getTemporaryDraftpool().addDice(roundTrackDice);
+            toolCardExecutor.getTemporaryDraftPool().useDice(dice);
+            toolCardExecutor.getTemporaryDraftPool().addDice(roundTrackDice);
             roundTrack.swapDice(roundTrackDice, dice, round);
         } catch (DiceNotFoundException e) {
             return CommandFlow.REPEAT;

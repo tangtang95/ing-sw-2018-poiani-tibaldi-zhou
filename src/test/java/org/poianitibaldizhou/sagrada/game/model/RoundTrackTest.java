@@ -95,7 +95,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void testEmptinessWithAddDice() {
+    public void testEmptinessWithAddDice() throws Exception{
         roundTrack.addDiceToRound(dice1, 1);
         assertEquals(false, roundTrack.isEmpty());
 
@@ -104,7 +104,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void testEmptinessWithAddDices() {
+    public void testEmptinessWithAddDices() throws Exception{
         roundTrack.addDicesToRound(dices, 1);
         assertEquals(false, roundTrack.isEmpty());
 

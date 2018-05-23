@@ -25,7 +25,7 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAdd(Dice dice) {
+    public void onDiceAdd(Dice dice) throws RemoteException {
         synchronized (draftPool) {
             draftPool.addDice(dice);
         }
@@ -38,7 +38,7 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice) {
+    public void onDiceRemove(Dice dice) throws RemoteException {
         synchronized (draftPool) {
             try {
                 draftPool.useDice(dice);
@@ -49,7 +49,8 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
                 cliMenuView.bufferManager.consolePrint("An error has occured when " + currentUser.getName() + " tried to remove " +
                         dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);
             }
-        }BuildGraphic buildGraphic = new BuildGraphic();
+        }
+        BuildGraphic buildGraphic = new BuildGraphic();
         String message = cliMenuView.currentUser.getName() + " has removed a dice from the draft pool.";
         bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.LOW);
     }
@@ -58,7 +59,7 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAdd(List<Dice> dices) {
+    public void onDicesAdd(List<Dice> dices) throws RemoteException {
         synchronized (draftPool) {
             draftPool.addDices(dices);
         }
@@ -71,7 +72,7 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(List<Dice> dices) {
+    public void onDraftPoolReroll(List<Dice> dices) throws RemoteException {
         synchronized (draftPool) {
             draftPool.clearPool();
             draftPool.addDices(dices);
@@ -85,7 +86,7 @@ public class CLIDraftPoolView extends CLIMenuView implements IDraftPoolObserver 
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolClear() {
+    public void onDraftPoolClear() throws RemoteException {
         synchronized (draftPool) {
             draftPool.clearPool();
         }

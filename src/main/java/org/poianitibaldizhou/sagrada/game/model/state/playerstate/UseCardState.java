@@ -1,24 +1,27 @@
 package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Node;
 import org.poianitibaldizhou.sagrada.game.model.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+
+import java.rmi.RemoteException;
 
 public class UseCardState extends IPlayerState {
 
-    public UseCardState(TurnState turnState) {
+    public UseCardState(TurnState turnState) throws RemoteException {
         super(turnState);
         turnState.notifyOnUseToolCardState();
     }
 
+    /**
+     * Return true if the toolCard is usable
+     *
+     * @param player the player who wants to use the toolCard
+     * @param toolCard the toolCard chosen to use
+     * @return true if the toolCard is usable
+     */
     @Override
-    public boolean useCard(Player player, ToolCard toolCard, Game game) throws InvalidActionException {
+    public boolean useCard(Player player, ToolCard toolCard) throws RemoteException {
         return player.isCardUsable(toolCard);
     }
 

@@ -175,7 +175,7 @@ public class EndGameStateTest {
      * and player1 has same favor tokens of player2 -> player2 wins by reverse order
      */
     @Test
-    public void calculateVictoryPointsTest(){
+    public void calculateVictoryPointsTest() throws Exception{
         int player1Score = 10, player2Score = 10, player3Score = 10, player4Score = 4;
         when(game.getPlayerScore(player1)).thenReturn(player1Score);
         when(game.getPlayerScore(player2)).thenReturn(player2Score);

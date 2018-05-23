@@ -2,12 +2,13 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EndTurnState extends IPlayerState {
 
-    public EndTurnState(TurnState turnState) {
+    public EndTurnState(TurnState turnState) throws RemoteException {
         super(turnState);
         turnState.notifyOnEndTurnState();
     }
@@ -17,7 +18,7 @@ public class EndTurnState extends IPlayerState {
      * execution of the toolCard if necessary. At the end go to the nexTurn
      */
     @Override
-    public void endTurn() {
+    public void endTurn() throws RemoteException {
         turnState.getToolCardExecutor().setTurnEnded(true);
         try {
             turnState.getToolCardExecutor().waitToolCardExecutionEnd();

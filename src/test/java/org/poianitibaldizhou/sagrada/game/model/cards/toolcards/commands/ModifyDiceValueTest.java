@@ -66,7 +66,7 @@ public class ModifyDiceValueTest {
             observerList.add(observer2);
             observerList.add(observer3);
             when(executor.getObservers()).thenReturn(observerList);
-            when(executor.getTemporaryDraftpool()).thenReturn(draftPool);
+            when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
             command = new ModifyDiceValue();
         }
 

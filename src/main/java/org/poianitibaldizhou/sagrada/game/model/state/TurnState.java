@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -31,6 +32,9 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     private final Map<Player, Integer> skipTurnPlayers;
 
     private IPlayerState playerState;
+
+    private static final int FIRST_TURN = 1;
+    private static final int SECOND_TURN = 2;
 
 
     /**
@@ -84,21 +88,20 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     @Override
-    public void init() {
+    public void init() throws RemoteException {
         if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
-                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? 1 : 2)) {
-            game.getStateObservers().forEach(obs->obs.onSkipTurnState(
-                    currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN)) {
+            for (IStateObserver obs : game.getStateObservers()) {
+                obs.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
+            }
             nextTurn();
             return;
         }
-        game.getStateObservers().forEach(obs->obs.onTurnState(
-                currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+        for (IStateObserver obs : game.getStateObservers()) {
+            obs.onTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
+        }
 
     }
-
-
-
 
     /**
      * Pass the operation of chooseAction to the playerState
@@ -107,7 +110,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * @throws InvalidActionException if the given player is different from the currentTurnPlayer
      */
     @Override
-    public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {
+    public void chooseAction(Player player, IActionCommand action) throws InvalidActionException, RemoteException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
         if (actionsUsed.contains(action))
@@ -121,53 +124,64 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *
      * @param player   the currentTurnPlayer who choose to use the card
      * @param toolCard the toolCard to be used
-     * @throws NoCoinsExpendableException there aren't expendable coins
-     * @throws InvalidActionException     if the given player is different from the currentTurnPlayer
+     * @throws InvalidActionException     if the given player is different from the currentTurnPlayer ||
+     *                                    there aren't expendable coins
      */
     @Override
-    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws NoCoinsExpendableException, InvalidActionException, RemoteException, InterruptedException {
+    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer)
+            throws InvalidActionException, RemoteException {
+
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        if(!playerState.useCard(player, toolCard, game))
-            throw new InvalidActionException();
-        Node<ICommand> rootCommand = game.getCompleteCommands(toolCard);
-        toolCardExecutor.setCommands(rootCommand);
+        try {
+            if (!playerState.useCard(player, toolCard))
+                throw new InvalidActionException();
+        } catch (NoCoinsExpendableException e) {
+            throw new InvalidActionException(e);
+        }
+        Node<ICommand> preCommands = game.getPreCommands(toolCard);
+        toolCardExecutor.setPreCommands(preCommands);
+        toolCardExecutor.setCoreCommands(toolCard.getCommands());
         toolCardExecutor.addObserver(observer);
-        toolCardExecutor.start();
+        toolCardExecutor.runCommands();
     }
 
     /**
-     * Pass the operation of placeCard to the playerState
+     * {@inheritDoc}
      *
-     * @param player the currentTurnPlayer who choose to place a dice
-     * @param dice   the dice to be placed
-     * @param position
-     * @throws InvalidActionException if the given player is different from the currentTurnPlayer
-     * @throws RuleViolationException if the rules of placement are violated
+     * @throws InvalidActionException if the given player is different from the currentTurnPlayer ||
+     *                                the rules of placement are violated
      */
     @Override
-    public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException, InvalidActionException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        playerState.placeDice(player, dice, position);
-    }
-
-    @Override
-    public void releaseToolCardExecution() {
-        playerState.releaseToolCardExecution();
+        try {
+            playerState.placeDice(player, dice, position);
+        } catch (RuleViolationException e) {
+            throw new InvalidActionException(e);
+        }
     }
 
     @Override
     public void fireExecutorEvent(ExecutorEvent event) throws InvalidActionException {
-        if(!toolCardExecutor.isExecutingCommands())
+        if (!toolCardExecutor.isExecutingCommands())
             throw new InvalidActionException();
         event.setNeededValue(toolCardExecutor);
     }
 
     @Override
     public void interruptToolCardExecution() {
-        if(toolCardExecutor.isExecutingCommands())
+        if (toolCardExecutor.isExecutingCommands())
             toolCardExecutor.interruptCommandsInvocation();
+    }
+
+    /**
+     * Release the toolCard execution from UseCardState to SelectActionState (doesn't necessarily means that the
+     * toolCard execution is ended
+     */
+    public void releaseToolCardExecution() {
+        playerState.releaseToolCardExecution();
     }
 
     /**
@@ -177,12 +191,12 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * it starts the second run. Otherwise the turn goes to the next currentTurnPlayer (if is the first turn than the direction is
      * clockwise otherwise it's counter clockwise)
      */
-    public void nextTurn() {
+    public void nextTurn() throws RemoteException {
         if (!isFirstTurn && currentTurnPlayer.equals(currentRoundPlayer))
             game.setState(new RoundEndState(game, currentRound, currentRoundPlayer));
         else {
             Player lastPlayer = game.getNextPlayer(currentRoundPlayer, Direction.COUNTER_CLOCKWISE);
-            if (isFirstTurn &&  currentTurnPlayer.equals(lastPlayer))
+            if (isFirstTurn && currentTurnPlayer.equals(lastPlayer))
                 game.setState(new TurnState(game, currentRound, currentRoundPlayer, currentTurnPlayer,
                         false, skipTurnPlayers));
             else {
@@ -198,11 +212,11 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return actionsUsed.contains(placeDiceAction);
     }
 
-    public Map<Player, Integer> getSkipTurnPlayers(){
+    public Map<Player, Integer> getSkipTurnPlayers() {
         return new HashMap<>(skipTurnPlayers);
     }
 
-    public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers){
+    public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers) {
         this.skipTurnPlayers.clear();
         this.skipTurnPlayers.putAll(skipTurnPlayers);
     }
@@ -236,16 +250,17 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
-    public void notifyOnPlaceDiceState(){
-        game.getStateObservers().forEach(obs -> obs.onPlaceDiceState(currentTurnPlayer.getUser()));
+    // NOTIFIERS
+    public void notifyOnPlaceDiceState() throws RemoteException {
+        for (IStateObserver obs : game.getStateObservers()) obs.onPlaceDiceState(currentTurnPlayer.getUser());
     }
 
-    public void notifyOnUseToolCardState(){
-        game.getStateObservers().forEach(obs -> obs.onUseCardState(currentTurnPlayer.getUser()));
+    public void notifyOnUseToolCardState() throws RemoteException {
+        for (IStateObserver obs : game.getStateObservers()) obs.onUseCardState(currentTurnPlayer.getUser());
     }
 
-    public void notifyOnEndTurnState(){
-        game.getStateObservers().forEach(obs -> obs.onEndGame(currentTurnPlayer.getUser()));
+    public void notifyOnEndTurnState() throws RemoteException {
+        for (IStateObserver obs : game.getStateObservers()) obs.onEndTurnState(currentTurnPlayer.getUser());
     }
 
 }
