@@ -19,7 +19,6 @@ public class GameManager {
 
     public GameManager(ManagerMediator managerMediator) {
         this.managerMediator = managerMediator;
-        this.managerMediator.setGameManager(this);
         games = new HashMap<>();
         playersByGame = new HashMap<>();
         players = new ArrayList<>();

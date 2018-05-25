@@ -50,12 +50,16 @@ public class Request implements Serializable {
      */
     public Object invokeMethod(Object target) {
         Method[] methods = target.getClass().getMethods();
+        System.out.println("Request ethod name: " + methodName);
         for (int i = 0; i < methods.length; i++) {
+            System.out.println("Available method: " + methods[i].getName());
             if (methods[i].getName().equals(methodName)) {
                 try {
                     return methods[i].invoke(target, methodParameters);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
+                    e.printStackTrace();
+                    System.out.println("EXCEPTION FOUND IN INVOKE METHOD" + e.getMessage() + "\n"+ e.getStackTrace());
                 }
             }
         }

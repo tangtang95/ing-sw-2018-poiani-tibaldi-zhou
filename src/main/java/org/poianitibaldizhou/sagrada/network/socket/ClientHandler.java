@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable {
      * Constructor.
      * Create a Runnable ClientHandler to handle the client request and send response and notify to the client
      *
-     * @param socket     the socket connected to the client
+     * @param socket            the socket connected to the client
      * @param controllerManager the controller manager of the server that contains the reference of all the controllers
      */
     public ClientHandler(Socket socket, ControllerManager controllerManager) {
@@ -49,7 +49,7 @@ public class ClientHandler implements Runnable {
 
     }
 
-    private void initObserverClasses(){
+    private void initObserverClasses() {
         observerInterfaces = new HashSet<>();
         observerInterfaces.add(ILobbyObserver.class);
         observerInterfaces.add(INetworkObserver.class);
@@ -60,15 +60,11 @@ public class ClientHandler implements Runnable {
      *
      * @param obj the Response or NotifyMessage to be sent
      */
-    public synchronized void sendResponse(Object obj) {
+    public synchronized void sendResponse(Object obj) throws IOException {
         if (!(obj instanceof Response || obj instanceof NotifyMessage))
             throw new IllegalArgumentException("The object passed is not a Response or a NotifyMessage");
-        try {
-            objectOutputStream.writeObject(obj);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-        }
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.flush();
     }
 
     /**
@@ -134,9 +130,9 @@ public class ClientHandler implements Runnable {
     }
 
     @Contract(pure = true)
-    private boolean containsAtLeastOneInterface(Class[] interfaces){
-        for (Class clazz: interfaces) {
-            if(observerInterfaces.contains(clazz))
+    private boolean containsAtLeastOneInterface(Class[] interfaces) {
+        for (Class clazz : interfaces) {
+            if (observerInterfaces.contains(clazz))
                 return true;
         }
         return false;

@@ -59,7 +59,6 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (!(o instanceof CLIChangeConnectionMenuView)) return false;
         if (!super.equals(o)) return false;

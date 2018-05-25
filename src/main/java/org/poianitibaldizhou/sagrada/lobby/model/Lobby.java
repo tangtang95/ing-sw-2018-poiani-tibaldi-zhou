@@ -1,18 +1,20 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
+import com.sun.org.apache.bcel.internal.generic.ILOAD;
+
+import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Lobby implements Serializable{
+public class Lobby implements Serializable {
     private List<User> userList;
     private String name;
     private boolean gameStarted;
+    private LobbyManager lobbyManager;
 
-    public static final int MAX_PLAYER = 4;
-
-    private final transient List<ILobbyObserver> lobbyObservers;
+    public static final int MAX_PLAYER = 8;
 
     /**
      * Constructor.
@@ -21,10 +23,10 @@ public class Lobby implements Serializable{
      *
      * @param name lobby's name
      */
-    public Lobby(String name) {
+    public Lobby(String name, LobbyManager lobbyManager) {
         this.name = name;
+        this.lobbyManager = lobbyManager;
         userList = new ArrayList<>();
-        lobbyObservers = new ArrayList<>();
         gameStarted = false;
     }
 
@@ -50,47 +52,56 @@ public class Lobby implements Serializable{
     }
 
     /**
-     * Adds an observer to the lobby.
-     * @param observer ILobbyObserver to add
-     */
-    public void observeLobby(ILobbyObserver observer) {
-        lobbyObservers.add(observer);
-    }
-
-    /**
      * Notify that an user joined the lobby.
      * If the number of users in the lobby is equals to MAX_PLAYER, return true
+     * If it detects an exception in notifying user leave, it signals to lobby manager
+     * that an user has disconnected.
      *
      * @param user user joined
-     * @return true if the lobby if full after the player join, false otherwise@throws RemoteException
+     * @return true if the lobby is full after the player join, false otherwise
+     * @throws RemoteException
      */
-    public boolean join(User user) {
+    public boolean join(User user) throws RemoteException {
         this.userList.add(user);
 
-        for(ILobbyObserver lo:lobbyObservers) {
+        System.out.println("Observer size : " + lobbyManager.getLobbyObserver().size());
+
+        List<ILobbyObserver> removeList = new ArrayList<>();
+
+        for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
             try {
                 lo.onUserJoin(user);
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            } catch (IOException re) {
+                removeList.add(lo);
             }
         }
+
+        for(ILobbyObserver observer : removeList)
+            lobbyManager.userDisconnectedDetected(observer);
+
         return userList.size() == MAX_PLAYER;
     }
 
     /**
      * Notify that an user left the lobby.
+     * If it detects an exception in notifying user leave, it signals to lobby manager
+     * that an user has disconnected.
+     *
      * @param user user left
      */
-    public void leave(User user) {
+    public void leave(User user) throws RemoteException {
         this.userList.remove(user);
-
-        for(ILobbyObserver lo:lobbyObservers) {
+        List<ILobbyObserver> removeList = new ArrayList<>();
+        for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
             try {
                 lo.onUserExit(user);
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            } catch (IOException e) {
+                removeList.add(lo);
             }
         }
+
+        for(ILobbyObserver observer : removeList)
+            lobbyManager.userDisconnectedDetected(observer);
     }
 
     /**
@@ -98,12 +109,11 @@ public class Lobby implements Serializable{
      */
     public void gameStart() {
         gameStarted = true;
-        for(ILobbyObserver lo:lobbyObservers)
+
+        for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
             try {
                 lo.onGameStart();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            } catch (IOException e) {}
+        }
     }
-
 }

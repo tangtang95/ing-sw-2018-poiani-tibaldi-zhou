@@ -20,14 +20,6 @@ public class ManagerMediator {
         lobbyManager = new LobbyManager(this);
     }
 
-    public void setGameManager(GameManager gameManager) {
-        this.gameManager = gameManager;
-    }
-
-    public void setLobbyManager(LobbyManager lobbyManager) {
-        this.lobbyManager = lobbyManager;
-    }
-
     public GameManager getGameManager(){
         return gameManager;
     }

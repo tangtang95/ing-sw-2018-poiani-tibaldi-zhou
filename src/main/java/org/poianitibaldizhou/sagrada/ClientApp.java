@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class ClientApp {
 
     public static void main(String[] args) {
-        NetworkManager networkManager = new NetworkManager("localhost", NetworkType.RMI);
+        NetworkManager networkManager = new NetworkManager("localhost", NetworkType.SOCKET);
         ScreenManager screenManager = new ScreenManager();
 
         try {

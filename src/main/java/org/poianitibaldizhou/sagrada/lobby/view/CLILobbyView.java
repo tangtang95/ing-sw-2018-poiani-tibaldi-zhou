@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.game.view.CLIMenuView;
+import org.poianitibaldizhou.sagrada.game.view.CLIStartGameMenuView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -56,7 +57,6 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         this.isLoggedIn = false;
         try {
             controller.leave(token, username);
-            controller.logout(token);
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
         }
@@ -100,32 +100,57 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void ack(String ack) {
         bufferManager.consolePrint("ACK: " + ack, Level.HIGH);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void err(String err) {
         bufferManager.consolePrint("ERROR: " + err, Level.HIGH);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onUserJoin(User user) {
         if (!user.getName().equals(username))
             bufferManager.consolePrint("User " + user.getName() + " joined the Lobby", Level.HIGH);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void onUserExit(User user) {
-        if (!user.getName().equals(username))
+    public void onUserExit(User user) throws RemoteException {
+        if (!user.getName().equals(username)) {
             bufferManager.consolePrint("User " + user.getName() + " left the Lobby", Level.HIGH);
+        } else {
+            bufferManager.consolePrint("You have left the lobby.", Level.HIGH);
+            screenManager.popScreen();
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameStart() throws RemoteException {
         bufferManager.consolePrint("GAME STARTED", Level.HIGH);
         bufferManager.stopConsoleRead();
         screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager));
+    }
+
+    @Override
+    public void onPing() throws RemoteException {
+
     }
 
     @Override

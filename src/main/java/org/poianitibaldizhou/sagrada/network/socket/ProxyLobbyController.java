@@ -39,17 +39,6 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
     }
 
     /**
-     * Counter-part method logout of the server-side controller; send the LobbyRequest via serverHandler
-     *
-     * @param token the token of the user requesting logout
-     */
-    @Override
-    public void logout(String token) {
-        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new LobbyRequest(methodName, token));
-    }
-
-    /**
      * Counter-part method leave of the server-side controller; send the LobbyRequest via serverHandler
      *
      * @param token    the token of the user requesting to leave the lobby
