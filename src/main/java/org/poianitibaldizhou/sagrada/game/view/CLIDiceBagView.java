@@ -6,7 +6,6 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 public class CLIDiceBagView implements IDrawableCollectionObserver<Dice> {
@@ -14,9 +13,9 @@ public class CLIDiceBagView implements IDrawableCollectionObserver<Dice> {
     private final transient CLIGameView cliGameView;
     private final transient BufferManager bufferManager;
 
-    public CLIDiceBagView(CLIGameView cliGameView, BufferManager bufferManager) {
+    public CLIDiceBagView(CLIGameView cliGameView) {
         this.cliGameView = cliGameView;
-        this.bufferManager = bufferManager;
+        this.bufferManager = cliGameView.bufferManager;
     }
 
     /**

@@ -24,6 +24,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
 
 
     protected Command getCommand(Map<String, Command> commandMap) {
+        BuildGraphic buildGraphic = new BuildGraphic();
         String[] answer = new String[1];
         int number;
 
@@ -34,7 +35,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
                 throw new NullPointerException();
             }
             if (answer[0].equals("help"))
-                help(commandMap);
+                bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.LOW);
             else {
                 try {
                     number = Integer.parseInt(answer[0]);
@@ -64,31 +65,6 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
                     return answer[0];
             }
         } while (true);
-    }
-
-    protected void help(Map<String, Command> commandMap) {
-        int maxLength = 0;
-        StringBuilder stringBuilder = new StringBuilder();
-        Command command;
-
-        stringBuilder.append("Available commands:");
-        stringBuilder.append("\n");
-        for (Command com : commandMap.values())
-            if (com.getCommandText().length() > maxLength)
-                maxLength = com.getCommandText().length();
-        for (int i = 0; i < commandMap.keySet().size(); i++) {
-            command = commandMap.get(commandMap.keySet().toArray()[i].toString());
-            stringBuilder.append("[");
-            stringBuilder.append((i + 1));
-            stringBuilder.append("] ");
-            stringBuilder.append(command.getCommandText());
-            for (int j = 0; j < maxLength - command.getCommandText().length(); j++)
-                stringBuilder.append(" ");
-            stringBuilder.append("\t\t");
-            stringBuilder.append(command.getHelpText());
-            stringBuilder.append("\n");
-        }
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
     }
 
     @Override

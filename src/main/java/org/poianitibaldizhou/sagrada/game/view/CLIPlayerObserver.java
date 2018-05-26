@@ -14,8 +14,8 @@ public class CLIPlayerObserver implements IPlayerObserver {
     private transient BufferManager bufferManager;
     private transient CLIGameView cliGameView;
 
-    public CLIPlayerObserver(CLIGameView cliGameView, BufferManager bufferManager) {
-        this.bufferManager = bufferManager;
+    public CLIPlayerObserver(CLIGameView cliGameView) {
+        this.bufferManager = cliGameView.bufferManager;
         this.cliGameView = cliGameView;
     }
 
@@ -31,7 +31,7 @@ public class CLIPlayerObserver implements IPlayerObserver {
     }
 
     @Override
-    public void onSetOutcome(Outcome outcome) throws RemoteException {
+    public void onSetOutcome(Outcome outcome){
 
     }
 }

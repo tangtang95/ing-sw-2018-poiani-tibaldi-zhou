@@ -11,11 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CLIStateView implements IStateObserver {
-
+    private final CLIGameView cliGameView;
     private final BufferManager bufferManager;
 
-    public CLIStateView(CLIGameView cliGameView, BufferManager bufferManager) {
-        this.bufferManager = bufferManager;
+    public CLIStateView(CLIGameView cliGameView) {
+        this.bufferManager = cliGameView.bufferManager;
+        this.cliGameView = cliGameView;
     }
 
     /**
@@ -50,6 +51,7 @@ public class CLIStateView implements IStateObserver {
     public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser){
         bufferManager.consolePrint("Start of the turn of round " + (round + 1) +
                 " and of the player " + turnUser.getName() + "\n", Level.LOW);
+        cliGameView.setCurrentUser(roundUser);
     }
 
     /**
@@ -110,7 +112,7 @@ public class CLIStateView implements IStateObserver {
         bufferManager.consolePrint("Table of the points\n", Level.LOW);
         Map<String, String> points = new HashMap<>();
         victoryPoints.forEach((key, value) -> points.put(key.getUser().getName(), String.valueOf(value)));
-        bufferManager.consolePrint(new BuildGraphic().buildTable(points).toString(), Level.LOW);
+        bufferManager.consolePrint(new BuildGraphic().buildGraphicTable(points).toString(), Level.LOW);
     }
 
     /**

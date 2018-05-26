@@ -18,9 +18,9 @@ public class CLIRoundTrackView implements IRoundTrackObserver {
     private final transient RoundTrack roundTrack;
     private final BufferManager bufferManager;
 
-    public CLIRoundTrackView(CLIGameView cliGameView, BufferManager bufferManager)  {
+    CLIRoundTrackView(CLIGameView cliGameView)  {
         this.cliGameView = cliGameView;
-        this.bufferManager = bufferManager;
+        this.bufferManager = cliGameView.bufferManager;
         roundTrack = new RoundTrack();
     }
 
@@ -88,5 +88,9 @@ public class CLIRoundTrackView implements IRoundTrackObserver {
         BuildGraphic buildGraphic = new BuildGraphic();
         bufferManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(message2).
                 buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.LOW);
+    }
+
+    public RoundTrack getRoundTrack() {
+        return roundTrack;
     }
 }
