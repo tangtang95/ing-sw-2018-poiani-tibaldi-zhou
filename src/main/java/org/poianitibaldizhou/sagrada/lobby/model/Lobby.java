@@ -107,12 +107,12 @@ public class Lobby implements Serializable {
     /**
      * Notify that game is going to start
      */
-    public void gameStart() {
+    public void gameStart(String gameName) {
         gameStarted = true;
 
         for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
             try {
-                lo.onGameStart();
+                lo.onGameStart(gameName);
             } catch (IOException e) {}
         }
     }

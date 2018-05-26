@@ -14,4 +14,6 @@ public interface StrategyController {
      * @return the game controller based on the strategy
      */
     IGameController getGameController();
+
+    void close();
 }

@@ -136,4 +136,14 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     public CLISchemaCardView getCliSchemaCardView() {
         return cliSchemaCardView;
     }
+
+    @Override
+    public void ack(String ack) throws RemoteException {
+
+    }
+
+    @Override
+    public void err(String err) throws RemoteException {
+
+    }
 }

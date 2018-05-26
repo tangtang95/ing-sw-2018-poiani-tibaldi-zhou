@@ -14,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@Deprecated
 public class SockServer {
 
     public static final int SERVER_PORT = 9090;

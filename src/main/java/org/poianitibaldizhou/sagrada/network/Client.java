@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+@Deprecated
 public class Client {
     public static void main(String[] args) throws RemoteException, NotBoundException {
 

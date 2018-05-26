@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.*;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
@@ -93,6 +94,11 @@ public abstract class Game implements IGame, IGameStrategy {
         return copyToolCards;
     }
 
+    /**
+     * SHALLOW-COPY (PublicObjectiveCards are immutable)
+     *
+     * @return the shallow-copy of the list of publicObjectiveCards
+     */
     @Contract(pure = true)
     public List<PublicObjectiveCard> getPublicObjectiveCards() {
         return new ArrayList<>(publicObjectiveCards);
@@ -170,39 +176,114 @@ public abstract class Game implements IGame, IGameStrategy {
 
     // INTERFACE METHODS
     @Override
-    public void fireExecutorEvent(ExecutorEvent event) throws InvalidActionException {
+    public void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException {
         state.fireExecutorEvent(event);
     }
 
     // OBSERVER ATTACH (INTERFACE METHODS)
+    @Override
     public void attachStateObserver(IStateObserver stateObserver) {
         stateObservers.add(stateObserver);
     }
 
+    @Override
     public void attachGameObserver(String userToken, IGameObserver gameObserver) {
         gameObservers.put(userToken, gameObserver);
     }
 
+    @Override
     public void attachRoundTrackObserver(IRoundTrackObserver roundTrackObserver) {
         // TODO
     }
 
+    @Override
     public void attachDraftPoolObserver(IDraftPoolObserver draftPoolObserver) {
         draftPool.attachObserver(draftPoolObserver);
     }
 
+    @Override
     public void attachToolCardObserver(ToolCard toolCard, IToolCardObserver toolCardObserver) throws InvalidActionException {
-        if (!toolCards.contains(toolCard)) {
-            throw new InvalidActionException();
+        for(ToolCard card : toolCards){
+            if(card.getName().equals(toolCard.getName())) {
+                card.attachToolCardObserver(toolCardObserver);
+                return;
+            }
         }
-        toolCard.attachToolCardObserver(toolCardObserver);
+        throw new InvalidActionException();
     }
 
+    @Override
     public void attachDiceBagObserver(IDrawableCollectionObserver<Dice> drawableCollectionObserver) {
         diceBag.attachObserver(drawableCollectionObserver);
     }
 
+    @Override
+    public void attachSchemaCardObserver(SchemaCard schemaCard, ISchemaCardObserver schemaCardObserver) throws InvalidActionException {
+        for (Player player: players.values()) {
+            if(player.getSchemaCard().getName().equals(schemaCard.getName())) {
+                player.attachSchemaCardObserver(schemaCardObserver);
+                return;
+            }
+        }
+        throw new InvalidActionException();
+    }
 
+    @Override
+    public void attachPlayerObserver(Player player, IPlayerObserver playerObserver) {
+        for (Player p : players.values()){
+            if(p.getUser().equals(player.getUser())){
+                p.attachObserver(playerObserver);
+            }
+        }
+    }
+
+    @Override
+    public void userJoin(String token) throws InvalidActionException, RemoteException {
+        if(!containsToken(token))
+            throw new InvalidActionException();
+        state.readyGame(token);
+    }
+
+    @Override
+    public void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException, RemoteException {
+        if(!containsToken(token))
+            throw new InvalidActionException();
+        state.ready(token, schemaCard);
+    }
+
+    @Override
+    public void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException, RemoteException {
+        if(!containsToken(token))
+            throw new InvalidActionException();
+        state.placeDice(players.get(token), dice, position);
+    }
+
+    @Override
+    public void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorObserver executorObserver) throws InvalidActionException, RemoteException {
+        if(!containsToken(token))
+            throw new InvalidActionException();
+        state.useCard(players.get(token), toolCard, executorObserver);
+    }
+
+    @Override
+    public void userChooseAction(String token, IActionCommand action) throws InvalidActionException, RemoteException {
+        if(!containsToken(token))
+            throw new InvalidActionException();
+        state.chooseAction(players.get(token), action);
+    }
+
+    @Override
+    public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException, RemoteException {
+        if(!containsToken(token))
+            throw new InvalidActionException();
+        state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
+    }
+
+    @Override
+    public boolean containsToken(String token) {
+        Optional<String> optToken = users.stream().map(User::getToken).filter(tok -> tok.equals(token)).findFirst();
+        return optToken.isPresent();
+    }
 
     //MODIFIER
     public void setState(IStateGame state) throws RemoteException {

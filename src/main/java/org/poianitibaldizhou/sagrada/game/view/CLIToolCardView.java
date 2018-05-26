@@ -45,7 +45,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number > 0 && number < diceList.size()) {
-                networkManager.getGameController().setDice(diceList.get(number - 1), gameName, toolCard.getName());
+                //networkManager.getGameController().setDice(diceList.get(number - 1), gameName, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -66,7 +66,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
+                //networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -92,8 +92,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                networkManager.getGameController().setColor((Color) colors.toArray()[number - 1],
-                        gameName, toolCard.getName());
+                //networkManager.getGameController().setColor((Color) colors.toArray()[number - 1],
+                        //gameName, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -137,7 +137,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number == minNumber || number == maxNumber) {
-                networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
+                //networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -165,9 +165,9 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                     diceNumber = 0;
                 }
                 if (diceNumber > 0 && diceNumber < roundTrack.getDices(roundNumber - 1).size()) {
-                    networkManager.getGameController().setDice(
-                            roundTrack.getDices(roundNumber - 1).get(diceNumber - 1),
-                            gameName, toolCard.getName());
+                    //networkManager.getGameController().setDice(
+                            //roundTrack.getDices(roundNumber - 1).get(diceNumber - 1),
+                            //gameName, toolCard.getName());
                 } else {
                     bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                     roundNumber = -1;
@@ -217,8 +217,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    networkManager.getGameController().setPosition(new Position(row,column),gameName,
-                            toolCard.getName());
+                    //networkManager.getGameController().setPosition(new Position(row,column),gameName,
+                            //toolCard.getName());
                 } else {
                     bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                     row = -1;
@@ -255,8 +255,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    networkManager.getGameController().setPosition(new Position(row,column),gameName,
-                            toolCard.getName());
+                    //networkManager.getGameController().setPosition(new Position(row,column),gameName,
+                            //toolCard.getName());
                 } else {
                     bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                     row = -1;

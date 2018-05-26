@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
@@ -142,11 +143,14 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      * {@inheritDoc}
      */
     @Override
-    public void onGameStart() throws RemoteException {
+    public void onGameStart(String gameName) throws IOException {
+        //TODO pass the gameName to the new CLIGameView
         bufferManager.consolePrint("GAME STARTED", Level.HIGH);
         bufferManager.stopConsoleRead();
         screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager));
     }
+
+
 
     @Override
     public void onPing() throws RemoteException {

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
+@Deprecated
 public abstract class ProxyController {
 
     protected ServerHandler serverHandler;

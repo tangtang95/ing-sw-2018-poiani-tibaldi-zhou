@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.network.strategycontroller.RMIStrategyContr
 import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
 
-
+//TODO make network manager lazy
 public class NetworkManager implements StrategyController{
 
     private NetworkType networkType;
@@ -35,6 +35,11 @@ public class NetworkManager implements StrategyController{
         return strategyController.getGameController();
     }
 
+    @Override
+    public void close() {
+        strategyController.close();
+    }
+
     /**
      * Set the network type if it is different from the current one. If it's different then
      * the strategyController will be updated
@@ -48,9 +53,11 @@ public class NetworkManager implements StrategyController{
         this.networkType = networkType;
         switch (networkType){
             case RMI:
+                strategyController.close();
                 strategyController = new RMIStrategyController(ipAddress, networkType.getPort());
                 break;
             case SOCKET:
+                strategyController.close();
                 strategyController = new SocketStrategyController(ipAddress, networkType.getPort());
                 break;
             default:

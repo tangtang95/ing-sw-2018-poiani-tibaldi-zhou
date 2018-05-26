@@ -14,6 +14,7 @@ import java.lang.reflect.Proxy;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -138,4 +139,16 @@ public class ClientHandler implements Runnable {
         return false;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof ClientHandler)) return false;
+        ClientHandler other = (ClientHandler) obj;
+        return objectInputStream.equals(other.objectInputStream) && objectOutputStream.equals(other.objectOutputStream);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectInputStream, objectOutputStream);
+    }
 }

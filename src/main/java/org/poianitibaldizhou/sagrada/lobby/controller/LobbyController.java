@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
-import org.poianitibaldizhou.sagrada.ManagerMediator;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -8,7 +7,6 @@ import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.security.acl.LastOwnerException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;

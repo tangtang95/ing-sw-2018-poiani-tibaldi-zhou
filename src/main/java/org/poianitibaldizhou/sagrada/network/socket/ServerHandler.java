@@ -106,7 +106,10 @@ public class ServerHandler implements Runnable {
                         this.notifyAll();
                     }
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
+                LOGGER.log(Level.FINE, "Socket is closed");
+                object = null;
+            } catch (ClassNotFoundException e) {
                 LOGGER.log(Level.SEVERE, e.toString());
                 object = null;
             }
@@ -133,7 +136,7 @@ public class ServerHandler implements Runnable {
             inputStream.close();
             outputStream.close();
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, e.toString());
+            LOGGER.log(Level.FINE, e.toString());
         }
     }
 

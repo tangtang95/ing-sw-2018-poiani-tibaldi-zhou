@@ -65,11 +65,11 @@ public class LobbyManager {
 
     private synchronized void createGame() {
         try {
-            managerMediator.createMultiPlayerGame(users);
+            String gameName = managerMediator.createMultiPlayerGame(users);
+            lobby.gameStart(gameName);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        lobby.gameStart();
     }
 
     public Set<ILobbyObserver> getLobbyObserver() {

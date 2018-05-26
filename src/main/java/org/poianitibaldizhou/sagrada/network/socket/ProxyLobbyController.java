@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.network.INetworkObserver;
  * Proxy Pattern for the controller of the server
  * CLIENT-SIDE
  */
+@Deprecated
 public class ProxyLobbyController extends ProxyController implements ILobbyController {
 
     /**

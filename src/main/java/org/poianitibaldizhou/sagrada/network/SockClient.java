@@ -1,16 +1,18 @@
 package org.poianitibaldizhou.sagrada.network;
 
+import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
 import java.rmi.RemoteException;
 
+@Deprecated
 public class SockClient {
     public static void main(String[] args) {
         ScreenManager screenManager = new ScreenManager();
         try {
             screenManager.pushScreen(new CLILobbyView(
-                    new NetworkManager("localhost", NetworkType.SOCKET),screenManager));
+                    new NetworkManager("localhost", NetworkType.SOCKET),screenManager, new BufferManager()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
