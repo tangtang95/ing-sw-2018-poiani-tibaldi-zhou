@@ -43,4 +43,10 @@ public class RMIStrategyController implements StrategyController{
     public IGameController getGameController() {
         return gameController;
     }
+
+    @Override
+    public void close() {
+        lobbyController = null;
+        gameController = null;
+    }
 }

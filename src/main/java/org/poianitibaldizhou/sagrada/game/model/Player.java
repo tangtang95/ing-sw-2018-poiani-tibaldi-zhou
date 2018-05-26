@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
+import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
 
@@ -112,6 +113,10 @@ public abstract class Player implements IVictoryPoints, Serializable {
         observerList.add(observer);
     }
 
+    public void attachSchemaCardObserver(ISchemaCardObserver schemaCardObserver) {
+        schemaCard.attachObserver(schemaCardObserver);
+    }
+
     public void setSchemaCard(SchemaCard schemaCard) {
         this.schemaCard = schemaCard;
     }
@@ -211,5 +216,4 @@ public abstract class Player implements IVictoryPoints, Serializable {
         }
         return false;
     }
-
 }

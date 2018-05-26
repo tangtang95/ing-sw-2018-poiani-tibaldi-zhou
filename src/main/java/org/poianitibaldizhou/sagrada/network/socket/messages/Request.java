@@ -22,7 +22,7 @@ public class Request implements Serializable {
      */
     public Request(String methodName, Object... methodParameters) {
         this.methodName = methodName;
-        this.methodParameters = methodParameters.clone();
+        this.methodParameters = methodParameters;
     }
 
     /**

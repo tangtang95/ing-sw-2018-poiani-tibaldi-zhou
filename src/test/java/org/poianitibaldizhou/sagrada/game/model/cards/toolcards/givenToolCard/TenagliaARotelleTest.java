@@ -80,8 +80,8 @@ public class TenagliaARotelleTest {
             Thread.sleep(100);
         Dice dice = new Dice(4, Color.YELLOW);
         Position pos = new Position(0, 2);
-        turnState.fireExecutorEvent(new DiceExecutorEvent(dice));
-        turnState.fireExecutorEvent(new PositionExecutorEvent(pos));
+        turnState.userFireExecutorEvent(new DiceExecutorEvent(dice));
+        turnState.userFireExecutorEvent(new PositionExecutorEvent(pos));
         turnState.chooseAction(player1, new EndTurnAction());
         turnState.getToolCardExecutor().join();
         verify(executor).setDice(dice, pos.getRow(), pos.getColumn(),

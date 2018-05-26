@@ -13,7 +13,7 @@ public class CLIStartGameMenuView extends CLIMenuView {
     private final transient Map<String, Command> commandMap = new HashMap<>();
 
     private static final String CHANGE_CONNECTION_MODE = "Change connection mode";
-    private static final String START_GAME = "Star game";
+    private static final String START_GAME = "Start game";
     private static final String QUIT = "Quit";
 
     public CLIStartGameMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)

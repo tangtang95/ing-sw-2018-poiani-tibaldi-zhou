@@ -16,20 +16,20 @@ import static org.mockito.Mockito.when;
 
 public class GameManagerTest {
     private GameManager gameManager;
-    private List<Game> gameList;
+    private List<IGame> gameList;
     private List<String> playerList;
 
     @Mock
     private ManagerMediator managerMediator;
 
     @Mock
-    private Game game1;
+    private IGame game1;
 
     @Mock
-    private Game game2;
+    private IGame game2;
 
     @Mock
-    private Game game3;
+    private IGame game3;
 
     @Before
     public void setUp() throws Exception {
@@ -64,7 +64,7 @@ public class GameManagerTest {
     public void testJoinNotExistingGame() throws Exception {
         gameManager.addGame(game1, "game1");
         gameManager.joinGame("notExistingGame", playerList.get(0));
-        List<Game> games = gameManager.getGames();
+        List<IGame> games = gameManager.getGames();
         assertEquals(1, games.size());
         assertEquals(game1.getName(), games.get(0).getName());
     }
@@ -103,10 +103,10 @@ public class GameManagerTest {
         gameManager.addGame(game2, "game2");
         gameManager.addGame(game3, "game3");
         gameManager.addGame(game3, "game3");
-        List<Game> curr = gameManager.getGames();
+        List<IGame> curr = gameManager.getGames();
         assertEquals(3, curr.size());
         int[] flags = new int[3];
-        for (Game g : curr) {
+        for (IGame g : curr) {
             if (g.getName().equals("game1"))
                 flags[0] += 1;
             if (g.getName().equals("game2"))
@@ -133,9 +133,9 @@ public class GameManagerTest {
     @Test
     public void removeNonExistingGame() throws Exception {
         gameManager.addGame(game1, game1.getName());
-        List<Game> prevList = gameManager.getGames();
+        List<IGame> prevList = gameManager.getGames();
         gameManager.terminateGame("NonExistingGame");
-        List<Game> newList = gameManager.getGames();
+        List<IGame> newList = gameManager.getGames();
         assertEquals(prevList.size(), newList.size());
         for (int i = 0; i < prevList.size(); i++) {
             assertEquals(prevList.get(i).getName(), newList.get(i).getName());

@@ -46,7 +46,6 @@ public interface IToolCardExecutorObserver extends Remote {
 
     /**
      * Notify the requirement of a dice from the roundTrack
-     * //TODO roundTrack seems to be heavy to pass on the network
      *
      * @param roundTrack the roundTrack of the game
      * @throws RemoteException network error

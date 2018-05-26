@@ -7,19 +7,20 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * OVERVIEW: This not contains duplicate
  */
 public class GameManager {
-    private HashMap<String, Game> games;
-    private HashMap<String, List<String>> playersByGame;
+    private Map<String, IGame> games;
+
+    private Map<String, List<String>> playersByGame;
     private List<String> players;
     private final ManagerMediator managerMediator;
 
     public GameManager(ManagerMediator managerMediator) {
         this.managerMediator = managerMediator;
-        this.managerMediator.setGameManager(this);
         games = new HashMap<>();
         playersByGame = new HashMap<>();
         players = new ArrayList<>();
@@ -31,7 +32,7 @@ public class GameManager {
      *
      * @param game game to add
      */
-    public synchronized void addGame(Game game, String name) {
+    public synchronized void addGame(IGame game, String name) {
         if(games.putIfAbsent(name, game) == null){
             playersByGame.put(name, new ArrayList<>());
         }
@@ -74,7 +75,7 @@ public class GameManager {
      * @param name name of the wanted game
      * @return game associated with name
      */
-    public synchronized Game getGameByName(String name) {
+    public synchronized IGame getGameByName(String name) {
         return games.get(name);
     }
 
@@ -86,12 +87,17 @@ public class GameManager {
      * @return list of the player in gameName
      */
     public synchronized List<String> getPlayersByGame(String gameName) {
-        return games.containsKey(gameName)? new ArrayList(playersByGame.get(gameName)) : null;
+        return games.containsKey(gameName)? new ArrayList<>(playersByGame.get(gameName)) : null;
+    }
 
+    public boolean containsGame(final String gameName) {
+        return games.values().stream().map(IGame::getName).anyMatch(s -> s.equals(gameName));
     }
 
     @Contract(pure = true)
-    public synchronized List<Game> getGames() {
+    public synchronized List<IGame> getGames() {
         return new ArrayList<>(games.values());
     }
+
+
 }

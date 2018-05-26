@@ -12,8 +12,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,18 +30,15 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
-    private Set<Class> observerInterfaces;
-
     /**
      * Constructor.
      * Create a Runnable ClientHandler to handle the client request and send response and notify to the client
      *
-     * @param socket     the socket connected to the client
+     * @param socket            the socket connected to the client
      * @param controllerManager the controller manager of the server that contains the reference of all the controllers
      */
     public ClientHandler(Socket socket, ControllerManager controllerManager) {
         this.controllerManager = controllerManager;
-        initObserverClasses();
         try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -49,26 +48,16 @@ public class ClientHandler implements Runnable {
 
     }
 
-    private void initObserverClasses(){
-        observerInterfaces = new HashSet<>();
-        observerInterfaces.add(ILobbyObserver.class);
-        observerInterfaces.add(INetworkObserver.class);
-    }
-
     /**
      * Send a Response or NotifyMessage to the server via outputStream
      *
      * @param obj the Response or NotifyMessage to be sent
      */
-    public synchronized void sendResponse(Object obj) {
+    public synchronized void sendResponse(Object obj) throws IOException {
         if (!(obj instanceof Response || obj instanceof NotifyMessage))
             throw new IllegalArgumentException("The object passed is not a Response or a NotifyMessage");
-        try {
-            objectOutputStream.writeObject(obj);
-            objectOutputStream.flush();
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-        }
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.flush();
     }
 
     /**
@@ -125,7 +114,7 @@ public class ClientHandler implements Runnable {
         List<Object> parameters = request.getMethodParameters();
         for (int i = 0; i < parameters.size(); i++) {
             Class clazz = parameters.get(i).getClass();
-            if (containsAtLeastOneInterface(clazz.getInterfaces())) {
+            if(parameters.get(i) instanceof UnicastRemoteObject){
                 request.replaceParameter(Proxy.newProxyInstance(
                         clazz.getClassLoader(), clazz.getInterfaces(),
                         new ProxyObserverInvocationHandler(this, parameters.get(i).hashCode())), i);
@@ -133,13 +122,16 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    @Contract(pure = true)
-    private boolean containsAtLeastOneInterface(Class[] interfaces){
-        for (Class clazz: interfaces) {
-            if(observerInterfaces.contains(clazz))
-                return true;
-        }
-        return false;
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(!(obj instanceof ClientHandler)) return false;
+        ClientHandler other = (ClientHandler) obj;
+        return objectInputStream.equals(other.objectInputStream) && objectOutputStream.equals(other.objectOutputStream);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(objectInputStream, objectOutputStream);
+    }
 }

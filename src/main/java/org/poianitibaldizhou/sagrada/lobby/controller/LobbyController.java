@@ -24,13 +24,12 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         this.lobbyManager = lobbyManager;
     }
 
-
     /**
      * Implements the login of an User with an username and a view.
      * If an User is already logged with username, returns an empty token (login is thus failed).
      *
      * @param username user's name
-     * @param view user's view
+     * @param view     user's view
      * @return login's token
      * @throws RemoteException if an username with a certain view is already logged or if there are
      *                         some problems with the communication architecture
@@ -40,7 +39,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         String token = "";
         try {
             token = lobbyManager.login(username);
-        } catch(RemoteException re) {
+        } catch (RemoteException re) {
             view.err("Another user is logged with this username. Please, choose a new username.");
             return token;
         }
@@ -50,38 +49,25 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     }
 
     /**
-     * Implements the logout of an User by his token.
-     *
-     * @param token user's token
-     * @throws RemoteException if no user's with token exists in the game or if there are some problems
-     *                          with the communication architecture
-     */
-    @Override
-    public synchronized void logout(String token) throws RemoteException {
-        lobbyManager.logout(token);
-        viewMap.get(token).ack("Logged out");
-        viewMap.remove(token);
-    }
-
-    /**
      * An user identified with token and username leaves the lobby.
      *
-     * @param token user's token
+     * @param token    user's token
      * @param username user's name
      * @throws RemoteException if authorization fails or if there are problems in the communication
-     * architecture
+     *                         architecture
      */
     @Override
     public synchronized void leave(String token, String username) throws RemoteException {
-        if(!authorize(token, username))
+        if (!authorize(token, username))
             throw new RemoteException("Authorization failed");
         try {
             lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
-        } catch(RemoteException re) {
+        } catch (RemoteException re) {
             viewMap.get(token).err("Can't leave the lobby.");
             return;
         }
         viewMap.get(token).ack("Lobby left");
+        viewMap.remove(token);
     }
 
     /**
@@ -89,15 +75,16 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * in order to receive notification of what happens.
      * If the user has already joined, signals an error message to the user's view.
      *
-     * @param token user's token
-     * @param username user's name
+     * @param token         user's token
+     * @param username      user's name
      * @param lobbyObserver observer of the lobby for the client
      * @throws RemoteException the remote exception
      */
     @Override
     public synchronized void join(String token, String username, ILobbyObserver lobbyObserver) throws RemoteException {
-        if(!authorize(token, username))
+        if (!authorize(token, username)) {
             throw new RemoteException("Authorization failed");
+        }
         try {
             lobbyManager.userJoinLobby(lobbyObserver, lobbyManager.getUserByToken(token));
         } catch (RemoteException re) {
@@ -132,7 +119,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     public void requestTimeout(String token) throws RemoteException {
         try {
             viewMap.get(token).ack(formatTimeout(lobbyManager.getTimeToTimeout()));
-        } catch (RemoteException re){
+        } catch (RemoteException re) {
             viewMap.get(token).err("None lobby is active. Join to create one.");
         }
     }
@@ -140,7 +127,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     /**
      * Returns true if token matches username, false otherwise.
      *
-     * @param token user's token
+     * @param token    user's token
      * @param username user's username
      * @return true if token matches username, false otherwise
      */
@@ -148,7 +135,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         User user;
         try {
             user = lobbyManager.getUserByToken(token);
-        } catch(RemoteException re) {
+        } catch (RemoteException re) {
             return false;
         }
         return user.getName().equals(username);
@@ -162,7 +149,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     private String formatTimeout(long timeout) {
         Date date = new Date(timeout);
-        DateFormat formatter =  new SimpleDateFormat("mm:ss");
+        DateFormat formatter = new SimpleDateFormat("mm:ss");
         return formatter.format(date);
     }
 

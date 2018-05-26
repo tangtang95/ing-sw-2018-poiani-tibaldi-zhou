@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.network.INetworkObserver;
  * Proxy Pattern for the controller of the server
  * CLIENT-SIDE
  */
+@Deprecated
 public class ProxyLobbyController extends ProxyController implements ILobbyController {
 
     /**
@@ -36,17 +37,6 @@ public class ProxyLobbyController extends ProxyController implements ILobbyContr
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         serverHandler.sendRequest(new LobbyRequest(methodName, username, view));
         return (String) serverHandler.getResponse();
-    }
-
-    /**
-     * Counter-part method logout of the server-side controller; send the LobbyRequest via serverHandler
-     *
-     * @param token the token of the user requesting logout
-     */
-    @Override
-    public void logout(String token) {
-        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
-        serverHandler.sendRequest(new LobbyRequest(methodName, token));
     }
 
     /**

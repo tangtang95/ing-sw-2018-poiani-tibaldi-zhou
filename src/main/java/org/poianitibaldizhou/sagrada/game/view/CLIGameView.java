@@ -241,4 +241,14 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
     }
+
+    @Override
+    public void ack(String ack) throws RemoteException {
+
+    }
+
+    @Override
+    public void err(String err) throws RemoteException {
+
+    }
 }

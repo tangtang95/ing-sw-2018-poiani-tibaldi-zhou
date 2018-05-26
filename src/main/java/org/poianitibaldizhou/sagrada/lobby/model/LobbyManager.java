@@ -2,16 +2,18 @@ package org.poianitibaldizhou.sagrada.lobby.model;
 
 import org.poianitibaldizhou.sagrada.ManagerMediator;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class LobbyManager {
 
     private final List<User> users;
+    private final HashMap<ILobbyObserver, User> lobbyObserverHashMap;
+    private final HashMap<String, ILobbyObserver> stringILobbyObserverHashMap;
+
     private Lobby lobby;
     private Thread timeoutThread;
     private Runnable timeout;
@@ -19,7 +21,8 @@ public class LobbyManager {
     private ManagerMediator managerMediator;
 
     // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=30s
-    private static final long DELAY_TIME = 60000;
+    private static final long DELAY_TIME = 600000;
+
 
     /**
      * Constructor.
@@ -29,10 +32,12 @@ public class LobbyManager {
      */
     public LobbyManager(ManagerMediator managerMediator) {
         this.managerMediator = managerMediator;
-        this.managerMediator.setLobbyManager(this);
 
         users = new ArrayList<>();
+        lobbyObserverHashMap = new HashMap<>();
+        stringILobbyObserverHashMap = new HashMap<>();
         lobby = null;
+
         timeout = () -> {
             try {
                 Thread.sleep(DELAY_TIME);
@@ -54,17 +59,21 @@ public class LobbyManager {
      * Creates a new lobby
      */
     private synchronized void createLobby() {
-        lobby = new Lobby(UUID.randomUUID().toString());
+        lobby = new Lobby(UUID.randomUUID().toString(), this);
         setTimeout();
     }
 
     private synchronized void createGame() {
         try {
-            managerMediator.createMultiPlayerGame(users);
+            String gameName = managerMediator.createMultiPlayerGame(users);
+            lobby.gameStart(gameName);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        lobby.gameStart();
+    }
+
+    public Set<ILobbyObserver> getLobbyObserver() {
+        return lobbyObserverHashMap.keySet();
     }
 
     /**
@@ -75,8 +84,8 @@ public class LobbyManager {
      * @throws RemoteException if no such user with specified token exists
      */
     public synchronized User getUserByToken(String token) throws RemoteException {
-        for(User u: users)
-            if(u.getToken().equals(token))
+        for (User u : users)
+            if (u.getToken().equals(token))
                 return u;
         throw new RemoteException("No such user with specified token exists.");
     }
@@ -86,18 +95,20 @@ public class LobbyManager {
      * If the lobby is full after the player join, a new lobby is created.
      *
      * @param lobbyObserver observing the lobby for the client
-     * @param user user joining
+     * @param user          user joining
      * @throws RemoteException if user has already joined the lobby
      */
     public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) throws RemoteException {
-        if(lobby == null)
+        if (lobby == null)
             createLobby();
-        if(lobby.getUserList().contains(user))
+        if (lobby.getUserList().contains(user))
             throw new RemoteException("User has already joined the lobby.");
-        if(lobby.isGameStarted())
+        if (lobby.isGameStarted())
             createLobby();
-        lobby.observeLobby(lobbyObserver);
-        if(lobby.join(user)) {
+        lobbyObserver.hashCode();
+        lobbyObserverHashMap.putIfAbsent(lobbyObserver, user);
+        stringILobbyObserverHashMap.putIfAbsent(user.getToken(), lobbyObserver);
+        if (lobby.join(user)) {
             createGame();
             createLobby();
         }
@@ -110,26 +121,69 @@ public class LobbyManager {
      * @throws RemoteException if the user is not present in the lobby
      */
     public synchronized void userLeaveLobby(User user) throws RemoteException {
-
-        if(!lobby.getUserList().contains(user))
+        if (!lobby.getUserList().contains(user))
             throw new RemoteException("Can't leave because user is not in the lobby");
-        if(lobby.isGameStarted())
+        if (lobby.isGameStarted())
             throw new RemoteException("The lobby is started");
         lobby.leave(user);
-        if(lobby.getNumberOfPlayer() == 0) {
+        ILobbyObserver removed = stringILobbyObserverHashMap.remove(user.getToken());
+        if (removed == null)
+            throw new RemoteException("Can't leave the lobby because the user is not in the lobby");
+        lobbyObserverHashMap.remove(removed);
+        logout(user.getToken());
+        if (lobby.getNumberOfPlayer() == 0) {
             lobby = null;
             timeoutThread = null;
         }
     }
 
     /**
+     * Detach the observer of a certain user, due to the fact that a network disconnection has been detected.
+     *
+     * @param observer observer of the user who's been detected as disconnected
+     * @throws RemoteException if the user is not in the lobby or if the the game has already started
+     */
+    public synchronized void userDisconnectedDetected(ILobbyObserver observer) throws RemoteException {
+        User disconnected = lobbyObserverHashMap.remove(observer);
+        if (disconnected == null)
+            throw new RemoteException("User is not in the lobby");
+        if (lobby.isGameStarted())
+            throw new RemoteException("The lobby is started: too late for leaving");
+        lobby.leave(disconnected);
+        logout(disconnected.getToken());
+        if (lobby.getNumberOfPlayer() == 0) {
+            lobby = null;
+            timeoutThread = null;
+        }
+    }
+
+    private synchronized void ping() throws RemoteException {
+        List<ILobbyObserver> removeList = new ArrayList<>();
+        for(ILobbyObserver observer : lobbyObserverHashMap.keySet()) {
+            try {
+                observer.onPing();
+            } catch(IOException re) {
+                removeList.add(observer);
+            }
+        }
+        for(ILobbyObserver observer : removeList)
+            userDisconnectedDetected(observer);
+    }
+
+
+    /**
      * Implements user login on server.
+     * Before trying to logging in the user, the clients are pinged to detect disconnections in
+     * order to allow the connection with the name of someone who has been detected as
+     * disconnected.
      *
      * @param username user's name
      * @return user's token
      * @throws RemoteException if an user with username is already logged
      */
     public synchronized String login(String username) throws RemoteException {
+        ping();
+
         for (User u : users) {
             if (u.getName().equals(username)) {
                 throw new RemoteException("User already logged: " + username);
@@ -145,14 +199,13 @@ public class LobbyManager {
      * Implements user logout on server.
      * If the user is in a lobby, it leaves.
      *
-     *
      * @param token user's token
      * @throws RemoteException if no user with token exists
      */
-    public synchronized void logout(String token) throws RemoteException {
+    private synchronized void logout(String token) throws RemoteException {
         User user = this.getUserByToken(token);
 
-        if(lobby != null && lobby.getUserList().contains(user))
+        if (lobby != null && lobby.getUserList().contains(user))
             this.userLeaveLobby(user);
         for (User u : users) {
             if (u.getToken().equals(token)) {
@@ -174,7 +227,7 @@ public class LobbyManager {
     }
 
     public List<User> getLobbyUsers() throws RemoteException {
-        if(lobby == null)
+        if (lobby == null)
             throw new RemoteException("No lobby active");
         return lobby.getUserList();
     }
@@ -185,7 +238,7 @@ public class LobbyManager {
      * are greater or equal then 2, the game starts, otherwise timeout gets restarted.
      */
     public synchronized void handleTimeout() {
-        if(lobby != null && lobby.getPlayerNum() >= 2) {
+        if (lobby != null && lobby.getPlayerNum() >= 2) {
             createGame();
             createLobby();
         } else {
@@ -195,13 +248,14 @@ public class LobbyManager {
 
     /**
      * Returns time missing to reach timeout.
+     *
      * @return time in millis
      */
     public synchronized long getTimeToTimeout() throws RemoteException {
-        if(lobby == null)
+        if (lobby == null)
             throw new RemoteException("No lobby Active");
         long currTime = System.currentTimeMillis();
-        return DELAY_TIME - (currTime-timeoutStart);
+        return DELAY_TIME - (currTime - timeoutStart);
     }
 
     public long getDelayTime() {
