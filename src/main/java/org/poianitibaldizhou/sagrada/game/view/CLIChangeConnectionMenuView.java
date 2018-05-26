@@ -1,9 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
-import org.poianitibaldizhou.sagrada.cli.Command;
-import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 import org.poianitibaldizhou.sagrada.network.NetworkType;
 
@@ -36,13 +33,14 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
 
     @Override
     public void run() {
-        bufferManager.consolePrint("----------------------Select Connection Menu-----------------------",
-                Level.LOW);
-        bufferManager.consolePrint("Current connection mode: " + networkManager.getNetworkType().name(),
-                Level.LOW);
-        help(commandMap);
+        BuildGraphic buildGraphic = new BuildGraphic();
+        bufferManager.consolePrint(buildGraphic.
+                buildMessage("----------------------Select Connection Menu-----------------------").
+                buildMessage("Current connection mode: " + networkManager.getNetworkType().name()).
+                buildGraphicHelp(commandMap).
+                buildMessage("Change connection mode or go to Start Game Menu: ").
+                toString(), Level.LOW);
         try {
-            bufferManager.consolePrint("Change connection mode or go to Start Game Menu: ", Level.LOW);
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());

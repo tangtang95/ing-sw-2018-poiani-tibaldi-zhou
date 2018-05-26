@@ -18,8 +18,8 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
     private final User currentUser;
     private final BufferManager bufferManager;
 
-    public CLIDraftPoolView(CLIGameView cliGameView, BufferManager bufferManager) {
-        this.bufferManager = bufferManager;
+    CLIDraftPoolView(CLIGameView cliGameView) {
+        this.bufferManager = cliGameView.bufferManager;
         this.draftPool = new DraftPool();
         this.currentUser = cliGameView.getCurrentUser();
     }
@@ -100,5 +100,9 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has cleared the draft pool.");
         bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.LOW);
+    }
+
+    public DraftPool getDraftPool() {
+        return draftPool;
     }
 }

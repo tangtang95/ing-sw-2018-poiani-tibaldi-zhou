@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.util.ArrayList;
@@ -71,6 +73,7 @@ public class BuildGraphic {
     }
 
     public BuildGraphic buildGraphicToolCards(List<ToolCard> toolCards) {
+        buildMessage("----------------------------TOOL CARDS---------------------------");
         for (int i = 0; i < toolCards.size() ; i++) {
                stringBuilder.append("[").append(i).append("]\n");
                stringBuilder.append("Card Name: ").append(toolCards.get(i).getName()).append("\n");
@@ -81,11 +84,79 @@ public class BuildGraphic {
         return this;
     }
 
-    public BuildGraphic buildTable(Map<String, String> table){
+    public BuildGraphic buildGraphicPublicObjectiveCards(List<PublicObjectiveCard> publicObjectiveCards) {
+        buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
+        for (int i = 0; i < publicObjectiveCards.size() ; i++) {
+            stringBuilder.append("[").append(i).append("]\n");
+            stringBuilder.append("Card Name: ").append(publicObjectiveCards.get(i).getName()).append("\n");
+            stringBuilder.append("Point:     ").append(publicObjectiveCards.get(i).getCardPoints()).append("\n");
+            stringBuilder.append("Description:\n");
+            stringBuilder.append(publicObjectiveCards.get(i).getDescription()).append("\n\n");
+        }
+        return this;
+    }
+
+    public BuildGraphic buildGraphicTable(Map<String, String> table){
         table.forEach((key, value) -> {
             stringBuilder.append(String.format("%10s %3s", key, value));
             stringBuilder.append("\n");
         });
+        return this;
+    }
+
+    public BuildGraphic buildGraphicHelp(Map<String, Command> commandMap) {
+        int maxLength = 0;
+        Command command;
+
+        stringBuilder.append("Available commands:");
+        stringBuilder.append("\n");
+        for (Command com : commandMap.values())
+            if (com.getCommandText().length() > maxLength)
+                maxLength = com.getCommandText().length();
+        for (int i = 0; i < commandMap.keySet().size(); i++) {
+            command = commandMap.get(commandMap.keySet().toArray()[i].toString());
+            stringBuilder.append("[");
+            stringBuilder.append((i + 1));
+            stringBuilder.append("] ");
+            stringBuilder.append(command.getCommandText());
+            for (int j = 0; j < maxLength - command.getCommandText().length(); j++)
+                stringBuilder.append(" ");
+            stringBuilder.append("\t\t");
+            stringBuilder.append(command.getHelpText());
+            stringBuilder.append("\n");
+        }
+        return this;
+    }
+
+    public BuildGraphic buildGraphicLogo() {
+        int charNumber = 76;
+
+        stringBuilder.append((char) 9556);
+        for (int i = 0; i < charNumber; i++) {
+            stringBuilder.append((char) 9552);
+        }
+        stringBuilder.append((char) 9559 + "\n" + (char) 9553);
+        for (int i = 0; i < (charNumber - 13) / 3; i++) {
+            stringBuilder.append(" ");
+        }
+        stringBuilder.append("     S A G R A D A     ");
+        for (int i = 0; i < (charNumber - 13) / 3; i++) {
+            stringBuilder.append(" ");
+        }
+        stringBuilder.append((char) 9553 + "\n" + (char) 9562);
+        for (int i = 0; i < charNumber; i++) {
+            stringBuilder.append((char) 9552);
+        }
+        stringBuilder.append((char) 9565 + "\n");
+        return this;
+    }
+
+    public BuildGraphic buildGraphicRoundTrack(RoundTrack roundTrack) {
+        buildMessage("----------------------------ROUND TRACK---------------------------");
+        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
+            List<Dice> diceList = roundTrack.getDices(i);
+            stringBuilder.append(buildMessage("Round " + "[" + i + 1 + "]").buildGraphicDices(diceList).toString());
+        }
         return this;
     }
 

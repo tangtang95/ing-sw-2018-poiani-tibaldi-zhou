@@ -1,9 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
-import org.poianitibaldizhou.sagrada.cli.Command;
-import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
@@ -42,11 +39,15 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
 
     @Override
     public void run() {
-        bufferManager.consolePrint("------------------------Select Game Mode---------------------------",
+        BuildGraphic buildGraphic = new BuildGraphic();
+
+        bufferManager.consolePrint(buildGraphic.
+                buildMessage("------------------------Select Game Mode---------------------------").
+                buildGraphicHelp(commandMap).
+                buildMessage("Choose the game mode or go to Start Game Menu: ").toString(),
                 Level.LOW);
-        help(commandMap);
+
         try {
-            bufferManager.consolePrint("Choose the game mode or go to Start Game Menu: ", Level.LOW);
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());

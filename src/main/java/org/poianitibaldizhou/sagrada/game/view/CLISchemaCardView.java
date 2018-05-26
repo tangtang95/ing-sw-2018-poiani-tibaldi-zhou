@@ -12,17 +12,18 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CLISchemaCardView implements ISchemaCardObserver {
 
     private final CLIGameView cliGameView;
-    private final transient HashMap<String, SchemaCard> schemaCards;
+    private final transient Map<String, SchemaCard> schemaCards;
     private final BufferManager bufferManager;
 
-    CLISchemaCardView(CLIGameView cliGameView, BufferManager bufferManager) {
+    CLISchemaCardView(CLIGameView cliGameView) {
         this.cliGameView = cliGameView;
         schemaCards = new HashMap<>();
-        this.bufferManager = bufferManager;
+        this.bufferManager = cliGameView.bufferManager;
     }
 
     /**
@@ -75,5 +76,9 @@ public class CLISchemaCardView implements ISchemaCardObserver {
         BuildGraphic buildGraphic = new BuildGraphic();
         bufferManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
                 buildGraphicDice(dice).toString(), Level.LOW);
+    }
+
+    public Map<String, SchemaCard> getSchemaCards() {
+        return schemaCards;
     }
 }

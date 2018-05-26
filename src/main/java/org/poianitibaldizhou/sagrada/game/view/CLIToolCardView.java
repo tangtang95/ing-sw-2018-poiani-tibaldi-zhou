@@ -183,12 +183,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
     public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws RemoteException {
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-            List<Dice> diceList = roundTrack.getDices(i);
-            bufferManager.consolePrint(
-                    buildGraphic.buildMessage("Round " + i + 1 + "\n").buildGraphicDices(diceList).toString()
-                    , Level.LOW);
-        }
+        bufferManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrack).toString(), Level.LOW);
 
         readRoundTrackParameters(roundTrack);
     }

@@ -1,9 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
-import org.poianitibaldizhou.sagrada.cli.Command;
-import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.NetworkManager;
 
 import java.rmi.RemoteException;
@@ -41,38 +38,18 @@ public class CLIStartGameMenuView extends CLIMenuView {
         commandMap.put(quitCommand.getCommandText(), quitCommand);
     }
 
-    private void printLogo() {
-        StringBuilder stringBuilder = new StringBuilder();
-        int charNumber = 76;
 
-        stringBuilder.append((char) 9556);
-        for (int i = 0; i < charNumber; i++) {
-            stringBuilder.append((char) 9552);
-        }
-        stringBuilder.append((char) 9559 + "\n" + (char) 9553);
-        for (int i = 0; i < (charNumber - 13) / 3; i++) {
-            stringBuilder.append(" ");
-        }
-        stringBuilder.append("     S A G R A D A     ");
-        for (int i = 0; i < (charNumber - 13) / 3; i++) {
-            stringBuilder.append(" ");
-        }
-        stringBuilder.append((char) 9553 + "\n" + (char) 9562);
-        for (int i = 0; i < charNumber; i++) {
-            stringBuilder.append((char) 9552);
-        }
-        stringBuilder.append((char) 9565 + "\n");
-        bufferManager.consolePrint(stringBuilder.toString(), Level.LOW);
-    }
 
     @Override
     public void run() {
-        printLogo();
+        BuildGraphic buildGraphic = new BuildGraphic();
 
-        bufferManager.consolePrint("-------------------------Start Game Menu---------------------------",
-                Level.LOW);
+        bufferManager.consolePrint(buildGraphic.
+                buildGraphicLogo().
+                buildMessage("-------------------------Start Game Menu---------------------------").
+                buildGraphicHelp(commandMap).
+                buildMessage("Choose action: ").toString(),Level.LOW);
 
-        help(commandMap);
         try {
             bufferManager.consolePrint("Choose action: ", Level.LOW);
             getCommand(commandMap).executeCommand();
