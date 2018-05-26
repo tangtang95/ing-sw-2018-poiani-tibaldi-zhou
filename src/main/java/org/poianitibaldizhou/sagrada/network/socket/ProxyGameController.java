@@ -132,4 +132,14 @@ public class ProxyGameController extends ProxyController implements IGameControl
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         serverHandler.sendRequest(new GameRequest(methodName, position, gameName, toolCardName));
     }
+
+    @Override
+    public void ping(String token) {
+
+    }
+
+    @Override
+    public void disconnect(String token) {
+
+    }
 }

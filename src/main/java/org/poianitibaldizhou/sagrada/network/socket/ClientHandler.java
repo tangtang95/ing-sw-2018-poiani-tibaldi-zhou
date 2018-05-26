@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -29,8 +30,6 @@ public class ClientHandler implements Runnable {
     private ObjectInputStream objectInputStream;
     private ObjectOutputStream objectOutputStream;
 
-    private Set<Class> observerInterfaces;
-
     /**
      * Constructor.
      * Create a Runnable ClientHandler to handle the client request and send response and notify to the client
@@ -40,7 +39,6 @@ public class ClientHandler implements Runnable {
      */
     public ClientHandler(Socket socket, ControllerManager controllerManager) {
         this.controllerManager = controllerManager;
-        initObserverClasses();
         try {
             objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
             objectInputStream = new ObjectInputStream(socket.getInputStream());
@@ -48,12 +46,6 @@ public class ClientHandler implements Runnable {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
 
-    }
-
-    private void initObserverClasses() {
-        observerInterfaces = new HashSet<>();
-        observerInterfaces.add(ILobbyObserver.class);
-        observerInterfaces.add(INetworkObserver.class);
     }
 
     /**
@@ -122,21 +114,12 @@ public class ClientHandler implements Runnable {
         List<Object> parameters = request.getMethodParameters();
         for (int i = 0; i < parameters.size(); i++) {
             Class clazz = parameters.get(i).getClass();
-            if (containsAtLeastOneInterface(clazz.getInterfaces())) {
+            if(parameters.get(i) instanceof UnicastRemoteObject){
                 request.replaceParameter(Proxy.newProxyInstance(
                         clazz.getClassLoader(), clazz.getInterfaces(),
                         new ProxyObserverInvocationHandler(this, parameters.get(i).hashCode())), i);
             }
         }
-    }
-
-    @Contract(pure = true)
-    private boolean containsAtLeastOneInterface(Class[] interfaces) {
-        for (Class clazz : interfaces) {
-            if (observerInterfaces.contains(clazz))
-                return true;
-        }
-        return false;
     }
 
     @Override

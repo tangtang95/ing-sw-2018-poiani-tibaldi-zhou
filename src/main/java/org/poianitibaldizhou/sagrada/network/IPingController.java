@@ -1,8 +1,11 @@
 package org.poianitibaldizhou.sagrada.network;
 
-public interface IPingController {
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-    void ping(String token);
-    void disconnect(String token);
+public interface IPingController extends Remote {
+
+    void ping(String token) throws RemoteException;
+    void disconnect(String token) throws RemoteException;
 
 }

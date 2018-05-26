@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network;
 
+import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -8,6 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ServerHeartBeat {
 
@@ -27,7 +30,11 @@ public class ServerHeartBeat {
         Runnable runnable = () -> {
             if (!hasUserPing.contains(token)) {
                 timers.get(token).cancel(false);
-                pingController.disconnect(token);
+                try {
+                    pingController.disconnect(token);
+                } catch (RemoteException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, "Shouldn't happen");
+                }
                 return;
             }
             hasUserPing.remove(token);

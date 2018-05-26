@@ -29,17 +29,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     }
 
     /**
-     * Implements a player joining a certain game.
-     *
-     * @param token
-     * @param gameName
-     * @param view
-     * @param gameObserver
-     * @param roundTrackObserver
-     * @param stateObserver
-     * @param draftPoolObserver
-     * @param diceBagObserver
-     * @throws RemoteException
+     * {@inheritDoc}
      */
     @Override
     public void joinGame(final String token, final String gameName, IGameView view, IGameObserver gameObserver,
@@ -63,6 +53,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         viewMap.put(token, view);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws RemoteException {
         if (!viewMap.containsKey(token))
@@ -81,6 +74,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         viewMap.get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void bindPlayer(String token, String gameName, Player player, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws RemoteException {
         if (!viewMap.containsKey(token))
@@ -103,6 +99,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         viewMap.get(token).ack("Binding to " + player.getUser().getName() + " successful");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws RemoteException {
         if (!viewMap.containsKey(token))
@@ -119,6 +118,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         viewMap.get(token).ack("Binding to " + toolCard.getName() + " successful");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void chooseAction(String token, String gameName, IActionCommand actionCommand) throws RemoteException {
         if (!viewMap.containsKey(token))
@@ -134,6 +136,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         viewMap.get(token).ack("Action performed");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void placeDice(String token, String gameName, Dice dice, Position position) throws RemoteException {
         if (!viewMap.containsKey(token))
@@ -151,6 +156,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     private void handleRuleViolationException(IGameView view, RuleViolationException exception) throws RemoteException {
         switch (exception.getViolationType()) {
             case NO_DICE_NEAR:
@@ -179,6 +187,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver)
             throws RemoteException {
@@ -194,6 +205,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws RemoteException {
         if (!viewMap.containsKey(token))

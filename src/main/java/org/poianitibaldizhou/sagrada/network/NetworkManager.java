@@ -51,13 +51,13 @@ public class NetworkManager implements StrategyController{
         if(networkType == this.networkType)
             return;
         this.networkType = networkType;
+        if(strategyController != null)
+            strategyController.close();
         switch (networkType){
             case RMI:
-                strategyController.close();
                 strategyController = new RMIStrategyController(ipAddress, networkType.getPort());
                 break;
             case SOCKET:
-                strategyController.close();
                 strategyController = new SocketStrategyController(ipAddress, networkType.getPort());
                 break;
             default:
