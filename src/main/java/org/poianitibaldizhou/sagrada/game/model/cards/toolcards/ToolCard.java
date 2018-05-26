@@ -9,9 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * OVERVIEW: Each instance of ToolCard has always tokens >= 0
@@ -22,7 +20,7 @@ public class ToolCard extends Card {
     private final Color color;
     private int tokens;
     private final Node<ICommand> commands;
-    private final List<IToolCardObserver> observers;
+    private final Map<String, IToolCardObserver> observerMap;
 
     private static final int LOW_COST = 1;
     private static final int HIGH_COST = 2;
@@ -43,7 +41,7 @@ public class ToolCard extends Card {
         this.color = color;
         ToolCardLanguageParser toolCardLanguageParser = new ToolCardLanguageParser();
         commands = toolCardLanguageParser.parseToolCard(action);
-        observers = new ArrayList<>();
+        observerMap = new HashMap<>();
     }
 
     /**
@@ -57,13 +55,13 @@ public class ToolCard extends Card {
         this.color = toolCard.getColor();
         this.tokens = toolCard.getTokens();
         this.commands = toolCard.getCommands();
-        this.observers = toolCard.getObservers();
+        this.observerMap = toolCard.getObserverMap();
     }
 
     //GETTER
     @Contract(pure = true)
-    public List<IToolCardObserver> getObservers() {
-        return new ArrayList<>(observers);
+    public Map<String, IToolCardObserver> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
 
     @Contract(pure = true)
@@ -87,21 +85,33 @@ public class ToolCard extends Card {
     }
 
     //MODIFIERS
-    public void addTokens(final int tokens) throws RemoteException {
+    public void addTokens(final int tokens) {
         this.tokens += tokens;
-        for(IToolCardObserver obs : observers) obs.onTokenChange(tokens);
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onTokenChange(tokens);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
-    public void destroyToolCard() throws RemoteException {
-        for(IToolCardObserver obs : observers) obs.onCardDestroy();
+    public void destroyToolCard() {
+        observerMap.entrySet().forEach(obs -> {
+            try {
+                obs.getValue().onCardDestroy();
+            } catch (RemoteException e) {
+                observerMap.remove(obs);
+            }
+        });
     }
 
-    public void attachToolCardObserver(IToolCardObserver observer) {
-        observers.add(observer);
+    public void attachToolCardObserver(String token, IToolCardObserver observer) {
+        observerMap.put(token, observer);
     }
 
-    public void detachToolCardObserver(IToolCardObserver observer) {
-        observers.remove(observer);
+    public void detachToolCardObserver(String token) {
+        observerMap.remove(token);
     }
 
     /**

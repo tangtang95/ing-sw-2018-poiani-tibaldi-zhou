@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -29,8 +30,14 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
      * {@inheritDoc}
      */
     @Override
-    public void init() throws RemoteException {
-        for (IStateObserver obs : game.getStateObservers()) obs.onRoundEnd(currentRound, currentRoundPlayer.getUser());
+    public void init() {
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onRoundEnd(currentRound, currentRoundPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
     }
 
     /**
@@ -41,7 +48,7 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
      * it will set a EndGameState
      */
     @Override
-    public void nextRound() throws RemoteException {
+    public void nextRound() {
         game.addRemainingDiceToRoundTrack(currentRound);
         game.clearDraftPool();
 

@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -26,12 +26,16 @@ public class ModifyDiceValue implements ICommand {
      * @throws InterruptedException due to the wait() in getting values from the executor
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        for (IToolCardExecutorObserver obs : observerList) {
-            obs.notifyNeedNewValue();
-        }
+        observerList.forEach(obs -> {
+            try {
+                obs.notifyNeedNewValue();
+            } catch (RemoteException e) {
+                observerList.remove(obs);
+            }
+        });
         int integer = toolCardExecutor.getNeededValue();
         if (integer < Dice.MIN_VALUE || integer > Dice.MAX_VALUE)
             return CommandFlow.REPEAT;

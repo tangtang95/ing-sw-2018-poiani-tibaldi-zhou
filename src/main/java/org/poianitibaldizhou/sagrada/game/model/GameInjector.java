@@ -46,7 +46,7 @@ public class GameInjector {
      *
      * @param toolCardDrawableCollection DrawableCollection of ToolCard
      */
-    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) throws RemoteException {
+    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -72,7 +72,7 @@ public class GameInjector {
      *
      * @param diceBag DrawableCollection of Dice not null
      */
-    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) throws RemoteException {
+    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) {
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
@@ -90,7 +90,7 @@ public class GameInjector {
      */
     public static void injectPublicObjectiveCards(
             @NotNull DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection)
-            throws WrongCardInJsonFileException, RemoteException {
+            throws WrongCardInJsonFileException {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -162,7 +162,7 @@ public class GameInjector {
      * @param privateObjectiveCardDrawableCollection DrawableCollection of PrivateObjectiveCard
      */
     public static void injectPrivateObjectiveCard(
-            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) throws RemoteException {
+            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -187,7 +187,7 @@ public class GameInjector {
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard
      */
-    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) throws RemoteException {
+    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;

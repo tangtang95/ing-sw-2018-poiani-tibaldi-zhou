@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 

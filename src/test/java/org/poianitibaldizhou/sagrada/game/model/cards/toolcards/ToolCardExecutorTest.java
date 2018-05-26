@@ -7,11 +7,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ModifyDiceValue;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class ToolCardExecutorTest {

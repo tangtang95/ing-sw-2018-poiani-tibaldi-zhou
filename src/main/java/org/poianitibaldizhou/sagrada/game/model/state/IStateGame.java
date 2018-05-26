@@ -1,20 +1,16 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.Position;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
-
-import java.rmi.RemoteException;
 
 public abstract class IStateGame {
 
@@ -27,16 +23,14 @@ public abstract class IStateGame {
     /**
      * Initialize the state
      *
-     * @throws RemoteException network error
      */
-    public abstract void init() throws RemoteException;
+    public abstract void init();
 
     /**
      * Go to the next round of the game (it should go to the next roundStartState if implemented)
      *
-     * @throws RemoteException network error
      */
-    public void nextRound() throws RemoteException {
+    public void nextRound() {
         throw new IllegalStateException("SEVERE ERROR: method not implemented in this state");
     }
 
@@ -46,9 +40,8 @@ public abstract class IStateGame {
      * @param token      the token of the player who choose the schemaCard
      * @param schemaCard the schemaCard chosen
      * @throws InvalidActionException if the state instance != SetupPlayerState || the set schemaCard is unsuccessful
-     * @throws RemoteException        network error
      */
-    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException, RemoteException {
+    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException {
         throw new InvalidActionException();
     }
 
@@ -58,9 +51,8 @@ public abstract class IStateGame {
      * @param token the token of the player who has joined the game
      * @throws InvalidActionException if the token is non-existent in the game ||
      *                                the player has already readied for the game
-     * @throws RemoteException        network error
      */
-    public void readyGame(String token) throws InvalidActionException, RemoteException {
+    public void readyGame(String token) throws InvalidActionException {
         throw new IllegalStateException("SEVERE ERROR: method not implemented in this state");
     }
 
@@ -68,10 +60,9 @@ public abstract class IStateGame {
      * Throw the dices of the diceBag into the draftPool
      *
      * @param player the player who has the diceBag
-     * @throws RemoteException        network error
      * @throws InvalidActionException if the state instance != RoundStartState || the throw of the dices is unsuccessful
      */
-    public void throwDices(Player player) throws RemoteException, InvalidActionException {
+    public void throwDices(Player player) throws InvalidActionException {
         throw new InvalidActionException();
     }
 
@@ -82,18 +73,16 @@ public abstract class IStateGame {
      * @param privateObjectiveCard the privateObjectiveCard chosen
      * @throws InvalidActionException if the state instance != EndGameState ||
      *                                the set of privateObjectiveCard is unsuccessful
-     * @throws RemoteException        network error
      */
-    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException, RemoteException {
+    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
         throw new InvalidActionException();
     }
 
     /**
      * Calculate the victory points of every player in the game
      *
-     * @throws RemoteException network error
      */
-    public void calculateVictoryPoints() throws RemoteException {
+    public void calculateVictoryPoints() {
         throw new IllegalStateException("SEVERE ERROR: method not implemented in this state");
     }
 
@@ -103,9 +92,8 @@ public abstract class IStateGame {
      * @param player the player who wants to change his state
      * @param action the action of the player
      * @throws InvalidActionException if the state instance != TurnState || it's not the "player" turn
-     * @throws RemoteException        network error
      */
-    public void chooseAction(Player player, IActionCommand action) throws InvalidActionException, RemoteException {
+    public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {
         throw new InvalidActionException();
     }
 
@@ -119,7 +107,7 @@ public abstract class IStateGame {
      *                                the placement of the dice is unsuccessful and inside the InvalidActionException
      *                                there is a RuleViolationException
      */
-    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RemoteException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
         throw new InvalidActionException();
     }
 
@@ -132,9 +120,8 @@ public abstract class IStateGame {
      * @throws InvalidActionException if the state instance != TurnState ||
      *                                the player given is not the player turn ||
      *                                there are no coins to spend
-     * @throws RemoteException        network error
      */
-    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws InvalidActionException, RemoteException {
+    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer) throws InvalidActionException {
         throw new InvalidActionException();
     }
 

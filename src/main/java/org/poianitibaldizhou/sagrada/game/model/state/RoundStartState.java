@@ -3,10 +3,11 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -31,9 +32,14 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      * {@inheritDoc}
      */
     @Override
-    public void init() throws RemoteException {
-        for (IStateObserver obs : game.getStateObservers())
-            obs.onRoundStart(currentRound, currentRoundPlayer.getUser());
+    public void init() {
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onRoundStart(currentRound, currentRoundPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
     }
 
     /**
@@ -43,7 +49,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      * set the state of the game to the TurnState
      */
     @Override
-    public void throwDices(Player player) throws RemoteException, InvalidActionException {
+    public void throwDices(Player player) throws InvalidActionException {
         if (!currentRoundPlayer.equals(player))
             throw new InvalidActionException();
         game.addDicesToDraftPoolFromDiceBag();

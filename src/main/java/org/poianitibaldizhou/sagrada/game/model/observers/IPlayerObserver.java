@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
-import org.poianitibaldizhou.sagrada.game.model.Outcome;
+import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

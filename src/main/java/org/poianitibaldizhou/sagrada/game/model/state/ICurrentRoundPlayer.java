@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
 public interface ICurrentRoundPlayer {
 

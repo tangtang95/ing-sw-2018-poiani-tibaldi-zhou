@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Position;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

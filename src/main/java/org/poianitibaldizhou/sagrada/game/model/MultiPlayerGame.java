@@ -8,6 +8,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAl
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
+import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
+import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -61,7 +64,7 @@ public class MultiPlayerGame extends Game{
     /**
      * Set the Outcome of each player; first of all it found the winner by VictoryPoints, by PrivateCard points, by
      * FavorTokens and at the end by reverse order of the current player (who has the diceBag at the last round)
-     *  @param scoreMap the score of each player
+     * @param scoreMap the score of each player
      * @param currentRoundPlayer the current player of the last round
      */
     @Override
@@ -89,7 +92,7 @@ public class MultiPlayerGame extends Game{
     }
 
     @Override
-    public void handleEndGame() throws RemoteException {
+    public void handleEndGame() {
         getState().calculateVictoryPoints();
     }
 

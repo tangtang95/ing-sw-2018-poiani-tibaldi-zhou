@@ -81,10 +81,22 @@ public class ToolCardLanguageParser {
         grammar.put("Remove dice of a certain color", new RemoveDice(PlacementRestrictionType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
         grammar.put("Reroll dice", new RerollDice());
-        grammar.put("Place dice", new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL));
-        grammar.put("Place dice ignoring number constraints", new PlaceDice(PlacementRestrictionType.COLOR, DiceRestrictionType.NORMAL));
-        grammar.put("Place dice ignoring color constraints", new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL));
-        grammar.put("Place isolated dice", new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED));
+        grammar.put("Place old dice", new PlaceDice(DiceRestrictionType.NORMAL,
+                PlacementRestrictionType.NUMBER_COLOR, false));
+        grammar.put("Place new dice", new PlaceDice(DiceRestrictionType.NORMAL,
+                PlacementRestrictionType.NUMBER_COLOR, true));
+        grammar.put("Place old dice ignoring number constraints", new PlaceDice(DiceRestrictionType.NORMAL,
+                PlacementRestrictionType.COLOR, false));
+        grammar.put("Place new dice ignoring number constraints", new PlaceDice(DiceRestrictionType.NORMAL,
+                PlacementRestrictionType.COLOR, true));
+        grammar.put("Place old dice ignoring color constraints", new PlaceDice(DiceRestrictionType.NORMAL,
+                PlacementRestrictionType.NUMBER, false));
+        grammar.put("Place new dice ignoring color constraints", new PlaceDice(DiceRestrictionType.NORMAL,
+                PlacementRestrictionType.NUMBER, true));
+        grammar.put("Place isolated old dice", new PlaceDice(DiceRestrictionType.ISOLATED,
+                PlacementRestrictionType.NUMBER_COLOR, false));
+        grammar.put("Place isolated new dice", new PlaceDice(DiceRestrictionType.ISOLATED,
+                PlacementRestrictionType.NUMBER_COLOR, true));
         grammar.put("Add dice to DraftPool", new AddDiceToDraftPool());
         grammar.put("Add dice to Dicebag", new AddDiceToDiceBag());
         grammar.put("Draw dice from Dicebag", new DrawDiceFromDicebag());
@@ -99,6 +111,7 @@ public class ToolCardLanguageParser {
         grammar.put("Pour over dice", new PourOverDice());
         grammar.put("Choose color from RoundTrack", new ChooseColorFromRoundTrack());
         grammar.put("If Dice placeable", new IfDicePlaceable());
+        grammar.put("If continue", new IfContinue());
         grammar.put("Wait turn end", new WaitTurnEnd());
         grammar.put("Remove dice from DraftPool", new RemoveDiceFromDraftPool());
         grammar.put("CC", new ClearColor());

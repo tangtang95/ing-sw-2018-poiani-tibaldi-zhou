@@ -2,12 +2,15 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -15,19 +18,23 @@ import java.util.Objects;
 
 public class PlaceDice implements ICommand {
 
-    public final PlacementRestrictionType tileConstraint;
-    public final DiceRestrictionType diceConstraint;
+    private final PlacementRestrictionType tileConstraint;
+    private final DiceRestrictionType diceConstraint;
+    private final boolean isNewPlacement;
+
 
     /**
      * Constructor.
      * Creates a command that has the purpose to place a dice in the player's SchemaCard.
      *
-     * @param tileConstraint TileConstraint that need to be checked when placing the dice
      * @param diceConstraint DiceConstraint that need to be checked when placing the dice
+     * @param tileConstraint TileConstraint that need to be checked when placing the dice
+     * @param isNewPlacement if it is a new placement on the schemaCard and not a movement
      */
-    public PlaceDice(PlacementRestrictionType tileConstraint, DiceRestrictionType diceConstraint) {
+    public PlaceDice(DiceRestrictionType diceConstraint, PlacementRestrictionType tileConstraint, boolean isNewPlacement) {
         this.tileConstraint = tileConstraint;
         this.diceConstraint = diceConstraint;
+        this.isNewPlacement = isNewPlacement;
     }
 
     public PlacementRestrictionType getTileConstraint() {
@@ -37,6 +44,8 @@ public class PlaceDice implements ICommand {
     public DiceRestrictionType getDiceConstraint() {
         return diceConstraint;
     }
+
+    public boolean isNewPlacement(){ return isNewPlacement; }
 
     /**
      * Place a dice following the constraint given to the command.
@@ -52,7 +61,10 @@ public class PlaceDice implements ICommand {
      * @throws RemoteException      network communication error
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
+        if(isNewPlacement && turnState.hasActionUsed(new PlaceDiceAction()))
+            return CommandFlow.PLACEMENT_ALREADY_DONE;
+
         Dice dice;
         Position position;
 
@@ -63,8 +75,13 @@ public class PlaceDice implements ICommand {
         }
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        for (IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedPosition();
+        observerList.forEach(obs -> {
+            try {
+                obs.notifyNeedPosition();
+            } catch (RemoteException e) {
+                observerList.remove(obs);
+            }
+        });
 
         position = toolCardExecutor.getPosition();
 
@@ -84,11 +101,12 @@ public class PlaceDice implements ICommand {
 
         PlaceDice obj = (PlaceDice) object;
         return obj.getTileConstraint() == this.getTileConstraint()
-                && obj.getDiceConstraint() == this.getDiceConstraint();
+                && obj.getDiceConstraint() == this.getDiceConstraint()
+                && obj.isNewPlacement() == this.isNewPlacement();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(PlaceDice.class, getTileConstraint(), getDiceConstraint());
+        return Objects.hash(PlaceDice.class, getTileConstraint(), getDiceConstraint(), isNewPlacement());
     }
 }

@@ -1,8 +1,6 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PourOverDice;
 
 import java.util.Objects;
 

@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.mockito.*;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
 
 import java.util.ArrayList;

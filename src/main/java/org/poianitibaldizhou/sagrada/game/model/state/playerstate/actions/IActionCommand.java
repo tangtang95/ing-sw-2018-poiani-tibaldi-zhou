@@ -5,5 +5,5 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.rmi.RemoteException;
 
 public interface IActionCommand {
-    void executeAction(TurnState turnState) throws RemoteException;
+    void executeAction(TurnState turnState);
 }

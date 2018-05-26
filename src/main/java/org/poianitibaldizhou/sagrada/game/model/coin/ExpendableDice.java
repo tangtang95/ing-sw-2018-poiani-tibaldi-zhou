@@ -20,7 +20,7 @@ public class ExpendableDice implements ICoin {
      * {@inheritDoc}
      */
     @Override
-    public boolean isCardUsable(ToolCard toolCard) throws RemoteException {
+    public boolean isCardUsable(ToolCard toolCard) {
         DraftPool draftPool = game.getDraftPool();
         final ColorConstraint colorConstraint = new ColorConstraint(toolCard.getColor());
         return draftPool.getDices().stream()

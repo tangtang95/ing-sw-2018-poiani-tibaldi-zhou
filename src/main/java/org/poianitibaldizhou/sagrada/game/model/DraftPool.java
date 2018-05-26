@@ -7,15 +7,12 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DraftPool {
     private List<Dice> dices;
-    private List<IDraftPoolObserver> observerList;
+    private Map<String, IDraftPoolObserver> observerList;
 
     /**
      * Constructor.
@@ -23,7 +20,7 @@ public class DraftPool {
      */
     public DraftPool() {
         dices = new ArrayList<>();
-        observerList = new ArrayList<>();
+        observerList = new HashMap<>();
     }
 
     // GETTER
@@ -36,8 +33,8 @@ public class DraftPool {
      * @return list of the observers listening to the draftpool
      */
     @Contract(pure = true)
-    public List<IDraftPoolObserver> getObserverList() {
-        return new ArrayList<>(observerList);
+    public Map<String, IDraftPoolObserver> getObserverList() {
+        return new HashMap<>(observerList);
     }
 
     /**
@@ -62,8 +59,8 @@ public class DraftPool {
     }
 
     // MODIFIERS
-    public void attachObserver(@NotNull IDraftPoolObserver observer) {
-        observerList.add(observer);
+    public void attachObserver(String token, @NotNull IDraftPoolObserver observer) {
+        observerList.put(token, observer);
     }
 
     /**
@@ -72,11 +69,16 @@ public class DraftPool {
      *
      * @param dices the list of dices that needs to be added
      * @throws NullPointerException if dices is null
-     * @throws RemoteException      network error
      */
-    public void addDices(@NotNull List<Dice> dices) throws RemoteException {
+    public void addDices(@NotNull List<Dice> dices)  {
         this.dices.addAll(dices);
-        for (IDraftPoolObserver obs : observerList) obs.onDicesAdd(dices);
+        observerList.forEach((key, value) -> {
+            try {
+                value.onDicesAdd(dices);
+            } catch (RemoteException e) {
+                observerList.remove(key);
+            }
+        });
     }
 
     /**
@@ -84,11 +86,16 @@ public class DraftPool {
      *
      * @param dice the dice that needs to be added
      * @throws NullPointerException if dice is null
-     * @throws RemoteException      network error
      */
-    public void addDice(@NotNull Dice dice) throws RemoteException {
+    public void addDice(@NotNull Dice dice) {
         this.dices.add(dice);
-        for (IDraftPoolObserver obs : observerList) obs.onDiceAdd(dice);
+        observerList.forEach((key, value) -> {
+            try {
+                value.onDiceAdd(dice);
+            } catch (RemoteException e) {
+                observerList.remove(key);
+            }
+        });
     }
 
     /**
@@ -98,16 +105,21 @@ public class DraftPool {
      * @throws DiceNotFoundException    if d is not present in the DraftPool
      * @throws EmptyCollectionException if the DraftPool is empty
      * @throws NullPointerException     if dice is null
-     * @throws RemoteException          network error
      */
-    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException, RemoteException {
+    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException {
         if (dices.isEmpty()) {
             throw new EmptyCollectionException();
         }
         for (int i = 0; i < dices.size(); i++) {
             if (dices.get(i).equals(dice)) {
                 dices.remove(i);
-                for (IDraftPoolObserver obs : observerList) obs.onDiceRemove(dice);
+                observerList.forEach((key, value) -> {
+                    try {
+                        value.onDiceRemove(dice);
+                    } catch (RemoteException e) {
+                        observerList.remove(key);
+                    }
+                });
                 return;
             }
         }
@@ -117,24 +129,35 @@ public class DraftPool {
     /**
      * Re-roll every dice inside the draftPool (the color doesn't change, only the number of the dice can change)
      *
-     * @throws RemoteException network error
      */
-    public void reRollDices() throws RemoteException {
+    public void reRollDices() {
         Random random = new Random();
         for (int i = 0; i < dices.size(); i++) {
             dices.set(i, new Dice(random.nextInt(Dice.MAX_VALUE) + 1, dices.get(i).getColor()));
         }
-        for (IDraftPoolObserver obs : observerList) obs.onDraftPoolReroll(dices);
+        observerList.forEach((key, value) -> {
+            try {
+                value.onDraftPoolReroll(dices);
+            } catch (RemoteException e) {
+                observerList.remove(key);
+            }
+        });
     }
 
     /**
      * Remove every dices in the draftPool
      *
-     * @throws RemoteException network error
      */
-    public void clearPool() throws RemoteException {
+    public void clearPool() {
         dices.clear();
-        for (IDraftPoolObserver obs : observerList) obs.onDraftPoolClear();
+        observerList.forEach((key, value) -> {
+            try {
+                value.onDraftPoolClear();
+            } catch (RemoteException e) {
+                observerList.remove(key);
+            }
+        });
+
     }
 
     /**
@@ -142,15 +165,14 @@ public class DraftPool {
      *
      * @param draftPool draftPool that needs to be copied
      * @return new instance with the same elements of draftPool
-     * @throws RemoteException network error
      */
-    public static DraftPool newInstance(DraftPool draftPool) throws RemoteException {
+    public static DraftPool newInstance(DraftPool draftPool) {
         if (draftPool == null)
             return null;
         DraftPool newDraftPool = new DraftPool();
         List<Dice> diceList = new ArrayList<>(draftPool.getDices());
         newDraftPool.addDices(diceList);
-        draftPool.getObserverList().forEach(newDraftPool::attachObserver);
+        newDraftPool.observerList.putAll(draftPool.getObserverList());
         return newDraftPool;
     }
 

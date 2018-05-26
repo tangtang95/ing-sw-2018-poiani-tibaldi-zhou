@@ -1,10 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -22,12 +24,14 @@ public class ToolCardExecutor {
     private final Object turnEndMonitor;
     private final Object positionMonitor;
     private final Object executorMonitor;
+    private final Object answerMonitor;
 
     // Values monitorized
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
     private Position neededPosition;
+    private Boolean neededAnswer;
     private boolean turnEnd;
     private List<IToolCardExecutorObserver> observers;
 
@@ -53,6 +57,7 @@ public class ToolCardExecutor {
         turnEndMonitor = new Object();
         positionMonitor = new Object();
         executorMonitor = new Object();
+        answerMonitor = new Object();
 
         neededDice = null;
         neededValue = null;
@@ -86,7 +91,7 @@ public class ToolCardExecutor {
     /**
      * Set all the temporary objects
      */
-    private void setTemporaryObjects() throws RemoteException {
+    private void setTemporaryObjects() {
         this.temporaryDraftPool = game.getDraftPool();
         this.temporaryDicebag = game.getDiceBag();
         this.temporaryRoundTrack = game.getRoundTrack();
@@ -105,7 +110,7 @@ public class ToolCardExecutor {
         turnState.setSkipTurnPlayers(skipTurnPlayers);
     }
 
-    public void runCommands() throws RemoteException {
+    public void runCommands() {
         runCommandsThread = Thread.currentThread();
         if(coreCommands == null || preCommands == null){
             throw new IllegalStateException("SEVERE ERROR: Need to set the commands before starting the thread");
@@ -133,7 +138,7 @@ public class ToolCardExecutor {
      * @throws InterruptedException if the toolCard execution is interrupted by a client command or
      *                              because the command can't proceed
      */
-    private void invokeCommands(Node<ICommand> commands) throws RemoteException, InterruptedException {
+    private void invokeCommands(Node<ICommand> commands) throws InterruptedException {
         CommandFlow commandFlow;
         Node<ICommand> root = commands;
         do {
@@ -144,10 +149,22 @@ public class ToolCardExecutor {
             } else if (commandFlow == CommandFlow.SUB) {
                 root = root.getRightChild();
             } else if (commandFlow == CommandFlow.REPEAT) {
-                observers.forEach(IToolCardExecutorObserver::notifyRepeatAction);
+                observers.forEach(obs -> {
+                    try {
+                        obs.notifyRepeatAction();
+                    } catch (RemoteException e) {
+                        observers.remove(obs);
+                    }
+                });
             } else if (commandFlow.getProtocolNumber() == 400) {
                 final CommandFlow finalCommandFlow = commandFlow;
-                observers.forEach(obs -> obs.notifyCommandInterrupted(finalCommandFlow));
+                observers.forEach(obs -> {
+                    try {
+                        obs.notifyCommandInterrupted(finalCommandFlow);
+                    } catch (RemoteException e) {
+                        observers.remove(obs);
+                    }
+                });
             }
         } while (root != null);
     }
@@ -209,6 +226,21 @@ public class ToolCardExecutor {
         synchronized (positionMonitor) {
             this.neededPosition = position;
             positionMonitor.notifyAll();
+        }
+    }
+
+    public boolean getNeededAnswer() throws InterruptedException {
+        synchronized (answerMonitor){
+            while(neededAnswer == null)
+                answerMonitor.wait();
+            return neededAnswer;
+        }
+    }
+
+    public void setNeededAnswer(boolean answer){
+        synchronized (answerMonitor){
+            this.neededAnswer = answer;
+            answerMonitor.notifyAll();
         }
     }
 

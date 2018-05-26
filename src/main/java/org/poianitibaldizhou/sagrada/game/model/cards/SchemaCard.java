@@ -5,7 +5,6 @@ import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
@@ -13,15 +12,13 @@ import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SchemaCard implements Serializable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
-    private final List<ISchemaCardObserver> observerList;
+    private final Map<String, ISchemaCardObserver> observerMap;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -37,7 +34,7 @@ public class SchemaCard implements Serializable {
         this.name = name;
         this.difficulty = difficulty;
         this.tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
-        this.observerList = new ArrayList<>();
+        this.observerMap = new HashMap<>();
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 this.tileMatrix[i][j] = new Tile(constraints[i][j]);
@@ -56,7 +53,7 @@ public class SchemaCard implements Serializable {
         this.name = name;
         this.difficulty = difficulty;
         this.tileMatrix = tileMatrix;
-        this.observerList = new ArrayList<>();
+        this.observerMap = new HashMap<>();
     }
 
     //GETTER
@@ -73,8 +70,8 @@ public class SchemaCard implements Serializable {
      *
      * @return list of observers
      */
-    public List<ISchemaCardObserver> getObserverList() {
-        return new ArrayList<>(observerList);
+    public Map<String, ISchemaCardObserver> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
 
     @Contract(pure = true)
@@ -291,7 +288,7 @@ public class SchemaCard implements Serializable {
      *                                getNumberOfAdjacentDices() > 0
      */
     public void setDice(Dice dice, Position position, PlacementRestrictionType restriction,
-                        DiceRestrictionType diceRestriction) throws RuleViolationException, RemoteException {
+                        DiceRestrictionType diceRestriction) throws RuleViolationException {
         if (isEmpty()) {
             if (!isBorderPosition(position)) {
                 throw new RuleViolationException(RuleViolationType.NOT_BORDER_TILE);
@@ -316,9 +313,13 @@ public class SchemaCard implements Serializable {
         }
         tileMatrix[position.getRow()][position.getColumn()].setDice(dice, restriction);
 
-        for (ISchemaCardObserver schemaCardObserver : observerList) {
-            schemaCardObserver.onPlaceDice(dice, position);
-        }
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onPlaceDice(dice, position);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     /**
@@ -349,14 +350,24 @@ public class SchemaCard implements Serializable {
      * @param position the position from where to remove the dice
      * @return the dice removed from the point position (if there is no dice it returns null)
      */
-    public Dice removeDice(Position position) throws RemoteException {
+    public Dice removeDice(Position position) {
         Dice removedDice = tileMatrix[position.getRow()][position.getColumn()].removeDice();
-        for (ISchemaCardObserver obs : observerList) obs.onDiceRemove(removedDice, position);
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDiceRemove(removedDice, position);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
         return removedDice;
     }
 
-    public void attachObserver(ISchemaCardObserver observer) {
-        observerList.add(observer);
+    public void attachObserver(String token, ISchemaCardObserver observer) {
+        observerMap.put(token, observer);
+    }
+
+    public void detachObserver(String token){
+        observerMap.remove(token);
     }
 
     /**

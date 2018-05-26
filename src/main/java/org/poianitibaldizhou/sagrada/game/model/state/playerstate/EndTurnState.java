@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class EndTurnState extends IPlayerState {
 
-    public EndTurnState(TurnState turnState) throws RemoteException {
+    public EndTurnState(TurnState turnState) {
         super(turnState);
         turnState.notifyOnEndTurnState();
     }
@@ -18,7 +18,7 @@ public class EndTurnState extends IPlayerState {
      * execution of the toolCard if necessary. At the end go to the nexTurn
      */
     @Override
-    public void endTurn() throws RemoteException {
+    public void endTurn() {
         turnState.getToolCardExecutor().setTurnEnded(true);
         try {
             turnState.getToolCardExecutor().waitToolCardExecutionEnd();

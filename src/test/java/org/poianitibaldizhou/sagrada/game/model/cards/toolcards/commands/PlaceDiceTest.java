@@ -7,13 +7,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,8 +75,16 @@ public class PlaceDiceTest {
     }
 
     @Test
-    public void executeCommandSucced() throws Exception {
-        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+    public void executeCommandFailNewPlacement() throws Exception{
+        command = new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER_COLOR, true);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
+        when(stateGame.hasActionUsed(new PlaceDiceAction())).thenReturn(true);
+        assertEquals(CommandFlow.PLACEMENT_ALREADY_DONE, command.executeCommand(invokerPlayer, executor, stateGame));
+    }
+
+    @Test
+    public void executeCommandSucceed() throws Exception {
+        command = new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER_COLOR, false);
         when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
         verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position,
@@ -85,7 +96,7 @@ public class PlaceDiceTest {
 
     @Test
     public void executeCommandFail() throws Exception {
-        command = new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
+        command = new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER, false);
         when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL)).thenReturn(true);
         doThrow(RuleViolationException.class).when(schemaCard).setDice(dice, position,
                 PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
@@ -97,17 +108,17 @@ public class PlaceDiceTest {
 
     @Test
     public void executeCommandCantProceed() throws Exception {
-        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED);
+        command = new PlaceDice(DiceRestrictionType.ISOLATED, PlacementRestrictionType.NUMBER_COLOR, false);
         when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.ISOLATED)).thenReturn(false);
         assertEquals(CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE, command.executeCommand(invokerPlayer,executor,stateGame));
     }
 
     @Test
     public void equals() {
-        command = new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
-        assertEquals(new PlaceDice(PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL), command);
-        assertNotEquals(new PlaceDice(PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL), command);
-        assertNotEquals(new PlaceDice(PlacementRestrictionType.NONE, DiceRestrictionType.ISOLATED), command);
+        command = new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER_COLOR, false);
+        assertEquals(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER_COLOR, false), command);
+        assertNotEquals(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER, false), command);
+        assertNotEquals(new PlaceDice(DiceRestrictionType.ISOLATED, PlacementRestrictionType.NONE, false), command);
         assertNotEquals(new Object(), command);
     }
 

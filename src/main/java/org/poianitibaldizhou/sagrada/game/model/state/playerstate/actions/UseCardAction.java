@@ -14,7 +14,7 @@ public class UseCardAction implements IActionCommand {
      * @param turnState the actual turnState of the game
      */
     @Override
-    public void executeAction(TurnState turnState) throws RemoteException {
+    public void executeAction(TurnState turnState) {
         turnState.setPlayerState(new UseCardState(turnState));
     }
 

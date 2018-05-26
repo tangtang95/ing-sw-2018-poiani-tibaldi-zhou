@@ -11,7 +11,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -22,7 +24,7 @@ public class ToolCardTest {
     private ToolCard toolCardSingle;
     private ToolCard toolCardMulti;
     private Node<ICommand> commands;
-    private List<IToolCardObserver> observerList;
+    private Map<String, IToolCardObserver> observerList;
 
     @Mock
     private IToolCardObserver observer1;
@@ -47,18 +49,18 @@ public class ToolCardTest {
         commands.addAtIndex(new AddDiceToDraftPool(), 2);
         commands.addAtIndex(new RerollDice(), 4);
 
-        observerList = new ArrayList<>();
-        observerList.add(observer1);
-        observerList.add(observer2);
-        observerList.add(observer3);
-        observerList.add(observer4);
-        for(IToolCardObserver observer : observerList) {
-            toolCardMulti.attachToolCardObserver(observer);
-            toolCardSingle.attachToolCardObserver(observer);
-        }
-        toolCardMulti.detachToolCardObserver(observer4);
-        toolCardSingle.detachToolCardObserver(observer4);
-        observerList.remove(observer4);
+        observerList = new HashMap<>();
+        observerList.put("obs1",observer1);
+        observerList.put("obs2",observer2);
+        observerList.put("obs3",observer3);
+        observerList.put("obs4",observer4);
+        observerList.forEach((key, value) -> {
+            toolCardMulti.attachToolCardObserver(key, value);
+            toolCardSingle.attachToolCardObserver(key, value);
+        });
+        toolCardMulti.detachToolCardObserver("obs4");
+        toolCardSingle.detachToolCardObserver("obs4");
+        observerList.remove("obs4");
     }
 
     @After

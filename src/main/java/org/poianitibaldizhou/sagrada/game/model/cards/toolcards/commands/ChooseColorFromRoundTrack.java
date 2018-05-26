@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
@@ -26,7 +26,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
      * @throws RemoteException communication architecture error
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
         if(roundTrack.isEmpty())
@@ -41,8 +41,13 @@ public class ChooseColorFromRoundTrack implements ICommand {
 
         }
 
-        for(IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedColor(colors);
+        observerList.forEach(obs -> {
+            try {
+                obs.notifyNeedColor(colors);
+            } catch (RemoteException e) {
+                observerList.remove(obs);
+            }
+        });
         return CommandFlow.MAIN;
     }
 

@@ -280,6 +280,11 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
     }
 
     @Override
+    public void notifyNeedContinueAnswer() throws RemoteException {
+
+    }
+
+    @Override
     public void onTokenChange(int tokens) {
         bufferManager.consolePrint("Now the Tool Card " + toolCard.getName() +
                 "have got " + tokens + "tokens on it", Level.HIGH);

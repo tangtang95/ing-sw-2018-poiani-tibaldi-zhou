@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -8,7 +8,7 @@ import java.rmi.RemoteException;
 
 public class UseCardState extends IPlayerState {
 
-    public UseCardState(TurnState turnState) throws RemoteException {
+    public UseCardState(TurnState turnState) {
         super(turnState);
         turnState.notifyOnUseToolCardState();
     }
@@ -21,7 +21,7 @@ public class UseCardState extends IPlayerState {
      * @return true if the toolCard is usable
      */
     @Override
-    public boolean useCard(Player player, ToolCard toolCard) throws RemoteException {
+    public boolean useCard(Player player, ToolCard toolCard) {
         return player.isCardUsable(toolCard);
     }
 

@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -15,7 +15,7 @@ public class CheckBeforeDiceChosen implements ICommand {
      *
      * @param player           player that invoked the ToolCard
      * @param toolCardExecutor executor of the Toolcard that contains this command
-     * @param turnState        state
+     * @param turnState        the state of the game
      * @return the MAIN flow if the dice hasn't been chosen and placed yet in the current turn,
      * DICE_ALREADY_PLACED flow otherwise
      */

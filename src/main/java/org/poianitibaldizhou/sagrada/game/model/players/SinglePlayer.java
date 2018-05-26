@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -32,7 +32,7 @@ public class SinglePlayer extends Player {
         // TODO new instance of ICoin??
         SinglePlayer newPlayer = new SinglePlayer(player.getUser(), player.coin, SchemaCard.newInstance(player.schemaCard),
                 new ArrayList<>(player.privateObjectiveCards));
-        player.getObserverList().forEach(newPlayer::attachObserver);
+        player.getObserverMap().forEach(newPlayer::attachObserver);
         return newPlayer;
     }
 }

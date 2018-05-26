@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.controller;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -11,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.DiceExe
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.PositionExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ValueExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.*;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 
@@ -46,10 +48,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
         view.ack("You are now ready to play");
         game.attachGameObserver(token, gameObserver);
-        game.attachRoundTrackObserver(roundTrackObserver);
-        game.attachStateObserver(stateObserver);
-        game.attachDraftPoolObserver(draftPoolObserver);
-        game.attachDiceBagObserver(diceBagObserver);
+        game.attachRoundTrackObserver(token, roundTrackObserver);
+        game.attachStateObserver(token, stateObserver);
+        game.attachDraftPoolObserver(token, draftPoolObserver);
+        game.attachDiceBagObserver(token, diceBagObserver);
         viewMap.put(token, view);
     }
 
@@ -85,13 +87,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
-            game.attachSchemaCardObserver(player.getSchemaCard(), schemaCardObserver);
+            game.attachSchemaCardObserver(token, player.getSchemaCard(), schemaCardObserver);
         } catch (InvalidActionException e) {
             viewMap.get(token).err("The schema card selected is not valid");
             return;
         }
         try {
-            game.attachPlayerObserver(player, playerObserver);
+            game.attachPlayerObserver(token, player, playerObserver);
         } catch (InvalidActionException e) {
             viewMap.get(token).err("The schema card selected is not valid");
             return;
@@ -110,7 +112,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
-            game.attachToolCardObserver(toolCard, toolCardObserver);
+            game.attachToolCardObserver(token, toolCard, toolCardObserver);
         } catch (InvalidActionException e) {
             viewMap.get(token).err("The tool card selected is not valid");
             return;

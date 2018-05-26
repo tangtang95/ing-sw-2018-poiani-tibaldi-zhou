@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
-import org.poianitibaldizhou.sagrada.game.model.Position;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 
 public class PositionExecutorEvent implements ExecutorEvent {
 

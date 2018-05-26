@@ -1,10 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -49,7 +51,7 @@ public class RemoveDice implements ICommand {
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         Position position;
         Dice removed = null;
@@ -59,8 +61,13 @@ public class RemoveDice implements ICommand {
             color = toolCardExecutor.getNeededColor();
             if (!(toolCardExecutor.getTemporarySchemaCard().hasDiceOfColor(color)))
                 return CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR;
-            for (IToolCardExecutorObserver obs : observerList)
-                obs.notifyNeedDicePositionOfCertainColor(color);
+            observerList.forEach(obs -> {
+                try {
+                    obs.notifyNeedDicePositionOfCertainColor(color);
+                } catch (RemoteException e) {
+                    observerList.remove(obs);
+                }
+            });
             position = toolCardExecutor.getPosition();
             if (!toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color)) {
                 toolCardExecutor.setNeededPosition(null);
@@ -69,8 +76,13 @@ public class RemoveDice implements ICommand {
         } else {
             if (toolCardExecutor.getTemporarySchemaCard().isEmpty())
                 return CommandFlow.EMPTY_SCHEMACARD;
-            for (IToolCardExecutorObserver obs : observerList)
-                obs.notifyNeedPosition();
+            observerList.forEach(obs -> {
+                try {
+                    obs.notifyNeedPosition();
+                } catch (RemoteException e) {
+                    observerList.remove(obs);
+                }
+            });
             position = toolCardExecutor.getPosition();
         }
 

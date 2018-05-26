@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -31,7 +31,7 @@ public class MultiPlayer extends Player {
     public static MultiPlayer newInstance(@NotNull MultiPlayer player) {
         // TODO coin new instance
         MultiPlayer newPlayer = new MultiPlayer(player.getUser(), player.coin, SchemaCard.newInstance(player.schemaCard), new ArrayList<>(player.privateObjectiveCards));
-        player.getObserverList().forEach(newPlayer::attachObserver);
+        player.getObserverMap().forEach(newPlayer::attachObserver);
         return newPlayer;
     }
 }
