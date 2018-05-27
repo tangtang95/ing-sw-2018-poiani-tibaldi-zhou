@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.lobby.controller;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.INetworkObserver;
+import org.poianitibaldizhou.sagrada.IView;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class LobbyController extends UnicastRemoteObject implements ILobbyController {
-    private final transient Map<String, INetworkObserver> viewMap = new HashMap<>();
+    private final transient Map<String, IView> viewMap = new HashMap<>();
 
     private final transient LobbyManager lobbyManager;
 
@@ -35,7 +35,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      *                         some problems with the communication architecture
      */
     @Override
-    public synchronized String login(String username, INetworkObserver view) throws RemoteException {
+    public synchronized String login(String username, IView view) throws RemoteException {
         String token = "";
         try {
             token = lobbyManager.login(username);

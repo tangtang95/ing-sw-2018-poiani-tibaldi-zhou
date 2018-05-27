@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     private static final String VIEW_MY_SCHEMA = "View my schema Card";
 
 
-    public CLIGameView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    public CLIGameView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
 

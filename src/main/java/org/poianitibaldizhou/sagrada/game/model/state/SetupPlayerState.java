@@ -3,13 +3,11 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.rmi.RemoteException;
 import java.util.*;

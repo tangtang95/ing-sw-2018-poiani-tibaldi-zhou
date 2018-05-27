@@ -1,12 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.coin;
 
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class ExpendableDice implements ICoin {

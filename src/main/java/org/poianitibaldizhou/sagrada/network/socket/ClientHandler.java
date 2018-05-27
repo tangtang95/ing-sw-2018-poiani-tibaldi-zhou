@@ -1,9 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
-import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.ControllerManager;
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.network.INetworkObserver;
 import org.poianitibaldizhou.sagrada.network.socket.messages.*;
 
 import java.io.IOException;
@@ -13,10 +10,8 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

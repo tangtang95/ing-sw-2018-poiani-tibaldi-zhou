@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
-import org.poianitibaldizhou.sagrada.network.NetworkType;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -13,7 +13,7 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
 
     private static final String GO_BACK = "Go back";
 
-    CLIChangeConnectionMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    CLIChangeConnectionMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
         initializeCommands();
@@ -50,7 +50,7 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
     }
 
     private void changeConnection() {
-        networkManager.setNetworkType(NetworkType.valueOf(commandMap.keySet().toArray()[0].toString()));
+        networkManager.setNetworkType(ConnectionType.valueOf(commandMap.keySet().toArray()[0].toString()));
         screenManager.popScreen();
     }
 

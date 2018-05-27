@@ -1,20 +1,20 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
 public class CLIMenuView extends UnicastRemoteObject implements IScreen {
-    protected final transient NetworkManager networkManager;
+    protected final transient ConnectionManager networkManager;
     protected final transient ScreenManager screenManager;
     protected final transient BufferManager bufferManager;
 
     static final String NUMBER_WARNING = "WARNING: Number is not correct";
 
-    public CLIMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    public CLIMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super();
         this.networkManager = networkManager;
