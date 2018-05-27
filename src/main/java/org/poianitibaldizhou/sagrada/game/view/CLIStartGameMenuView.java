@@ -25,7 +25,7 @@ public class CLIStartGameMenuView extends CLIMenuView {
     private void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-            screenManager.pushScreen(new CLIChangeConnectionMenuView(networkManager, screenManager, bufferManager)));
+                screenManager.pushScreen(new CLIChangeConnectionMenuView(networkManager, screenManager, bufferManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
@@ -39,7 +39,6 @@ public class CLIStartGameMenuView extends CLIMenuView {
     }
 
 
-
     @Override
     public void run() {
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -48,19 +47,19 @@ public class CLIStartGameMenuView extends CLIMenuView {
                 buildGraphicLogo().
                 buildMessage("-------------------------Start Game Menu---------------------------").
                 buildGraphicHelp(commandMap).
-                buildMessage("Choose action: ").toString(),Level.LOW);
+                buildMessage("Choose action: ").toString(), Level.LOW);
 
         try {
-            bufferManager.consolePrint("Choose action: ", Level.LOW);
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
         } catch (NullPointerException e) {
             //...
         }
+
     }
 
-    private void quit(){
+    private void quit() {
         screenManager.popScreen();
         System.exit(0);
     }

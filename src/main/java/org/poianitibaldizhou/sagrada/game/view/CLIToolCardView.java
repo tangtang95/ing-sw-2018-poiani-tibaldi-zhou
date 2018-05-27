@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -18,6 +19,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
     private final transient ToolCard toolCard;
     private final transient SchemaCard schemaCard;
     private final String gameName;
+    private final User currentUser;
 
     private static final String CHOOSE_DICE = "Choose a dice:";
 
@@ -27,6 +29,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         this.toolCard = toolCards;
         this.gameName = cliGameView.getGameName();
         this.schemaCard = cliGameView.getCliSchemaCardView().getSchemaCard(cliGameView.getCurrentUser().getName());
+        this.currentUser = cliGameView.getCurrentUser();
 
     }
 
@@ -45,7 +48,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number > 0 && number < diceList.size()) {
-                //networkManager.getGameController().setDice(diceList.get(number - 1), gameName, toolCard.getName());
+                networkManager.getGameController().setDice(currentUser.getToken(),
+                        gameName, diceList.get(number - 1), toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -66,7 +70,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                //networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
+                networkManager.getGameController().setNewValue(currentUser.getToken(),
+                        gameName, number, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -92,8 +97,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                //networkManager.getGameController().setColor((Color) colors.toArray()[number - 1],
-                        //gameName, toolCard.getName());
+                networkManager.getGameController().setColor( currentUser.getToken(), gameName,
+                        (Color) colors.toArray()[number - 1], toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -137,7 +142,8 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 number = -1;
             }
             if (number == minNumber || number == maxNumber) {
-                //networkManager.getGameController().setNewValue(number, gameName, toolCard.getName());
+                networkManager.getGameController().setNewValue(currentUser.getToken(),
+                        gameName, number, toolCard.getName());
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -165,9 +171,9 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                     diceNumber = 0;
                 }
                 if (diceNumber > 0 && diceNumber < roundTrack.getDices(roundNumber - 1).size()) {
-                    //networkManager.getGameController().setDice(
-                            //roundTrack.getDices(roundNumber - 1).get(diceNumber - 1),
-                            //gameName, toolCard.getName());
+                    networkManager.getGameController().setDice( currentUser.getToken(), gameName,
+                            roundTrack.getDices(roundNumber - 1).get(diceNumber - 1),
+                            toolCard.getName());
                 } else {
                     bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                     roundNumber = -1;
@@ -212,8 +218,9 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    //networkManager.getGameController().setPosition(new Position(row,column),gameName,
-                            //toolCard.getName());
+                    networkManager.getGameController().setPosition( currentUser.getToken(), gameName,
+                            new Position(row,column),
+                            toolCard.getName());
                 } else {
                     bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                     row = -1;
@@ -250,8 +257,9 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    //networkManager.getGameController().setPosition(new Position(row,column),gameName,
-                            //toolCard.getName());
+                    networkManager.getGameController().setPosition( currentUser.getToken(), gameName,
+                            new Position(row,column),
+                            toolCard.getName());
                 } else {
                     bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                     row = -1;

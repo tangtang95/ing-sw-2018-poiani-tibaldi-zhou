@@ -24,7 +24,8 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
     private void initializeCommands() {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager)));
+                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
+                        "Tang")));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");

@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
@@ -13,6 +14,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class CLIGameView extends CLIMenuView implements IGameView{
     private final transient Map<String, Command> commandMap = new HashMap<>();
@@ -24,7 +26,6 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     private final CLISchemaCardView cliSchemaCardView;
     private final CLIDraftPoolView cliDraftPoolView;
-    private final CLIStateView cliStateView;
     private final CLIRoundTrackView cliRoundTrackView;
 
     private static final String PLACE_DICE = "Place dice";
@@ -38,13 +39,16 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     private static final String VIEW_MY_SCHEMA = "View my schema Card";
 
 
-    public CLIGameView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    public CLIGameView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager,
+                       String gameName)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
+        this.gameName =gameName;
 
         this.cliSchemaCardView = new CLISchemaCardView(this);
         this.cliDraftPoolView = new CLIDraftPoolView(this);
-        this.cliStateView = new CLIStateView(this);
+        new CLIStateView(this);
+        new CLIDiceBagView(this);
         this.cliRoundTrackView = new CLIRoundTrackView(this);
 
         initializeCommands();
@@ -142,6 +146,44 @@ public class CLIGameView extends CLIMenuView implements IGameView{
                 toString(),Level.LOW);
     }
 
+    private Position selectPosition() {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        String response;
+        Position position = null;
+
+        int row;
+        int column;
+
+        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").toString(),
+                Level.LOW);
+        do {
+            response = getAnswer("Insert a row: ");
+            try {
+                row = Integer.parseInt(response);
+            } catch (NumberFormatException e) {
+                row = -1;
+            }
+            if (row > 0 && row <= SchemaCard.NUMBER_OF_ROWS) {
+                response = getAnswer("Insert a column: ");
+                try {
+                    column = Integer.parseInt(response);
+                } catch (NumberFormatException e) {
+                    column = 0;
+                }
+                if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
+                    position = new Position(row,column);
+                } else {
+                    bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                    row = -1;
+                }
+            } else {
+                bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                row = -1;
+            }
+        } while (row < 0);
+        return position;
+    }
+
     private void placeDice(){
         BuildGraphic buildGraphic = new BuildGraphic();
         String response;
@@ -161,7 +203,13 @@ public class CLIGameView extends CLIMenuView implements IGameView{
                 diceNumber = -1;
             }
             if (diceNumber > 0 && diceNumber < cliDraftPoolView.getDraftPool().getDices().size()) {
-                //TODO...
+                try {
+                    networkManager.getGameController().placeDice(currentUser.getToken(),
+                            gameName,cliDraftPoolView.getDraftPool().getDices().get(diceNumber - 1),
+                            selectPosition());
+                } catch (RemoteException e) {
+                    bufferManager.consolePrint("NETWORK ERROR", Level.HIGH);
+                }
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 diceNumber = -1;
@@ -170,7 +218,7 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     }
 
-    private void playToolCard() {
+    private void playToolCard() throws RemoteException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String response;
         int number;
@@ -184,11 +232,9 @@ public class CLIGameView extends CLIMenuView implements IGameView{
                 number = -1;
             }
             if (number > 0 && number <= toolCards.size()) {
-                try {
-                    new CLIToolCardView(this,toolCards.get(number - 1));
-                } catch (RemoteException e) {
-                    bufferManager.consolePrint("NETWORK ERROR", Level.HIGH);
-                }
+                networkManager.getGameController().useToolCard(currentUser.getToken(),
+                        gameName, toolCards.get(number - 1),
+                        new CLIToolCardView(this,toolCards.get(number - 1)));
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -198,7 +244,11 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     @Override
     public void onPlayersCreate(List<Player> players) {
-
+        BuildGraphic buildGraphic = new BuildGraphic();
+        buildGraphic.buildMessage("-----------------------------PLAYER-----------------------------");
+        for (Player p : players)
+            buildGraphic.buildMessage(p.getUser().getName());
+        bufferManager.consolePrint(buildGraphic.toString(),Level.LOW);
     }
 
     @Override
@@ -213,17 +263,17 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     @Override
     public void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards){
-
+        //...
     }
 
     @Override
     public void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards) {
-
+        //...
     }
 
     @Override
     public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) {
-
+        //...
     }
 
     public User getCurrentUser() {
@@ -243,12 +293,35 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     }
 
     @Override
-    public void ack(String ack) throws RemoteException {
-
+    public void ack(String ack){
+        bufferManager.consolePrint("ACK: " + ack, Level.HIGH);
     }
 
     @Override
-    public void err(String err) throws RemoteException {
+    public void err(String err){
+        bufferManager.consolePrint("ERROR: " + err, Level.HIGH);
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLIGameView)) return false;
+        if (!super.equals(o)) return false;
+        CLIGameView that = (CLIGameView) o;
+        return Objects.equals(commandMap, that.commandMap) &&
+                Objects.equals(toolCards, that.toolCards) &&
+                Objects.equals(publicObjectiveCards, that.publicObjectiveCards) &&
+                Objects.equals(getCurrentUser(), that.getCurrentUser()) &&
+                Objects.equals(getGameName(), that.getGameName()) &&
+                Objects.equals(getCliSchemaCardView(), that.getCliSchemaCardView()) &&
+                Objects.equals(cliDraftPoolView, that.cliDraftPoolView) &&
+                Objects.equals(cliRoundTrackView, that.cliRoundTrackView);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), commandMap, toolCards, publicObjectiveCards,
+                getCurrentUser(), getGameName(), getCliSchemaCardView(), cliDraftPoolView, cliRoundTrackView);
     }
 }

@@ -52,7 +52,6 @@ public class BufferManager {
         }
 
         if (response[0] == null || response[0].equals("")) {
-            response[0] = null;
             throw new NullPointerException();
         }
     }
