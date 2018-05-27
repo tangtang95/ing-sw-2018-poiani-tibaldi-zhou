@@ -4,6 +4,9 @@ import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
@@ -280,6 +283,11 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
     public void notifyCommandInterrupted(CommandFlow error) {
         bufferManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
                 toolCard.getName() + ", so you will not be able to use it this turn.", Level.HIGH);
+    }
+
+    @Override
+    public void notifyNeedContinueAnswer() throws RemoteException {
+
     }
 
     @Override

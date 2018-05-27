@@ -2,10 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -33,8 +32,14 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * {@inheritDoc}
      */
     @Override
-    public void init() throws RemoteException {
-        for(IStateObserver obs : game.getStateObservers()) obs.onEndGame(currentRoundPlayer.getUser());
+    public void init() {
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onEndGame(currentRoundPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
         game.handleEndGame();
     }
 
@@ -42,7 +47,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * {@inheritDoc}
      */
     @Override
-    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException, RemoteException {
+    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
         game.selectPrivateObjectiveCard(player, privateObjectiveCard);
         calculateVictoryPoints();
     }
@@ -51,12 +56,16 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * {@inheritDoc}
      */
     @Override
-    public void calculateVictoryPoints() throws RemoteException {
+    public void calculateVictoryPoints() {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
         game.setPlayersOutcome(scoreMap, currentRoundPlayer);
-        for(IStateObserver obs : game.getStateObservers()){
-            obs.onVictoryPointsCalculated(scoreMap);
-        }
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onVictoryPointsCalculated(scoreMap);
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
     }
 
     /**

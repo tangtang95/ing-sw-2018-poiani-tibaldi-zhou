@@ -1,11 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -29,16 +32,20 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         Dice roundTrackDice;
         int round;
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
 
-        for (IToolCardExecutorObserver observer : observerList) {
-            observer.notifyNeedDiceFromRoundTrack(roundTrack);
-        }
+        observerList.forEach(observer -> {
+            try {
+                observer.notifyNeedDiceFromRoundTrack(roundTrack);
+            } catch (RemoteException e) {
+                observerList.remove(observer);
+            }
+        });
 
         roundTrackDice = toolCardExecutor.getNeededDice();
         round = toolCardExecutor.getNeededValue();
@@ -51,6 +58,8 @@ public class SwapDiceWithRoundTrack implements ICommand {
             return CommandFlow.REPEAT;
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DRAFTPOOL;
+        } catch (DisconnectedException e) {
+            e.printStackTrace();
         }
         return CommandFlow.MAIN;
     }

@@ -4,9 +4,10 @@ import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -14,7 +15,7 @@ import java.rmi.RemoteException;
 import java.util.List;
 
 public class CLIDraftPoolView implements IDraftPoolObserver {
-    private final transient DraftPool draftPool;
+    private final DraftPool draftPool;
     private final User currentUser;
     private final BufferManager bufferManager;
 
@@ -28,9 +29,13 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAdd(Dice dice) throws RemoteException {
+    public void onDiceAdd(Dice dice) throws RemoteException{
         synchronized (draftPool) {
-            draftPool.addDice(dice);
+            try {
+                draftPool.addDice(dice);
+            } catch (DisconnectedException e) {
+                e.printStackTrace();
+            }
         }
         String message = currentUser.getName() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -41,7 +46,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice) throws RemoteException {
+    public void onDiceRemove(Dice dice){
         synchronized (draftPool) {
             try {
                 draftPool.useDice(dice);
@@ -55,6 +60,8 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
                         " tried to remove " +
                         dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);
                 return;
+            } catch (DisconnectedException e) {
+                e.printStackTrace();
             }
         }
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -66,9 +73,13 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAdd(List<Dice> dices) throws RemoteException {
+    public void onDicesAdd(List<Dice> dices){
         synchronized (draftPool) {
-            draftPool.addDices(dices);
+            try {
+                draftPool.addDices(dices);
+            } catch (DisconnectedException e) {
+                e.printStackTrace();
+            }
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = currentUser.getName() + " has added a set of dices to the draft pool.";
@@ -79,10 +90,15 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(List<Dice> dices) throws RemoteException {
+    public void onDraftPoolReroll(List<Dice> dices){
         synchronized (draftPool) {
-            draftPool.clearPool();
-            draftPool.addDices(dices);
+            try {
+                draftPool.clearPool();
+                draftPool.addDices(dices);
+            } catch (DisconnectedException e) {
+                e.printStackTrace();
+            }
+
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has re-rolled the draft pool.");
@@ -93,9 +109,13 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolClear() throws RemoteException {
+    public void onDraftPoolClear() {
         synchronized (draftPool) {
-            draftPool.clearPool();
+            try {
+                draftPool.clearPool();
+            } catch (DisconnectedException e) {
+                e.printStackTrace();
+            }
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has cleared the draft pool.");

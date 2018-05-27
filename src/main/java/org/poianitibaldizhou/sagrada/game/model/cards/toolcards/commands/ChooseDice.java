@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -23,11 +23,16 @@ public class ChooseDice implements ICommand {
      * @throws RemoteException due to network communication errors
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices();
-        for(IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedDice(diceList);
+        observerList.forEach(obs -> {
+            try {
+                obs.notifyNeedDice(diceList);
+            } catch (RemoteException e) {
+                observerList.remove(obs);
+            }
+        });
         return CommandFlow.MAIN;
     }
 

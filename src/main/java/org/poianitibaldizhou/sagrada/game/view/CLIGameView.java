@@ -1,14 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.Position;
+
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -39,10 +40,11 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     private static final String VIEW_MY_SCHEMA = "View my schema Card";
 
 
-    public CLIGameView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager,
+
+    public CLIGameView(ConnectionManager connectionManager, ScreenManager screenManager, BufferManager bufferManager,
                        String gameName)
             throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+        super(connectionManager, screenManager, bufferManager);
         this.gameName =gameName;
 
         this.cliSchemaCardView = new CLISchemaCardView(this);

@@ -1,12 +1,16 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.assertEquals;
@@ -38,6 +42,16 @@ public class RemoveDiceFromDraftPoolTest {
         draftPool.addDice(new Dice(5, Color.RED));
         draftPool.addDice(new Dice(2, Color.YELLOW));
         draftPool.addDice(dice);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        stateGame = null;
+        dice = null;
+        draftPool = null;
+        invokerPlayer = null;
+        executor = null;
+        command = null;
     }
 
     @Test

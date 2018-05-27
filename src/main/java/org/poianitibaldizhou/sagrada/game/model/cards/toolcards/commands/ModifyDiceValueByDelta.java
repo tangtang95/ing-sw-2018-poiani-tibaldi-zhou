@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -45,13 +45,18 @@ public class ModifyDiceValueByDelta implements ICommand {
      * @throws InterruptedException due to the wait() in  toolCard.getDice()
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         toolCardExecutor.setNeededDice(dice);
 
         List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        for (IToolCardExecutorObserver obs : observerList)
-            obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue());
+        observerList.forEach(obs -> {
+            try {
+                obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue());
+            } catch (RemoteException e) {
+                observerList.remove(obs);
+            }
+        });
 
         int newValue = toolCardExecutor.getNeededValue();
 

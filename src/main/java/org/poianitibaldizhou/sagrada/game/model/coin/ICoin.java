@@ -15,7 +15,7 @@ public interface ICoin extends Serializable {
      * @param toolCard the card which the player want to use
      * @return true if the toolCard is usable, false otherwise
      */
-    boolean isCardUsable(ToolCard toolCard) throws RemoteException;
+    boolean isCardUsable(ToolCard toolCard);
 
     /**
      * @return the coin expendable by the player

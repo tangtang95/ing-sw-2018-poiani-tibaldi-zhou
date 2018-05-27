@@ -17,7 +17,7 @@ public class EndTurnAction implements IActionCommand {
      * @param turnState the actual turnState of the game
      */
     @Override
-    public void executeAction(TurnState turnState) throws RemoteException {
+    public void executeAction(TurnState turnState) {
         EndTurnState endTurnState = new EndTurnState(turnState);
         turnState.setPlayerState(endTurnState);
         endTurnState.endTurn();

@@ -4,11 +4,12 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -17,10 +18,10 @@ import java.util.logging.Logger;
  * OVERVIEW: The constraint of the tile is always != null (if there is no constraint
  * there is an object of NoConstraint)
  */
-public class Tile {
+public class Tile implements Serializable{
 
     private final IConstraint constraint;
-    private Dice dice = null;
+    private Dice dice;
 
 
     /**
@@ -28,6 +29,7 @@ public class Tile {
      */
     public Tile() {
         constraint = new NoConstraint();
+        dice = null;
     }
 
     /**
@@ -38,6 +40,7 @@ public class Tile {
      */
     public Tile(IConstraint constraint) {
         this.constraint = constraint == null ? new NoConstraint() : constraint;
+        this.dice = null;
     }
 
     //GETTER
@@ -143,7 +146,7 @@ public class Tile {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getDice(), getConstraint());
+        return Objects.hash(Tile.class, getDice(), getConstraint());
     }
 
     @Override

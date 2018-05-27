@@ -1,5 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
-public enum ObjectiveCardType {
+public enum ObjectiveCardType{
     COLOR, NUMBER;
 }

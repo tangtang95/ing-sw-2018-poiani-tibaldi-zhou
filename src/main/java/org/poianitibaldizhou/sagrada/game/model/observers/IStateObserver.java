@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.Remote;

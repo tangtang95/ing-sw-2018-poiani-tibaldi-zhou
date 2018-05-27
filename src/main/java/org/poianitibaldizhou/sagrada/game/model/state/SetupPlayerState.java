@@ -3,13 +3,11 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.game.model.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -44,10 +42,16 @@ public class SetupPlayerState extends IStateGame {
      * {@inheritDoc}
      */
     @Override
-    public void init() throws RemoteException {
-        for (IStateObserver obs : game.getStateObservers()) {
-            obs.onSetupPlayer();
-        }
+    public void init() {
+        List<String> failedNotifyTokens = new ArrayList<>();
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onSetupPlayer();
+            } catch (RemoteException e) {
+                failedNotifyTokens.add(key);
+            }
+        });
+        failedNotifyTokens.forEach((token) -> game.getStateObservers().remove(token));
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<List<SchemaCard>> schemaCards = new DrawableCollection<>();
@@ -65,7 +69,11 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             playerSchemaCards.put(token, schemaCardList);
-            game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
+            try {
+                game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
+            } catch (RemoteException e) {
+                game.getGameObservers().remove(token);
+            }
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
             List<PrivateObjectiveCard> privateObjectiveCardList = new ArrayList<>();
@@ -79,7 +87,11 @@ public class SetupPlayerState extends IStateGame {
             privateObjectiveCardMap.put(token, privateObjectiveCardList);
             if (!game.getGameObservers().containsKey(token))
                 throw new IllegalStateException("SEVERE ERROR: cannot find token");
-            game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
+            try {
+                game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
+            } catch (RemoteException e) {
+                game.getGameObservers().remove(token);
+            }
         }
 
     }
@@ -97,14 +109,18 @@ public class SetupPlayerState extends IStateGame {
      *                                the schemaCard given is the wrong one
      */
     @Override
-    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException, RemoteException {
+    public void ready(String token, SchemaCard schemaCard) throws InvalidActionException {
         if (!isPlayerReady(token) && containsSchemaCard(token, schemaCard)) {
             playersReady.add(token);
             game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
-                for (IGameObserver obs : game.getGameObservers().values()) {
-                    obs.onPlayersCreate(game.getPlayers());
-                }
+                game.getGameObservers().forEach((key, value) -> {
+                    try {
+                        value.onPlayersCreate(game.getPlayers());
+                    } catch (RemoteException e) {
+                        game.getGameObservers().remove(key);
+                    }
+                });
                 game.setState(new SetupGameState(game));
             }
             return;

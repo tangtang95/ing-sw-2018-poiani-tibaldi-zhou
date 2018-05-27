@@ -1,16 +1,20 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveDiceFromDraftPool;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
-import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -51,7 +55,7 @@ public class SinglePlayerGame extends Game{
      * @return the target score
      */
     @Contract(pure = true)
-    public int getTargetScore() throws RemoteException {
+    public int getTargetScore() {
         int targetScore = 0;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             List<Dice> dices = getRoundTrack().getDices(i);
@@ -87,7 +91,7 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
-    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) throws RemoteException {
+    public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
         int targetScore = getTargetScore();
         Outcome outcome = (scoreMap.get(currentRoundPlayer) > targetScore) ? Outcome.WIN : Outcome.LOSE;
         setPlayerOutcome(currentRoundPlayer, outcome);
@@ -104,9 +108,13 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
-    public void handleEndGame() throws RemoteException {
+    public void handleEndGame() {
         for (Player player: players.values()) {
-            getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());
+            try {
+                getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());
+            } catch (RemoteException e) {
+                getGameObservers().remove(player.getToken());
+            }
         }
     }
 

@@ -6,7 +6,10 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.ArrayList;
@@ -42,10 +45,6 @@ public class TenagliaARotelleTest {
         when(game.getPlayers()).thenReturn(players);
         when(game.getDraftPool()).thenReturn(draftPool);
         when(game.getState()).thenReturn(state);
-        toolCard = new ToolCard(Color.RED, "Tenaglia a Rotelle",
-                "Dopo il tuo primo turno scegli immediatamente un altro dado. Salta il tuo secondo " +
-                        "turno in questo round"
-                ,"[1-Check first turn][2-Wait turn end][4-Choose dice][8-Place dice][16-Skip second turn][32-CA]");
     }
 
     @After

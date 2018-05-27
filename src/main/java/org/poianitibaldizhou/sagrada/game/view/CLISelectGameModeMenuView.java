@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -15,7 +15,7 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
     private static final String MULTI_PLAYER = "Multi player";
     private static final String GO_BACK = "Go back";
 
-    CLISelectGameModeMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    CLISelectGameModeMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
         initializeCommands();

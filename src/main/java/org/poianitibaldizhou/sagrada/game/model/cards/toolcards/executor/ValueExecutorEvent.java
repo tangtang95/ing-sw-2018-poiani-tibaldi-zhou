@@ -8,6 +8,9 @@ public class ValueExecutorEvent implements ExecutorEvent {
         this.value = value;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNeededValue(ToolCardExecutor executor) {
         executor.setNeededValue(value);

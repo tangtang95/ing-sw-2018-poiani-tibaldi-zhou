@@ -2,9 +2,9 @@ package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Player;
-import org.poianitibaldizhou.sagrada.game.model.Position;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -131,15 +131,5 @@ public class ProxyGameController extends ProxyController implements IGameControl
     public void setPosition(String token, String gameName, Position position, String toolCardName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         serverHandler.sendRequest(new GameRequest(methodName, position, gameName, toolCardName));
-    }
-
-    @Override
-    public void ping(String token) {
-
-    }
-
-    @Override
-    public void disconnect(String token) {
-
     }
 }

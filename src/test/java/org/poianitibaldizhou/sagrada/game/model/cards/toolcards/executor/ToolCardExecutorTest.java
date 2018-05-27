@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
 import org.junit.After;
 import org.junit.Before;
@@ -6,12 +6,25 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ModifyDiceValue;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import static org.junit.Assert.*;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class ToolCardExecutorTest {
@@ -29,7 +42,7 @@ public class ToolCardExecutorTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         Node<ICommand> root = new Node<>(mock(ICommand.class));
-
+        executor = spy(new ToolCardExecutor(game, player, state));
     }
 
     @After
@@ -45,7 +58,7 @@ public class ToolCardExecutorTest {
     }
 
     // TODO fix this test 'cause they run in infinite loop
-    /*
+
     @Test
     public void neededValueTest() throws Exception {
         int value = 0;
@@ -105,7 +118,7 @@ public class ToolCardExecutorTest {
         Position position = mock(Position.class);
         Thread thread = new Thread(() -> {
             try {
-                Position temp = executor.getPosition();
+                Position temp = executor.getNeededPosition();
                 assertEquals(position, temp);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -155,74 +168,23 @@ public class ToolCardExecutorTest {
 
     @Test
     public void stopToolCardExecutionTest() throws Exception{
+        when(game.getDraftPool()).thenReturn(mock(DraftPool.class));
+        when(game.getRoundTrack()).thenReturn(mock(RoundTrack.class));
+        when(game.getDiceBag()).thenReturn(mock(DrawableCollection.class));
+        when(player.getSchemaCard()).thenReturn(mock(SchemaCard.class));
+        when(state.getSkipTurnPlayers()).thenReturn(new HashMap<>());
+
         Node<ICommand> commandNode = new Node<>(new ModifyDiceValue());
-        executor = new ToolCardExecutor(commandNode, player, game);
-        executor.start();
-        assertTrue(executor.isAlive());
-        executor.interruptCommandsInvocation();
-        executor.join();
-        assertFalse(executor.isAlive());
-    }
-
-    @Test
-    public void invokeCommandsTest1() throws Exception{
-        ICommand command = mock(ICommand.class);
-        Node<ICommand> root = spy(new Node<>(command));
-        Node<ICommand> firstLeft = spy(new Node<>(command));
-        Node<ICommand> firstRight = spy(new Node<>(command));
-        Node<ICommand> firstLeftSecondLeft = spy(new Node<>(command));
-        Node<ICommand> firstLeftSecondLeftThirdLeft = spy(new Node(command));
-
-        root.setLeftChild(firstLeft);
-        root.setRightChild(firstRight);
-        firstLeft.setLeftChild(firstLeftSecondLeft);
-        firstLeftSecondLeft.setLeftChild(firstLeftSecondLeftThirdLeft);
-
-        executor = new ToolCardExecutor(root, player, game);
-
-        when(command.executeCommand(player, executor, state)).thenReturn(CommandFlow.MAIN);
-        executor.start();
-        executor.join();
-        verify(root).getData();
-        verify(firstLeft).getData();
-        verify(firstLeftSecondLeft).getData();
-        verify(firstLeftSecondLeftThirdLeft).getData();
-        verify(firstRight, times(0)).getData();
-        assertEquals(false, executor.isExecutingCommands());
-    }
-
-    @Test
-    public void invokeCommandsTest2() throws Exception{
-        ICommand command = mock(ICommand.class);
-        Node<ICommand> root = spy(new Node<>(command));
-        Node<ICommand> firstLeft = spy(new Node<>(command));
-        Node<ICommand> firstRight = spy(new Node<>(command));
-        Node<ICommand> firstLeftSecondLeft = spy(new Node<>(command));
-        Node<ICommand> firstLeftSecondLeftThirdLeft = spy(new Node<>(command));
-
-        root.setLeftChild(firstLeft);
-        root.setRightChild(firstRight);
-        firstLeft.setLeftChild(firstLeftSecondLeft);
-        firstLeftSecondLeft.setLeftChild(firstLeftSecondLeftThirdLeft);
-
-        executor = new ToolCardExecutor(root, player, game);
-        when(command.executeCommand(player,executor, state)).thenReturn(CommandFlow.SUB);
-        executor.start();
-        executor.join();
-        verify(root).getData();
-        verify(firstLeft, times(0)).getData();
-        verify(firstLeftSecondLeft, times(0)).getData();
-        verify(firstLeftSecondLeftThirdLeft, times(0)).getData();
-        verify(firstRight).getData();
-        assertEquals(false, executor.isExecutingCommands());
-    }
-
-    public void invokeNullCommandsTest() throws Exception{
+        executor = new ToolCardExecutor(game, player, state);
+        executor.setPreCommands(new Node<>(new ClearAll()));
+        executor.setCoreCommands(commandNode);
         // TODO
     }
-    */
+
+
+
     @Test
-    public void newInstanceTest() throws Exception {
+    public void invokeNullCommandsTest() throws Exception{
         // TODO
     }
 

@@ -4,10 +4,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
+import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +54,7 @@ public class TurnStateTest {
         when(game.getNextPlayer(player3, Direction.COUNTER_CLOCKWISE)).thenReturn(player2);
         when(game.getNextPlayer(player2, Direction.COUNTER_CLOCKWISE)).thenReturn(player1);
         when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
+
     }
 
     @After
@@ -56,13 +67,62 @@ public class TurnStateTest {
     }
 
     @Test
-    public void chooseActionTest() throws Exception{
-        //TODO
+    public void initWithoutSkipTurnPlayersTest(){
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        verify(game, times(0)).setState(ArgumentMatchers.any(IStateGame.class));
+    }
+
+    @Test
+    public void initHasSkipTurnTest(){
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.addSkipTurnPlayer(player1, 1);
+        turnState.init();
+        verify(game).setState(ArgumentMatchers.any(IStateGame.class));
+    }
+
+    @Test
+    public void chooseActionByTurnPlayerTest() throws Exception{
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.chooseAction(player1, new PlaceDiceAction());
+        assertTrue(turnState.getPlayerState() instanceof PlaceDiceState);
+    }
+
+    @Test(expected = InvalidActionException.class)
+    public void chooseActionByOtherPlayerTest() throws Exception{
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.chooseAction(player2, new PlaceDiceAction());
+    }
+
+    @Test(expected = InvalidActionException.class)
+    public void choosePlaceDiceASecondTime() throws Exception {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.addActionUsed(new PlaceDiceAction());
+        turnState.chooseAction(player1, new PlaceDiceAction());
+    }
+
+    @Test(expected = InvalidActionException.class)
+    public void chooseUseCardASecondTime() throws Exception {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.addActionUsed(new UseCardAction());
+        turnState.chooseAction(player1, new UseCardAction());
     }
 
     @Test
     public void useCardTest() throws Exception {
-        //TODO
+        // TODO FIX
+        /*TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.chooseAction(player1, new UseCardAction());
+        ToolCard card = new ToolCard(Color.BLUE,"name", "description",
+                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
+        when(player1.isCardUsable(card)).thenReturn(true);
+        when(game.getPreCommands(card)).thenReturn(new Node<>(new ClearAll()));
+        turnState.useCard(player1, card, mock(IToolCardExecutorObserver.class));*/
     }
 
     @Test
@@ -81,6 +141,7 @@ public class TurnStateTest {
     @Test
     public void testNextTurnWhenIsFirstTurn() throws Exception {
         TurnState turnState = spy(new TurnState(game, 0,player1, player1, true));
+        turnState.init();
         when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
         when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
 
@@ -94,6 +155,7 @@ public class TurnStateTest {
     @Test
     public void testNextTurnWhenIsFirstTurnButLastPlayer() throws Exception {
         TurnState turnState = new TurnState(game, 0, player2, player1, true);
+        turnState.init();
         when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
         when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
 
@@ -107,6 +169,7 @@ public class TurnStateTest {
     @Test
     public void testNextTurnWhenIsNotFirstTurnAndCurrentPlayer() throws Exception {
         TurnState turnState = new TurnState(game, 0, player1, player1, false);
+        turnState.init();
         when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
         when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
 
@@ -117,6 +180,7 @@ public class TurnStateTest {
     @Test
     public void getCurrentPlayer() throws Exception {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
         assertEquals(player1, turnState.getCurrentRoundPlayer());
         assertNotEquals(player2, turnState.getCurrentRoundPlayer());
     }

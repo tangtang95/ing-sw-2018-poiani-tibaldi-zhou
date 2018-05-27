@@ -2,11 +2,12 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -37,9 +38,8 @@ public interface IGameStrategy {
      *
      * @param scoreMap           the map of the score of each player
      * @param currentRoundPlayer the current round player who has the diceBag
-     * @throws RemoteException network error
      */
-    void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) throws RemoteException;
+    void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer);
 
     /**
      * @return true if the game is singlePlayerGame, otherwise false
@@ -58,9 +58,8 @@ public interface IGameStrategy {
     /**
      * Based on the game handle the endGame differently
      *
-     * @throws RemoteException network error
      */
-    void handleEndGame() throws RemoteException;
+    void handleEndGame();
 
     /**
      * Get the list of pre-commands for the specified toolCard

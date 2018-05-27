@@ -1,13 +1,12 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PourOverDice;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class Position {
+public class Position implements Serializable {
     private int row;
     private int column;
 

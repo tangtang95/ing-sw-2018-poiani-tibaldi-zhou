@@ -41,6 +41,22 @@ public class ConstraintTest {
     }
 
     @Test
+    public void testIndexValue() throws Exception{
+        IConstraint c1 = new ColorConstraint(Color.PURPLE);
+        IConstraint c2 = new NumberConstraint(3);
+        IConstraint c3 = new ColorConstraint(Color.BLUE);
+
+        assertEquals(Color.PURPLE.ordinal(), c1.getIndexValue());
+        assertEquals(3 - 1, c2.getIndexValue());
+        assertEquals(Color.BLUE.ordinal(), c3.getIndexValue());
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testInvalidIndexValue() throws Exception{
+        new NoConstraint().getIndexValue();
+    }
+
+    @Test
     public void testInvalidNumberConstraint(){
         IConstraint c1 = null;
         try{

@@ -5,12 +5,16 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.reset;
@@ -21,7 +25,7 @@ public class DraftPoolTest {
 
     private static DraftPool dp;
     private static List<Dice> dices;
-    private List<IDraftPoolObserver> observerList;
+    private Map<String, IDraftPoolObserver> observerList;
 
     @Mock
     private IDraftPoolObserver observer1;
@@ -49,11 +53,11 @@ public class DraftPoolTest {
         dp = new DraftPool();
         dp.addDices(dices);
 
-        observerList = new ArrayList<>();
-        observerList.add(observer1);
-        observerList.add(observer2);
-        observerList.add(observer3);
-        observerList.forEach(obs -> dp.attachObserver(obs));
+        observerList = new HashMap<>();
+        observerList.put("obs1", observer1);
+        observerList.put("obs2", observer2);
+        observerList.put("obs3" ,observer3);
+        observerList.forEach((key, value) -> dp.attachObserver(key, value));
     }
 
     @Test
@@ -62,9 +66,9 @@ public class DraftPoolTest {
         diceList.add(new Dice(6, Color.GREEN));
         diceList.add(new Dice(4, Color.RED));
         dp.addDices(diceList);
-        dp.getObserverList().forEach(obs -> {
+        dp.getObserverMap().forEach((key, value) -> {
             try {
-                verify(obs, times(1)).onDicesAdd(diceList);
+                verify(value, times(1)).onDicesAdd(diceList);
             } catch (RemoteException e) {
                 fail("exception not excepted");
             }
@@ -86,7 +90,7 @@ public class DraftPoolTest {
 
     @Test
     public void testGetObserver() {
-        assertEquals(observerList, dp.getObserverList());
+        assertEquals(observerList, dp.getObserverMap());
     }
 
     @Test
@@ -95,9 +99,9 @@ public class DraftPoolTest {
         dp.addDice(dice);
         dices.add(dice);
         assertEquals(dices, dp.getDices());
-        dp.getObserverList().forEach(obs -> {
+        dp.getObserverMap().forEach((key, value) -> {
             try {
-                verify(obs, times(1)).onDiceAdd(dice);
+                verify(value, times(1)).onDiceAdd(dice);
             } catch (RemoteException e) {
                 fail("exception not excepted");
             }
@@ -123,9 +127,9 @@ public class DraftPoolTest {
             System.out.println(prevcolors[i] + "  " + newcolors[i]);
         }
         assertArrayEquals(prevcolors, newcolors);
-        dp.getObserverList().forEach(obs -> {
+        dp.getObserverMap().forEach((key, value) -> {
             try {
-                verify(obs, times(1)).onDraftPoolReroll(dp.getDices());
+                verify(value, times(1)).onDraftPoolReroll(dp.getDices());
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -154,9 +158,9 @@ public class DraftPoolTest {
     public void testClear() throws Exception{
         dp.clearPool();
         assertEquals(0, dp.size());
-        dp.getObserverList().forEach(obs -> {
+        dp.getObserverMap().forEach((key, value) -> {
             try {
-                verify(obs, times(1)).onDraftPoolClear();
+                verify(value, times(1)).onDraftPoolClear();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -167,7 +171,7 @@ public class DraftPoolTest {
     public void testNewInstance() throws Exception{
         DraftPool draftPool = DraftPool.newInstance(dp);
         assertEquals(dp, draftPool);
-        assertEquals(dp.getObserverList(), draftPool.getObserverList());
+        assertEquals(dp.getObserverMap(), draftPool.getObserverMap());
     }
 
     @Test
@@ -181,13 +185,13 @@ public class DraftPoolTest {
             dices.remove(removed);
 
             assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
-            dp.getObserverList().forEach(obs -> {
+            dp.getObserverMap().forEach((key, value) -> {
                 try {
-                    verify(obs, times(1)).onDiceRemove(removed);
+                    verify(value, times(1)).onDiceRemove(removed);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-                reset(obs);
+                reset(value);
             });
         }
 

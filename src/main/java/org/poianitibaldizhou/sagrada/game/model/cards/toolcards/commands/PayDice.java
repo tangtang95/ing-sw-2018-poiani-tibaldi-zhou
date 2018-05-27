@@ -1,17 +1,18 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Objects;
 
 public class PayDice implements ICommand {
 
@@ -22,22 +23,42 @@ public class PayDice implements ICommand {
     }
 
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices(color);
-        for (IToolCardExecutorObserver obs: toolCardExecutor.getObservers()) {
-            obs.notifyNeedDice(diceList);
-        }
+        toolCardExecutor.getObservers().forEach(obs -> {
+            try {
+                obs.notifyNeedDice(diceList);
+            } catch (RemoteException e) {
+                toolCardExecutor.getObservers().remove(obs);
+            }
+        });
 
         Dice dice = toolCardExecutor.getNeededDice();
+        if(!toolCardExecutor.getTemporaryDraftPool().getDices().contains(dice))
+            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
         if(dice.getColor() != color)
             return CommandFlow.REPEAT;
         try {
             toolCardExecutor.getTemporaryDraftPool().useDice(dice);
-        } catch (DiceNotFoundException e) {
-            return CommandFlow.REPEAT;
-        } catch (EmptyCollectionException e) {
-            return CommandFlow.EMPTY_DRAFTPOOL;
+        } catch (EmptyCollectionException | DiceNotFoundException e) {
+            // Exception impossible to happen (already checked before)
+            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
+        } catch (DisconnectedException e) {
+            e.printStackTrace();
         }
         return CommandFlow.MAIN;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof PayDice))
+            return false;
+        PayDice other = (PayDice) obj;
+        return other.color == this.color;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(PayDice.class, this.color);
     }
 }

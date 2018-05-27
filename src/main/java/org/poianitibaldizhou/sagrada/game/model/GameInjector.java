@@ -7,6 +7,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
@@ -17,7 +19,6 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -34,6 +35,8 @@ public class GameInjector {
     private static final String CARD_POINTS = "cardPoints";
     private static final String CONSTRAINT_TYPE = "constraintType";
 
+    private static final int NUMBER_OF_SCHEMA_CARDS_FRONT_AND_BACK = 12;
+
 
     @Contract(" -> fail")
     private GameInjector(){
@@ -46,7 +49,7 @@ public class GameInjector {
      *
      * @param toolCardDrawableCollection DrawableCollection of ToolCard
      */
-    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) throws RemoteException {
+    public static void injectToolCards(@NotNull DrawableCollection<ToolCard> toolCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -72,7 +75,7 @@ public class GameInjector {
      *
      * @param diceBag DrawableCollection of Dice not null
      */
-    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) throws RemoteException {
+    public static void injectDiceBag(@NotNull DrawableCollection<Dice> diceBag) {
         Random random = new Random();
         for (int j = 0; j < 5; j++)
             for (int i = 0; i < 18; i++)
@@ -90,7 +93,7 @@ public class GameInjector {
      */
     public static void injectPublicObjectiveCards(
             @NotNull DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection)
-            throws WrongCardInJsonFileException, RemoteException {
+            throws WrongCardInJsonFileException {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -162,7 +165,7 @@ public class GameInjector {
      * @param privateObjectiveCardDrawableCollection DrawableCollection of PrivateObjectiveCard
      */
     public static void injectPrivateObjectiveCard(
-            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) throws RemoteException {
+            @NotNull DrawableCollection<PrivateObjectiveCard> privateObjectiveCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -187,11 +190,14 @@ public class GameInjector {
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard
      */
-    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) throws RemoteException {
+    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
         List<List<SchemaCard>> schemaCardFrontBack = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_FRONT_AND_BACK; i++) {
+            schemaCardFrontBack.add(new ArrayList<>());
+        }
 
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/schemaCards.json"));
@@ -207,20 +213,10 @@ public class GameInjector {
             injectSchemaMatrix(matrix, constraints);
 
             int numberID = Integer.parseInt(schemaCard.get("id").toString());
-            try{
-                schemaCardFrontBack.get(numberID).add(new SchemaCard((String) schemaCard.get(CARD_NAME),
-                        Integer.parseInt(schemaCard.get("difficulty").toString()),
-                        constraints
-                ));
-            }catch (IndexOutOfBoundsException e) {
-                for (int i = schemaCardFrontBack.size(); i < numberID; i++) {
-                    schemaCardFrontBack.add(new ArrayList<>());
-                }
-                schemaCardFrontBack.get(numberID).add(new SchemaCard((String) schemaCard.get(CARD_NAME),
-                        Integer.parseInt(schemaCard.get("difficulty").toString()),
-                        constraints
-                ));
-            }
+            schemaCardFrontBack.get(numberID).add(new SchemaCard((String) schemaCard.get(CARD_NAME),
+                    Integer.parseInt(schemaCard.get("difficulty").toString()),
+                    constraints
+            ));
         }
         schemaCardDrawableCollection.addElements(schemaCardFrontBack);
     }

@@ -1,11 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Position;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
@@ -13,15 +13,13 @@ import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SchemaCard implements Serializable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
-    private final List<ISchemaCardObserver> observerList;
+    private final transient Map<String, ISchemaCardObserver> observerMap;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -37,7 +35,7 @@ public class SchemaCard implements Serializable {
         this.name = name;
         this.difficulty = difficulty;
         this.tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
-        this.observerList = new ArrayList<>();
+        this.observerMap = new HashMap<>();
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 this.tileMatrix[i][j] = new Tile(constraints[i][j]);
@@ -46,17 +44,20 @@ public class SchemaCard implements Serializable {
     }
 
     /**
-     * Copy-constructor
+     * Copy-constructor (Note: shallow copy of the observer)
      *
-     * @param name       card name
-     * @param difficulty card difficulty
-     * @param tileMatrix card matrix
+     * @param schemaCard the schemaCard to copy
      */
-    private SchemaCard(String name, int difficulty, Tile[][] tileMatrix) {
-        this.name = name;
-        this.difficulty = difficulty;
-        this.tileMatrix = tileMatrix;
-        this.observerList = new ArrayList<>();
+    private SchemaCard(SchemaCard schemaCard) {
+        this.name = schemaCard.name;
+        this.difficulty = schemaCard.difficulty;
+        this.tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                this.tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
+            }
+        }
+        this.observerMap = new HashMap<>(schemaCard.getObserverMap());
     }
 
     //GETTER
@@ -73,8 +74,8 @@ public class SchemaCard implements Serializable {
      *
      * @return list of observers
      */
-    public List<ISchemaCardObserver> getObserverList() {
-        return new ArrayList<>(observerList);
+    public Map<String, ISchemaCardObserver> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
 
     @Contract(pure = true)
@@ -291,7 +292,7 @@ public class SchemaCard implements Serializable {
      *                                getNumberOfAdjacentDices() > 0
      */
     public void setDice(Dice dice, Position position, PlacementRestrictionType restriction,
-                        DiceRestrictionType diceRestriction) throws RuleViolationException, RemoteException {
+                        DiceRestrictionType diceRestriction) throws RuleViolationException {
         if (isEmpty()) {
             if (!isBorderPosition(position)) {
                 throw new RuleViolationException(RuleViolationType.NOT_BORDER_TILE);
@@ -316,9 +317,13 @@ public class SchemaCard implements Serializable {
         }
         tileMatrix[position.getRow()][position.getColumn()].setDice(dice, restriction);
 
-        for (ISchemaCardObserver schemaCardObserver : observerList) {
-            schemaCardObserver.onPlaceDice(dice, position);
-        }
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onPlaceDice(dice, position);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     /**
@@ -349,14 +354,24 @@ public class SchemaCard implements Serializable {
      * @param position the position from where to remove the dice
      * @return the dice removed from the point position (if there is no dice it returns null)
      */
-    public Dice removeDice(Position position) throws RemoteException {
+    public Dice removeDice(Position position) {
         Dice removedDice = tileMatrix[position.getRow()][position.getColumn()].removeDice();
-        for (ISchemaCardObserver obs : observerList) obs.onDiceRemove(removedDice, position);
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDiceRemove(removedDice, position);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
         return removedDice;
     }
 
-    public void attachObserver(ISchemaCardObserver observer) {
-        observerList.add(observer);
+    public void attachObserver(String token, ISchemaCardObserver observer) {
+        observerMap.put(token, observer);
+    }
+
+    public void detachObserver(String token){
+        observerMap.remove(token);
     }
 
     /**
@@ -386,7 +401,11 @@ public class SchemaCard implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), tileMatrix, getDifficulty());
+        List<Tile> tiles = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            tiles.addAll(Arrays.asList(tileMatrix[i]).subList(0, NUMBER_OF_COLUMNS));
+        }
+        return Objects.hash(SchemaCard.class, name, tiles, difficulty);
     }
 
     @Override
@@ -422,17 +441,8 @@ public class SchemaCard implements Serializable {
      * @param schemaCard schema card that needs to be copied
      * @return schemaCard copy
      */
-    @Contract("null -> null")
-    public static SchemaCard newInstance(SchemaCard schemaCard) {
-        if (schemaCard == null)
-            return null;
-        Tile[][] tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
-            }
-        }
-        return new SchemaCard(schemaCard.getName(), schemaCard.getDifficulty(), tileMatrix);
+    public static SchemaCard newInstance(@NotNull SchemaCard schemaCard) {
+        return new SchemaCard(schemaCard);
     }
 
     /**

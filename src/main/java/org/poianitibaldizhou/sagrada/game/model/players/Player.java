@@ -1,8 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
@@ -16,9 +18,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public abstract class Player implements IVictoryPoints, Serializable {
 
@@ -28,7 +28,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
     protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
-    private List<IPlayerObserver> observerList;
+
+    private transient Map<String, IPlayerObserver> observerMap;
 
     /**
      * Constructor.
@@ -46,7 +47,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
         this.user = user;
         this.outcome = Outcome.IN_GAME;
         this.indexOfPrivateObjectiveCard = 0;
-        this.observerList = new ArrayList<>();
+        this.observerMap = new HashMap<>();
     }
 
     // GETTER
@@ -61,6 +62,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
     public List<PrivateObjectiveCard> getPrivateObjectiveCards() {
         return new ArrayList<>(privateObjectiveCards);
     }
+
+    public PrivateObjectiveCard getPrivateObjectiveCard() { return privateObjectiveCards.get(indexOfPrivateObjectiveCard); }
 
     public Outcome getOutcome() {
         return outcome;
@@ -80,9 +83,11 @@ public abstract class Player implements IVictoryPoints, Serializable {
      *
      * @return list of observers
      */
-    public List<IPlayerObserver> getObserverList() {
-        return new ArrayList<>(observerList);
+    public Map<String, IPlayerObserver> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
+
+    public Map<String, ISchemaCardObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -100,7 +105,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
      * @return true if the toolCard is usable, otherwise false
      * @throws RemoteException network error
      */
-    public boolean isCardUsable(ToolCard toolCard) throws RemoteException {
+    public boolean isCardUsable(ToolCard toolCard) {
         return coin.isCardUsable(toolCard);
     }
 
@@ -109,29 +114,40 @@ public abstract class Player implements IVictoryPoints, Serializable {
         this.outcome = outcome;
     }
 
-    public void attachObserver(IPlayerObserver observer) {
-        observerList.add(observer);
+    public void attachObserver(String token, IPlayerObserver observer) {
+        observerMap.put(token, observer);
     }
 
-    public void attachSchemaCardObserver(ISchemaCardObserver schemaCardObserver) {
-        schemaCard.attachObserver(schemaCardObserver);
+    public void detachObserver(String token) {
+        observerMap.remove(token);
+    }
+
+    public void attachSchemaCardObserver(String token, ISchemaCardObserver schemaCardObserver) {
+        schemaCard.attachObserver(token, schemaCardObserver);
+    }
+
+    public void detachSchemaCardObserver(String token) {
+        schemaCard.detachObserver(token);
     }
 
     public void setSchemaCard(SchemaCard schemaCard) {
-        this.schemaCard = schemaCard;
+        this.schemaCard = SchemaCard.newInstance(schemaCard);
     }
 
     /**
      * Remove the coins by a certain cost
      *
      * @param cost the value to decrement the coins
-     * @throws RemoteException network error
      */
-    public void removeCoins(int cost) throws RemoteException {
+    public void removeCoins(int cost) {
         coin.removeCoins(cost);
-        for (IPlayerObserver playerObserver : observerList) {
-            playerObserver.onFavorTokenChange(coin.getCoins());
-        }
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onFavorTokenChange(cost);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     /**
@@ -144,11 +160,11 @@ public abstract class Player implements IVictoryPoints, Serializable {
      * @throws RuleViolationException if the rule of the schema is violated
      */
     public void placeDice(Dice dice, Position position, PlacementRestrictionType tileConstraint,
-                          DiceRestrictionType diceConstraint) throws RuleViolationException, RemoteException {
+                          DiceRestrictionType diceConstraint) throws RuleViolationException {
         schemaCard.setDice(dice, position, tileConstraint, diceConstraint);
     }
 
-    public void placeDice(Dice dice, Position position) throws RuleViolationException, RemoteException {
+    public void placeDice(Dice dice, Position position) throws RuleViolationException {
         placeDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
@@ -176,11 +192,13 @@ public abstract class Player implements IVictoryPoints, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof MultiPlayer))
+        if (!(obj instanceof Player))
             return false;
-        MultiPlayer other = (MultiPlayer) obj;
-        return this.getToken().equals(other.getToken()) && getSchemaCard().equals(other.getSchemaCard())
-                && getPrivateObjectiveCards().equals(other.getPrivateObjectiveCards()) && coin.equals(other.coin);
+        Player other = (Player) obj;
+        return this.getUser().equals(other.getUser()) && getSchemaCard().equals(other.getSchemaCard())
+                && getPrivateObjectiveCards().containsAll(other.getPrivateObjectiveCards())
+                && coin.equals(other.coin) && indexOfPrivateObjectiveCard == other.indexOfPrivateObjectiveCard
+                && outcome == other.outcome;
     }
 
     /**
@@ -190,7 +208,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(MultiPlayer.class, schemaCard, privateObjectiveCards, coin);
+        return Objects.hash(Player.class, user, schemaCard,
+                privateObjectiveCards, coin, outcome, indexOfPrivateObjectiveCard);
     }
 
     /**

@@ -1,8 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.Test;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
 import static org.junit.Assert.*;
 

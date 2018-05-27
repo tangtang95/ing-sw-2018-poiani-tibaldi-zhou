@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+
+import java.util.Objects;
 
 public class ClearPosition implements ICommand {
 
@@ -24,5 +26,10 @@ public class ClearPosition implements ICommand {
     @Override
     public boolean equals(Object o) {
         return o instanceof ClearPosition;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ClearPosition.class);
     }
 }

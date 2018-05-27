@@ -1,8 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
@@ -22,7 +25,6 @@ import static org.mockito.Mockito.when;
  * - ColorConstraint
  */
 public class ExpendableDiceTest {
-    // TODO FIX TEST
 
     @Mock
     private Game game;
@@ -47,6 +49,7 @@ public class ExpendableDiceTest {
         diceDraftPool.add(dice4);
         expendableDice = new ExpendableDice(game);
         when(draftPool.getDices()).thenReturn(diceDraftPool);
+        when(game.getDraftPool()).thenReturn(draftPool);
     }
 
     @After
@@ -62,34 +65,38 @@ public class ExpendableDiceTest {
     }
 
     /**
-     * Test use method when it is possible to use a dice
+     * Test isCardUsable when there is one dice with the same color of the toolCard
      */
     @Test
-    public void useTest() throws Exception {
+    public void isCardUsableTrueTest() throws Exception {
         when(toolCard.getColor()).thenReturn(Color.PURPLE);
         when(dice1.getColorConstraint()).thenReturn(new ColorConstraint(Color.PURPLE));
         when(dice2.getColorConstraint()).thenReturn(new ColorConstraint(Color.BLUE));
         when(dice3.getColorConstraint()).thenReturn(new ColorConstraint(Color.RED));
         when(dice4.getColorConstraint()).thenReturn(new ColorConstraint(Color.RED));
-        expendableDice.isCardUsable(toolCard);
-        verify(draftPool).useDice(dice1);
+        assertEquals(true, expendableDice.isCardUsable(toolCard));
     }
 
     /**
-     * Test NoCoinsExpendableException thrown by use method
+     * Test isCardUsable when there is no dice with the same color of the toolCard
      */
     @Test
-    public void useTestException() throws Exception {
+    public void isCardUsableFalseTest() throws Exception {
         when(toolCard.getColor()).thenReturn(Color.PURPLE);
         when(dice1.getColorConstraint()).thenReturn(new ColorConstraint(Color.BLUE));
         when(dice2.getColorConstraint()).thenReturn(new ColorConstraint(Color.BLUE));
         when(dice3.getColorConstraint()).thenReturn(new ColorConstraint(Color.RED));
         when(dice4.getColorConstraint()).thenReturn(new ColorConstraint(Color.RED));
-        expendableDice.isCardUsable(toolCard);
+        assertEquals(false, expendableDice.isCardUsable(toolCard));
     }
 
-    @Test
+    @Test(expected = IllegalStateException.class)
     public void getCoins() throws Exception {
-        assertEquals(diceDraftPool.size() ,expendableDice.getCoins());
+        expendableDice.getCoins();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void removeCoins() throws Exception {
+        expendableDice.removeCoins(2);
     }
 }

@@ -2,18 +2,12 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.*;
-import org.junit.experimental.theories.DataPoint;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
-import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 

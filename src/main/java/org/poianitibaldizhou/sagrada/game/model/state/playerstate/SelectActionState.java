@@ -17,7 +17,7 @@ public class SelectActionState extends IPlayerState {
      * @param action the operation of the player
      */
     @Override
-    public void chooseAction(IActionCommand action) throws RemoteException {
+    public void chooseAction(IActionCommand action) {
         action.executeAction(turnState);
     }
 

@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 
 import java.rmi.Remote;
@@ -69,13 +69,23 @@ public interface IToolCardExecutorObserver extends Remote {
 
     /**
      * Notify the necessity to repeat the action (because of a failed command)
+     *
+     * @throws RemoteException network error
      */
-    void notifyRepeatAction();
+    void notifyRepeatAction() throws RemoteException;
 
     /**
      * Notify the interruption of the command because of the CommandFlow error
      *
      * @param error the cause of the interruption
+     * @throws RemoteException network error
      */
-    void notifyCommandInterrupted(CommandFlow error);
+    void notifyCommandInterrupted(CommandFlow error) throws RemoteException;
+
+    /**
+     * Notify to the client the requirement of an answer to the continuation of the tool card execution
+     *
+     * @throws RemoteException network error
+     */
+    void notifyNeedContinueAnswer() throws RemoteException;
 }

@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -17,16 +18,19 @@ public class RemoveFavorToken implements ICommand{
     }
 
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException, InterruptedException {
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         player.removeCoins(numberOfTokenToRemove);
         return CommandFlow.MAIN;
     }
 
+    @Contract(pure = true)
+    public int getNumberOfTokenToRemove() {
+        return numberOfTokenToRemove;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof RemoveFavorToken))
-            return false;
-        return numberOfTokenToRemove == ((RemoveFavorToken) obj).numberOfTokenToRemove;
+        return obj instanceof RemoveFavorToken && numberOfTokenToRemove == ((RemoveFavorToken) obj).numberOfTokenToRemove;
     }
 
     @Override

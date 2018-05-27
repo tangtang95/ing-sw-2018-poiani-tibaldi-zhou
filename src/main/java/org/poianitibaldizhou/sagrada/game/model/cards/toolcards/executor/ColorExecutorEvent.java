@@ -10,6 +10,9 @@ public class ColorExecutorEvent implements ExecutorEvent {
         this.color = color;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNeededValue(ToolCardExecutor executor) {
         executor.setNeededColor(color);

@@ -1,16 +1,17 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class DrawableCollection<T> {
-    private List<T> collection;
-    private List<IDrawableCollectionObserver<T>> observerList;
+public class DrawableCollection<T> implements Serializable{
+    private final List<T> collection;
+    private final transient Map<String, IDrawableCollectionObserver<T>> observerMap;
 
     /**
      * Constructor.
@@ -18,12 +19,12 @@ public class DrawableCollection<T> {
      */
     public DrawableCollection() {
         collection = new ArrayList<>();
-        observerList = new ArrayList<>();
+        observerMap = new HashMap<>();
     }
 
     public DrawableCollection(List<T> list) {
         collection = new ArrayList<>(list);
-        observerList = new ArrayList<>();
+        observerMap = new HashMap<>();
     }
 
     // GETTER
@@ -32,8 +33,8 @@ public class DrawableCollection<T> {
      * are not deep copied.
      * @return list of observers
      */
-    public List<IDrawableCollectionObserver<T>> getObserverList() {
-        return new ArrayList<>(observerList);
+    public Map<String, IDrawableCollectionObserver<T>> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
 
     /**
@@ -67,8 +68,12 @@ public class DrawableCollection<T> {
     }
 
     // MODIFIERS
-    public void attachObserver(IDrawableCollectionObserver<T> observer) {
-        observerList.add(observer);
+    public void attachObserver(String token, IDrawableCollectionObserver<T> observer) {
+        observerMap.put(token, observer);
+    }
+
+    public void detachObserver(String token) {
+        observerMap.remove(token);
     }
 
     /**
@@ -78,9 +83,15 @@ public class DrawableCollection<T> {
      * @param elem elements that needs to be added
      * @throws NullPointerException if elem is null
      */
-    public void addElement(@NotNull T elem) throws RemoteException {
+    public void addElement(@NotNull T elem) {
         collection.add(elem);
-        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementAdd(elem);
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onElementAdd(elem);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     /**
@@ -91,7 +102,7 @@ public class DrawableCollection<T> {
      * @return the drawn element
      * @throws EmptyCollectionException if DrawableCollection is empty
      */
-    public T draw() throws EmptyCollectionException, RemoteException {
+    public T draw() throws EmptyCollectionException {
         Random rand = new Random();
         if (collection.isEmpty()) {
             throw new EmptyCollectionException();
@@ -99,7 +110,13 @@ public class DrawableCollection<T> {
         int pos = Math.abs(rand.nextInt(collection.size()));
         T elem = collection.get(pos);
         collection.remove(pos);
-        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementDraw(elem);
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onElementDraw(elem);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
         return elem;
     }
 
@@ -108,9 +125,15 @@ public class DrawableCollection<T> {
      *
      * @param list list of elements that need to be added
      */
-    public void addElements(@NotNull List<T> list) throws RemoteException {
+    public void addElements(@NotNull List<T> list) {
         collection.addAll(list);
-        for(IDrawableCollectionObserver<T> obs : observerList) obs.onElementsAdd(list);
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onElementsAdd(list);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     @Override

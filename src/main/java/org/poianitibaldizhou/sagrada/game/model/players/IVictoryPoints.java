@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.players;
 
 public interface IVictoryPoints {
 

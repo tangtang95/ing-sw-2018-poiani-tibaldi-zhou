@@ -1,20 +1,21 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IRoundTrackObserver;
 
-import java.io.IOException;
-import java.rmi.Remote;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class RoundTrack {
+public class RoundTrack implements Serializable{
 
     private final List<List<Dice>> listOfDices;
-    private final List<IRoundTrackObserver> observerList;
+    private final transient Map<String, IRoundTrackObserver> observerMap;
     private int numberOfDices;
 
     public static final int NUMBER_OF_TRACK = 10;
@@ -27,7 +28,7 @@ public class RoundTrack {
      */
     public RoundTrack() {
         this.listOfDices = new ArrayList<>();
-        this.observerList = new ArrayList<>();
+        this.observerMap = new HashMap<>();
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
             listOfDices.add(new ArrayList<>());
         }
@@ -41,7 +42,7 @@ public class RoundTrack {
      * @param roundTrack the roundTrack to copy
      * @return copy of roundTrack
      */
-    public static RoundTrack newInstance(RoundTrack roundTrack) throws RemoteException {
+    public static RoundTrack newInstance(RoundTrack roundTrack) {
         if (roundTrack == null)
             return null;
 
@@ -52,7 +53,7 @@ public class RoundTrack {
                 newRoundTrack.addDiceToRound(new Dice(d.getNumber(), d.getColor()), i);
         }
 
-        roundTrack.getObserverList().forEach(obs -> roundTrack.attachObserver(obs));
+        newRoundTrack.observerMap.putAll(roundTrack.getObserverMap());
 
         return newRoundTrack;
     }
@@ -63,8 +64,8 @@ public class RoundTrack {
      *
      * @return copied observer list
      */
-    public List<IRoundTrackObserver> getObserverList() {
-        return observerList;
+    public Map<String, IRoundTrackObserver> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
 
     /**
@@ -102,16 +103,20 @@ public class RoundTrack {
      * @param round specified round
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
-    public void addDicesToRound(@NotNull List<Dice> dices, int round) throws RemoteException {
+    public void addDicesToRound(@NotNull List<Dice> dices, int round) {
         if (!isRoundAccepted(round))
             throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
                     "Round specified: " + round);
         if(!dices.isEmpty()) {
             numberOfDices += dices.size();
             listOfDices.get(round).addAll(dices);
-            for (IRoundTrackObserver obs : observerList) {
-                obs.onDicesAddToRound(dices, round);
-            }
+            observerMap.forEach((key, value) -> {
+                try {
+                    value.onDicesAddToRound(dices, round);
+                } catch (RemoteException e) {
+                    observerMap.remove(key);
+                }
+            });
         }
     }
 
@@ -123,15 +128,19 @@ public class RoundTrack {
      * @param round specified round
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
-    public void addDiceToRound(@NotNull Dice dice, int round) throws RemoteException {
+    public void addDiceToRound(@NotNull Dice dice, int round) {
         if (!isRoundAccepted(round))
             throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
                     "Round specified: " + round);
         listOfDices.get(round).add(dice);
         numberOfDices += 1;
-        for (IRoundTrackObserver obs: observerList) {
-            obs.onDiceAddToRound(dice, round);
-        }
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDiceAddToRound(dice, round);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     /**
@@ -143,16 +152,20 @@ public class RoundTrack {
      * @throws IllegalArgumentException if dice is not present at specified round or if the round specified
      *                                  exceeds [FIRST_ROUND, LAST_ROUND]
      */
-    public void removeDiceFromRoundTrack(int round, @NotNull Dice dice) throws RemoteException {
+    public void removeDiceFromRoundTrack(int round, @NotNull Dice dice) {
         if (!isRoundAccepted(round))
             throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
                     "Round specified: " + round);
         if (!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
         numberOfDices -= 1;
-        for (IRoundTrackObserver obs: observerList) {
-            obs.onDiceRemoveFromRound(dice, round);
-        }
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDiceRemoveFromRound(dice, round);
+            } catch (RemoteException e) {
+                observerMap.remove(key);
+            }
+        });
     }
 
     /**
@@ -165,7 +178,7 @@ public class RoundTrack {
      * @throws DiceNotFoundException if dice is not founded at the specified round
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
-    public void swapDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException, RemoteException {
+    public void swapDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
         if(!isRoundAccepted(round))
             throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
                     "Round specified: " + round);
@@ -176,9 +189,14 @@ public class RoundTrack {
             if (dices.get(i).equals(oldDice)) {
                 dices.set(i, newDice);
                 diceFounded = true;
-                for (IRoundTrackObserver obs: observerList) {
-                    obs.onDiceSwap(oldDice, newDice, round);
-                }
+                observerMap.forEach((key, value) -> {
+                    try {
+                        value.onDiceSwap(oldDice, newDice, round);
+                    } catch (RemoteException e) {
+                        observerMap.remove(key);
+                    }
+                });
+                break;
             }
         }
 
@@ -186,8 +204,12 @@ public class RoundTrack {
             throw new DiceNotFoundException("oldDice not founded!");
     }
 
-    public void attachObserver(IRoundTrackObserver roundTrackObserver) {
-        observerList.add(roundTrackObserver);
+    public void attachObserver(String token, IRoundTrackObserver roundTrackObserver) {
+        observerMap.put(token, roundTrackObserver);
+    }
+
+    public void detachObserver(String token) {
+        observerMap.remove(token);
     }
 
     /**

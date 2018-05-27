@@ -4,12 +4,15 @@ import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
@@ -86,18 +89,26 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     @Override
-    public void init() throws RemoteException {
+    public void init() {
         if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
                 && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN)) {
-            for (IStateObserver obs : game.getStateObservers()) {
-                obs.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
-            }
+            game.getStateObservers().forEach((key, value) -> {
+                try {
+                    value.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
+                } catch (RemoteException e) {
+                    game.getStateObservers().remove(key);
+                }
+            });
             nextTurn();
             return;
         }
-        for (IStateObserver obs : game.getStateObservers()) {
-            obs.onTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
-        }
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
 
     }
 
@@ -109,7 +120,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * @throws InvalidActionException if the given player is different from the currentTurnPlayer
      */
     @Override
-    public void chooseAction(Player player, IActionCommand action) throws InvalidActionException, RemoteException {
+    public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
         if (actionsUsed.contains(action))
@@ -129,7 +140,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer)
-            throws InvalidActionException, RemoteException {
+            throws InvalidActionException {
 
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
@@ -153,7 +164,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *                                the rules of placement are violated
      */
     @Override
-    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException, RemoteException {
+    public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
         try {
@@ -203,7 +214,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * it starts the second run. Otherwise the turn goes to the next currentTurnPlayer (if is the first turn than the direction is
      * clockwise otherwise it's counter clockwise)
      */
-    public void nextTurn() throws RemoteException {
+    public void nextTurn() {
         if (!isFirstTurn && currentTurnPlayer.equals(currentRoundPlayer))
             game.setState(new RoundEndState(game, currentRound, currentRoundPlayer));
         else {
@@ -263,21 +274,46 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.playerState = playerState;
     }
 
+    public void addActionUsed(IActionCommand actionCommand) {
+        actionsUsed.add(actionCommand);
+    }
+
     public void addSkipTurnPlayer(Player player, int turn) {
+        if(turn < FIRST_TURN || turn > SECOND_TURN)
+            throw new IllegalArgumentException("Turn has to be 1 or 2");
         this.skipTurnPlayers.put(player, turn);
     }
 
     // NOTIFIERS
-    public void notifyOnPlaceDiceState() throws RemoteException {
-        for (IStateObserver obs : game.getStateObservers()) obs.onPlaceDiceState(currentTurnPlayer.getUser());
+    public void notifyOnPlaceDiceState() {
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onPlaceDiceState(currentTurnPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
     }
 
-    public void notifyOnUseToolCardState() throws RemoteException {
-        for (IStateObserver obs : game.getStateObservers()) obs.onUseCardState(currentTurnPlayer.getUser());
+    public void notifyOnUseToolCardState() {
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onUseCardState(currentTurnPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
     }
 
-    public void notifyOnEndTurnState() throws RemoteException {
-        for (IStateObserver obs : game.getStateObservers()) obs.onEndTurnState(currentTurnPlayer.getUser());
+    public void notifyOnEndTurnState() {
+        game.getStateObservers().forEach((key, value) -> {
+            try {
+                value.onEndTurnState(currentTurnPlayer.getUser());
+            } catch (RemoteException e) {
+                game.getStateObservers().remove(key);
+            }
+        });
     }
+
 
 }

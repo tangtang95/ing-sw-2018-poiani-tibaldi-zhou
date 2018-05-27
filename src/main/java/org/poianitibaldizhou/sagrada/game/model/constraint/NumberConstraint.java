@@ -2,8 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

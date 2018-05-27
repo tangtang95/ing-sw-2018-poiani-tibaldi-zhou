@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.game.model.Player;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -20,8 +21,12 @@ public class RerollDraftPool implements ICommand {
      * @return CommandFlow.MAIN
      */
     @Override
-    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws RemoteException {
-        toolCardExecutor.getTemporaryDraftPool().reRollDices();
+    public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
+        try {
+            toolCardExecutor.getTemporaryDraftPool().reRollDices();
+        } catch (DisconnectedException e) {
+            e.printStackTrace();
+        }
         return CommandFlow.MAIN;
     }
 

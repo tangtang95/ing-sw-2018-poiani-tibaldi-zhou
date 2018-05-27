@@ -1,21 +1,22 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class DraftPool {
-    private List<Dice> dices;
-    private List<IDraftPoolObserver> observerList;
+public class DraftPool implements Serializable {
+    private final List<Dice> dices;
+    private final transient Map<String, IDraftPoolObserver> observerMap;
+
 
     /**
      * Constructor.
@@ -23,7 +24,7 @@ public class DraftPool {
      */
     public DraftPool() {
         dices = new ArrayList<>();
-        observerList = new ArrayList<>();
+        observerMap = new HashMap<>();
     }
 
     // GETTER
@@ -36,8 +37,8 @@ public class DraftPool {
      * @return list of the observers listening to the draftpool
      */
     @Contract(pure = true)
-    public List<IDraftPoolObserver> getObserverList() {
-        return new ArrayList<>(observerList);
+    public Map<String, IDraftPoolObserver> getObserverMap() {
+        return new HashMap<>(observerMap);
     }
 
     /**
@@ -62,8 +63,12 @@ public class DraftPool {
     }
 
     // MODIFIERS
-    public void attachObserver(@NotNull IDraftPoolObserver observer) {
-        observerList.add(observer);
+    public void attachObserver(String token, @NotNull IDraftPoolObserver observer) {
+        observerMap.put(token, observer);
+    }
+
+    public void detachObserver(String token) {
+        observerMap.remove(token);
     }
 
     /**
@@ -72,11 +77,20 @@ public class DraftPool {
      *
      * @param dices the list of dices that needs to be added
      * @throws NullPointerException if dices is null
-     * @throws RemoteException      network error
      */
-    public void addDices(@NotNull List<Dice> dices) throws RemoteException {
+    public void addDices(@NotNull List<Dice> dices) throws DisconnectedException {
         this.dices.addAll(dices);
-        for (IDraftPoolObserver obs : observerList) obs.onDicesAdd(dices);
+        List<String> disconnectedPlayers = new ArrayList<>();
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDicesAdd(dices);
+            } catch (IOException e) {
+                disconnectedPlayers.add(key);
+            }
+        });
+
+        if(!disconnectedPlayers.isEmpty())
+            throw new DisconnectedException(disconnectedPlayers);
     }
 
     /**
@@ -84,11 +98,20 @@ public class DraftPool {
      *
      * @param dice the dice that needs to be added
      * @throws NullPointerException if dice is null
-     * @throws RemoteException      network error
      */
-    public void addDice(@NotNull Dice dice) throws RemoteException {
+    public void addDice(@NotNull Dice dice) throws DisconnectedException {
         this.dices.add(dice);
-        for (IDraftPoolObserver obs : observerList) obs.onDiceAdd(dice);
+        List<String> disconnectedPlayers = new ArrayList<>();
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDiceAdd(dice);
+            } catch (IOException e) {
+                disconnectedPlayers.add(key);
+            }
+        });
+
+        if(!disconnectedPlayers.isEmpty())
+            throw new DisconnectedException(disconnectedPlayers);
     }
 
     /**
@@ -98,16 +121,25 @@ public class DraftPool {
      * @throws DiceNotFoundException    if d is not present in the DraftPool
      * @throws EmptyCollectionException if the DraftPool is empty
      * @throws NullPointerException     if dice is null
-     * @throws RemoteException          network error
      */
-    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException, RemoteException {
+    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException, DisconnectedException {
         if (dices.isEmpty()) {
             throw new EmptyCollectionException();
         }
         for (int i = 0; i < dices.size(); i++) {
             if (dices.get(i).equals(dice)) {
                 dices.remove(i);
-                for (IDraftPoolObserver obs : observerList) obs.onDiceRemove(dice);
+                List<String> disconnectedPlayers = new ArrayList<>();
+                observerMap.forEach((key, value) -> {
+                    try {
+                        value.onDiceRemove(dice);
+                    } catch (IOException e) {
+                        disconnectedPlayers.add(key);
+                    }
+                });
+
+                if(!disconnectedPlayers.isEmpty())
+                    throw new DisconnectedException(disconnectedPlayers);
                 return;
             }
         }
@@ -117,24 +149,43 @@ public class DraftPool {
     /**
      * Re-roll every dice inside the draftPool (the color doesn't change, only the number of the dice can change)
      *
-     * @throws RemoteException network error
      */
-    public void reRollDices() throws RemoteException {
+    public void reRollDices() throws DisconnectedException {
         Random random = new Random();
         for (int i = 0; i < dices.size(); i++) {
             dices.set(i, new Dice(random.nextInt(Dice.MAX_VALUE) + 1, dices.get(i).getColor()));
         }
-        for (IDraftPoolObserver obs : observerList) obs.onDraftPoolReroll(dices);
+
+        List<String> disconnectedPlayers = new ArrayList<>();
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDraftPoolReroll(dices);
+            } catch (IOException e) {
+                disconnectedPlayers.add(key);
+            }
+        });
+
+        if(!disconnectedPlayers.isEmpty())
+            throw new DisconnectedException(disconnectedPlayers);
     }
 
     /**
      * Remove every dices in the draftPool
      *
-     * @throws RemoteException network error
      */
-    public void clearPool() throws RemoteException {
+    public void clearPool() throws DisconnectedException {
         dices.clear();
-        for (IDraftPoolObserver obs : observerList) obs.onDraftPoolClear();
+        List<String> disconnectedPlayers = new ArrayList<>();
+        observerMap.forEach((key, value) -> {
+            try {
+                value.onDraftPoolClear();
+            } catch (IOException e) {
+                disconnectedPlayers.add(key);
+            }
+        });
+
+        if(!disconnectedPlayers.isEmpty())
+            throw new DisconnectedException(disconnectedPlayers);
     }
 
     /**
@@ -142,15 +193,15 @@ public class DraftPool {
      *
      * @param draftPool draftPool that needs to be copied
      * @return new instance with the same elements of draftPool
-     * @throws RemoteException network error
      */
-    public static DraftPool newInstance(DraftPool draftPool) throws RemoteException {
+    public static DraftPool newInstance(DraftPool draftPool) {
         if (draftPool == null)
             return null;
         DraftPool newDraftPool = new DraftPool();
         List<Dice> diceList = new ArrayList<>(draftPool.getDices());
-        newDraftPool.addDices(diceList);
-        draftPool.getObserverList().forEach(newDraftPool::attachObserver);
+        // TODO are we sure that when an new instance of drafpool is required in the model, all the things needs to be notified and the observer needs to be copied?
+        //newDraftPool.addDices(diceList);
+        newDraftPool.observerMap.putAll(draftPool.getObserverMap());
         return newDraftPool;
     }
 
@@ -189,6 +240,6 @@ public class DraftPool {
 
     @Override
     public int hashCode() {
-        return Objects.hash(DraftPool.class);
+        return Objects.hash(DraftPool.class, dices);
     }
 }

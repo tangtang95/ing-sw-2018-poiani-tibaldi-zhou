@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;

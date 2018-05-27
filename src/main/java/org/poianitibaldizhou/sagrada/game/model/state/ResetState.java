@@ -35,7 +35,7 @@ public class ResetState extends IStateGame {
      * @throws InvalidActionException if the token user has already readied before
      */
     @Override
-    public void readyGame(String token) throws InvalidActionException, RemoteException {
+    public void readyGame(String token) throws InvalidActionException {
         if (playersReady.contains(token))
             throw new InvalidActionException();
         playersReady.add(token);
