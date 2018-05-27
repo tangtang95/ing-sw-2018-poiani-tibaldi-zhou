@@ -2,11 +2,10 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
 import java.rmi.RemoteException;
-import java.util.Map;
 
 public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 

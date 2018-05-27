@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;

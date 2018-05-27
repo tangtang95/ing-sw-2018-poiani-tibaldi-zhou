@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.controller;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
@@ -310,15 +311,5 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         } catch (InvalidActionException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void ping(String token) {
-
-    }
-
-    @Override
-    public void disconnect(String token) {
-
     }
 }

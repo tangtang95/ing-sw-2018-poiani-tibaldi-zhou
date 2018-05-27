@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.players;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.*;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;

@@ -7,6 +7,9 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
 import java.util.ArrayList;

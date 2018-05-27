@@ -2,13 +2,12 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-
-import java.rmi.RemoteException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

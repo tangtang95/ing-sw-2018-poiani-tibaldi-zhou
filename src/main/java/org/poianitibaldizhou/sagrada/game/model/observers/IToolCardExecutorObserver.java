@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
-import org.poianitibaldizhou.sagrada.game.model.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 
 import java.rmi.Remote;

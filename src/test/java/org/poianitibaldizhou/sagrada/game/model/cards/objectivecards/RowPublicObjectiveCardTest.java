@@ -2,11 +2,9 @@ package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.RowPublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 
 import static org.junit.Assert.assertEquals;

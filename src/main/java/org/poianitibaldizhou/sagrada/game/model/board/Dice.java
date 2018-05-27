@@ -1,8 +1,9 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.board;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 

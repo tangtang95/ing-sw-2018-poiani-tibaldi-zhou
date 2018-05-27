@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -10,12 +10,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.*;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.network.IPingController;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IGameController extends IPingController, Remote {
+public interface IGameController extends Remote {
     void joinGame(String token, String gameName, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
                   IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws RemoteException;

@@ -1,9 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
 import java.rmi.RemoteException;

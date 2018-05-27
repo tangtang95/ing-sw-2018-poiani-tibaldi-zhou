@@ -6,11 +6,10 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.game.view.CLIMenuView;
-import org.poianitibaldizhou.sagrada.game.view.CLIStartGameMenuView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -31,7 +30,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     private static final String TIMEOUT_COMMAND = "Timeout";
     private static final String LOBBY_USER_COMMAND = "Show lobby users";
 
-    public CLILobbyView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    public CLILobbyView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
         this.controller = networkManager.getLobbyController();
@@ -89,7 +88,8 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
                 Level.LOW);
         login();
 
-        help(commandMap);
+        // Todo fix
+        //help(commandMap);
         while (isLoggedIn) {
             try {
                 getCommand(commandMap).executeCommand();

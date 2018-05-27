@@ -3,15 +3,14 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
 import java.rmi.RemoteException;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

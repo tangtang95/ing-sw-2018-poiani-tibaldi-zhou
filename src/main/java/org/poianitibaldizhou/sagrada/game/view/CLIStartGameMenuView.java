@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class CLIStartGameMenuView extends CLIMenuView {
     private static final String START_GAME = "Start game";
     private static final String QUIT = "Quit";
 
-    public CLIStartGameMenuView(NetworkManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    public CLIStartGameMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
             throws RemoteException {
         super(networkManager, screenManager, bufferManager);
         initializeCommands();

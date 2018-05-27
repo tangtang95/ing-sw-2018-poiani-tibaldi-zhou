@@ -7,9 +7,9 @@ import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyCo
 import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
 
 //TODO make network manager lazy
-public class NetworkManager implements StrategyController{
+public class ConnectionManager implements StrategyController{
 
-    private NetworkType networkType;
+    private ConnectionType networkType;
     private StrategyController strategyController;
     private final String ipAddress;
 
@@ -20,7 +20,7 @@ public class NetworkManager implements StrategyController{
      * @param ipAddress the ip address of the server
      * @param networkType the network type of connection desired
      */
-    public NetworkManager(String ipAddress, NetworkType networkType) {
+    public ConnectionManager(String ipAddress, ConnectionType networkType) {
         this.ipAddress = ipAddress;
         setNetworkType(networkType);
     }
@@ -47,7 +47,7 @@ public class NetworkManager implements StrategyController{
      * @param networkType the new network type
      * @throws IllegalArgumentException if the network type is something different from RMI or SOCKET
      */
-    public void setNetworkType(NetworkType networkType) {
+    public void setNetworkType(ConnectionType networkType) {
         if(networkType == this.networkType)
             return;
         this.networkType = networkType;
@@ -65,7 +65,7 @@ public class NetworkManager implements StrategyController{
         }
     }
 
-    public NetworkType getNetworkType() {
+    public ConnectionType getNetworkType() {
         return networkType;
     }
 

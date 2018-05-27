@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor;
 
-import org.poianitibaldizhou.sagrada.game.model.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
 public class DiceExecutorEvent implements ExecutorEvent {
 

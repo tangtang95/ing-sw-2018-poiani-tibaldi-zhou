@@ -1,7 +1,6 @@
-package org.poianitibaldizhou.sagrada.game.model;
+package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 
 import java.util.*;
 

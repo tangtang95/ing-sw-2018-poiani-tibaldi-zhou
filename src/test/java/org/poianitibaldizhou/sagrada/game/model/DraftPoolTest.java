@@ -5,6 +5,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 

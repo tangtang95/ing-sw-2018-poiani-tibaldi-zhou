@@ -2,10 +2,10 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.junit.*;
 import org.junit.experimental.runners.Enclosed;
-import org.junit.experimental.theories.DataPoint;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
