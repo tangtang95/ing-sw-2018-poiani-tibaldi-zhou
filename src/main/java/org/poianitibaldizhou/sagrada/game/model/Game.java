@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -41,6 +42,8 @@ public abstract class Game implements IGame, IGameStrategy {
     private final Map<String, IGameObserver> gameObservers;
     private final Map<String, IStateObserver> stateObservers;
 
+    private final List<String> disconnectedPlayers;
+
     protected Game(String name) {
         this.name = name;
 
@@ -54,12 +57,18 @@ public abstract class Game implements IGame, IGameStrategy {
 
         this.gameObservers = new HashMap<>();
         this.stateObservers = new HashMap<>();
+
+        this.disconnectedPlayers = new ArrayList<>();
     }
 
     //GETTER
     @Contract(pure = true)
     public String getName() {
         return name;
+    }
+
+    public List<String> getDisconnectedPlayers() {
+        return disconnectedPlayers;
     }
 
     /**
@@ -179,8 +188,6 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
 
-
-
     // INTERFACE METHODS
     @Override
     public void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException {
@@ -210,8 +217,8 @@ public abstract class Game implements IGame, IGameStrategy {
 
     @Override
     public void attachToolCardObserver(String token, ToolCard toolCard, IToolCardObserver toolCardObserver) throws InvalidActionException {
-        for(ToolCard card : toolCards){
-            if(card.getName().equals(toolCard.getName())) {
+        for (ToolCard card : toolCards) {
+            if (card.getName().equals(toolCard.getName())) {
                 card.attachToolCardObserver(token, toolCardObserver);
                 return;
             }
@@ -226,8 +233,8 @@ public abstract class Game implements IGame, IGameStrategy {
 
     @Override
     public void attachSchemaCardObserver(String token, SchemaCard schemaCard, ISchemaCardObserver schemaCardObserver) throws InvalidActionException {
-        for (Player player: players.values()) {
-            if(player.getSchemaCard().getName().equals(schemaCard.getName())) {
+        for (Player player : players.values()) {
+            if (player.getSchemaCard().getName().equals(schemaCard.getName())) {
                 player.attachSchemaCardObserver(token, schemaCardObserver);
                 return;
             }
@@ -237,8 +244,8 @@ public abstract class Game implements IGame, IGameStrategy {
 
     @Override
     public void attachPlayerObserver(String token, Player player, IPlayerObserver playerObserver) {
-        for (Player p : players.values()){
-            if(p.getUser().equals(player.getUser())){
+        for (Player p : players.values()) {
+            if (p.getUser().equals(player.getUser())) {
                 p.attachObserver(token, playerObserver);
             }
         }
@@ -246,42 +253,42 @@ public abstract class Game implements IGame, IGameStrategy {
 
     @Override
     public void userJoin(String token) throws InvalidActionException {
-        if(!containsToken(token))
+        if (!containsToken(token))
             throw new InvalidActionException();
         state.readyGame(token);
     }
 
     @Override
     public void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException {
-        if(!containsToken(token))
+        if (!containsToken(token))
             throw new InvalidActionException();
         state.ready(token, schemaCard);
     }
 
     @Override
     public void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException {
-        if(!containsToken(token))
+        if (!containsToken(token))
             throw new InvalidActionException();
         state.placeDice(players.get(token), dice, position);
     }
 
     @Override
     public void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorObserver executorObserver) throws InvalidActionException {
-        if(!containsToken(token))
+        if (!containsToken(token))
             throw new InvalidActionException();
         state.useCard(players.get(token), toolCard, executorObserver);
     }
 
     @Override
     public void userChooseAction(String token, IActionCommand action) throws InvalidActionException {
-        if(!containsToken(token))
+        if (!containsToken(token))
             throw new InvalidActionException();
         state.chooseAction(players.get(token), action);
     }
 
     @Override
     public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
-        if(!containsToken(token))
+        if (!containsToken(token))
             throw new InvalidActionException();
         state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
     }
@@ -293,6 +300,15 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     //MODIFIER
+
+    public void detachGameObserver(String token) {
+        gameObservers.remove(token);
+    }
+
+    public void detachStateObserver(String token) {
+        stateObservers.remove(token);
+    }
+
     public void setState(IStateGame state) {
         this.state = state;
         this.state.init();
@@ -378,7 +394,11 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     public void clearDraftPool() {
-        draftPool.clearPool();
+        try {
+            draftPool.clearPool();
+        } catch (DisconnectedException e) {
+            playersDisconnection(e.getDisconnectedPlayerList());
+        }
     }
 
     public void addDicesToDraftPoolFromDiceBag() {
@@ -387,7 +407,31 @@ public abstract class Game implements IGame, IGameStrategy {
                 draftPool.addDice(diceBag.draw());
             } catch (EmptyCollectionException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
+            } catch (DisconnectedException e) {
+                playersDisconnection(e.getDisconnectedPlayerList());
             }
         }
+    }
+
+    public void playersDisconnection(List<String> newDisconnectedPlayer) {
+        disconnectedPlayers.addAll(newDisconnectedPlayer);
+
+        newDisconnectedPlayer.forEach(token -> {
+            roundTrack.detachObserver(token);
+            diceBag.detachObserver(token);
+            detachGameObserver(token);
+            detachStateObserver(token);
+            draftPool.detachObserver(token);
+            players.forEach((key, value) -> {
+                value.detachObserver(token);
+                value.detachSchemaCardObserver(token);
+            });
+
+            toolCards.forEach(toolcard -> {
+                toolcard.detachToolCardObserver(token);
+            });
+
+            // todo for toolcard executor?
+        });
     }
 }

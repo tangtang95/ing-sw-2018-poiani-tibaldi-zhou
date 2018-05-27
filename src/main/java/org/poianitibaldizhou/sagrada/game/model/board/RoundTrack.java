@@ -208,6 +208,10 @@ public class RoundTrack implements Serializable{
         observerMap.put(token, roundTrackObserver);
     }
 
+    public void detachObserver(String token) {
+        observerMap.remove(token);
+    }
+
     /**
      * Returns true if round belongs to [FIRST_ROUND, LAST_ROUND], false otherwise
      *

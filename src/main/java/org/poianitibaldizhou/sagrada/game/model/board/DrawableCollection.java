@@ -72,6 +72,10 @@ public class DrawableCollection<T> implements Serializable{
         observerMap.put(token, observer);
     }
 
+    public void detachObserver(String token) {
+        observerMap.remove(token);
+    }
+
     /**
      * Adds an element to the collection
      * It notifies the observers that an element's been added.

@@ -118,8 +118,16 @@ public abstract class Player implements IVictoryPoints, Serializable {
         observerMap.put(token, observer);
     }
 
+    public void detachObserver(String token) {
+        observerMap.remove(token);
+    }
+
     public void attachSchemaCardObserver(String token, ISchemaCardObserver schemaCardObserver) {
         schemaCard.attachObserver(token, schemaCardObserver);
+    }
+
+    public void detachSchemaCardObserver(String token) {
+        schemaCard.detachObserver(token);
     }
 
     public void setSchemaCard(SchemaCard schemaCard) {
