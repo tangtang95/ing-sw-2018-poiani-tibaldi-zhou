@@ -59,7 +59,7 @@ public class PlaceDiceTest {
         when(executor.getTemporarySchemaCard()).thenReturn(schemaCard);
         position = new Position(3, 2);
         when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getPosition()).thenReturn(position);
+        when(executor.getNeededPosition()).thenReturn(position);
         }
 
     @After

@@ -5,6 +5,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.util.Objects;
+
 public class ClearTurnEndCondition implements ICommand {
 
     /**
@@ -24,5 +26,10 @@ public class ClearTurnEndCondition implements ICommand {
     @Override
     public boolean equals(java.lang.Object o) {
         return o instanceof ClearTurnEndCondition;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ClearTurnEndCondition.class);
     }
 }

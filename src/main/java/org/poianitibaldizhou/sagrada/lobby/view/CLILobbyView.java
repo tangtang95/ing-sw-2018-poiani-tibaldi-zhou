@@ -1,9 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
-import org.poianitibaldizhou.sagrada.cli.Command;
-import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
+import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
 import org.poianitibaldizhou.sagrada.game.view.CLIMenuView;
 import org.poianitibaldizhou.sagrada.game.view.CLIStartGameMenuView;
@@ -85,11 +82,12 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
 
     @Override
     public void run() {
+        BuildGraphic buildGraphic = new BuildGraphic();
         bufferManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
                 Level.LOW);
         login();
 
-        help(commandMap);
+        bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.LOW);
         while (isLoggedIn) {
             try {
                 getCommand(commandMap).executeCommand();

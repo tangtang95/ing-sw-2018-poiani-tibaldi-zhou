@@ -81,7 +81,7 @@ public class RemoveDiceTest {
 
     @Test
     public void testExecutionFailColorConstraint() throws RemoteException, InterruptedException {
-        when(executor.getPosition()).thenReturn(position);
+        when(executor.getNeededPosition()).thenReturn(position);
         when(executor.getNeededColor()).thenReturn(Color.BLUE);
         when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
         when(schemaCard.getDice(position)).thenReturn(new Dice(1, Color.RED));
@@ -103,7 +103,7 @@ public class RemoveDiceTest {
 
     @Test
     public void testExecutionFailNoneConstraint() throws RemoteException, InterruptedException {
-        when(executor.getPosition()).thenReturn(position);
+        when(executor.getNeededPosition()).thenReturn(position);
         when(schemaCard.isEmpty()).thenReturn(false);
         when(schemaCard.removeDice(position)).thenReturn(null);
         assertEquals(CommandFlow.REPEAT, removeDice.executeCommand(invokerPlayer, executor, stateGame));
@@ -112,7 +112,7 @@ public class RemoveDiceTest {
     @Test
     public void testExecutionSucceedColorConstraint() throws InterruptedException, RemoteException, ExecutionCommandException {
         Dice dice = new Dice(1, Color.BLUE);
-        when(executor.getPosition()).thenReturn(position);
+        when(executor.getNeededPosition()).thenReturn(position);
         when(executor.getNeededDice()).thenReturn(dice);
         when(schemaCard.getDice(position)).thenReturn(dice);
         when(schemaCard.hasDiceOfColor(Color.BLUE)).thenReturn(true);
@@ -125,14 +125,14 @@ public class RemoveDiceTest {
             verify(obs, times(1)).notifyNeedDicePositionOfCertainColor(Color.BLUE);
         }
         verify(executor, times(1)).getNeededColor();
-        verify(executor, times(1)).getPosition();
+        verify(executor, times(1)).getNeededPosition();
         verify(executor, times(1)).setNeededDice(dice);
     }
 
     @Test
     public void testExecutionSucceedNoneConstraint() throws InterruptedException, RemoteException, ExecutionCommandException {
         Dice dice = new Dice(1, Color.RED);
-        when(executor.getPosition()).thenReturn(position);
+        when(executor.getNeededPosition()).thenReturn(position);
         when(schemaCard.isEmpty()).thenReturn(false);
         when(executor.getNeededDice()).thenReturn(dice);
         when(schemaCard.getDice(position)).thenReturn(dice);
@@ -143,7 +143,7 @@ public class RemoveDiceTest {
         for (IToolCardExecutorObserver obs : observerList) {
             verify(obs, times(1)).notifyNeedPosition();
         }
-        verify(executor, times(1)).getPosition();
+        verify(executor, times(1)).getNeededPosition();
         verify(executor, times(1)).setNeededDice(dice);
     }
 

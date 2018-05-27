@@ -28,7 +28,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
     protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
-    private Map<String, IPlayerObserver> observerMap;
+
+    private transient Map<String, IPlayerObserver> observerMap;
 
     /**
      * Constructor.
@@ -62,6 +63,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
         return new ArrayList<>(privateObjectiveCards);
     }
 
+    public PrivateObjectiveCard getPrivateObjectiveCard() { return privateObjectiveCards.get(indexOfPrivateObjectiveCard); }
+
     public Outcome getOutcome() {
         return outcome;
     }
@@ -83,6 +86,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
     public Map<String, IPlayerObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
+
+    public Map<String, ISchemaCardObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -118,7 +123,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
     }
 
     public void setSchemaCard(SchemaCard schemaCard) {
-        this.schemaCard = schemaCard;
+        this.schemaCard = SchemaCard.newInstance(schemaCard);
     }
 
     /**
@@ -130,7 +135,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
         coin.removeCoins(cost);
         observerMap.forEach((key, value) -> {
             try {
-                value.onFavorTokenChange(coin.getCoins());
+                value.onFavorTokenChange(cost);
             } catch (RemoteException e) {
                 observerMap.remove(key);
             }
@@ -179,11 +184,13 @@ public abstract class Player implements IVictoryPoints, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof MultiPlayer))
+        if (!(obj instanceof Player))
             return false;
-        MultiPlayer other = (MultiPlayer) obj;
-        return this.getToken().equals(other.getToken()) && getSchemaCard().equals(other.getSchemaCard())
-                && getPrivateObjectiveCards().equals(other.getPrivateObjectiveCards()) && coin.equals(other.coin);
+        Player other = (Player) obj;
+        return this.getUser().equals(other.getUser()) && getSchemaCard().equals(other.getSchemaCard())
+                && getPrivateObjectiveCards().containsAll(other.getPrivateObjectiveCards())
+                && coin.equals(other.coin) && indexOfPrivateObjectiveCard == other.indexOfPrivateObjectiveCard
+                && outcome == other.outcome;
     }
 
     /**
@@ -193,7 +200,8 @@ public abstract class Player implements IVictoryPoints, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(MultiPlayer.class, schemaCard, privateObjectiveCards, coin);
+        return Objects.hash(Player.class, user, schemaCard,
+                privateObjectiveCards, coin, outcome, indexOfPrivateObjectiveCard);
     }
 
     /**

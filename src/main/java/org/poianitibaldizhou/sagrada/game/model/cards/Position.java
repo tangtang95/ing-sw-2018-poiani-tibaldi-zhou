@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class Position {
+public class Position implements Serializable {
     private int row;
     private int column;
 

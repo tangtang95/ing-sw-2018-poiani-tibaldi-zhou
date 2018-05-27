@@ -29,13 +29,17 @@ import static org.mockito.Mockito.*;
 public class SetupPlayerStateTest {
     private SetupPlayerState setupPlayerState;
 
-    @Mock private Game game;
+    @Mock
+    private Game game;
 
-    @Mock private IGameObserver player1Obs, player2Obs, player3Obs, player4Obs;
+    @Mock
+    private IGameObserver player1Obs, player2Obs, player3Obs, player4Obs;
+
+    @Mock
+    private IStateObserver state1obs, state2obs, state3obs, state4obs;
 
     private String player1, player2, player3, player4;
 
-    private Map<String, IGameObserver> gameObserver;
     private List<String> playerList;
 
     @Before
@@ -50,11 +54,17 @@ public class SetupPlayerStateTest {
         playerList.add(player2);
         playerList.add(player3);
         playerList.add(player4);
-        gameObserver = new HashMap<>();
+        Map<String, IGameObserver> gameObserver = new HashMap<>();
         gameObserver.put(player1, player1Obs);
         gameObserver.put(player2, player2Obs);
         gameObserver.put(player3, player3Obs);
         gameObserver.put(player4, player4Obs);
+
+        Map<String, IStateObserver> stateObservers = new HashMap<>();
+        stateObservers.put(player1, state1obs);
+        stateObservers.put(player2, state2obs);
+        stateObservers.put(player3, state3obs);
+        stateObservers.put(player4, state4obs);
 
         when(game.getNumberOfPlayers()).thenReturn(playerList.size());
         when(game.getUserToken()).thenReturn(playerList);
@@ -63,6 +73,7 @@ public class SetupPlayerStateTest {
         when(game.getNumberOfPrivateObjectiveCardForGame())
                 .thenReturn(MultiPlayerGame.NUMBER_OF_PRIVATE_OBJECTIVE_CARDS);
         when(game.getGameObservers()).thenReturn(gameObserver);
+        when(game.getStateObservers()).thenReturn(stateObservers);
         setupPlayerState = new SetupPlayerState(game);
         setupPlayerState.init();
     }
@@ -75,7 +86,7 @@ public class SetupPlayerStateTest {
     }
 
     @Test
-    public void initTest() throws RemoteException {
+    public void initTest() throws Exception {
         SetupPlayerState state = new SetupPlayerState(game);
         state.init();
         for (String token : playerList) {
@@ -94,6 +105,7 @@ public class SetupPlayerStateTest {
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
     }
+
     @Test
     public void readyCorrectFlowTest() throws Exception {
         List<List<SchemaCard>> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
@@ -123,7 +135,7 @@ public class SetupPlayerStateTest {
         setupPlayerState.ready(player1, schemaCards1.get(0).get(0));
         assertTrue(setupPlayerState.isPlayerReady(player1));
         for (String player : playerList) {
-            if (player.equals(player1))
+            if (!player.equals(player1))
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
         setupPlayerState.ready(player1, schemaCards1.get(1).get(0));
@@ -136,9 +148,8 @@ public class SetupPlayerStateTest {
     }
 
 
-
     @Test
-        public void containsSchemaCard() throws Exception {
+    public void containsSchemaCard() throws Exception {
         List<List<SchemaCard>> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
         assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0).get(0)));
     }

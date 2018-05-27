@@ -45,13 +45,15 @@ public class SetupPlayerState extends IStateGame {
      */
     @Override
     public void init() {
+        List<String> failedNotifyTokens = new ArrayList<>();
         game.getStateObservers().forEach((key, value) -> {
             try {
                 value.onSetupPlayer();
             } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
+                failedNotifyTokens.add(key);
             }
         });
+        failedNotifyTokens.forEach((token) -> game.getStateObservers().remove(token));
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<List<SchemaCard>> schemaCards = new DrawableCollection<>();

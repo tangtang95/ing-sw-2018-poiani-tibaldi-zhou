@@ -34,14 +34,15 @@ public class PayDice implements ICommand {
         });
 
         Dice dice = toolCardExecutor.getNeededDice();
+        if(!toolCardExecutor.getTemporaryDraftPool().getDices().contains(dice))
+            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
         if(dice.getColor() != color)
             return CommandFlow.REPEAT;
         try {
             toolCardExecutor.getTemporaryDraftPool().useDice(dice);
-        } catch (DiceNotFoundException e) {
-            return CommandFlow.REPEAT;
-        } catch (EmptyCollectionException e) {
-            return CommandFlow.EMPTY_DRAFTPOOL;
+        } catch (EmptyCollectionException | DiceNotFoundException e) {
+            // Exception impossible to happen (already checked before)
+            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
         }
         return CommandFlow.MAIN;
     }

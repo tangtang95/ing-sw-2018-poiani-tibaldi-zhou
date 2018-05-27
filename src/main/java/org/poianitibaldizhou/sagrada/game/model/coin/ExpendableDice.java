@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 
 import java.rmi.RemoteException;
+import java.util.Objects;
 
 public class ExpendableDice implements ICoin {
 
@@ -35,5 +36,15 @@ public class ExpendableDice implements ICoin {
     @Override
     public void removeCoins(int cost) {
         throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ExpendableDice;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ExpendableDice.class);
     }
 }

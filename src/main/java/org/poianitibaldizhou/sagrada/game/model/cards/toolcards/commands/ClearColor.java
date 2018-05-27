@@ -5,6 +5,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.util.Objects;
+
 public class ClearColor implements ICommand {
 
     /**
@@ -24,5 +26,10 @@ public class ClearColor implements ICommand {
     @Override
     public boolean equals(Object o) {
         return o instanceof ClearColor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ClearColor.class);
     }
 }

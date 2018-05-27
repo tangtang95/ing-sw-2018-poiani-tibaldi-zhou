@@ -43,10 +43,6 @@ public class TenagliaARotelleTest {
         when(game.getPlayers()).thenReturn(players);
         when(game.getDraftPool()).thenReturn(draftPool);
         when(game.getState()).thenReturn(state);
-        toolCard = new ToolCard(Color.RED, "Tenaglia a Rotelle",
-                "Dopo il tuo primo turno scegli immediatamente un altro dado. Salta il tuo secondo " +
-                        "turno in questo round"
-                ,"[1-Check first turn][2-Wait turn end][4-Choose dice][8-Place dice][16-Skip second turn][32-CA]");
     }
 
     @After

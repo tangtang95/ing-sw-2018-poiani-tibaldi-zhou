@@ -10,6 +10,9 @@ public class PositionExecutorEvent implements ExecutorEvent {
         this.position = position;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNeededValue(ToolCardExecutor executor) {
         executor.setNeededPosition(position);

@@ -6,13 +6,14 @@ import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DraftPool {
-    private List<Dice> dices;
-    private Map<String, IDraftPoolObserver> observerList;
+public class DraftPool implements Serializable{
+    private final List<Dice> dices;
+    private final transient Map<String, IDraftPoolObserver> observerList;
 
     /**
      * Constructor.
@@ -211,6 +212,6 @@ public class DraftPool {
 
     @Override
     public int hashCode() {
-        return Objects.hash(DraftPool.class);
+        return Objects.hash(DraftPool.class, dices);
     }
 }

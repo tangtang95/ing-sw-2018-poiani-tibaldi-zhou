@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**

@@ -19,7 +19,7 @@ public class IfDicePlaceable implements ICommand {
      * @param toolCardExecutor executorHelper that contains this command
      * @param turnState        state in which the player acts
      * @return MAIN flow if the dice is positionable, otherwise SUB flow
-     * @throws InterruptedException given by wait of getNeededDice() and getPosition()
+     * @throws InterruptedException given by wait of getNeededDice() and getNeededPosition()
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws  InterruptedException {

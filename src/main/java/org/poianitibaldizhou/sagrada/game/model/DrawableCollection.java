@@ -5,12 +5,13 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class DrawableCollection<T> {
-    private List<T> collection;
-    private Map<String, IDrawableCollectionObserver<T>> observerMap;
+public class DrawableCollection<T> implements Serializable{
+    private final List<T> collection;
+    private final transient Map<String, IDrawableCollectionObserver<T>> observerMap;
 
     /**
      * Constructor.

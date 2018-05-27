@@ -8,19 +8,20 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
 /**
  * OVERVIEW: Each instance of ToolCard has always tokens >= 0
  */
-public class ToolCard extends Card {
+public class ToolCard extends Card{
 
 
     private final Color color;
     private int tokens;
-    private final Node<ICommand> commands;
-    private final Map<String, IToolCardObserver> observerMap;
+    private final transient Node<ICommand> commands;
+    private final transient Map<String, IToolCardObserver> observerMap;
 
     private static final int LOW_COST = 1;
     private static final int HIGH_COST = 2;

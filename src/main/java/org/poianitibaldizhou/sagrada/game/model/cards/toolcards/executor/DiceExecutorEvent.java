@@ -10,6 +10,9 @@ public class DiceExecutorEvent implements ExecutorEvent {
         this.dice = dice;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setNeededValue(ToolCardExecutor executor) {
         executor.setNeededDice(dice);

@@ -68,7 +68,7 @@ public class RemoveDice implements ICommand {
                     observerList.remove(obs);
                 }
             });
-            position = toolCardExecutor.getPosition();
+            position = toolCardExecutor.getNeededPosition();
             if (!toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color)) {
                 toolCardExecutor.setNeededPosition(null);
                 return CommandFlow.REPEAT;
@@ -83,7 +83,7 @@ public class RemoveDice implements ICommand {
                     observerList.remove(obs);
                 }
             });
-            position = toolCardExecutor.getPosition();
+            position = toolCardExecutor.getNeededPosition();
         }
 
         removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position);

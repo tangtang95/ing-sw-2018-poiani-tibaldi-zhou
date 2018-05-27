@@ -83,7 +83,7 @@ public class PlaceDice implements ICommand {
             }
         });
 
-        position = toolCardExecutor.getPosition();
+        position = toolCardExecutor.getNeededPosition();
 
         try {
             toolCardExecutor.getTemporarySchemaCard().setDice(dice, position, this.tileConstraint, this.diceConstraint);
@@ -91,6 +91,8 @@ public class PlaceDice implements ICommand {
             return CommandFlow.REPEAT;
         }
 
+        if(isNewPlacement)
+            turnState.addActionUsed(new PlaceDiceAction());
         return CommandFlow.MAIN;
     }
 

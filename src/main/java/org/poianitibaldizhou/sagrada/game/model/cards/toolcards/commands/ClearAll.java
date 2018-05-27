@@ -5,6 +5,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+import java.util.Objects;
+
 public class ClearAll implements ICommand {
 
     /**
@@ -28,5 +30,10 @@ public class ClearAll implements ICommand {
     @Override
     public boolean equals(Object o) {
         return o instanceof ClearAll;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ClearAll.class);
     }
 }

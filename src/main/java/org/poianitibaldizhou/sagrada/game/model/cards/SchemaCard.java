@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -18,7 +19,7 @@ public class SchemaCard implements Serializable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
-    private final Map<String, ISchemaCardObserver> observerMap;
+    private final transient Map<String, ISchemaCardObserver> observerMap;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -43,17 +44,20 @@ public class SchemaCard implements Serializable {
     }
 
     /**
-     * Copy-constructor
+     * Copy-constructor (Note: shallow copy of the observer)
      *
-     * @param name       card name
-     * @param difficulty card difficulty
-     * @param tileMatrix card matrix
+     * @param schemaCard the schemaCard to copy
      */
-    private SchemaCard(String name, int difficulty, Tile[][] tileMatrix) {
-        this.name = name;
-        this.difficulty = difficulty;
-        this.tileMatrix = tileMatrix;
-        this.observerMap = new HashMap<>();
+    private SchemaCard(SchemaCard schemaCard) {
+        this.name = schemaCard.name;
+        this.difficulty = schemaCard.difficulty;
+        this.tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                this.tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
+            }
+        }
+        this.observerMap = new HashMap<>(schemaCard.getObserverMap());
     }
 
     //GETTER
@@ -397,7 +401,11 @@ public class SchemaCard implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), tileMatrix, getDifficulty());
+        List<Tile> tiles = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            tiles.addAll(Arrays.asList(tileMatrix[i]).subList(0, NUMBER_OF_COLUMNS));
+        }
+        return Objects.hash(SchemaCard.class, name, tiles, difficulty);
     }
 
     @Override
@@ -433,17 +441,8 @@ public class SchemaCard implements Serializable {
      * @param schemaCard schema card that needs to be copied
      * @return schemaCard copy
      */
-    @Contract("null -> null")
-    public static SchemaCard newInstance(SchemaCard schemaCard) {
-        if (schemaCard == null)
-            return null;
-        Tile[][] tileMatrix = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                tileMatrix[i][j] = Tile.newInstance(schemaCard.tileMatrix[i][j]);
-            }
-        }
-        return new SchemaCard(schemaCard.getName(), schemaCard.getDifficulty(), tileMatrix);
+    public static SchemaCard newInstance(@NotNull SchemaCard schemaCard) {
+        return new SchemaCard(schemaCard);
     }
 
     /**

@@ -63,10 +63,16 @@ public class IfContinueTest {
 
     @Test
     public void equalsTest() throws Exception {
+        ICommand newCommand = new IfContinue();
+        assertTrue(command.equals(newCommand));
+        assertFalse(command.equals(new Object()));
     }
 
     @Test
     public void hashCodeTest() throws Exception {
+        ICommand newCommand = new IfContinue();
+        assertEquals(command.hashCode(), newCommand.hashCode());
+        assertNotEquals(command.hashCode(), new Object().hashCode());
     }
 
 }

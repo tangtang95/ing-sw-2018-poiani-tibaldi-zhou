@@ -6,10 +6,12 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class Dice {
+public class Dice implements Serializable{
+
     private final NumberConstraint numberConstraint;
     private final ColorConstraint colorConstraint;
 
@@ -106,7 +108,7 @@ public class Dice {
 
     @Override
     public int hashCode() {
-        return Objects.hash(numberConstraint.getNumber(), colorConstraint.getColor());
+        return Objects.hash(Dice.class, numberConstraint.getNumber(), colorConstraint.getColor());
     }
 
     @Override

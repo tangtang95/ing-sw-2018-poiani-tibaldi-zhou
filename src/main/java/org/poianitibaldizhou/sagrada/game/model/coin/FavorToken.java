@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model.coin;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
+import java.util.Objects;
+
 
 public class FavorToken implements ICoin {
     private int numberOfFavorToken;
@@ -34,5 +36,15 @@ public class FavorToken implements ICoin {
         if(numberOfFavorToken < cost)
             throw new IllegalArgumentException();
         numberOfFavorToken = numberOfFavorToken - cost;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof FavorToken && numberOfFavorToken == ((FavorToken) obj).numberOfFavorToken;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(FavorToken.class, numberOfFavorToken);
     }
 }

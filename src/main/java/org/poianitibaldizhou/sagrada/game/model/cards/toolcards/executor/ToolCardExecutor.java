@@ -214,7 +214,7 @@ public class ToolCardExecutor {
         }
     }
 
-    public Position getPosition() throws InterruptedException {
+    public Position getNeededPosition() throws InterruptedException {
         synchronized (positionMonitor) {
             while (neededPosition == null)
                 positionMonitor.wait();

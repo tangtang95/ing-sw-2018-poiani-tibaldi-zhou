@@ -5,16 +5,17 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.observers.IRoundTrackObserver;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoundTrack {
+public class RoundTrack implements Serializable{
 
     private final List<List<Dice>> listOfDices;
-    private final Map<String, IRoundTrackObserver> observerMap;
+    private final transient Map<String, IRoundTrackObserver> observerMap;
     private int numberOfDices;
 
     public static final int NUMBER_OF_TRACK = 10;

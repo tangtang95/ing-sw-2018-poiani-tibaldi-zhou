@@ -273,7 +273,13 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.playerState = playerState;
     }
 
+    public void addActionUsed(IActionCommand actionCommand) {
+        actionsUsed.add(actionCommand);
+    }
+
     public void addSkipTurnPlayer(Player player, int turn) {
+        if(turn < FIRST_TURN || turn > SECOND_TURN)
+            throw new IllegalArgumentException("Turn has to be 1 or 2");
         this.skipTurnPlayers.put(player, turn);
     }
 
@@ -307,5 +313,6 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
             }
         });
     }
+
 
 }
