@@ -46,7 +46,7 @@ public class ScreenManager {
      * @return the screen at the top of the stack
      * @throws EmptyStackException if the stack of screen is empty
      */
-    public synchronized IScreen popScreen() throws EmptyStackException {
+    public synchronized IScreen popScreen(){
         if (screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();
@@ -62,7 +62,7 @@ public class ScreenManager {
      * @param screen the new screen to replace the top screen
      * @throws EmptyStackException if the stack of screen is empty
      */
-    public synchronized void replaceScreen(IScreen screen) throws EmptyStackException {
+    public synchronized void replaceScreen(IScreen screen){
         if (screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();

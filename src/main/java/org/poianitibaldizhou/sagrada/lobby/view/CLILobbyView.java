@@ -57,7 +57,6 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
         }
-        screenManager.popScreen();
     }
 
     private void login() {
@@ -143,12 +142,13 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     public void onGameStart(String gameName) throws IOException {
         bufferManager.consolePrint("GAME STARTED", Level.HIGH);
         bufferManager.stopConsoleRead();
-        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager, gameName));
+        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
+                gameName, new User(username,token)));
     }
 
     @Override
     public void onPing(){
-
+        //...
     }
 
     @Override

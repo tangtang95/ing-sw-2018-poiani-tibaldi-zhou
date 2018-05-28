@@ -7,14 +7,12 @@ import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
-
 public class CLIPlayerObserver implements IPlayerObserver {
 
-    private transient BufferManager bufferManager;
-    private transient CLIGameView cliGameView;
+    private BufferManager bufferManager;
+    private CLIGameView cliGameView;
 
-    public CLIPlayerObserver(CLIGameView cliGameView) {
+    CLIPlayerObserver(CLIGameView cliGameView) {
         this.bufferManager = cliGameView.bufferManager;
         this.cliGameView = cliGameView;
     }
@@ -32,6 +30,6 @@ public class CLIPlayerObserver implements IPlayerObserver {
 
     @Override
     public void onSetOutcome(Outcome outcome){
-
+        bufferManager.consolePrint(outcome.name(),Level.HIGH);
     }
 }

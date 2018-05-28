@@ -21,9 +21,10 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
 
     private void initializeCommands() {
         Command changeConnectionCommand = new Command(
-                networkManager.getNetworkType().name().equals("RMI") ? "SOCKET" : "RMI",
+                networkManager.getNetworkType() == (ConnectionType.RMI) ?
+                        ConnectionType.SOCKET.name() : ConnectionType.RMI.name(),
                 "Change the connection mode");
-        changeConnectionCommand.setCommandAction(this::changeConnection);
+        changeConnectionCommand.setCommandAction(() -> changeConnection(changeConnectionCommand.getCommandText()));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");
@@ -49,8 +50,8 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
         }
     }
 
-    private void changeConnection() {
-        networkManager.setNetworkType(ConnectionType.valueOf(commandMap.keySet().toArray()[0].toString()));
+    private void changeConnection(String type) {
+        networkManager.setNetworkType(ConnectionType.valueOf(type));
         screenManager.popScreen();
     }
 

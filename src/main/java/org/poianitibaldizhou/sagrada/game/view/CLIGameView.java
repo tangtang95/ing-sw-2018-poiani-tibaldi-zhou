@@ -12,22 +12,22 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
+import java.util.logging.Logger;
 
 public class CLIGameView extends CLIMenuView implements IGameView{
     private final transient Map<String, Command> commandMap = new HashMap<>();
 
     private transient List<ToolCard> toolCards;
     private transient List<PublicObjectiveCard> publicObjectiveCards;
+    private transient List<PrivateObjectiveCard> privateObjectiveCards;
+    private final transient User myUser;
     private transient User currentUser;
     private String gameName;
 
-    private final CLISchemaCardView cliSchemaCardView;
-    private final CLIDraftPoolView cliDraftPoolView;
-    private final CLIRoundTrackView cliRoundTrackView;
+    private final transient CLISchemaCardView cliSchemaCardView;
+    private final transient CLIDraftPoolView cliDraftPoolView;
+    private final transient CLIRoundTrackView cliRoundTrackView;
 
     private static final String PLACE_DICE = "Place dice";
     private static final String PLAY_TOOL_CARD = "Play Tool Card";
@@ -38,19 +38,22 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     private static final String VIEW_PUBLIC_OBJECTIVE_CARD = "View the public objective cards";
     private static final String VIEW_SCHEMA_CARDS = "View Schema Cards";
     private static final String VIEW_MY_SCHEMA = "View my schema Card";
+    private static final String VIEW_PRIVATE_OBJECTIVE_CARD = "View the private objective cards";
 
 
 
     public CLIGameView(ConnectionManager connectionManager, ScreenManager screenManager, BufferManager bufferManager,
-                       String gameName)
+                       String gameName, User myUser)
             throws RemoteException {
         super(connectionManager, screenManager, bufferManager);
         this.gameName =gameName;
+        this.myUser = myUser;
 
         this.cliSchemaCardView = new CLISchemaCardView(this);
         this.cliDraftPoolView = new CLIDraftPoolView(this);
         new CLIStateView(this);
         new CLIDiceBagView(this);
+        new CLIPlayerObserver(this);
         this.cliRoundTrackView = new CLIRoundTrackView(this);
 
         initializeCommands();
@@ -95,18 +98,41 @@ public class CLIGameView extends CLIMenuView implements IGameView{
         viewMySchema.setCommandAction(this::viewMySchemaCard);
         commandMap.put(viewMySchema.getCommandText(), viewMySchema);
 
+        Command viewPrivateObjectiveCards = new Command(VIEW_PRIVATE_OBJECTIVE_CARD,
+                "View the Private Objective cards");
+        viewPrivateObjectiveCards.setCommandAction(this::viewPrivateObjectiveCards);
+        commandMap.put(viewPrivateObjectiveCards.getCommandText(), viewPrivateObjectiveCards);
     }
 
     @Override
     public void run() {
-        bufferManager.consolePrint("-----------------------------WELCOME-------------------------------",
+        BuildGraphic buildGraphic = new BuildGraphic();
+
+        bufferManager.consolePrint(buildGraphic.
+                        buildMessage("-----------------------------WELCOME-------------------------------").
+                        buildGraphicHelp(commandMap).
+                        buildMessage("Choose the action: ").toString(),
                 Level.LOW);
 
+        try {
+            getCommand(commandMap).executeCommand();
+        } catch (RemoteException e) {
+            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+        }catch (NullPointerException e) {
+            //...
+        }
 
     }
 
+    private void viewPrivateObjectiveCards() {
+        BuildGraphic buildGraphic = new BuildGraphic();
+
+        bufferManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCards(privateObjectiveCards).
+                toString(), Level.LOW);
+    }
+
     private void viewMySchemaCard() {
-        bufferManager.consolePrint("", Level.LOW);
+        bufferManager.consolePrint(cliSchemaCardView.getSchemaCard(myUser.getName()).toString(), Level.LOW);
     }
 
     private void viewSchemaCards() {
@@ -248,9 +274,11 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     public void onPlayersCreate(List<Player> players) {
         BuildGraphic buildGraphic = new BuildGraphic();
         buildGraphic.buildMessage("-----------------------------PLAYER-----------------------------");
-        for (Player p : players)
+        for (Player p : players) {
             buildGraphic.buildMessage(p.getUser().getName());
-        bufferManager.consolePrint(buildGraphic.toString(),Level.LOW);
+            bufferManager.consolePrint(buildGraphic.toString(), Level.LOW);
+            cliSchemaCardView.addSchemaCard(p.getUser().getName(),p.getSchemaCard());
+        }
     }
 
     @Override
@@ -270,12 +298,41 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
     @Override
     public void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards) {
-        //...
+        this.privateObjectiveCards = privateObjectiveCards;
     }
 
     @Override
-    public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) {
-        //...
+    public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) throws RemoteException {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        List<SchemaCard> schemaCardList = new ArrayList<>();
+
+        for (List<SchemaCard> ls: schemaCards)
+            schemaCardList.addAll(ls);
+
+        buildGraphic.buildMessage("-----------------------------SCHEMA CARDS-----------------------------");
+        for (int i = 0; i < schemaCardList.size(); i++) {
+            buildGraphic.buildMessage("                   [").buildMessage(String.valueOf(i)).
+                    buildMessage("]").buildMessage(schemaCards.get(i).toString() + "\n");
+        }
+
+        String response;
+        int number;
+
+        do {
+            response = getAnswer("Choose a Schema card:");
+            try {
+                number = Integer.parseInt(response);
+            } catch (NumberFormatException e) {
+                number = -1;
+            }
+            if (number > 0 && number <= schemaCardList.size()) {
+                networkManager.getGameController().chooseSchemaCard(myUser.getToken(), gameName,
+                        schemaCardList.get(number - 1));
+            } else {
+                bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
+                number = -1;
+            }
+        } while (number < 0);
     }
 
     public User getCurrentUser() {

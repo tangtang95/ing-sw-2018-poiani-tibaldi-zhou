@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
@@ -92,6 +93,17 @@ public class BuildGraphic {
             stringBuilder.append("Point:     ").append(publicObjectiveCards.get(i).getCardPoints()).append("\n");
             stringBuilder.append("Description:\n");
             stringBuilder.append(publicObjectiveCards.get(i).getDescription()).append("\n\n");
+        }
+        return this;
+    }
+
+    public BuildGraphic buildGraphicPrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) {
+        buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
+        for (int i = 0; i < privateObjectiveCards.size() ; i++) {
+            stringBuilder.append("[").append(i).append("]\n");
+            stringBuilder.append("Card Name: ").append(privateObjectiveCards.get(i).getName()).append("\n");
+            stringBuilder.append("Description:\n");
+            stringBuilder.append(privateObjectiveCards.get(i).getDescription()).append("\n\n");
         }
         return this;
     }

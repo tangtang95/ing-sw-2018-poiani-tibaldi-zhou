@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
@@ -25,7 +26,7 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
                 screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
-                        "Tang")));
+                        "Empire", new User("Tang-Tang", "emperor"))));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");

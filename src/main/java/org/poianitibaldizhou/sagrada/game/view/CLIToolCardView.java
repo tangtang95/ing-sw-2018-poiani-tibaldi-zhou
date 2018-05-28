@@ -204,7 +204,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         int row;
         int column;
 
-        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
+        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card").
                 buildMessage(schemaCard.toString()).toString(), Level.LOW);
         do {
             response = getAnswer("Insert a row: ");
