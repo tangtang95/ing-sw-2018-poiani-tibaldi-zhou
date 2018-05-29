@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
 
 import java.util.List;
 

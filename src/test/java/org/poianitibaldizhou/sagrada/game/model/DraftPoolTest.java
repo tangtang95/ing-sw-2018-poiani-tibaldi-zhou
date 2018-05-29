@@ -8,7 +8,7 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
-import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;

@@ -24,13 +24,7 @@ public class PayDice implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices(color);
-        toolCardExecutor.getObservers().forEach(obs -> {
-            try {
-                obs.notifyNeedDice(diceList);
-            } catch (RemoteException e) {
-                toolCardExecutor.getObservers().remove(obs);
-            }
-        });
+        toolCardExecutor.getObservers().forEach(obs -> {obs.notifyNeedDice(diceList);});
 
         Dice dice = toolCardExecutor.getNeededDice();
         if(!toolCardExecutor.getTemporaryDraftPool().getDices().contains(dice))

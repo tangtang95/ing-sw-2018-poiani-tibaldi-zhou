@@ -44,13 +44,7 @@ public class SetupPlayerState extends IStateGame {
     @Override
     public void init() {
         List<String> failedNotifyTokens = new ArrayList<>();
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onSetupPlayer();
-            } catch (RemoteException e) {
-                failedNotifyTokens.add(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onSetupPlayer());
         failedNotifyTokens.forEach((token) -> game.getStateObservers().remove(token));
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
@@ -69,11 +63,7 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             playerSchemaCards.put(token, schemaCardList);
-            try {
-                game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
-            } catch (RemoteException e) {
-                game.getGameObservers().remove(token);
-            }
+            game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
             List<PrivateObjectiveCard> privateObjectiveCardList = new ArrayList<>();
@@ -87,11 +77,8 @@ public class SetupPlayerState extends IStateGame {
             privateObjectiveCardMap.put(token, privateObjectiveCardList);
             if (!game.getGameObservers().containsKey(token))
                 throw new IllegalStateException("SEVERE ERROR: cannot find token");
-            try {
-                game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
-            } catch (RemoteException e) {
-                game.getGameObservers().remove(token);
-            }
+            game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
+
         }
 
     }
@@ -114,13 +101,7 @@ public class SetupPlayerState extends IStateGame {
             playersReady.add(token);
             game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
-                game.getGameObservers().forEach((key, value) -> {
-                    try {
-                        value.onPlayersCreate(game.getPlayers());
-                    } catch (RemoteException e) {
-                        game.getGameObservers().remove(key);
-                    }
-                });
+                game.getGameObservers().forEach((key, value) -> {value.onPlayersCreate(game.getPlayers()); });
                 game.setState(new SetupGameState(game));
             }
             return;

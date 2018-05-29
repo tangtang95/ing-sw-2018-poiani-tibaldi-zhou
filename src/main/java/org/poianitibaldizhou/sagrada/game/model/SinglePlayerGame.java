@@ -109,13 +109,7 @@ public class SinglePlayerGame extends Game{
 
     @Override
     public void handleEndGame() {
-        for (Player player: players.values()) {
-            try {
-                getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());
-            } catch (RemoteException e) {
-                getGameObservers().remove(player.getToken());
-            }
-        }
+        for (Player player: players.values()) {getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());}
     }
 
     @Override

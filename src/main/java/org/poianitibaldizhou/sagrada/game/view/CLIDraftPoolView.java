@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;

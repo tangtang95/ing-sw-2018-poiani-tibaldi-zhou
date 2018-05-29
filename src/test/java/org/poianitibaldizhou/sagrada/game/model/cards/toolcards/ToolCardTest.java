@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 
 import java.util.HashMap;
 import java.util.Map;

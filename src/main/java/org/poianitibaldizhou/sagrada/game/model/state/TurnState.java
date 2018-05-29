@@ -8,7 +8,8 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
@@ -92,23 +93,12 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void init() {
         if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
                 && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN)) {
-            game.getStateObservers().forEach((key, value) -> {
-                try {
-                    value.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
-                } catch (RemoteException e) {
-                    game.getStateObservers().remove(key);
-                }
-            });
+            game.getStateObservers().forEach((key, value) ->
+                    value.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
             nextTurn();
             return;
         }
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser());
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
 
     }
 
@@ -139,7 +129,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *                                there aren't expendable coins
      */
     @Override
-    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorObserver observer)
+    public void useCard(Player player, ToolCard toolCard, ToolCardExecutorFakeObserver observer)
             throws InvalidActionException {
 
         if (!player.equals(currentTurnPlayer))
@@ -286,33 +276,15 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     // NOTIFIERS
     public void notifyOnPlaceDiceState() {
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onPlaceDiceState(currentTurnPlayer.getUser());
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onPlaceDiceState(currentTurnPlayer.getUser()));
     }
 
     public void notifyOnUseToolCardState() {
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onUseCardState(currentTurnPlayer.getUser());
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onUseCardState(currentTurnPlayer.getUser()));
     }
 
     public void notifyOnEndTurnState() {
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onEndTurnState(currentTurnPlayer.getUser());
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onEndTurnState(currentTurnPlayer.getUser()));
     }
 
 

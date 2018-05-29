@@ -3,7 +3,8 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.game.model.observers.IRoundTrackObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.RoundTrackFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -15,7 +16,7 @@ import java.util.Map;
 public class RoundTrack implements Serializable{
 
     private final List<List<Dice>> listOfDices;
-    private final transient Map<String, IRoundTrackObserver> observerMap;
+    private final transient Map<String, RoundTrackFakeObserver> observerMap;
     private int numberOfDices;
 
     public static final int NUMBER_OF_TRACK = 10;
@@ -64,7 +65,7 @@ public class RoundTrack implements Serializable{
      *
      * @return copied observer list
      */
-    public Map<String, IRoundTrackObserver> getObserverMap() {
+    public Map<String, RoundTrackFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -110,13 +111,7 @@ public class RoundTrack implements Serializable{
         if(!dices.isEmpty()) {
             numberOfDices += dices.size();
             listOfDices.get(round).addAll(dices);
-            observerMap.forEach((key, value) -> {
-                try {
-                    value.onDicesAddToRound(dices, round);
-                } catch (RemoteException e) {
-                    observerMap.remove(key);
-                }
-            });
+            observerMap.forEach((key, value) -> value.onDicesAddToRound(dices, round));
         }
     }
 
@@ -134,13 +129,7 @@ public class RoundTrack implements Serializable{
                     "Round specified: " + round);
         listOfDices.get(round).add(dice);
         numberOfDices += 1;
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDiceAddToRound(dice, round);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onDiceAddToRound(dice, round));
     }
 
     /**
@@ -159,13 +148,7 @@ public class RoundTrack implements Serializable{
         if (!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
         numberOfDices -= 1;
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDiceRemoveFromRound(dice, round);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onDiceRemoveFromRound(dice, round));
     }
 
     /**
@@ -189,13 +172,7 @@ public class RoundTrack implements Serializable{
             if (dices.get(i).equals(oldDice)) {
                 dices.set(i, newDice);
                 diceFounded = true;
-                observerMap.forEach((key, value) -> {
-                    try {
-                        value.onDiceSwap(oldDice, newDice, round);
-                    } catch (RemoteException e) {
-                        observerMap.remove(key);
-                    }
-                });
+                observerMap.forEach((key, value) -> value.onDiceSwap(oldDice, newDice, round));
                 break;
             }
         }
@@ -204,7 +181,7 @@ public class RoundTrack implements Serializable{
             throw new DiceNotFoundException("oldDice not founded!");
     }
 
-    public void attachObserver(String token, IRoundTrackObserver roundTrackObserver) {
+    public void attachObserver(String token, RoundTrackFakeObserver roundTrackObserver) {
         observerMap.put(token, roundTrackObserver);
     }
 

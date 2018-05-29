@@ -4,10 +4,8 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
 
 import java.rmi.RemoteException;
-import java.util.Map;
 
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -33,13 +31,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void init() {
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onRoundStart(currentRound, currentRoundPlayer.getUser());
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onRoundStart(currentRound, currentRoundPlayer.getUser()));
     }
 
     /**

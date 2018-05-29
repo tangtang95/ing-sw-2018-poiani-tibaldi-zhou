@@ -1,9 +1,9 @@
-package org.poianitibaldizhou.sagrada.game.model.observers;
+package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
+import java.io.IOException;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.List;
 
 public interface IDraftPoolObserver extends Remote {
@@ -12,39 +12,39 @@ public interface IDraftPoolObserver extends Remote {
      * Notify to the observers that a certain dice has been added to the DraftPool
      *
      * @param dice dice that's been added
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onDiceAdd(Dice dice) throws RemoteException;
+    void onDiceAdd(Dice dice) throws IOException;
 
     /**
      * Notify that a certain dice has been removed from the DraftPool
      *
      * @param dice removed dice
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onDiceRemove(Dice dice) throws RemoteException;
+    void onDiceRemove(Dice dice) throws IOException;
 
     /**
      * Notify that a list of dices has been added to the DraftPool.
      *
      * @param dices list of dices added
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onDicesAdd(List<Dice> dices) throws RemoteException;
+    void onDicesAdd(List<Dice> dices) throws IOException;
 
     /**
      * Notify that DraftPool has been entirely re-rolled.
      *
      * @param dices list of dices in the DraftPool after that the re-roll action has been
      *              performed
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onDraftPoolReroll(List<Dice> dices) throws RemoteException;
+    void onDraftPoolReroll(List<Dice> dices) throws IOException;
 
     /**
      * Notify that the DraftPool has been cleared and that's, therefore, empty.
      *
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onDraftPoolClear() throws RemoteException;
+    void onDraftPoolClear() throws IOException;
 }

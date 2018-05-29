@@ -11,9 +11,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
-import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 
 
 import java.io.Serializable;
@@ -29,7 +31,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
 
-    private transient Map<String, IPlayerObserver> observerMap;
+    private transient Map<String, PlayerFakeObserver> observerMap;
 
     /**
      * Constructor.
@@ -83,11 +85,11 @@ public abstract class Player implements IVictoryPoints, Serializable {
      *
      * @return list of observers
      */
-    public Map<String, IPlayerObserver> getObserverMap() {
+    public Map<String, PlayerFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
-    public Map<String, ISchemaCardObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
+    public Map<String, SchemaCardFakeObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -114,7 +116,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
         this.outcome = outcome;
     }
 
-    public void attachObserver(String token, IPlayerObserver observer) {
+    public void attachObserver(String token, PlayerFakeObserver observer) {
         observerMap.put(token, observer);
     }
 
@@ -122,7 +124,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
         observerMap.remove(token);
     }
 
-    public void attachSchemaCardObserver(String token, ISchemaCardObserver schemaCardObserver) {
+    public void attachSchemaCardObserver(String token, SchemaCardFakeObserver schemaCardObserver) {
         schemaCard.attachObserver(token, schemaCardObserver);
     }
 
@@ -141,13 +143,7 @@ public abstract class Player implements IVictoryPoints, Serializable {
      */
     public void removeCoins(int cost) {
         coin.removeCoins(cost);
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onFavorTokenChange(cost);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onFavorTokenChange(cost));
     }
 
     /**

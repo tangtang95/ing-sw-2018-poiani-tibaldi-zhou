@@ -3,19 +3,17 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DraftPoolFakeObserver;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DraftPool implements Serializable {
     private final List<Dice> dices;
-    private final transient Map<String, IDraftPoolObserver> observerMap;
+    private final transient Map<String, DraftPoolFakeObserver> observerMap;
 
 
     /**
@@ -37,7 +35,7 @@ public class DraftPool implements Serializable {
      * @return list of the observers listening to the draftpool
      */
     @Contract(pure = true)
-    public Map<String, IDraftPoolObserver> getObserverMap() {
+    public Map<String, DraftPoolFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -63,13 +61,14 @@ public class DraftPool implements Serializable {
     }
 
     // MODIFIERS
-    public void attachObserver(String token, @NotNull IDraftPoolObserver observer) {
+    public void attachObserver(String token, @NotNull DraftPoolFakeObserver observer) {
         observerMap.put(token, observer);
     }
 
     public void detachObserver(String token) {
         observerMap.remove(token);
     }
+
 
     /**
      * Adds a list of dices to the DraftPool.
@@ -78,19 +77,9 @@ public class DraftPool implements Serializable {
      * @param dices the list of dices that needs to be added
      * @throws NullPointerException if dices is null
      */
-    public void addDices(@NotNull List<Dice> dices) throws DisconnectedException {
+    public void addDices(@NotNull List<Dice> dices) {
         this.dices.addAll(dices);
-        List<String> disconnectedPlayers = new ArrayList<>();
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDicesAdd(dices);
-            } catch (IOException e) {
-                disconnectedPlayers.add(key);
-            }
-        });
-
-        if(!disconnectedPlayers.isEmpty())
-            throw new DisconnectedException(disconnectedPlayers);
+        observerMap.forEach((key, value) -> value.onDicesAdd(dices));
     }
 
     /**
@@ -99,19 +88,9 @@ public class DraftPool implements Serializable {
      * @param dice the dice that needs to be added
      * @throws NullPointerException if dice is null
      */
-    public void addDice(@NotNull Dice dice) throws DisconnectedException {
+    public void addDice(@NotNull Dice dice) {
         this.dices.add(dice);
-        List<String> disconnectedPlayers = new ArrayList<>();
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDiceAdd(dice);
-            } catch (IOException e) {
-                disconnectedPlayers.add(key);
-            }
-        });
-
-        if(!disconnectedPlayers.isEmpty())
-            throw new DisconnectedException(disconnectedPlayers);
+        observerMap.forEach((key, value) -> value.onDiceAdd(dice));
     }
 
     /**
@@ -122,24 +101,14 @@ public class DraftPool implements Serializable {
      * @throws EmptyCollectionException if the DraftPool is empty
      * @throws NullPointerException     if dice is null
      */
-    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException, DisconnectedException {
+    public void useDice(@NotNull Dice dice) throws DiceNotFoundException, EmptyCollectionException {
         if (dices.isEmpty()) {
             throw new EmptyCollectionException();
         }
         for (int i = 0; i < dices.size(); i++) {
             if (dices.get(i).equals(dice)) {
                 dices.remove(i);
-                List<String> disconnectedPlayers = new ArrayList<>();
-                observerMap.forEach((key, value) -> {
-                    try {
-                        value.onDiceRemove(dice);
-                    } catch (IOException e) {
-                        disconnectedPlayers.add(key);
-                    }
-                });
-
-                if(!disconnectedPlayers.isEmpty())
-                    throw new DisconnectedException(disconnectedPlayers);
+                observerMap.forEach((key, value) -> value.onDiceRemove(dice));
                 return;
             }
         }
@@ -148,44 +117,22 @@ public class DraftPool implements Serializable {
 
     /**
      * Re-roll every dice inside the draftPool (the color doesn't change, only the number of the dice can change)
-     *
      */
-    public void reRollDices() throws DisconnectedException {
+    public void reRollDices() {
         Random random = new Random();
         for (int i = 0; i < dices.size(); i++) {
             dices.set(i, new Dice(random.nextInt(Dice.MAX_VALUE) + 1, dices.get(i).getColor()));
         }
 
-        List<String> disconnectedPlayers = new ArrayList<>();
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDraftPoolReroll(dices);
-            } catch (IOException e) {
-                disconnectedPlayers.add(key);
-            }
-        });
-
-        if(!disconnectedPlayers.isEmpty())
-            throw new DisconnectedException(disconnectedPlayers);
+        observerMap.forEach((key, value) -> value.onDraftPoolReroll(dices));
     }
 
     /**
      * Remove every dices in the draftPool
-     *
      */
-    public void clearPool() throws DisconnectedException {
+    public void clearPool() {
         dices.clear();
-        List<String> disconnectedPlayers = new ArrayList<>();
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDraftPoolClear();
-            } catch (IOException e) {
-                disconnectedPlayers.add(key);
-            }
-        });
-
-        if(!disconnectedPlayers.isEmpty())
-            throw new DisconnectedException(disconnectedPlayers);
+        observerMap.forEach((key, value) -> value.onDraftPoolClear());
     }
 
     /**
@@ -199,8 +146,7 @@ public class DraftPool implements Serializable {
             return null;
         DraftPool newDraftPool = new DraftPool();
         List<Dice> diceList = new ArrayList<>(draftPool.getDices());
-        // TODO are we sure that when an new instance of drafpool is required in the model, all the things needs to be notified and the observer needs to be copied?
-        //newDraftPool.addDices(diceList);
+        newDraftPool.addDices(diceList);
         newDraftPool.observerMap.putAll(draftPool.getObserverMap());
         return newDraftPool;
     }

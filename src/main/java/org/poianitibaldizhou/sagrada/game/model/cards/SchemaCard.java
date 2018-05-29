@@ -9,7 +9,8 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -19,7 +20,7 @@ public class SchemaCard implements Serializable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
-    private final transient Map<String, ISchemaCardObserver> observerMap;
+    private final transient Map<String, SchemaCardFakeObserver> observerMap;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -74,7 +75,7 @@ public class SchemaCard implements Serializable {
      *
      * @return list of observers
      */
-    public Map<String, ISchemaCardObserver> getObserverMap() {
+    public Map<String, SchemaCardFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -317,13 +318,7 @@ public class SchemaCard implements Serializable {
         }
         tileMatrix[position.getRow()][position.getColumn()].setDice(dice, restriction);
 
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onPlaceDice(dice, position);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onPlaceDice(dice, position));
     }
 
     /**
@@ -356,17 +351,11 @@ public class SchemaCard implements Serializable {
      */
     public Dice removeDice(Position position) {
         Dice removedDice = tileMatrix[position.getRow()][position.getColumn()].removeDice();
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onDiceRemove(removedDice, position);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onDiceRemove(removedDice, position));
         return removedDice;
     }
 
-    public void attachObserver(String token, ISchemaCardObserver observer) {
+    public void attachObserver(String token, SchemaCardFakeObserver observer) {
         observerMap.put(token, observer);
     }
 

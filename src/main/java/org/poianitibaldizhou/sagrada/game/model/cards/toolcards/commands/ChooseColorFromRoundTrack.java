@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -27,7 +28,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
-        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
+        List<ToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
         if(roundTrack.isEmpty())
             return CommandFlow.EMPTY_ROUNDTRACK;
@@ -41,13 +42,7 @@ public class ChooseColorFromRoundTrack implements ICommand {
 
         }
 
-        observerList.forEach(obs -> {
-            try {
-                obs.notifyNeedColor(colors);
-            } catch (RemoteException e) {
-                observerList.remove(obs);
-            }
-        });
+        observerList.forEach(obs -> obs.notifyNeedColor(colors));
         return CommandFlow.MAIN;
     }
 

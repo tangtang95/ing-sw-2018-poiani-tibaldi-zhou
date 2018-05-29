@@ -10,7 +10,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -38,7 +39,7 @@ public class ToolCardExecutor {
     private Position neededPosition;
     private Boolean neededAnswer;
     private boolean turnEnd;
-    private List<IToolCardExecutorObserver> observers;
+    private List<ToolCardExecutorFakeObserver> observers;
 
     // Executor's attribute
     private Node<ICommand> coreCommands;
@@ -85,11 +86,11 @@ public class ToolCardExecutor {
 
     public void setPreCommands(Node<ICommand> commands) { this.preCommands = commands; }
 
-    public void addObserver(IToolCardExecutorObserver observer) {
+    public void addObserver(ToolCardExecutorFakeObserver observer) {
         this.observers.add(observer);
     }
 
-    public List<IToolCardExecutorObserver> getObservers() {
+    public List<ToolCardExecutorFakeObserver> getObservers() {
         return observers;
     }
 
@@ -154,22 +155,10 @@ public class ToolCardExecutor {
             } else if (commandFlow == CommandFlow.SUB) {
                 root = root.getRightChild();
             } else if (commandFlow == CommandFlow.REPEAT) {
-                observers.forEach(obs -> {
-                    try {
-                        obs.notifyRepeatAction();
-                    } catch (RemoteException e) {
-                        observers.remove(obs);
-                    }
-                });
+                observers.forEach(obs -> obs.notifyRepeatAction());
             } else if (commandFlow.getProtocolNumber() == 400) {
                 final CommandFlow finalCommandFlow = commandFlow;
-                observers.forEach(obs -> {
-                    try {
-                        obs.notifyCommandInterrupted(finalCommandFlow);
-                    } catch (RemoteException e) {
-                        observers.remove(obs);
-                    }
-                });
+                observers.forEach(obs -> obs.notifyCommandInterrupted(finalCommandFlow));
             }
         } while (root != null);
     }
