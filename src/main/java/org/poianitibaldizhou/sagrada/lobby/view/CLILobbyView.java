@@ -82,10 +82,10 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     public void run() {
         BuildGraphic buildGraphic = new BuildGraphic();
         bufferManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
-                Level.LOW);
+                Level.STANDARD);
         login();
 
-        bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
         while (isLoggedIn) {
             try {
                 getCommand(commandMap).executeCommand();
@@ -102,7 +102,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      */
     @Override
     public void ack(String ack) {
-        bufferManager.consolePrint("ACK: " + ack, Level.HIGH);
+        bufferManager.consolePrint("ACK: " + ack, Level.ACK);
     }
 
     /**
@@ -110,7 +110,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      */
     @Override
     public void err(String err) {
-        bufferManager.consolePrint("ERROR: " + err, Level.HIGH);
+        bufferManager.consolePrint("ERROR: " + err, Level.ACK);
     }
 
     /**
@@ -119,7 +119,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     @Override
     public void onUserJoin(User user) {
         if (!user.getName().equals(username))
-            bufferManager.consolePrint("User " + user.getName() + " joined the Lobby", Level.HIGH);
+            bufferManager.consolePrint("User " + user.getName() + " joined the Lobby", Level.ACK);
     }
 
     /**
@@ -128,9 +128,9 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     @Override
     public void onUserExit(User user){
         if (!user.getName().equals(username)) {
-            bufferManager.consolePrint("User " + user.getName() + " left the Lobby", Level.HIGH);
+            bufferManager.consolePrint("User " + user.getName() + " left the Lobby", Level.ACK);
         } else {
-            bufferManager.consolePrint("You have left the lobby.", Level.HIGH);
+            bufferManager.consolePrint("You have left the lobby.", Level.ACK);
             screenManager.popScreen();
         }
     }
@@ -140,7 +140,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      */
     @Override
     public void onGameStart(String gameName) throws IOException {
-        bufferManager.consolePrint("GAME STARTED", Level.HIGH);
+        bufferManager.consolePrint("GAME STARTED\n", Level.ACK);
         bufferManager.stopConsoleRead();
         screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
                 gameName, new User(username,token)));

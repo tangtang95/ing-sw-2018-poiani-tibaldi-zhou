@@ -40,7 +40,7 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
                 buildMessage("Current connection mode: " + networkManager.getNetworkType().name()).
                 buildGraphicHelp(commandMap).
                 buildMessage("Change connection mode or go to Start Game Menu: ").
-                toString(), Level.LOW);
+                toString(), Level.STANDARD);
         try {
             getCommand(commandMap).executeCommand();
         } catch (RemoteException e) {

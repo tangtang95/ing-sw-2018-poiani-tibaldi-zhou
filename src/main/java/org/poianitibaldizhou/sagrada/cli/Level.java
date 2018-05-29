@@ -1,6 +1,9 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 public enum Level {
-    LOW,
-    HIGH
+    STANDARD,
+    ACK,
+    ERROR,
+    INFORMATION,
+    DEBUG
 }

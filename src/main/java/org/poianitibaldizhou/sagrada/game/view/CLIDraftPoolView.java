@@ -12,14 +12,16 @@ import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class CLIDraftPoolView implements IDraftPoolObserver {
+public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolObserver {
     private final DraftPool draftPool;
     private final User currentUser;
     private final BufferManager bufferManager;
 
-    CLIDraftPoolView(CLIGameView cliGameView) {
+    CLIDraftPoolView(CLIGameView cliGameView) throws RemoteException {
+        super();
         this.bufferManager = cliGameView.bufferManager;
         this.draftPool = new DraftPool();
         this.currentUser = cliGameView.getCurrentUser();
@@ -39,7 +41,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
         }
         String message = currentUser.getName() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
     }
 
     /**
@@ -53,12 +55,12 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
             } catch (DiceNotFoundException e) {
                 bufferManager.consolePrint("An error has occured when " + currentUser.getName() +
                         " tried to remove " +
-                        dice.toString() + " from the draft pool. Dice is not present in the draft pool.\n", Level.HIGH);
+                        dice.toString() + " from the draft pool. Dice is not present in the draft pool.\n", Level.ACK);
                 return;
             } catch (EmptyCollectionException e) {
                 bufferManager.consolePrint("An error has occured when " + currentUser.getName() +
                         " tried to remove " +
-                        dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);
+                        dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.ACK);
                 return;
             } catch (DisconnectedException e) {
                 e.printStackTrace();
@@ -66,7 +68,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = currentUser.getName() + " has removed a dice from the draft pool.";
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
     }
 
     /**
@@ -83,7 +85,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = currentUser.getName() + " has added a set of dices to the draft pool.";
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(dices).toString(), Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(dices).toString(), Level.STANDARD);
     }
 
     /**
@@ -102,7 +104,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has re-rolled the draft pool.");
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(dices).toString(), Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(dices).toString(), Level.STANDARD);
     }
 
     /**
@@ -119,7 +121,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has cleared the draft pool.");
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
     public DraftPool getDraftPool() {

@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.cli;
 
 import java.util.Deque;
 
+@Deprecated
 public class PrintThread extends Thread {
     private final Deque<String> lowMessage;
     private final Deque<String> highMessage;
@@ -20,9 +21,9 @@ public class PrintThread extends Thread {
         while (!lowMessage.isEmpty() || !highMessage.isEmpty()) {
             if ((message = popMessage(true)) != null) {
                 if (!message.equals("") && message.substring(0, 1).equals("\n"))
-                    System.out.print("\b\b\b" + message + "\n>> ");
+                    System.out.print("\b\b\b" + message + ">> ");
                 else
-                    System.out.print("\r" + message + "\n>> ");
+                    System.out.print("\r" + message + ">> ");
             }
         }
     }

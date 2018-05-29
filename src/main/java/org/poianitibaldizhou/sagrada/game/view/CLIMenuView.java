@@ -38,7 +38,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
                     answer[0] = "0";
             }
             if (answer[0].equals("help"))
-                bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.LOW);
+                bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.STANDARD);
             else {
                 try {
                     number = Integer.parseInt(answer[0]);
@@ -48,7 +48,7 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
                 if (number > 0 && number <= commandMap.keySet().size())
                     return commandMap.get(commandMap.keySet().toArray()[number - 1].toString());
                 else {
-                    bufferManager.consolePrint("WARNING: Command not found", Level.HIGH);
+                    bufferManager.consolePrint("WARNING: Command not found\n", Level.ACK);
                 }
             }
         } while (true);
@@ -57,11 +57,18 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
     protected String getAnswer(String question) {
         String[] answer = new String[1];
 
-        bufferManager.consolePrint(question, Level.LOW);
+        bufferManager.consolePrint(question + "\n", Level.STANDARD);
         do {
-            bufferManager.consoleRead(answer);
+            try {
+                bufferManager.consoleRead(answer);
+            } catch (NullPointerException e) {
+                if(answer[0] == null)
+                    throw new NullPointerException();
+                else
+                    answer[0] = "";
+            }
             if (answer[0].equals("help")) {
-                bufferManager.consolePrint(question, Level.LOW);
+                bufferManager.consolePrint(question + "\n", Level.STANDARD);
             }
             else {
                 if (!answer[0].equals(""))

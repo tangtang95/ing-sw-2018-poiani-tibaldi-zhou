@@ -42,17 +42,17 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             view.err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
+            game.attachGameObserver(token, gameObserver);
+            game.attachRoundTrackObserver(token, roundTrackObserver);
+            game.attachStateObserver(token, stateObserver);
+            game.attachDraftPoolObserver(token, draftPoolObserver);
+            game.attachDiceBagObserver(token, diceBagObserver);
             game.userJoin(token);
         } catch (InvalidActionException e) {
             view.err("You are not playing in this game");
             return;
         }
         view.ack("You are now ready to play");
-        game.attachGameObserver(token, gameObserver);
-        game.attachRoundTrackObserver(token, roundTrackObserver);
-        game.attachStateObserver(token, stateObserver);
-        game.attachDraftPoolObserver(token, draftPoolObserver);
-        game.attachDiceBagObserver(token, diceBagObserver);
         viewMap.put(token, view);
     }
 

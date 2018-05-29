@@ -47,7 +47,7 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
                 buildMessage("------------------------Select Game Mode---------------------------").
                 buildGraphicHelp(commandMap).
                 buildMessage("Choose the game mode or go to Start Game Menu: ").toString(),
-                Level.LOW);
+                Level.STANDARD);
 
         try {
             getCommand(commandMap).executeCommand();

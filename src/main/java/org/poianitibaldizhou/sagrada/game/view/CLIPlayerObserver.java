@@ -7,12 +7,16 @@ import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-public class CLIPlayerObserver implements IPlayerObserver {
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class CLIPlayerObserver extends UnicastRemoteObject implements IPlayerObserver {
 
     private BufferManager bufferManager;
     private CLIGameView cliGameView;
 
-    CLIPlayerObserver(CLIGameView cliGameView) {
+    CLIPlayerObserver(CLIGameView cliGameView) throws RemoteException {
+        super();
         this.bufferManager = cliGameView.bufferManager;
         this.cliGameView = cliGameView;
     }
@@ -25,11 +29,11 @@ public class CLIPlayerObserver implements IPlayerObserver {
         User user = cliGameView.getCurrentUser();
         String message = user.getName() + " has spent " + value + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.LOW);
+        bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
     @Override
     public void onSetOutcome(Outcome outcome){
-        bufferManager.consolePrint(outcome.name(),Level.HIGH);
+        bufferManager.consolePrint(outcome.name(),Level.ACK);
     }
 }

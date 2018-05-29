@@ -1,64 +1,63 @@
 package org.poianitibaldizhou.sagrada.cli;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class BufferManager {
 
-    private final Deque<String> lowMessage;
-    private final Deque<String> highMessage;
+    private class ReadThread extends Thread {
 
-    private Thread printManager;
-    private Thread readManager;
+        private BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+        boolean exit = true;
 
-    public BufferManager() {
+        @Override
+        public void run(){
+            while(exit){
+                pausePoint();
+                try {
+                    String read = console.readLine();
+                } catch (IOException e) {
+                    //...
+                }
 
-        this.highMessage = new ArrayDeque<>();
-        this.lowMessage = new ArrayDeque<>();
-
-        this.printManager = null;
-        this.readManager = null;
-    }
-
-    public void consolePrint(String message, Level level) {
-
-        if (level == Level.HIGH) {
-            highMessage.push(message);
-        }
-        else {
-            lowMessage.push(message);
-        }
-
-        if (printManager == null || !printManager.isAlive()) {
-            printManager = new PrintThread(lowMessage, highMessage);
-            printManager.start();
-        }
-    }
-
-    public void consoleRead(String[] response){
-        if (readManager != null && (readManager.isAlive() || readManager.isInterrupted())) {
-            stopConsoleRead();
-        }
-        response[0] = null;
-        readManager = new ReadThread(response);
-        readManager.start();
-
-        while (response[0] == null && readManager != null) {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
             }
         }
 
-        if (response[0] == null || response[0].equals("")) {
-            throw new NullPointerException();
+        synchronized void pausePoint() {
+            while (needToPause) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
     }
 
-    public void stopConsoleRead() {
-        if (readManager != null && readManager.isAlive())
-            readManager.interrupt();
-        readManager = null;
+    private boolean needToPause;
+
+    public void consolePrint(String message, Level level) {
+        if (level.name().equals(Level.STANDARD.name()))
+            if (!message.equals("") && message.substring(0, 1).equals("\n"))
+                System.out.print("\b\b\b" + message + ">> ");
+            else
+                System.out.print("\r" + message + ">> ");
+        else
+        if (!message.equals("") && message.substring(0, 1).equals("\n"))
+            System.out.print("\b\b\b" + level.name() + ": " + message + ">> ");
+        else
+            System.out.print("\r" + level.name() + ": " + message + ">> ");
+    }
+
+    public void consoleRead(String[] response){
+
+    }
+
+    public void stopConsoleRead() { needToPause = true; }
+
+    public synchronized void restartConsoleRead() {
+        needToPause = false;
+        this.notifyAll();
     }
 }

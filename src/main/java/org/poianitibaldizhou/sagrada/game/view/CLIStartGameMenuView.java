@@ -47,7 +47,7 @@ public class CLIStartGameMenuView extends CLIMenuView {
                 buildGraphicLogo().
                 buildMessage("-------------------------Start Game Menu---------------------------").
                 buildGraphicHelp(commandMap).
-                buildMessage("Choose action: ").toString(), Level.LOW);
+                buildMessage("Choose action: ").toString(), Level.STANDARD);
 
         try {
             getCommand(commandMap).executeCommand();

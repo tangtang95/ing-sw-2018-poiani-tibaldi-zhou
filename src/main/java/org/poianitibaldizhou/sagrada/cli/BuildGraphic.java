@@ -167,7 +167,7 @@ public class BuildGraphic {
         buildMessage("----------------------------ROUND TRACK---------------------------");
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             List<Dice> diceList = roundTrack.getDices(i);
-            stringBuilder.append(buildMessage("Round " + "[" + i + 1 + "]").buildGraphicDices(diceList).toString());
+            stringBuilder.append(buildMessage("Round " + "[" + (i + 1) + "]").buildGraphicDices(diceList).toString());
         }
         return this;
     }
