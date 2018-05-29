@@ -26,6 +26,7 @@ public class GameManager {
         gameMap = new HashMap<>();
         playersByGame = new HashMap<>();
         players = new ArrayList<>();
+        observerManagerMap = new HashMap<>();
     }
 
     /**

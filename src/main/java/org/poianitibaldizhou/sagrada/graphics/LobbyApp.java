@@ -28,7 +28,7 @@ public class LobbyApp extends Application {
         controller.setStage(primaryStage);
 
 
-        Scene scene = new Scene(root, 1280, 720);
+        Scene scene = new Scene(root, 800, 600);
         scene.getStylesheets().add(css);
         primaryStage.setTitle("Sagrada Board Game");
         primaryStage.setFullScreen(true);
