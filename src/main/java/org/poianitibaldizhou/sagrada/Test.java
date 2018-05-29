@@ -5,7 +5,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class TestExecutorService {
+public class Test {
+
     public static void main(String[] args) {
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
@@ -21,7 +22,7 @@ public class TestExecutorService {
                         Thread.sleep(2000);
                         System.out.println("Thread " + finalI);
                     }
-                } catch(InterruptedException e) {
+                } catch (InterruptedException e) {
 
                 }
             };
@@ -30,7 +31,7 @@ public class TestExecutorService {
         }
         for (int i = 0; i < 10; i++) {
             scheduledExecutorService.submit(threads.get(i));
-            System.out.println("Thread"+i+" added");
+            System.out.println("Thread" + i + " added");
         }
 
         try {
@@ -56,5 +57,6 @@ public class TestExecutorService {
         scheduledExecutorService.shutdown();
     }
 }
+
 
 
