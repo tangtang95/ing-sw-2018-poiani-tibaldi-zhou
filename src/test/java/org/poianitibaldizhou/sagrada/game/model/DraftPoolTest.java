@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DraftPoolFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 
 import java.rmi.RemoteException;
@@ -25,14 +26,10 @@ public class DraftPoolTest {
 
     private static DraftPool dp;
     private static List<Dice> dices;
-    private Map<String, IDraftPoolObserver> observerList;
+    private Map<String, DraftPoolFakeObserver> observerList;
 
     @Mock
-    private IDraftPoolObserver observer1;
-    @Mock
-    private IDraftPoolObserver observer2;
-    @Mock
-    private IDraftPoolObserver observer3;
+    private DraftPoolFakeObserver observer1, observer2, observer3;
 
 
     @BeforeClass
@@ -41,7 +38,7 @@ public class DraftPoolTest {
     }
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         dices.add(new Dice(5, Color.BLUE));
         dices.add(new Dice(2, Color.BLUE));
@@ -56,23 +53,17 @@ public class DraftPoolTest {
         observerList = new HashMap<>();
         observerList.put("obs1", observer1);
         observerList.put("obs2", observer2);
-        observerList.put("obs3" ,observer3);
+        observerList.put("obs3", observer3);
         observerList.forEach((key, value) -> dp.attachObserver(key, value));
     }
 
     @Test
-    public void testAddDices() throws Exception{
+    public void testAddDices() {
         List<Dice> diceList = new ArrayList<>();
         diceList.add(new Dice(6, Color.GREEN));
         diceList.add(new Dice(4, Color.RED));
         dp.addDices(diceList);
-        dp.getObserverMap().forEach((key, value) -> {
-            try {
-                verify(value, times(1)).onDicesAdd(diceList);
-            } catch (RemoteException e) {
-                fail("exception not excepted");
-            }
-        });
+        dp.getObserverMap().forEach((key, value) -> verify(value, times(1)).onDicesAdd(diceList));
     }
 
     @After
@@ -94,22 +85,16 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testAddDice() throws Exception {
+    public void testAddDice() {
         Dice dice = new Dice(5, Color.PURPLE);
         dp.addDice(dice);
         dices.add(dice);
         assertEquals(dices, dp.getDices());
-        dp.getObserverMap().forEach((key, value) -> {
-            try {
-                verify(value, times(1)).onDiceAdd(dice);
-            } catch (RemoteException e) {
-                fail("exception not excepted");
-            }
-        });
+        dp.getObserverMap().forEach((key, value) -> verify(value, times(1)).onDiceAdd(dice));
     }
 
     @Test
-    public void testRerollDices() throws Exception{
+    public void testRerollDices() {
         List<Dice> prevList = dp.getDices();
         dp.reRollDices();
         List<Dice> newList = dp.getDices();
@@ -127,17 +112,11 @@ public class DraftPoolTest {
             System.out.println(prevcolors[i] + "  " + newcolors[i]);
         }
         assertArrayEquals(prevcolors, newcolors);
-        dp.getObserverMap().forEach((key, value) -> {
-            try {
-                verify(value, times(1)).onDraftPoolReroll(dp.getDices());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        });
+        dp.getObserverMap().forEach((key, value) -> verify(value, times(1)).onDraftPoolReroll(dp.getDices()));
     }
 
     @Test
-    public void testEquals() throws Exception{
+    public void testEquals() throws Exception {
         DraftPool draftPool = new DraftPool();
         draftPool.addDice(new Dice(1, Color.PURPLE));
         assertNotEquals(dp, draftPool);
@@ -155,27 +134,21 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testClear() throws Exception{
+    public void testClear() {
         dp.clearPool();
         assertEquals(0, dp.size());
-        dp.getObserverMap().forEach((key, value) -> {
-            try {
-                verify(value, times(1)).onDraftPoolClear();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        });
+        dp.getObserverMap().forEach((key, value) -> verify(value, times(1)).onDraftPoolClear());
     }
 
     @Test
-    public void testNewInstance() throws Exception{
+    public void testNewInstance() {
         DraftPool draftPool = DraftPool.newInstance(dp);
         assertEquals(dp, draftPool);
         assertEquals(dp.getObserverMap(), draftPool.getObserverMap());
     }
 
     @Test
-    public void testUseDice() throws Exception{
+    public void testUseDice() throws Exception {
         int order[] = new int[]{5, 2, 1, 2, 0, 0};
         int size = dp.getDices().size();
 
@@ -186,11 +159,7 @@ public class DraftPoolTest {
 
             assertTrue(dp.getDices().containsAll(dices) && dices.containsAll(dp.getDices()));
             dp.getObserverMap().forEach((key, value) -> {
-                try {
-                    verify(value, times(1)).onDiceRemove(removed);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                verify(value, times(1)).onDiceRemove(removed);
                 reset(value);
             });
         }
@@ -198,7 +167,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testEmptyException() throws Exception{
+    public void testEmptyException() {
         dp = new DraftPool();
         try {
             dp.useDice(new Dice(4, Color.BLUE));
@@ -211,7 +180,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testDiceNotFoundException() throws Exception{
+    public void testDiceNotFoundException() {
         try {
             dp.useDice(new Dice(1, Color.GREEN));
             fail("NotFoundException expected");

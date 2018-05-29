@@ -29,13 +29,9 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAdd(Dice dice) throws RemoteException{
+    public void onDiceAdd(Dice dice) {
         synchronized (draftPool) {
-            try {
-                draftPool.addDice(dice);
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
+            draftPool.addDice(dice);
         }
         String message = currentUser.getName() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -46,7 +42,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice){
+    public void onDiceRemove(Dice dice) {
         synchronized (draftPool) {
             try {
                 draftPool.useDice(dice);
@@ -60,8 +56,6 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
                         " tried to remove " +
                         dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.HIGH);
                 return;
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
             }
         }
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -73,13 +67,9 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAdd(List<Dice> dices){
+    public void onDicesAdd(List<Dice> dices) {
         synchronized (draftPool) {
-            try {
-                draftPool.addDices(dices);
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
+            draftPool.addDices(dices);
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = currentUser.getName() + " has added a set of dices to the draft pool.";
@@ -90,15 +80,10 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(List<Dice> dices){
+    public void onDraftPoolReroll(List<Dice> dices) {
         synchronized (draftPool) {
-            try {
-                draftPool.clearPool();
-                draftPool.addDices(dices);
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
-
+            draftPool.clearPool();
+            draftPool.addDices(dices);
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has re-rolled the draft pool.");
@@ -111,11 +96,7 @@ public class CLIDraftPoolView implements IDraftPoolObserver {
     @Override
     public void onDraftPoolClear() {
         synchronized (draftPool) {
-            try {
-                draftPool.clearPool();
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
+            draftPool.clearPool();
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has cleared the draft pool.");

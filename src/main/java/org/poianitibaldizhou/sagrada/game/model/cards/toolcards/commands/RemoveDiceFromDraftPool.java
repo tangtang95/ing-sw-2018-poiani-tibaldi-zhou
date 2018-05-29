@@ -34,8 +34,6 @@ public class RemoveDiceFromDraftPool implements ICommand {
             return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DRAFTPOOL;
-        } catch (DisconnectedException e) {
-            e.printStackTrace();
         }
         return CommandFlow.MAIN;
     }

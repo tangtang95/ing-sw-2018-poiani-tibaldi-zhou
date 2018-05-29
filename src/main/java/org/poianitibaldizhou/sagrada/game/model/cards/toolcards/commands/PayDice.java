@@ -37,8 +37,6 @@ public class PayDice implements ICommand {
         } catch (EmptyCollectionException | DiceNotFoundException e) {
             // Exception impossible to happen (already checked before)
             return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
-        } catch (DisconnectedException e) {
-            e.printStackTrace();
         }
         return CommandFlow.MAIN;
     }

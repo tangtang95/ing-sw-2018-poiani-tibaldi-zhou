@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -36,9 +37,9 @@ public class IfContinueTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new IfContinue();
-        List<IToolCardExecutorObserver> observerList = new ArrayList<>();
+        List<ToolCardExecutorFakeObserver> observerList = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            observerList.add(mock(IToolCardExecutorObserver.class));
+            observerList.add(mock(ToolCardExecutorFakeObserver.class));
         }
         when(toolCardExecutor.getObservers()).thenReturn(observerList);
     }

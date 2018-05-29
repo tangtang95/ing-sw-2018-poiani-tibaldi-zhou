@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -37,7 +38,7 @@ public class PlaceDiceTest {
     @Mock
     private DraftPool draftPool;
     @Mock
-    private IToolCardExecutorObserver observer1, observer2, observer3;
+    private ToolCardExecutorFakeObserver observer1, observer2, observer3;
     @Mock
     private Dice dice;
     @Mock
@@ -45,7 +46,7 @@ public class PlaceDiceTest {
 
 
     private ICommand command;
-    private List<IToolCardExecutorObserver> observerList;
+    private List<ToolCardExecutorFakeObserver> observerList;
     private Position position;
 
     @Before

@@ -53,8 +53,6 @@ public class SwapDiceWithRoundTrack implements ICommand {
             return CommandFlow.REPEAT;
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DRAFTPOOL;
-        } catch (DisconnectedException e) {
-            e.printStackTrace();
         }
         return CommandFlow.MAIN;
     }
