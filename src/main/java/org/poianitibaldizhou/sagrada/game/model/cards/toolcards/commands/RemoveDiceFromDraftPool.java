@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -33,6 +34,8 @@ public class RemoveDiceFromDraftPool implements ICommand {
             return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DRAFTPOOL;
+        } catch (DisconnectedException e) {
+            e.printStackTrace();
         }
         return CommandFlow.MAIN;
     }

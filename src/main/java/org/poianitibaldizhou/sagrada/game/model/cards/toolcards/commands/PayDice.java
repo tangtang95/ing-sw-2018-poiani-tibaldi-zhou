@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -36,6 +37,8 @@ public class PayDice implements ICommand {
         } catch (EmptyCollectionException | DiceNotFoundException e) {
             // Exception impossible to happen (already checked before)
             return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
+        } catch (DisconnectedException e) {
+            e.printStackTrace();
         }
         return CommandFlow.MAIN;
     }

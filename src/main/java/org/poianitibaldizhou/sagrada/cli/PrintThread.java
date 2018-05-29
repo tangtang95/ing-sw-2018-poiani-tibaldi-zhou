@@ -19,9 +19,8 @@ public class PrintThread extends Thread {
 
         while (!lowMessage.isEmpty() || !highMessage.isEmpty()) {
             if ((message = popMessage(true)) != null) {
-                if (message.substring(0, 1).equals("\n")) {
+                if (!message.equals("") && message.substring(0, 1).equals("\n"))
                     System.out.print("\b\b\b" + message + "\n>> ");
-                }
                 else
                     System.out.print("\r" + message + "\n>> ");
             }

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -23,7 +24,11 @@ public class AddDiceToDraftPool implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
-        toolCardExecutor.getTemporaryDraftPool().addDice(dice);
+        try {
+            toolCardExecutor.getTemporaryDraftPool().addDice(dice);
+        } catch (DisconnectedException e) {
+            e.printStackTrace();
+        }
         return CommandFlow.MAIN;
     }
 

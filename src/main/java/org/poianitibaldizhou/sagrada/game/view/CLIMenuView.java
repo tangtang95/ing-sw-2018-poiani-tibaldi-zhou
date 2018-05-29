@@ -32,7 +32,10 @@ public class CLIMenuView extends UnicastRemoteObject implements IScreen {
             try {
                 bufferManager.consoleRead(answer);
             }catch (NullPointerException e) {
-                throw new NullPointerException();
+                if(answer[0] == null)
+                    throw new NullPointerException();
+                else
+                    answer[0] = "0";
             }
             if (answer[0].equals("help"))
                 bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.LOW);

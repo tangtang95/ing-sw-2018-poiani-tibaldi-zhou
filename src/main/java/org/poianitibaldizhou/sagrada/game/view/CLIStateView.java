@@ -14,7 +14,7 @@ public class CLIStateView implements IStateObserver {
     private final CLIGameView cliGameView;
     private final BufferManager bufferManager;
 
-    public CLIStateView(CLIGameView cliGameView) {
+    CLIStateView(CLIGameView cliGameView) {
         this.bufferManager = cliGameView.bufferManager;
         this.cliGameView = cliGameView;
     }

@@ -17,7 +17,7 @@ import java.util.Map;
 public class CLISchemaCardView implements ISchemaCardObserver {
 
     private final CLIGameView cliGameView;
-    private final transient Map<String, SchemaCard> schemaCards;
+    private final Map<String, SchemaCard> schemaCards;
     private final BufferManager bufferManager;
 
     CLISchemaCardView(CLIGameView cliGameView) {

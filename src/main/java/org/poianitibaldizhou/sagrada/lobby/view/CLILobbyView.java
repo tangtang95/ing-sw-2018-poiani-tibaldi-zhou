@@ -57,7 +57,6 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
         }
-        screenManager.popScreen();
     }
 
     private void login() {
@@ -86,9 +85,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
                 Level.LOW);
         login();
 
-        bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.LOW);
-        // Todo fix
-        //help(commandMap);
+        bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.LOW);
         while (isLoggedIn) {
             try {
                 getCommand(commandMap).executeCommand();
@@ -129,7 +126,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      * {@inheritDoc}
      */
     @Override
-    public void onUserExit(User user) throws RemoteException {
+    public void onUserExit(User user){
         if (!user.getName().equals(username)) {
             bufferManager.consolePrint("User " + user.getName() + " left the Lobby", Level.HIGH);
         } else {
@@ -143,17 +140,15 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      */
     @Override
     public void onGameStart(String gameName) throws IOException {
-        //TODO pass the gameName to the new CLIGameView
         bufferManager.consolePrint("GAME STARTED", Level.HIGH);
         bufferManager.stopConsoleRead();
-        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager));
+        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
+                gameName, new User(username,token)));
     }
 
-
-
     @Override
-    public void onPing() throws RemoteException {
-
+    public void onPing(){
+        //...
     }
 
     @Override
