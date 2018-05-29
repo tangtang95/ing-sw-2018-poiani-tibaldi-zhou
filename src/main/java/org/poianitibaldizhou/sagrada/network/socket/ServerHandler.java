@@ -124,8 +124,8 @@ public class ServerHandler implements Runnable {
      * @param view     the object binding the key
      */
     public synchronized void addViewToHashMap(int hashcode, Object view) {
-        if (!viewMap.containsKey(hashcode))
-            viewMap.put(hashcode, view);
+        viewMap.remove(hashcode);
+        viewMap.put(hashcode, view);
     }
 
     /**

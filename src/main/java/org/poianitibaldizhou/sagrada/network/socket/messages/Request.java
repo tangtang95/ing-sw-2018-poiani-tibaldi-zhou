@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.socket.messages;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -48,7 +49,7 @@ public class Request implements Serializable {
      * @param target the invoker of the method
      * @return the object returned by the invocation (null if the method is void)
      */
-    public Object invokeMethod(Object target) {
+    public Object invokeMethod(Object target) throws IOException {
         Method[] methods = target.getClass().getMethods();
         for (int i = 0; i < methods.length; i++) {
             if (methods[i].getName().equals(methodName)) {
@@ -59,7 +60,7 @@ public class Request implements Serializable {
                 }
             }
         }
-        throw new RuntimeException("invocation failed, cannot find method from all the target's method");
+        throw new IOException("invocation failed, cannot find method from all the target's method");
     }
 
     /**
