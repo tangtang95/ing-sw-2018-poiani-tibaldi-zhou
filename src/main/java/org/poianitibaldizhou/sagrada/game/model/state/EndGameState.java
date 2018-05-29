@@ -33,13 +33,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void init() {
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onEndGame(currentRoundPlayer.getUser());
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> {value.onEndGame(currentRoundPlayer.getUser()); });
         game.handleEndGame();
     }
 
@@ -59,13 +53,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
     public void calculateVictoryPoints() {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
         game.setPlayersOutcome(scoreMap, currentRoundPlayer);
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onVictoryPointsCalculated(scoreMap);
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onVictoryPointsCalculated(scoreMap));
     }
 
     /**

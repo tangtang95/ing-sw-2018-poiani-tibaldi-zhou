@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.game.model.observers.IRoundTrackObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;

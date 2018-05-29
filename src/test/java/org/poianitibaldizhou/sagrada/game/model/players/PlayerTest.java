@@ -15,8 +15,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;
@@ -91,7 +93,7 @@ public class PlayerTest {
     @Test
     public void attachObserverTest() throws Exception {
         assertEquals(0, player.getObserverMap().size());
-        IPlayerObserver obs1 = mock(IPlayerObserver.class);
+        PlayerFakeObserver obs1 = mock(PlayerFakeObserver.class);
         player.attachObserver("obs1", obs1);
         assertEquals(1, player.getObserverMap().size());
         assertTrue(obs1 == player.getObserverMap().get("obs1"));
@@ -100,7 +102,7 @@ public class PlayerTest {
     @Test
     public void attachSchemaCardObserverTest() throws Exception {
         assertEquals(0, player.getSchemaCardObserverMap().size());
-        ISchemaCardObserver obs1 = mock(ISchemaCardObserver.class);
+        SchemaCardFakeObserver obs1 = mock(SchemaCardFakeObserver.class);
         player.attachSchemaCardObserver("obs1", obs1);
         assertEquals(1, player.getSchemaCardObserverMap().size());
         assertTrue(obs1 == player.getSchemaCardObserverMap().get("obs1"));
@@ -123,7 +125,7 @@ public class PlayerTest {
     @Test
     public void removeCoinsTest() throws Exception {
         for (int i = 0; i < 4; i++) {
-            player.attachObserver("obs" + i, mock(IPlayerObserver.class));
+            player.attachObserver("obs" + i, mock(PlayerFakeObserver.class));
         }
 
         int beforeCoin = player.getCoins();

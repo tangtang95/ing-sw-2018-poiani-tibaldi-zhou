@@ -3,15 +3,14 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.observers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class DrawableCollection<T> implements Serializable{
     private final List<T> collection;
-    private final transient Map<String, IDrawableCollectionObserver<T>> observerMap;
+    private final transient Map<String, DrawableCollectionFakeObserver<T>> observerMap;
 
     /**
      * Constructor.
@@ -33,7 +32,7 @@ public class DrawableCollection<T> implements Serializable{
      * are not deep copied.
      * @return list of observers
      */
-    public Map<String, IDrawableCollectionObserver<T>> getObserverMap() {
+    public Map<String, DrawableCollectionFakeObserver<T>> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -68,7 +67,7 @@ public class DrawableCollection<T> implements Serializable{
     }
 
     // MODIFIERS
-    public void attachObserver(String token, IDrawableCollectionObserver<T> observer) {
+    public void attachObserver(String token, DrawableCollectionFakeObserver<T> observer) {
         observerMap.put(token, observer);
     }
 
@@ -85,13 +84,7 @@ public class DrawableCollection<T> implements Serializable{
      */
     public void addElement(@NotNull T elem) {
         collection.add(elem);
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onElementAdd(elem);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onElementAdd(elem));
     }
 
     /**
@@ -110,13 +103,7 @@ public class DrawableCollection<T> implements Serializable{
         int pos = Math.abs(rand.nextInt(collection.size()));
         T elem = collection.get(pos);
         collection.remove(pos);
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onElementDraw(elem);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onElementDraw(elem));
         return elem;
     }
 
@@ -127,13 +114,7 @@ public class DrawableCollection<T> implements Serializable{
      */
     public void addElements(@NotNull List<T> list) {
         collection.addAll(list);
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onElementsAdd(list);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onElementsAdd(list));
     }
 
     @Override

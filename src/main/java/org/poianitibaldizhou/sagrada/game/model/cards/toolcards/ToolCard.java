@@ -5,9 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 
-import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -20,7 +21,7 @@ public class ToolCard extends Card{
     private final Color color;
     private int tokens;
     private final transient Node<ICommand> commands;
-    private final transient Map<String, IToolCardObserver> observerMap;
+    private final transient Map<String, ToolCardFakeObserver> observerMap;
 
     private static final int LOW_COST = 1;
     private static final int HIGH_COST = 2;
@@ -60,7 +61,7 @@ public class ToolCard extends Card{
 
     //GETTER
     @Contract(pure = true)
-    public Map<String, IToolCardObserver> getObserverMap() {
+    public Map<String, ToolCardFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -87,26 +88,14 @@ public class ToolCard extends Card{
     //MODIFIERS
     public void addTokens(final int tokens) {
         this.tokens += tokens;
-        observerMap.forEach((key, value) -> {
-            try {
-                value.onTokenChange(tokens);
-            } catch (RemoteException e) {
-                observerMap.remove(key);
-            }
-        });
+        observerMap.forEach((key, value) -> value.onTokenChange(tokens));
     }
 
     public void destroyToolCard() {
-        observerMap.entrySet().forEach(obs -> {
-            try {
-                obs.getValue().onCardDestroy();
-            } catch (RemoteException e) {
-                observerMap.remove(obs);
-            }
-        });
+        observerMap.entrySet().forEach(obs -> obs.getValue().onCardDestroy());
     }
 
-    public void attachToolCardObserver(String token, IToolCardObserver observer) {
+    public void attachToolCardObserver(String token, ToolCardFakeObserver observer) {
         observerMap.put(token, observer);
     }
 

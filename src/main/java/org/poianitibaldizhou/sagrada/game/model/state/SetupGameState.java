@@ -35,13 +35,7 @@ public class SetupGameState extends IStateGame {
      */
     @Override
     public void init() {
-        game.getStateObservers().forEach((key, value) -> {
-            try {
-                value.onSetupGame();
-            } catch (RemoteException e) {
-                game.getStateObservers().remove(key);
-            }
-        });
+        game.getStateObservers().forEach((key, value) -> value.onSetupGame());
 
         DrawableCollection<ToolCard> toolCards = new DrawableCollection<>();
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
@@ -58,12 +52,8 @@ public class SetupGameState extends IStateGame {
         this.injectPublicObjectiveCards(publicObjectiveCards);
 
         game.getGameObservers().forEach((key, value) -> {
-            try {
-                value.onToolCardsDraw(game.getToolCards());
-                value.onPublicObjectiveCardsDraw(game.getPublicObjectiveCards());
-            } catch (RemoteException e) {
-                game.getGameObservers().remove(key);
-            }
+            value.onToolCardsDraw(game.getToolCards());
+            value.onPublicObjectiveCardsDraw(game.getPublicObjectiveCards());
         });
 
         game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayers())));

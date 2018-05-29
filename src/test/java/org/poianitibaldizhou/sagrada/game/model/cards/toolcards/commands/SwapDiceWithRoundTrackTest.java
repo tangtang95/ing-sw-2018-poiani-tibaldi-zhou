@@ -12,7 +12,8 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -28,13 +29,7 @@ import static org.mockito.Mockito.*;
 public class SwapDiceWithRoundTrackTest {
 
     @Mock
-    private IToolCardExecutorObserver observer1;
-
-    @Mock
-    private IToolCardExecutorObserver observer2;
-
-    @Mock
-    private IToolCardExecutorObserver observer3;
+    private ToolCardExecutorFakeObserver observer1, observer2, observer3;
 
     @Mock
     private TurnState stateGame;
@@ -53,7 +48,7 @@ public class SwapDiceWithRoundTrackTest {
 
 
     private ICommand command;
-    private List<IToolCardExecutorObserver> observerList;
+    private List<ToolCardExecutorFakeObserver> observerList;
 
     @Before
     public void setUp() throws Exception {
@@ -83,9 +78,9 @@ public class SwapDiceWithRoundTrackTest {
     public void executeCommandWithSuccessTest() throws Exception {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getNeededDice()).thenReturn(dice);
-        assertEquals(CommandFlow.MAIN, command.executeCommand(player,executor,stateGame ));
+        assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
 
-        for(IToolCardExecutorObserver obs : observerList)
+        for (IToolCardExecutorObserver obs : observerList)
             verify(obs, times(1)).notifyNeedDiceFromRoundTrack(roundTrack);
     }
 
@@ -102,7 +97,7 @@ public class SwapDiceWithRoundTrackTest {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getNeededDice()).thenReturn(dice);
         doThrow(new EmptyCollectionException()).when(draftPool).useDice(dice);
-        assertEquals(CommandFlow.EMPTY_DRAFTPOOL, command.executeCommand(player,executor,stateGame));
+        assertEquals(CommandFlow.EMPTY_DRAFTPOOL, command.executeCommand(player, executor, stateGame));
     }
 
     @Test

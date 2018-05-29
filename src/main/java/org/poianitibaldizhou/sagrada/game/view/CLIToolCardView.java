@@ -11,8 +11,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;

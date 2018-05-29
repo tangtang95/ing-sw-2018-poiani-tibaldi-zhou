@@ -6,7 +6,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -74,14 +76,8 @@ public class PlaceDice implements ICommand {
             return CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE;
         }
 
-        List<IToolCardExecutorObserver> observerList = toolCardExecutor.getObservers();
-        observerList.forEach(obs -> {
-            try {
-                obs.notifyNeedPosition();
-            } catch (RemoteException e) {
-                observerList.remove(obs);
-            }
-        });
+        List<ToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
+        observerList.forEach(ToolCardExecutorFakeObserver::notifyNeedPosition);
 
         position = toolCardExecutor.getNeededPosition();
 

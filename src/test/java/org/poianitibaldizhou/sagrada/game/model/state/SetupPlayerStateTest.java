@@ -10,10 +10,11 @@ import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.IGameObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.IStateObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.GameFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.StateFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IGameObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,10 +35,10 @@ public class SetupPlayerStateTest {
     private Game game;
 
     @Mock
-    private IGameObserver player1Obs, player2Obs, player3Obs, player4Obs;
+    private GameFakeObserver player1Obs, player2Obs, player3Obs, player4Obs;
 
     @Mock
-    private IStateObserver state1obs, state2obs, state3obs, state4obs;
+    private StateFakeObserver state1obs, state2obs, state3obs, state4obs;
 
     private String player1, player2, player3, player4;
 
@@ -55,13 +56,13 @@ public class SetupPlayerStateTest {
         playerList.add(player2);
         playerList.add(player3);
         playerList.add(player4);
-        Map<String, IGameObserver> gameObserver = new HashMap<>();
+        Map<String, GameFakeObserver> gameObserver = new HashMap<>();
         gameObserver.put(player1, player1Obs);
         gameObserver.put(player2, player2Obs);
         gameObserver.put(player3, player3Obs);
         gameObserver.put(player4, player4Obs);
 
-        Map<String, IStateObserver> stateObservers = new HashMap<>();
+        Map<String, StateFakeObserver> stateObservers = new HashMap<>();
         stateObservers.put(player1, state1obs);
         stateObservers.put(player2, state2obs);
         stateObservers.put(player3, state3obs);

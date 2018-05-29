@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.BufferManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
-import org.poianitibaldizhou.sagrada.game.model.observers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;

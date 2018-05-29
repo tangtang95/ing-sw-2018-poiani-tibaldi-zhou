@@ -8,10 +8,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -33,10 +34,10 @@ public class ChooseColorFromRoundTrackTest {
         @Mock
         private Player invokerPlayer;
         @Mock
-        private IToolCardExecutorObserver observer1, observer2, observer3;
+        private ToolCardExecutorFakeObserver observer1, observer2, observer3;
 
         private ICommand command;
-        private List<IToolCardExecutorObserver> observerList;
+        private List<ToolCardExecutorFakeObserver> observerList;
         private RoundTrack roundTrack;
         private Set<Color> colors;
 

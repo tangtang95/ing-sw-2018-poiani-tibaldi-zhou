@@ -22,11 +22,8 @@ public class RerollDraftPool implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
-        try {
-            toolCardExecutor.getTemporaryDraftPool().reRollDices();
-        } catch (DisconnectedException e) {
-            e.printStackTrace();
-        }
+        toolCardExecutor.getTemporaryDraftPool().reRollDices();
+
         return CommandFlow.MAIN;
     }
 

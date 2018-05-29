@@ -8,7 +8,7 @@ import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.observers.IDraftPoolObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
@@ -31,13 +31,9 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAdd(Dice dice) throws RemoteException{
+    public void onDiceAdd(Dice dice) {
         synchronized (draftPool) {
-            try {
-                draftPool.addDice(dice);
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
+            draftPool.addDice(dice);
         }
         String message = currentUser.getName() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -48,7 +44,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice){
+    public void onDiceRemove(Dice dice) {
         synchronized (draftPool) {
             try {
                 draftPool.useDice(dice);
@@ -62,8 +58,6 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
                         " tried to remove " +
                         dice.toString() + " from the draft pool. Draft pool is empty.\n", Level.ACK);
                 return;
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
             }
         }
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -75,13 +69,9 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAdd(List<Dice> dices){
+    public void onDicesAdd(List<Dice> dices) {
         synchronized (draftPool) {
-            try {
-                draftPool.addDices(dices);
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
+            draftPool.addDices(dices);
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = currentUser.getName() + " has added a set of dices to the draft pool.";
@@ -92,15 +82,10 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(List<Dice> dices){
+    public void onDraftPoolReroll(List<Dice> dices) {
         synchronized (draftPool) {
-            try {
-                draftPool.clearPool();
-                draftPool.addDices(dices);
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
-
+            draftPool.clearPool();
+            draftPool.addDices(dices);
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has re-rolled the draft pool.");
@@ -113,11 +98,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
     @Override
     public void onDraftPoolClear() {
         synchronized (draftPool) {
-            try {
-                draftPool.clearPool();
-            } catch (DisconnectedException e) {
-                e.printStackTrace();
-            }
+            draftPool.clearPool();
         }
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (currentUser.getName() + " has cleared the draft pool.");

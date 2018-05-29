@@ -13,7 +13,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -45,10 +46,10 @@ public class RemoveDiceTest {
     private SchemaCard schemaCard;
 
     @Mock
-    private IToolCardExecutorObserver observer1, observer2, observer3;
+    private ToolCardExecutorFakeObserver observer1, observer2, observer3;
 
     @DataPoint
-    private List<IToolCardExecutorObserver> observerList;
+    private List<ToolCardExecutorFakeObserver> observerList;
 
     @DataPoint
     private ICommand removeDiceWithColor;
@@ -122,7 +123,7 @@ public class RemoveDiceTest {
 
         CommandFlow commandFlow = removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);
-        for (IToolCardExecutorObserver obs : observerList) {
+        for (ToolCardExecutorFakeObserver obs : observerList) {
             verify(obs, times(1)).notifyNeedDicePositionOfCertainColor(Color.BLUE);
         }
         verify(executor, times(1)).getNeededColor();
@@ -141,7 +142,7 @@ public class RemoveDiceTest {
 
         CommandFlow commandFlow = removeDice.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);
-        for (IToolCardExecutorObserver obs : observerList) {
+        for (ToolCardExecutorFakeObserver obs : observerList) {
             verify(obs, times(1)).notifyNeedPosition();
         }
         verify(executor, times(1)).getNeededPosition();

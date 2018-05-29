@@ -7,7 +7,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,19 +22,10 @@ public class ToolCardTest {
 
     private ToolCard toolCard;
     private Node<ICommand> commands;
-    private Map<String, IToolCardObserver> observerList;
+    private Map<String, ToolCardFakeObserver> observerList;
 
     @Mock
-    private IToolCardObserver observer1;
-
-    @Mock
-    private IToolCardObserver observer2;
-
-    @Mock
-    private IToolCardObserver observer3;
-
-    @Mock
-    private IToolCardObserver observer4;
+    private ToolCardFakeObserver observer1, observer2, observer3, observer4;
 
     @Before
     public void setUp() throws Exception {

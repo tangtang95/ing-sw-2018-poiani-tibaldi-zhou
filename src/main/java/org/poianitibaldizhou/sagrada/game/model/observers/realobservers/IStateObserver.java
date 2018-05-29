@@ -1,10 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.observers;
+package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.IOException;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.Map;
 
 public interface IStateObserver extends Remote {
@@ -12,25 +12,25 @@ public interface IStateObserver extends Remote {
     /**
      * Notify the start of setup game state
      *
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onSetupGame() throws RemoteException;
+    void onSetupGame() throws IOException;
 
     /**
      * Notify the start of setup player state
      *
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onSetupPlayer() throws RemoteException;
+    void onSetupPlayer() throws IOException;
 
     /**
      * Notify the start of round
      *
      * @param round     the current round
      * @param roundUser the user of the current round who has the diceBag
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onRoundStart(int round, User roundUser) throws RemoteException;
+    void onRoundStart(int round, User roundUser) throws IOException;
 
     /**
      * Notify the start of turn state
@@ -39,26 +39,26 @@ public interface IStateObserver extends Remote {
      * @param isFirstTurn indicates if the turn is the first or the second
      * @param roundUser   the user of the current round who has the diceBag
      * @param turnUser    the user of the current turn
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) throws RemoteException;
+    void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) throws IOException;
 
     /**
      * Notify the end of the round
      *
      * @param round     the current round
      * @param roundUser the user of the current round who has the diceBag
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onRoundEnd(int round, User roundUser) throws RemoteException;
+    void onRoundEnd(int round, User roundUser) throws IOException;
 
     /**
      * Notify the end of the game
      *
      * @param roundUser the user of the current round who has the diceBag
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onEndGame(User roundUser) throws RemoteException;
+    void onEndGame(User roundUser) throws IOException;
 
     /**
      * Notify the skip of a turn
@@ -67,47 +67,47 @@ public interface IStateObserver extends Remote {
      * @param isFirstTurn if the turn is the first true, otherwise false
      * @param roundUser   the user of the current round who has the diceBag
      * @param turnUser    the user of the current turn
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) throws RemoteException;
+    void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) throws IOException;
 
     /**
      * Notify that the turnUser has decided to place a dice
      *
      * @param turnUser the user who has decided to place a dice
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onPlaceDiceState(User turnUser) throws RemoteException;
+    void onPlaceDiceState(User turnUser) throws IOException;
 
     /**
      * Notify that the turnUser has decided to use a toolCard
      *
      * @param turnUser the user who has decided to use a toolCard
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onUseCardState(User turnUser) throws RemoteException;
+    void onUseCardState(User turnUser) throws IOException;
 
     /**
      * Notify that the turnUser has decided to end his turn
      *
      * @param turnUser the user who has decided to end his turn
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onEndTurnState(User turnUser) throws RemoteException;
+    void onEndTurnState(User turnUser) throws IOException;
 
     /**
      * Notify the victory points to all the players
      *
      * @param victoryPoints a map of all victory points (key: username)
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) throws RemoteException;
+    void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) throws IOException;
 
     /**
      * Notify the winner to the observer
      *
      * @param winner the player who has won the game
-     * @throws RemoteException network error
+     * @throws IOException network error
      */
-    void onResultGame(User winner) throws RemoteException;
+    void onResultGame(User winner) throws IOException;
 }

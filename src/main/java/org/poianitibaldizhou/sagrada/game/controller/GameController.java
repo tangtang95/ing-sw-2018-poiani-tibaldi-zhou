@@ -12,7 +12,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ColorEx
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.DiceExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.PositionExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ValueExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
@@ -42,17 +44,20 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             view.err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
-            game.attachGameObserver(token, gameObserver);
-            game.attachRoundTrackObserver(token, roundTrackObserver);
-            game.attachStateObserver(token, stateObserver);
-            game.attachDraftPoolObserver(token, draftPoolObserver);
-            game.attachDiceBagObserver(token, diceBagObserver);
             game.userJoin(token);
         } catch (InvalidActionException e) {
             view.err("You are not playing in this game");
             return;
         }
         view.ack("You are now ready to play");
+
+        ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+        game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
+        game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
+        game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
+        game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
+        game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
+
         viewMap.put(token, view);
     }
 
@@ -88,13 +93,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
-            game.attachSchemaCardObserver(token, player.getSchemaCard(), schemaCardObserver);
+            game.attachSchemaCardObserver(token, player.getSchemaCard(), new SchemaCardFakeObserver(token,
+                    gameManager.getObserverManagerByGame(gameName), schemaCardObserver));
         } catch (InvalidActionException e) {
             viewMap.get(token).err("The schema card selected is not valid");
             return;
         }
         try {
-            game.attachPlayerObserver(token, player, playerObserver);
+            game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, gameManager.getObserverManagerByGame(gameName), playerObserver));
         } catch (InvalidActionException e) {
             viewMap.get(token).err("The schema card selected is not valid");
             return;
@@ -113,7 +119,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
-            game.attachToolCardObserver(token, toolCard, toolCardObserver);
+            game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, gameManager.getObserverManagerByGame(gameName), toolCardObserver));
         } catch (InvalidActionException e) {
             viewMap.get(token).err("The tool card selected is not valid");
             return;
@@ -202,7 +208,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
         try {
-            game.userUseToolCard(token, toolCard, executorObserver);
+            game.userUseToolCard(token, toolCard, new ToolCardExecutorFakeObserver(token, gameManager.getObserverManagerByGame(gameName), executorObserver));
         } catch (InvalidActionException e) {
             viewMap.get(token).err("You cannot take any action right now");
         }
