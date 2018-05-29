@@ -190,6 +190,22 @@ public abstract class Game implements IGame, IGameStrategy {
         return copyPlayers;
     }
 
+    public void detachObservers(String token) {
+        roundTrack.detachObserver(token);
+        diceBag.detachObserver(token);
+        detachGameObserver(token);
+        detachStateObserver(token);
+        draftPool.detachObserver(token);
+        players.forEach((key, value) -> {
+            value.detachObserver(token);
+            value.detachSchemaCardObserver(token);
+        });
+
+        toolCards.forEach(toolcard -> {
+            toolcard.detachToolCardObserver(token);
+        });
+    }
+
     // OBSERVER ATTACH (INTERFACE METHODS)
     @Override
     public void attachStateObserver(String token, StateFakeObserver stateObserver) {
@@ -401,25 +417,5 @@ public abstract class Game implements IGame, IGameStrategy {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
             }
         }
-    }
-
-    public void playersDisconnection(String token) {
-
-        roundTrack.detachObserver(token);
-        diceBag.detachObserver(token);
-        detachGameObserver(token);
-        detachStateObserver(token);
-        draftPool.detachObserver(token);
-        players.forEach((key, value) -> {
-            value.detachObserver(token);
-            value.detachSchemaCardObserver(token);
-        });
-
-        toolCards.forEach(toolcard -> {
-            toolcard.detachToolCardObserver(token);
-        });
-
-        // todo for toolcard executor?
-
     }
 }

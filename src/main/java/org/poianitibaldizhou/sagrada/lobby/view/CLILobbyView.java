@@ -42,11 +42,25 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         commandMap.put(leaveCommand.getCommandText(), leaveCommand);
 
         Command timeoutCommand = new Command(TIMEOUT_COMMAND, "Show time to reach timeout");
-        timeoutCommand.setCommandAction(() -> networkManager.getLobbyController().requestTimeout(token));
+        timeoutCommand.setCommandAction(() -> {
+            try {
+                networkManager.getLobbyController().requestTimeout(token);
+            } catch (IOException e) {
+                //TODO
+                e.printStackTrace();
+            }
+        });
         commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
 
         Command showUserCommand = new Command(LOBBY_USER_COMMAND, "Show users in lobby");
-        showUserCommand.setCommandAction(() -> networkManager.getLobbyController().requestUsersInLobby(token));
+        showUserCommand.setCommandAction(() -> {
+            try {
+                networkManager.getLobbyController().requestUsersInLobby(token);
+            } catch (IOException e) {
+                // TODO
+                e.printStackTrace();
+            }
+        });
         commandMap.put(showUserCommand.getCommandText(), showUserCommand);
     }
 
@@ -54,7 +68,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         this.isLoggedIn = false;
         try {
             controller.leave(token, username);
-        } catch (RemoteException e) {
+        } catch (IOException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
         }
     }
@@ -65,7 +79,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
             if (!(username.isEmpty()))
                 try {
                     token = controller.login(username, this);
-                } catch (RemoteException e) {
+                } catch (IOException e) {
                     Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
                 }
         } while (username.isEmpty() || token.isEmpty());
@@ -73,7 +87,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         isLoggedIn = true;
         try {
             controller.join(token, username, this);
-        } catch (RemoteException e) {
+        } catch (IOException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
         }
     }
@@ -89,7 +103,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
         while (isLoggedIn) {
             try {
                 getCommand(commandMap).executeCommand();
-            } catch (RemoteException e) {
+            } catch (IOException e) {
                 Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
             }catch (NullPointerException e) {
                 isLoggedIn = false;

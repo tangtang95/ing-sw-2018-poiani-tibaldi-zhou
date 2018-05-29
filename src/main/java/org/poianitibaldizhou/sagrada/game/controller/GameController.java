@@ -18,11 +18,12 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GameController extends UnicastRemoteObject implements IGameController {
 
@@ -40,135 +41,390 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void joinGame(final String token, final String gameName, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws RemoteException {
+                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws IOException {
         if (!gameManager.containsGame(gameName))
             view.err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userJoin(token);
-        } catch (InvalidActionException e) {
-            view.err("You are not playing in this game");
-            return;
-        }
-        view.ack("You are now ready to play");
 
-        ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
-        game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
-        game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
-        game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
-        game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
-        game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
-
-        viewMap.put(token, view);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws RemoteException {
-        if (!viewMap.containsKey(token))
-            return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userSelectSchemaCard(token, schemaCard);
-        } catch (InvalidActionException e) {
-            if (viewMap.containsKey(token)) {
-                viewMap.get(token).err("The schema card selected is not valid");
+        synchronized (gameManager.getGameByName(gameName)) {
+            IGame game = gameManager.getGameByName(gameName);
+            try {
+                game.userJoin(token);
+            } catch (InvalidActionException e) {
+                view.err("You are not playing in this game");
+                return;
             }
-            return;
+            view.ack("You are now ready to play");
+
+            ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+            game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
+            game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
+            game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
+            game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
+            game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
+
+            viewMap.put(token, view);
         }
-        viewMap.get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void bindPlayer(String token, String gameName, Player player, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws RemoteException {
+    public void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws IOException {
         if (!viewMap.containsKey(token))
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
 
-        if(!game.getPlayers().contains(player)) {
-            viewMap.get(token).err("You are trying to listening the actions of an non existing player");
-            return;
+        synchronized (gameManager.getGameByName(gameName)) {
+            IGame game = gameManager.getGameByName(gameName);
+            try {
+                game.userSelectSchemaCard(token, schemaCard);
+            } catch (InvalidActionException e) {
+                if (viewMap.containsKey(token)) {
+                    viewMap.get(token).err("The schema card selected is not valid");
+                }
+                return;
+            }
+            viewMap.get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
         }
-
-        game.attachSchemaCardObserver(token, player.getSchemaCard(), new SchemaCardFakeObserver(token,
-                gameManager.getObserverManagerByGame(gameName), schemaCardObserver));
-        game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, gameManager.getObserverManagerByGame(gameName), playerObserver));
-
-        viewMap.get(token).ack("Binding to " + player.getUser().getName() + " successful");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws RemoteException {
+    public void bindPlayer(String token, String gameName, Player player, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
         if (!viewMap.containsKey(token))
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
 
-        if(!game.getToolCards().contains(toolCard)) {
-            viewMap.get(token).err("You are trying to listening on a non existing toolcard");
-            return;
+            if (!game.getPlayers().contains(player)) {
+                viewMap.get(token).err("You are trying to listening the actions of an non existing player");
+                return;
+            }
+
+            game.attachSchemaCardObserver(token, player.getSchemaCard(), new SchemaCardFakeObserver(token,
+                    gameManager.getObserverManagerByGame(gameName), schemaCardObserver));
+            game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, gameManager.getObserverManagerByGame(gameName), playerObserver));
+
+            viewMap.get(token).ack("Binding to " + player.getUser().getName() + " successful");
         }
-
-        game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, gameManager.getObserverManagerByGame(gameName), toolCardObserver));
-
-        viewMap.get(token).ack("Binding to " + toolCard.getName() + " successful");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void chooseAction(String token, String gameName, IActionCommand actionCommand) throws RemoteException {
+    public void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws IOException {
         if (!viewMap.containsKey(token))
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userChooseAction(token, actionCommand);
-        } catch (InvalidActionException e) {
-            viewMap.get(token).err("You cannot take any action right now");
+
+        synchronized (game) {
+
+            if (!game.getToolCards().contains(toolCard)) {
+                viewMap.get(token).err("You are trying to listening on a non existing toolcard");
+                return;
+            }
+
+            game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, gameManager.getObserverManagerByGame(gameName), toolCardObserver));
+
+            viewMap.get(token).ack("Binding to " + toolCard.getName() + " successful");
         }
-        viewMap.get(token).ack("Action performed");
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void placeDice(String token, String gameName, Dice dice, Position position) throws RemoteException {
+    public void chooseAction(String token, String gameName, IActionCommand actionCommand) throws IOException {
         if (!viewMap.containsKey(token))
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
         IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userPlaceDice(token, dice, position);
-        } catch (InvalidActionException e) {
-            if (e.getException() instanceof RuleViolationException)
-                handleRuleViolationException(viewMap.get(token), (RuleViolationException) e.getException());
-            else
+        synchronized (game) {
+            try {
+                game.userChooseAction(token, actionCommand);
+            } catch (InvalidActionException e) {
                 viewMap.get(token).err("You cannot take any action right now");
+            }
+            viewMap.get(token).ack("Action performed");
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    private void handleRuleViolationException(IGameView view, RuleViolationException exception) throws RemoteException {
+    @Override
+    public void placeDice(String token, String gameName, Dice dice, Position position) throws IOException {
+        if (!viewMap.containsKey(token))
+            return;
+        if (!gameManager.containsGame(gameName))
+            viewMap.get(token).err("The game doesn't exist");
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            try {
+                game.userPlaceDice(token, dice, position);
+            } catch (InvalidActionException e) {
+                if (e.getException() instanceof RuleViolationException)
+                    handleRuleViolationException(viewMap.get(token), (RuleViolationException) e.getException());
+                else
+                    viewMap.get(token).err("You cannot take any action right now");
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver)
+            throws IOException {
+        if (!viewMap.containsKey(token))
+            return;
+        if (!gameManager.containsGame(gameName))
+            viewMap.get(token).err("The game doesn't exist");
+
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            try {
+                game.userUseToolCard(token, toolCard, new ToolCardExecutorFakeObserver(token, gameManager.getObserverManagerByGame(gameName), executorObserver));
+            } catch (InvalidActionException e) {
+                viewMap.get(token).err("You cannot take any action right now");
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws IOException {
+        if (!viewMap.containsKey(token))
+            return;
+        if (!gameManager.containsGame(gameName))
+            viewMap.get(token).err("The game doesn't exist");
+
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            try {
+                game.userChoosePrivateObjectiveCard(token, privateObjectiveCard);
+            } catch (InvalidActionException e) {
+                viewMap.get(token).err("The private objective card chosen is invalid");
+            }
+        }
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setDice(String token, String gameName, Dice dice, String toolCardName) throws IOException {
+        if (!viewMap.containsKey(token))
+            return;
+        if (!gameManager.containsGame(gameName))
+            viewMap.get(token).err("The game doesn't exist");
+        IGame game = gameManager.getGameByName(gameName);
+
+        synchronized (game) {
+            try {
+                game.userFireExecutorEvent(token, new DiceExecutorEvent(dice));
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setNewValue(String token, String gameName, int value, String toolCardName) throws IOException {
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName))
+            return;
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            try {
+                game.userFireExecutorEvent(token, new ValueExecutorEvent(value));
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setColor(String token, String gameName, Color color, String toolCardName) throws IOException {
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
+            return;
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            try {
+                game.userFireExecutorEvent(token, new ColorExecutorEvent(color));
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setPosition(String token, String gameName, Position position, String toolCardName) throws IOException {
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
+            return;
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            try {
+                game.userFireExecutorEvent(token, new PositionExecutorEvent(position));
+            } catch (InvalidActionException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
+                          Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
+                          IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver<Dice>
+                                  diceBagObserver) throws IOException {
+        // check if the token is the one of a disconnected player
+        synchronized (gameManager.getGameByName(gameName)) {
+            ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+            if (!observerManager.getDisconnectedPlayer().contains(token)) {
+                gameView.err("A player with this name is already connected to the game");
+            }
+
+            // check if given data are corrects
+            IGame game = gameManager.getGameByName(gameName);
+            if (!(game.getPlayers().containsAll(playerObserver.keySet()) && playerObserver.size() == game.getPlayers().size())) {
+                gameView.err("Player observers are wrong");
+                return;
+            }
+            if (!(game.getPlayers().containsAll(schemaCardObserver.keySet()) && game.getPlayers().size() == schemaCardObserver.size())) {
+                gameView.err("Schema card observers are wrong");
+                return;
+            }
+            if (!(game.getToolCards().containsAll(toolCardObserver.keySet()) && game.getToolCards().size() == toolCardObserver.size())) {
+                gameView.err("Tool card observers are wrong");
+                return;
+            }
+
+            // Attaching observer and view regarding the re-connected player
+            if (viewMap.containsKey(token)) {
+                viewMap.replace(token, gameView);
+            }
+
+            game.getPlayers().forEach(player -> game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, observerManager, playerObserver.get(player.getToken()))));
+            game.getPlayers().forEach(player -> game.attachSchemaCardObserver(token, player.getSchemaCard(),
+                    new SchemaCardFakeObserver(token, observerManager, schemaCardObserver.get(player.getToken()))));
+            game.getToolCards().forEach(toolCard -> game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, observerManager, toolCardObserver.get(toolCard.getName()))));
+            game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
+            game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
+            game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
+            game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
+            game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
+
+            // synchronize data
+            synchronizeModel(token, gameName);
+
+            observerManager.signalReconnect(token);
+            gameView.ack("You are now riconnected to the game");
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void synchronizeModel(String token, String gameName) throws IOException {
+        IGame game = gameManager.getGameByName(gameName);
+        synchronized (game) {
+            if (!(game.containsToken(token))) {
+                viewMap.get(token).err("You can't synchronize on a game that you're not playing");
+                return;
+            }
+
+            viewMap.get(token).notifyModelSynch(game.getDraftPool(), game.getPlayers(), game.getRoundTrack(), game.getToolCards());
+        }
+    }
+
+
+    /**
+     * Returns true if a certain player has the synchronized model
+     *
+     * @param token    player's token
+     * @param gameName game's name
+     * @return true if synchronized, false otherwise
+     */
+    private boolean isSynchronized(String token, String gameName) {
+        return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
+    }
+
+    /**
+     * Handles network error in server controller
+     *
+     * @param token
+     * @param gameName
+     */
+    private void handleIOException(String token, String gameName) {
+
+    }
+
+    /**
+     * It cleans the observer of a certain game, with the notify disconnections.
+     * It also signals the disconnections of the various player.
+     *
+     * @param gameName game's name
+     */
+    private void cleanObservers(String gameName) {
+        ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+        Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
+        Set<String> disconnected = observerManager.getDisconnectedPlayer();
+        List<Player> playerList = gameManager.getGameByName(gameName).getPlayers();
+
+        toNotifyDisconnect.forEach(disconnectedToken -> {
+            playerList.forEach(player -> {
+                if (!disconnected.contains(player.getToken())) {
+                    try {
+                        Optional<User> username = playerList.stream().map(Player::getUser).filter((user) -> user.getToken().
+                                equals(disconnectedToken)).findFirst();
+                        if (username.isPresent())
+                            viewMap.get(player.getToken()).err(username.get().getName() + " disconnected");
+                    } catch (IOException e) {
+                        observerManager.signalDisconnection(player.getToken());
+                    }
+                }
+            });
+
+            gameManager.getGameByName(gameName).detachObservers(disconnectedToken);
+            observerManager.notifyDisconnection(disconnectedToken);
+            viewMap.remove(disconnectedToken);
+        });
+    }
+
+    /**
+     * Sends an error depending on the rule violation found while executing.
+     *
+     * @param view      view that needs to be signaled of the error
+     * @param exception rule violation exception
+     * @throws IOException network communication error
+     */
+    private void handleRuleViolationException(IGameView view, RuleViolationException exception) throws IOException {
         switch (exception.getViolationType()) {
             case NO_DICE_NEAR:
                 view.err("You cannot place dice because there are no dice near");
@@ -194,181 +450,5 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             default:
                 break;
         }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver)
-            throws RemoteException {
-        if (!viewMap.containsKey(token))
-            return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userUseToolCard(token, toolCard, new ToolCardExecutorFakeObserver(token, gameManager.getObserverManagerByGame(gameName), executorObserver));
-        } catch (InvalidActionException e) {
-            viewMap.get(token).err("You cannot take any action right now");
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws RemoteException {
-        if (!viewMap.containsKey(token))
-            return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userChoosePrivateObjectiveCard(token, privateObjectiveCard);
-        } catch (InvalidActionException e) {
-            viewMap.get(token).err("The private objective card chosen is invalid");
-        }
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDice(String token, String gameName, Dice dice, String toolCardName) throws RemoteException {
-        if (!viewMap.containsKey(token))
-            return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-
-        try {
-            game.userFireExecutorEvent(token, new DiceExecutorEvent(dice));
-        } catch (InvalidActionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setNewValue(String token, String gameName, int value, String toolCardName) throws RemoteException {
-        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName))
-            return;
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userFireExecutorEvent(token, new ValueExecutorEvent(value));
-        } catch (InvalidActionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setColor(String token, String gameName, Color color, String toolCardName) throws RemoteException {
-        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
-            return;
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userFireExecutorEvent(token, new ColorExecutorEvent(color));
-        } catch (InvalidActionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setPosition(String token, String gameName, Position position, String toolCardName) throws RemoteException {
-        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
-            return;
-        IGame game = gameManager.getGameByName(gameName);
-        try {
-            game.userFireExecutorEvent(token, new PositionExecutorEvent(position));
-        } catch (InvalidActionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
-                          Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
-                          IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver<Dice>
-                                  diceBagObserver) throws RemoteException {
-        // check if the token is the one of a disconnected player
-        ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
-        if (!observerManager.getDisconnectedPlayer().contains(token)) {
-            gameView.err("A player with this name is already connected to the game");
-        }
-
-        // check if given data are corrects
-        IGame game = gameManager.getGameByName(gameName);
-        if (!(game.getPlayers().containsAll(playerObserver.keySet()) && playerObserver.size() == game.getPlayers().size())) {
-            gameView.err("Player observers are wrong");
-            return;
-        }
-        if (!(game.getPlayers().containsAll(schemaCardObserver.keySet()) && game.getPlayers().size() == schemaCardObserver.size())) {
-            gameView.err("Schema card observers are wrong");
-            return;
-        }
-        if (!(game.getToolCards().containsAll(toolCardObserver.keySet()) && game.getToolCards().size() == toolCardObserver.size())) {
-            gameView.err("Tool card observers are wrong");
-            return;
-        }
-
-        // Attaching observer and view regarding the re-connected player
-        if (viewMap.containsKey(token)) {
-            viewMap.replace(token, gameView);
-        }
-
-        game.getPlayers().forEach(player -> game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, observerManager, playerObserver.get(player.getToken()))));
-        game.getPlayers().forEach(player -> game.attachSchemaCardObserver(token, player.getSchemaCard(),
-                new SchemaCardFakeObserver(token, observerManager, schemaCardObserver.get(player.getToken()))));
-        game.getToolCards().forEach(toolCard -> game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, observerManager, toolCardObserver.get(toolCard.getName()))));
-        game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
-        game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
-        game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
-        game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
-        game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
-
-        // synchronize data
-        synchronizeModel(token, gameName);
-
-        observerManager.signalReconnect(token);
-        gameView.ack("You are now riconnected to the game");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void synchronizeModel(String token, String gameName) throws RemoteException {
-        IGame game = gameManager.getGameByName(gameName);
-        if(!(game.containsToken(token))) {
-            viewMap.get(token).err("You can't synchronize on a game that you're not playing");
-            return;
-        }
-
-        viewMap.get(token).notifyModelSynch(game.getDraftPool(), game.getPlayers(), game.getRoundTrack(), game.getToolCards());
-    }
-
-
-    /**
-     * Returns true if a certain player has the synchronized model
-     *
-     * @param token player's token
-     * @param gameName game's name
-     * @return true if synchronized, false otherwise
-     */
-    private boolean isSynchronized(String token, String gameName) {
-        return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
     }
 }

@@ -35,6 +35,8 @@ public interface IGame {
 
     void attachPlayerObserver(String token, Player player, PlayerFakeObserver playerObserver);
 
+    void detachObservers(String token);
+
     void userFireExecutorEvent(String token, ExecutorEvent event) throws IllegalArgumentException, InvalidActionException;
 
     void userJoin(String token) throws IllegalArgumentException, InvalidActionException;

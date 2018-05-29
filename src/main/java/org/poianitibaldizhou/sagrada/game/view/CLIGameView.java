@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -237,7 +238,7 @@ public class CLIGameView extends CLIMenuView implements IGameView{
                     networkManager.getGameController().placeDice(currentUser.getToken(),
                             gameName,cliDraftPoolView.getDraftPool().getDices().get(diceNumber - 1),
                             selectPosition());
-                } catch (RemoteException e) {
+                } catch (IOException e) {
                     bufferManager.consolePrint("NETWORK ERROR", Level.HIGH);
                 }
             } else {
@@ -262,9 +263,13 @@ public class CLIGameView extends CLIMenuView implements IGameView{
                 number = -1;
             }
             if (number > 0 && number <= toolCards.size()) {
-                networkManager.getGameController().useToolCard(currentUser.getToken(),
-                        gameName, toolCards.get(number - 1),
-                        new CLIToolCardView(this,toolCards.get(number - 1)));
+                try {
+                    networkManager.getGameController().useToolCard(currentUser.getToken(),
+                            gameName, toolCards.get(number - 1),
+                            new CLIToolCardView(this,toolCards.get(number - 1)));
+                } catch (IOException e) {
+                    // TODO handle exception
+                }
             } else {
                 bufferManager.consolePrint(NUMBER_WARNING, Level.LOW);
                 number = -1;
@@ -304,7 +309,7 @@ public class CLIGameView extends CLIMenuView implements IGameView{
     }
 
     @Override
-    public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) throws RemoteException {
+    public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<SchemaCard> schemaCardList = new ArrayList<>();
 

@@ -40,7 +40,7 @@ public class GameManager {
     public synchronized void addGame(IGame game, String gameName) {
         if(gameMap.putIfAbsent(gameName, game) == null){
             playersByGame.put(gameName, new ArrayList<>());
-            observerManagerMap.putIfAbsent(gameName, new ObserverManager(gameName, game));
+            observerManagerMap.putIfAbsent(gameName, new ObserverManager());
         }
     }
 

@@ -11,8 +11,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 
+import java.io.IOException;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 import java.util.Map;
 
 public interface IGameController extends Remote {
@@ -27,11 +27,11 @@ public interface IGameController extends Remote {
      * @param stateObserver      player's state observer
      * @param draftPoolObserver  player's draft pool observer
      * @param diceBagObserver    player's dice bag observer
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
     void joinGame(String token, String gameName, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                  IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws RemoteException;
+                  IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws IOException;
 
     /**
      * Notifies the schema card chosen by a certain player.
@@ -40,9 +40,9 @@ public interface IGameController extends Remote {
      * @param token      player's token
      * @param gameName   game's name
      * @param schemaCard schema card chosen by a certain player
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws RemoteException;
+    void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws IOException;
 
     /**
      * Binds the player  and che schema card observers of a certain player to the specified player and its schema card.
@@ -53,10 +53,10 @@ public interface IGameController extends Remote {
      * @param player             player that is going to be observer by the specified observer
      * @param playerObserver     player's observer
      * @param schemaCardObserver schema card observer of the schema card of player
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
     void bindPlayer(String token, String gameName, Player player, IPlayerObserver playerObserver
-            , ISchemaCardObserver schemaCardObserver) throws RemoteException;
+            , ISchemaCardObserver schemaCardObserver) throws IOException;
 
     /**
      * Binds the tool card observer of a certain player to the specified tool card.
@@ -66,9 +66,9 @@ public interface IGameController extends Remote {
      * @param gameName         game's name
      * @param toolCard         tool card regarding the specified observer
      * @param toolCardObserver player's tool card observer
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws RemoteException;
+    void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws IOException;
 
     /**
      * Notifies the action chosen by a certain player.
@@ -77,9 +77,9 @@ public interface IGameController extends Remote {
      * @param token         player's token
      * @param gameName      game's name
      * @param actionCommand action that the player has chosen
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void chooseAction(String token, String gameName, IActionCommand actionCommand) throws RemoteException;
+    void chooseAction(String token, String gameName, IActionCommand actionCommand) throws IOException;
 
     /**
      * Notifies that a player wants to place a dice in a certain position.
@@ -89,9 +89,9 @@ public interface IGameController extends Remote {
      * @param gameName game's name
      * @param dice     dice that the player wants to place
      * @param position dice needs to be placed in this position
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void placeDice(String token, String gameName, Dice dice, Position position) throws RemoteException;
+    void placeDice(String token, String gameName, Dice dice, Position position) throws IOException;
 
     /**
      * Notifies that a player wants to use a specific tool card.
@@ -101,9 +101,9 @@ public interface IGameController extends Remote {
      * @param gameName         game's name
      * @param toolCard         tool card that the player wants to use
      * @param executorObserver player's observer for tool card execution
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver) throws RemoteException;
+    void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver) throws IOException;
 
     /**
      * Indicates the chosen private objective cards of a certain player.
@@ -112,9 +112,9 @@ public interface IGameController extends Remote {
      * @param token                player's token
      * @param gameName             game's name
      * @param privateObjectiveCard private objective card chosen by the player
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws RemoteException;
+    void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws IOException;
 
     /**
      * Set a dice on a certain toolcard for its purpose.
@@ -125,7 +125,7 @@ public interface IGameController extends Remote {
      * @param dice         dice to set
      * @param toolCardName name of the ToolCard on which to place the dice
      */
-    void setDice(String token, String gameName, Dice dice, String toolCardName) throws RemoteException;
+    void setDice(String token, String gameName, Dice dice, String toolCardName) throws IOException;
 
     /**
      * Set a a new value needed for a dice on a certain toolcard and its purpose.
@@ -136,7 +136,7 @@ public interface IGameController extends Remote {
      * @param value        dice's value
      * @param toolCardName toolcard on which to place the value
      */
-    void setNewValue(String token, String gameName, int value, String toolCardName) throws RemoteException;
+    void setNewValue(String token, String gameName, int value, String toolCardName) throws IOException;
 
     /**
      * Set a new color needed for a certain toolcard and its purpose.
@@ -147,7 +147,7 @@ public interface IGameController extends Remote {
      * @param color        dice's value
      * @param toolCardName toolcard on which to place the color
      */
-    void setColor(String token, String gameName, Color color, String toolCardName) throws RemoteException;
+    void setColor(String token, String gameName, Color color, String toolCardName) throws IOException;
 
     /**
      * Set a new color needed for a certain toolcard and its purpose.
@@ -157,9 +157,9 @@ public interface IGameController extends Remote {
      * @param gameName     game played
      * @param position     position that needs to be set for the specified toolcard
      * @param toolCardName toolcard on which to set the posiiton
-     * @throws RemoteException
+     * @throws IOException
      */
-    void setPosition(String token, String gameName, Position position, String toolCardName) throws RemoteException;
+    void setPosition(String token, String gameName, Position position, String toolCardName) throws IOException;
 
     /**
      * Re-connects a player to a certain game.
@@ -176,19 +176,19 @@ public interface IGameController extends Remote {
      * @param draftPoolObserver  player's draft pool observer
      * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
     void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                    Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                    IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver<Dice>
-                           diceBagObserver) throws RemoteException;
+                           diceBagObserver) throws IOException;
 
     /**
      * Synchronize the model of a certain player. The player must be part of the specified game
      *
      * @param token    player's token
      * @param gameName game's name
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
-    void synchronizeModel(String token, String gameName) throws RemoteException;
+    void synchronizeModel(String token, String gameName) throws IOException;
 }
