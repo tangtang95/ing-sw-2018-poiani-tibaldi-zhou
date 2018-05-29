@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -382,5 +384,10 @@ public class CLIGameView extends CLIMenuView implements IGameView{
 
         return Objects.hash(super.hashCode(), commandMap, toolCards, publicObjectiveCards,
                 getCurrentUser(), getGameName(), getCliSchemaCardView(), cliDraftPoolView, cliRoundTrackView);
+    }
+
+    @Override
+    public void notifyModelSynch(DraftPool draftPool, List<Player> players, RoundTrack roundTrack, List<ToolCard> toolCards) {
+        // TODO
     }
 }

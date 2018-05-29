@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
@@ -13,6 +15,7 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
 import java.rmi.RemoteException;
+import java.util.List;
 
 public interface IGame {
 
@@ -24,29 +27,37 @@ public interface IGame {
 
     void attachDraftPoolObserver(String token, DraftPoolFakeObserver draftPoolObserver);
 
-    void attachToolCardObserver(String token, ToolCard toolCard, ToolCardFakeObserver toolCardObserver) throws InvalidActionException;
+    void attachToolCardObserver(String token, ToolCard toolCard, ToolCardFakeObserver toolCardObserver);
 
     void attachDiceBagObserver(String token, DrawableCollectionFakeObserver<Dice> drawableCollectionObserver);
 
-    void attachSchemaCardObserver(String token, SchemaCard schemaCard, SchemaCardFakeObserver schemaCardObserver) throws InvalidActionException;
+    void attachSchemaCardObserver(String token, SchemaCard schemaCard, SchemaCardFakeObserver schemaCardObserver);
 
-    void attachPlayerObserver(String token, Player player, PlayerFakeObserver playerObserver) throws InvalidActionException;
+    void attachPlayerObserver(String token, Player player, PlayerFakeObserver playerObserver);
 
-    void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException;
+    void userFireExecutorEvent(String token, ExecutorEvent event) throws IllegalArgumentException, InvalidActionException;
 
-    void userJoin(String token) throws InvalidActionException;
+    void userJoin(String token) throws IllegalArgumentException, InvalidActionException;
 
-    void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException;
+    void userSelectSchemaCard(String token, SchemaCard schemaCard) throws IllegalArgumentException, InvalidActionException;
 
-    void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException;
+    void userPlaceDice(String token, Dice dice, Position position) throws IllegalArgumentException, InvalidActionException;
 
-    void userUseToolCard(String token, ToolCard toolCard, ToolCardExecutorFakeObserver executorObserver) throws InvalidActionException;
+    void userUseToolCard(String token, ToolCard toolCard, ToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException;
 
-    void userChooseAction(String token, IActionCommand action) throws InvalidActionException;
+    void userChooseAction(String token, IActionCommand action) throws IllegalArgumentException, InvalidActionException;
 
-    void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException;
+    void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws IllegalArgumentException, InvalidActionException;
 
     boolean containsToken(String token);
 
     String getName();
+
+    List<Player> getPlayers();
+
+    List<ToolCard> getToolCards();
+
+    DraftPool getDraftPool();
+
+    RoundTrack getRoundTrack();
 }

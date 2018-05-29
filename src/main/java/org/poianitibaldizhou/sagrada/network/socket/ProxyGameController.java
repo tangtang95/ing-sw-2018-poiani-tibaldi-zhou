@@ -14,9 +14,10 @@ import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.network.socket.messages.GameRequest;
 
 import java.rmi.RemoteException;
+import java.util.Map;
 
 @Deprecated
-public class ProxyGameController extends ProxyController implements IGameController{
+public class ProxyGameController extends ProxyController implements IGameController {
 
 
     /**
@@ -33,8 +34,7 @@ public class ProxyGameController extends ProxyController implements IGameControl
     @Override
     public void joinGame(String token, String gameName, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver)
-            throws RemoteException {
+                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) {
         serverHandler.addViewToHashMap(view.hashCode(), view);
         serverHandler.addViewToHashMap(gameObserver.hashCode(), gameObserver);
         serverHandler.addViewToHashMap(roundTrackObserver.hashCode(), roundTrackObserver);
@@ -83,9 +83,10 @@ public class ProxyGameController extends ProxyController implements IGameControl
 
     /**
      * Sends a dice previously requested by the server.
-     *  @param token
-     * @param gameName name of the game in which the player acts
-     * @param dice dice sent
+     *
+     * @param token
+     * @param gameName     name of the game in which the player acts
+     * @param dice         dice sent
      * @param toolCardName ToolCard's name that requested this effect
      */
     @Override
@@ -96,9 +97,10 @@ public class ProxyGameController extends ProxyController implements IGameControl
 
     /**
      * Sends an integer value previously requested by the server.
-     *  @param token
-     * @param gameName name of the game in which the player acts
-     * @param value value sent
+     *
+     * @param token
+     * @param gameName     name of the game in which the player acts
+     * @param value        value sent
      * @param toolCardName ToolCard's name that requested this effect
      */
     @Override
@@ -109,9 +111,10 @@ public class ProxyGameController extends ProxyController implements IGameControl
 
     /**
      * Sends a color previously requested by the server.
-     *  @param token
-     * @param gameName name of the game in which the player acts
-     * @param color Color sent
+     *
+     * @param token
+     * @param gameName     name of the game in which the player acts
+     * @param color        Color sent
      * @param toolCardName ToolCard's name that requested this effect
      */
     @Override
@@ -122,14 +125,26 @@ public class ProxyGameController extends ProxyController implements IGameControl
 
     /**
      * Sends a position previously requested by the server.
-     *  @param token
-     * @param gameName name of the game in which the player acts
-     * @param position position sent
+     *
+     * @param token
+     * @param gameName     name of the game in which the player acts
+     * @param position     position sent
      * @param toolCardName ToolCard's name that requested this effect
      */
     @Override
     public void setPosition(String token, String gameName, Position position, String toolCardName) {
         String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
         serverHandler.sendRequest(new GameRequest(methodName, position, gameName, toolCardName));
+    }
+
+    @Override
+    public void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver, Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver, IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws RemoteException {
+
+    }
+
+    @Override
+    public void synchronizeModel(String token, String gameName) {
+        String methodName = Thread.currentThread().getStackTrace()[1].getMethodName();
+        serverHandler.sendRequest(new GameRequest(methodName, token, gameName));
     }
 }

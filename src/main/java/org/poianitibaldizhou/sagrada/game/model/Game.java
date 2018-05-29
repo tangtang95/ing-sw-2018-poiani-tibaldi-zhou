@@ -14,8 +14,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjec
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
@@ -43,8 +41,6 @@ public abstract class Game implements IGame, IGameStrategy {
     private final Map<String, GameFakeObserver> gameObservers;
     private final Map<String, StateFakeObserver> stateObservers;
 
-    private final List<String> disconnectedPlayers;
-
     protected Game(String name) {
         this.name = name;
 
@@ -58,57 +54,12 @@ public abstract class Game implements IGame, IGameStrategy {
 
         this.gameObservers = new HashMap<>();
         this.stateObservers = new HashMap<>();
-
-        this.disconnectedPlayers = new ArrayList<>();
     }
 
     //GETTER
     @Contract(pure = true)
     public String getName() {
         return name;
-    }
-
-    public List<String> getDisconnectedPlayers() {
-        return disconnectedPlayers;
-    }
-
-    /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the list of player
-     */
-    @Contract(pure = true)
-    public List<Player> getPlayers() {
-        List<Player> copyPlayers = new ArrayList<>();
-        for (Player player : players.values()) {
-            copyPlayers.add(Player.newInstance(player));
-        }
-        return copyPlayers;
-    }
-
-    /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the roundTrack
-     * @throws RemoteException network error
-     */
-    @Contract(pure = true)
-    public RoundTrack getRoundTrack() {
-        return RoundTrack.newInstance(roundTrack);
-    }
-
-    /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the list of toolCards
-     */
-    @Contract(pure = true)
-    public List<ToolCard> getToolCards() {
-        List<ToolCard> copyToolCards = new ArrayList<>();
-        for (ToolCard toolCard : toolCards) {
-            copyToolCards.add(ToolCard.newInstance(toolCard));
-        }
-        return copyToolCards;
     }
 
     /**
@@ -119,17 +70,6 @@ public abstract class Game implements IGame, IGameStrategy {
     @Contract(pure = true)
     public List<PublicObjectiveCard> getPublicObjectiveCards() {
         return new ArrayList<>(publicObjectiveCards);
-    }
-
-    /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the draftPool
-     * @throws RemoteException network error
-     */
-    @Contract(pure = true)
-    public DraftPool getDraftPool() {
-        return DraftPool.newInstance(draftPool);
     }
 
     @Contract(pure = true)
@@ -195,6 +135,61 @@ public abstract class Game implements IGame, IGameStrategy {
         state.fireExecutorEvent(event);
     }
 
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the roundTrack
+     * @throws RemoteException network error
+     */
+    @Contract(pure = true)
+    @Override
+    public RoundTrack getRoundTrack() {
+        return RoundTrack.newInstance(roundTrack);
+    }
+
+
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the draftPool
+     * @throws RemoteException network error
+     */
+    @Contract(pure = true)
+    @Override
+    public DraftPool getDraftPool() {
+        return DraftPool.newInstance(draftPool);
+    }
+
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the list of toolCards
+     */
+    @Contract(pure = true)
+    @Override
+    public List<ToolCard> getToolCards() {
+        List<ToolCard> copyToolCards = new ArrayList<>();
+        for (ToolCard toolCard : toolCards) {
+            copyToolCards.add(ToolCard.newInstance(toolCard));
+        }
+        return copyToolCards;
+    }
+
+    /**
+     * DEEP-COPY
+     *
+     * @return the deep copy of the list of player
+     */
+    @Contract(pure = true)
+    @Override
+    public List<Player> getPlayers() {
+        List<Player> copyPlayers = new ArrayList<>();
+        for (Player player : players.values()) {
+            copyPlayers.add(Player.newInstance(player));
+        }
+        return copyPlayers;
+    }
+
     // OBSERVER ATTACH (INTERFACE METHODS)
     @Override
     public void attachStateObserver(String token, StateFakeObserver stateObserver) {
@@ -217,14 +212,14 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     @Override
-    public void attachToolCardObserver(String token, ToolCard toolCard, ToolCardFakeObserver toolCardObserver) throws InvalidActionException {
+    public void attachToolCardObserver(String token, ToolCard toolCard, ToolCardFakeObserver toolCardObserver) {
         for (ToolCard card : toolCards) {
             if (card.getName().equals(toolCard.getName())) {
                 card.attachToolCardObserver(token, toolCardObserver);
                 return;
             }
         }
-        throw new InvalidActionException();
+        throw new IllegalArgumentException();
     }
 
     @Override
@@ -233,14 +228,14 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     @Override
-    public void attachSchemaCardObserver(String token, SchemaCard schemaCard, SchemaCardFakeObserver schemaCardObserver) throws InvalidActionException {
+    public void attachSchemaCardObserver(String token, SchemaCard schemaCard, SchemaCardFakeObserver schemaCardObserver) {
         for (Player player : players.values()) {
             if (player.getSchemaCard().getName().equals(schemaCard.getName())) {
                 player.attachSchemaCardObserver(token, schemaCardObserver);
                 return;
             }
         }
-        throw new InvalidActionException();
+        throw new IllegalArgumentException();
     }
 
     @Override
@@ -255,42 +250,42 @@ public abstract class Game implements IGame, IGameStrategy {
     @Override
     public void userJoin(String token) throws InvalidActionException {
         if (!containsToken(token))
-            throw new InvalidActionException();
+            throw new IllegalArgumentException();
         state.readyGame(token);
     }
 
     @Override
     public void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException {
         if (!containsToken(token))
-            throw new InvalidActionException();
+            throw new IllegalArgumentException();
         state.ready(token, schemaCard);
     }
 
     @Override
-    public void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException {
+    public void userPlaceDice(String token, Dice dice, Position position) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
-            throw new InvalidActionException();
+            throw new IllegalArgumentException();
         state.placeDice(players.get(token), dice, position);
     }
 
     @Override
-    public void userUseToolCard(String token, ToolCard toolCard, ToolCardExecutorFakeObserver executorObserver) throws InvalidActionException {
+    public void userUseToolCard(String token, ToolCard toolCard, ToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
-            throw new InvalidActionException();
+            throw new IllegalArgumentException();
         state.useCard(players.get(token), toolCard, executorObserver);
     }
 
     @Override
-    public void userChooseAction(String token, IActionCommand action) throws InvalidActionException {
+    public void userChooseAction(String token, IActionCommand action) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
-            throw new InvalidActionException();
+            throw new IllegalArgumentException();
         state.chooseAction(players.get(token), action);
     }
 
     @Override
-    public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
+    public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
-            throw new InvalidActionException();
+            throw new IllegalArgumentException();
         state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
     }
 
