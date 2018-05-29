@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.game.model.*;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -18,7 +19,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObserver, IToolCardObserver {
+public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorObserver, IToolCardObserver {
     private final transient ToolCard toolCard;
     private final transient SchemaCard schemaCard;
     private final String gameName;
@@ -28,7 +29,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
 
     CLIToolCardView(CLIGameView cliGameView, ToolCard toolCards)
             throws RemoteException {
-        super(cliGameView.networkManager, cliGameView.screenManager, cliGameView.bufferManager);
+        super(cliGameView.networkManager, cliGameView.screenManager);
         this.toolCard = toolCards;
         this.gameName = cliGameView.getGameName();
         this.schemaCard = cliGameView.getCliSchemaCardView().getSchemaCard(cliGameView.getCurrentUser().getName());
@@ -42,7 +43,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         String response;
         int number;
 
-        bufferManager.consolePrint(buildGraphic.buildGraphicDices(diceList).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicDices(diceList).toString(), Level.STANDARD);
         do {
             response = getAnswer(CHOOSE_DICE);
             try {
@@ -54,7 +55,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 networkManager.getGameController().setDice(currentUser.getToken(),
                         gameName, diceList.get(number - 1), toolCard.getName());
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 number = -1;
             }
         } while (number < 0);
@@ -76,7 +77,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 networkManager.getGameController().setNewValue(currentUser.getToken(),
                         gameName, number, toolCard.getName());
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 number = -1;
             }
         } while (number < 0);
@@ -87,9 +88,9 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         String response;
         int number;
 
-        bufferManager.consolePrint("Colors: ", Level.STANDARD);
+        PrinterManager.consolePrint("Colors: ", Level.STANDARD);
         for (int i = 0; i < colors.size(); i++) {
-            bufferManager.consolePrint("[" + i + 1 + "] " + colors.toArray()[i].toString() + "\n", Level.STANDARD);
+            PrinterManager.consolePrint("[" + i + 1 + "] " + colors.toArray()[i].toString() + "\n", Level.STANDARD);
         }
 
         do {
@@ -103,7 +104,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 networkManager.getGameController().setColor( currentUser.getToken(), gameName,
                         (Color) colors.toArray()[number - 1], toolCard.getName());
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 number = -1;
             }
         } while (number < 0);
@@ -148,7 +149,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                 networkManager.getGameController().setNewValue(currentUser.getToken(),
                         gameName, number, toolCard.getName());
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 number = -1;
             }
         } while (number < 0);
@@ -178,11 +179,11 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                             roundTrack.getDices(roundNumber - 1).get(diceNumber - 1),
                             toolCard.getName());
                 } else {
-                    bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                    PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                     roundNumber = -1;
                 }
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 roundNumber = -1;
             }
         } while (roundNumber < 0);
@@ -192,7 +193,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
     public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws RemoteException {
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        bufferManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrack).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrack).toString(), Level.STANDARD);
 
         readRoundTrackParameters(roundTrack);
     }
@@ -204,7 +205,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         int row;
         int column;
 
-        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card").
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card").
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         do {
             response = getAnswer("Insert a row: ");
@@ -225,11 +226,11 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                             new Position(row,column),
                             toolCard.getName());
                 } else {
-                    bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                    PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                     row = -1;
                 }
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 row = -1;
             }
         } while (row < 0);
@@ -242,7 +243,7 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
         int row;
         int column;
 
-        bufferManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
                 + color.name()).
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         do {
@@ -264,25 +265,25 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
                             new Position(row,column),
                             toolCard.getName());
                 } else {
-                    bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                    PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                     row = -1;
                 }
             } else {
-                bufferManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 row = -1;
             }
         } while (row < 0);
     }
 
     public void notifyRepeatAction() {
-        bufferManager.consolePrint("WARNING: There was an error with the last command\n " +
-                "which will be repeated.", Level.ACK);
+        PrinterManager.consolePrint("WARNING: There was an error with the last command\n " +
+                "which will be repeated.", Level.INFORMATION);
     }
 
     @Override
     public void notifyCommandInterrupted(CommandFlow error) {
-        bufferManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
-                toolCard.getName() + ", so you will not be able to use it this turn.", Level.ACK);
+        PrinterManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
+                toolCard.getName() + ", so you will not be able to use it this turn.", Level.INFORMATION);
     }
 
     @Override
@@ -292,14 +293,14 @@ public class CLIToolCardView extends CLIMenuView implements IToolCardExecutorObs
 
     @Override
     public void onTokenChange(int tokens) {
-        bufferManager.consolePrint("Now the Tool Card " + toolCard.getName() +
-                "have got " + tokens + "tokens on it", Level.ACK);
+        PrinterManager.consolePrint("Now the Tool Card " + toolCard.getName() +
+                "have got " + tokens + "tokens on it", Level.INFORMATION);
     }
 
     @Override
     public void onCardDestroy() {
-        bufferManager.consolePrint("From now on you will no longer be able to use the Tool Card " +
-                toolCard.getName() + "in this game.", Level.ACK);
+        PrinterManager.consolePrint("From now on you will no longer be able to use the Tool Card " +
+                toolCard.getName() + "in this game.", Level.INFORMATION);
     }
 
     @Override

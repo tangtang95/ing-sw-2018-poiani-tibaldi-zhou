@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
@@ -18,12 +18,10 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
 
     private final transient CLIGameView cliGameView;
     private final transient RoundTrack roundTrack;
-    private final transient BufferManager bufferManager;
 
     CLIRoundTrackView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
-        this.bufferManager = cliGameView.bufferManager;
         roundTrack = new RoundTrack();
     }
 
@@ -38,7 +36,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         }
         String message = user.getName() + " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceList).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceList).toString(), Level.STANDARD);
     }
 
     /**
@@ -52,7 +50,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         }
         String message = user.getName() + " added a dice to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
     }
 
     /**
@@ -66,7 +64,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         }
         String message = user.getName() + " removed a dice from the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
 
     }
 
@@ -80,8 +78,8 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
             try {
                 roundTrack.swapDice(oldDice, newDice, round);
             } catch (DiceNotFoundException e) {
-                bufferManager.consolePrint("An error has occured when " + user.getName() + "" +
-                        "tried to swap a dice with the round track", Level.ACK);
+                PrinterManager.consolePrint("An error has occured when " + user.getName() + "" +
+                        "tried to swap a dice with the round track", Level.INFORMATION);
                 return;
             }
         }
@@ -89,7 +87,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         String message2 = "Old dice (no more present in round track) : ";
         String message3 = "New dice (added to the round track) : ";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(message2).
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(message2).
                 buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
     }
 
@@ -104,13 +102,12 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         if (!super.equals(o)) return false;
         CLIRoundTrackView that = (CLIRoundTrackView) o;
         return Objects.equals(cliGameView, that.cliGameView) &&
-                Objects.equals(getRoundTrack(), that.getRoundTrack()) &&
-                Objects.equals(bufferManager, that.bufferManager);
+                Objects.equals(getRoundTrack(), that.getRoundTrack());
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), cliGameView, getRoundTrack(), bufferManager);
+        return Objects.hash(super.hashCode(), cliGameView, getRoundTrack());
     }
 }

@@ -7,31 +7,31 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
 
-public class CLISelectGameModeMenuView extends CLIMenuView {
+public class CLISelectGameModeView extends CLIBasicView {
     private final transient Map<String, Command> commandMap = new HashMap<>();
 
     private static final String SINGLE_PLAYER = "Single player";
     private static final String MULTI_PLAYER = "Multi player";
     private static final String GO_BACK = "Go back";
 
-    CLISelectGameModeMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
-            throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+    CLISelectGameModeView(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+        super(networkManager, screenManager);
+
         initializeCommands();
+
     }
 
     private void initializeCommands() {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
+                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager,
                         "Empire", new User("Tang-Tang", "emperor"))));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");
         multiPlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLILobbyView(networkManager,screenManager, bufferManager)));
+                screenManager.replaceScreen(new CLILobbyView(networkManager,screenManager)));
         commandMap.put(multiPlayerCommand.getCommandText(), multiPlayerCommand);
 
         Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");
@@ -43,27 +43,22 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
     public void run() {
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        bufferManager.consolePrint(buildGraphic.
+        PrinterManager.consolePrint(buildGraphic.
                 buildMessage("------------------------Select Game Mode---------------------------").
                 buildGraphicHelp(commandMap).
                 buildMessage("Choose the game mode or go to Start Game Menu: ").toString(),
                 Level.STANDARD);
 
-        try {
-            getCommand(commandMap).executeCommand();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-        }catch (NullPointerException e) {
-            //...
-        }
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.setCommandMap(commandMap);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLISelectGameModeMenuView)) return false;
+        if (!(o instanceof CLISelectGameModeView)) return false;
         if (!super.equals(o)) return false;
-        CLISelectGameModeMenuView that = (CLISelectGameModeMenuView) o;
+        CLISelectGameModeView that = (CLISelectGameModeView) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 

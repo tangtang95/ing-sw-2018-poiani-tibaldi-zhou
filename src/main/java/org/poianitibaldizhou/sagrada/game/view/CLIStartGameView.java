@@ -7,30 +7,29 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-public class CLIStartGameMenuView extends CLIMenuView {
+public class CLIStartGameView extends CLIBasicView {
     private final transient Map<String, Command> commandMap = new HashMap<>();
 
     private static final String CHANGE_CONNECTION_MODE = "Change connection mode";
     private static final String START_GAME = "Start game";
     private static final String QUIT = "Quit";
 
-    public CLIStartGameMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
-            throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+    public CLIStartGameView(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+        super(networkManager, screenManager);
+
         initializeCommands();
     }
 
     private void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLIChangeConnectionMenuView(networkManager, screenManager, bufferManager)));
+                screenManager.pushScreen(new CLIChangeConnectionView(networkManager, screenManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
         startGameCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLISelectGameModeMenuView(networkManager, screenManager, bufferManager)));
+                screenManager.pushScreen(new CLISelectGameModeView(networkManager, screenManager)));
         commandMap.put(startGameCommand.getCommandText(), startGameCommand);
 
         Command quitCommand = new Command(QUIT, "Quit game");
@@ -43,33 +42,26 @@ public class CLIStartGameMenuView extends CLIMenuView {
     public void run() {
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        bufferManager.consolePrint(buildGraphic.
+        PrinterManager.consolePrint(buildGraphic.
                 buildGraphicLogo().
                 buildMessage("-------------------------Start Game Menu---------------------------").
                 buildGraphicHelp(commandMap).
                 buildMessage("Choose action: ").toString(), Level.STANDARD);
 
-        try {
-            getCommand(commandMap).executeCommand();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-        } catch (NullPointerException e) {
-            //...
-        }
-
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.setCommandMap(commandMap);
     }
 
     private void quit() {
         screenManager.popScreen();
-        System.exit(0);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIStartGameMenuView)) return false;
+        if (!(o instanceof CLIStartGameView)) return false;
         if (!super.equals(o)) return false;
-        CLIStartGameMenuView that = (CLIStartGameMenuView) o;
+        CLIStartGameView that = (CLIStartGameView) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 

@@ -4,19 +4,20 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
 
-public class CLIChangeConnectionMenuView extends CLIMenuView {
+public class CLIChangeConnectionView extends CLIBasicView {
     private final transient Map<String, Command> commandMap = new HashMap<>();
 
     private static final String GO_BACK = "Go back";
 
-    CLIChangeConnectionMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
-            throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+    CLIChangeConnectionView(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+        super(networkManager, screenManager);
+
         initializeCommands();
+
     }
 
     private void initializeCommands() {
@@ -35,19 +36,15 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
     @Override
     public void run() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.
+        PrinterManager.consolePrint(buildGraphic.
                 buildMessage("----------------------Select Connection Menu-----------------------").
                 buildMessage("Current connection mode: " + networkManager.getNetworkType().name()).
                 buildGraphicHelp(commandMap).
                 buildMessage("Change connection mode or go to Start Game Menu: ").
                 toString(), Level.STANDARD);
-        try {
-            getCommand(commandMap).executeCommand();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-        } catch (NullPointerException e) {
-            //...
-        }
+
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.setCommandMap(commandMap);
     }
 
     private void changeConnection(String type) {
@@ -59,9 +56,9 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIChangeConnectionMenuView)) return false;
+        if (!(o instanceof CLIChangeConnectionView)) return false;
         if (!super.equals(o)) return false;
-        CLIChangeConnectionMenuView that = (CLIChangeConnectionMenuView) o;
+        CLIChangeConnectionView that = (CLIChangeConnectionView) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 

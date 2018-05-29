@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.network;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
 
@@ -12,7 +12,7 @@ public class SockClient {
         ScreenManager screenManager = new ScreenManager();
         try {
             screenManager.pushScreen(new CLILobbyView(
-                    new ConnectionManager("localhost", ConnectionType.SOCKET),screenManager, new BufferManager()));
+                    new ConnectionManager("localhost", ConnectionType.SOCKET),screenManager));
         } catch (RemoteException e) {
             e.printStackTrace();
         }

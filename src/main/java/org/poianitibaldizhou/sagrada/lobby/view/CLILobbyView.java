@@ -1,39 +1,45 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
+import org.poianitibaldizhou.sagrada.game.view.CLIBasicView;
 import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
-import org.poianitibaldizhou.sagrada.game.view.CLIMenuView;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObserver {
+public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObserver {
     private final transient Map<String, Command> commandMap = new HashMap<>();
 
     private String token;
     private String username;
     private boolean isLoggedIn;
+    private final transient ConsoleListener consoleListener;
 
     private final transient ILobbyController controller;
     private static final String LEAVE_COMMAND = "Leave";
     private static final String TIMEOUT_COMMAND = "Timeout";
     private static final String LOBBY_USER_COMMAND = "Show lobby users";
 
-    public CLILobbyView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
+    public CLILobbyView(ConnectionManager networkManager, ScreenManager screenManager)
             throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+        super(networkManager, screenManager);
+
         this.controller = networkManager.getLobbyController();
         this.isLoggedIn = false;
+        this.username = null;
+        this.token = null;
 
         initializeCommands();
+        consoleListener = ConsoleListener.getInstance();
     }
 
     private void initializeCommands() {
@@ -51,50 +57,55 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     }
 
     private void leave() {
-        this.isLoggedIn = false;
+        isLoggedIn = false;
         try {
             controller.leave(token, username);
         } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + ": Network error.\n", Level.ERROR);
         }
     }
 
     private void login() {
-        do {
-            username = getAnswer("Provide an username: ");
-            if (!(username.isEmpty()))
-                try {
+        consoleListener.stopCommandConsole();
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        PrinterManager.consolePrint("Provide an username: \n", Level.STANDARD);
+        while(username == null) {
+            try {
+                username = r.readLine();
+                if (username.equals(""))
+                    throw new IllegalArgumentException();
+                else {
                     token = controller.login(username, this);
-                } catch (RemoteException e) {
-                    Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
                 }
-        } while (username.isEmpty() || token.isEmpty());
+            } catch (IOException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                        ERROR_READING, Level.ERROR);
+                break;
+            } catch (IllegalArgumentException e) {
+                username = null;
+            }
+        }
 
         isLoggedIn = true;
+
         try {
             controller.join(token, username, this);
         } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    ": Network error.\n", Level.ERROR);
         }
+        consoleListener.wakeUpCommandConsole();
     }
 
     @Override
     public void run() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
+        PrinterManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
                 Level.STANDARD);
         login();
+        PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
+        consoleListener.setCommandMap(commandMap);
 
-        bufferManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
-        while (isLoggedIn) {
-            try {
-                getCommand(commandMap).executeCommand();
-            } catch (RemoteException e) {
-                Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-            }catch (NullPointerException e) {
-                isLoggedIn = false;
-            }
-        }
     }
 
     /**
@@ -102,7 +113,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      */
     @Override
     public void ack(String ack) {
-        bufferManager.consolePrint("ACK: " + ack, Level.ACK);
+        PrinterManager.consolePrint(ack + "\n", Level.INFORMATION);
     }
 
     /**
@@ -110,7 +121,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      */
     @Override
     public void err(String err) {
-        bufferManager.consolePrint("ERROR: " + err, Level.ACK);
+        PrinterManager.consolePrint(err+ "\n", Level.ERROR);
     }
 
     /**
@@ -119,7 +130,7 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     @Override
     public void onUserJoin(User user) {
         if (!user.getName().equals(username))
-            bufferManager.consolePrint("User " + user.getName() + " joined the Lobby", Level.ACK);
+            PrinterManager.consolePrint("User " + user.getName() + " joined the Lobby\n", Level.INFORMATION);
     }
 
     /**
@@ -128,9 +139,9 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
     @Override
     public void onUserExit(User user){
         if (!user.getName().equals(username)) {
-            bufferManager.consolePrint("User " + user.getName() + " left the Lobby", Level.ACK);
+            PrinterManager.consolePrint("User " + user.getName() + " left the Lobby\n", Level.INFORMATION);
         } else {
-            bufferManager.consolePrint("You have left the lobby.", Level.ACK);
+            PrinterManager.consolePrint("You have left the lobby.\n", Level.INFORMATION);
             screenManager.popScreen();
         }
     }
@@ -139,11 +150,11 @@ public class CLILobbyView extends CLIMenuView implements ILobbyView, ILobbyObser
      * {@inheritDoc}
      */
     @Override
-    public void onGameStart(String gameName) throws IOException {
-        bufferManager.consolePrint("GAME STARTED\n", Level.ACK);
-        bufferManager.stopConsoleRead();
-        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
+    public void onGameStart(String gameName) throws RemoteException {
+        PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
+        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager,
                 gameName, new User(username,token)));
+
     }
 
     @Override
