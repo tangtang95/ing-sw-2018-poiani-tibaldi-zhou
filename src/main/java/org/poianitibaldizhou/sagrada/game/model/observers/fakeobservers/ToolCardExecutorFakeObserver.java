@@ -38,8 +38,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -55,8 +54,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -72,8 +70,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -89,8 +86,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -106,8 +102,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -123,8 +118,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -140,8 +134,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -157,8 +150,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -174,8 +166,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -191,7 +182,6 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

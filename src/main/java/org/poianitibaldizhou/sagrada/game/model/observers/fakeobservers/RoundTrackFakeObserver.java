@@ -34,9 +34,7 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -52,9 +50,7 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -70,9 +66,7 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -88,8 +82,6 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

@@ -12,6 +12,14 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
     private String token;
     private ObserverManager observerManager;
 
+    /**
+     * Creates a fake observer of the draft pool used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real draft pool observer
+     * @param observerManager observer manager of the specified game
+     */
     public DraftPoolFakeObserver(String token, IDraftPoolObserver realObserver, ObserverManager observerManager) {
         if (realObserver instanceof DraftPoolFakeObserver)
             throw new IllegalArgumentException();
@@ -33,8 +41,7 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -50,8 +57,7 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -67,8 +73,7 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -84,8 +89,7 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -101,7 +105,6 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

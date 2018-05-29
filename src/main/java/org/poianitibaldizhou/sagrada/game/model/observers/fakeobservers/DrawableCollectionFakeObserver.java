@@ -32,8 +32,7 @@ public class DrawableCollectionFakeObserver<T> implements IDrawableCollectionObs
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -49,8 +48,7 @@ public class DrawableCollectionFakeObserver<T> implements IDrawableCollectionObs
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -66,7 +64,6 @@ public class DrawableCollectionFakeObserver<T> implements IDrawableCollectionObs
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

@@ -33,8 +33,7 @@ public class PlayerFakeObserver implements IPlayerObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -50,7 +49,6 @@ public class PlayerFakeObserver implements IPlayerObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

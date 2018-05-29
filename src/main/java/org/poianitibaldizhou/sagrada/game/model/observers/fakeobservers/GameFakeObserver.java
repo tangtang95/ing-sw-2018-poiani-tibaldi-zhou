@@ -38,9 +38,7 @@ public class GameFakeObserver implements IGameObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -56,8 +54,7 @@ public class GameFakeObserver implements IGameObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -73,8 +70,7 @@ public class GameFakeObserver implements IGameObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -90,9 +86,7 @@ public class GameFakeObserver implements IGameObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -108,8 +102,7 @@ public class GameFakeObserver implements IGameObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -125,7 +118,6 @@ public class GameFakeObserver implements IGameObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

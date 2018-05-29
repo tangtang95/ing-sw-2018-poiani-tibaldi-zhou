@@ -35,9 +35,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -53,9 +51,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -71,9 +67,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -89,8 +83,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -106,8 +99,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -123,8 +115,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -140,9 +131,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -158,8 +147,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -175,9 +163,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -193,8 +179,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -210,8 +195,7 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -227,7 +211,6 @@ public class StateFakeObserver implements IStateObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

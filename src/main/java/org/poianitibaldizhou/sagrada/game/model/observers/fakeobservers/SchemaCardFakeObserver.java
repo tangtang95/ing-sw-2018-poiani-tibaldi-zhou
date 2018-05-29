@@ -34,9 +34,7 @@ public class SchemaCardFakeObserver implements ISchemaCardObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
-
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -52,7 +50,6 @@ public class SchemaCardFakeObserver implements ISchemaCardObserver {
             }
         };
 
-        Thread t = new Thread(runnable);
-        t.start();
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

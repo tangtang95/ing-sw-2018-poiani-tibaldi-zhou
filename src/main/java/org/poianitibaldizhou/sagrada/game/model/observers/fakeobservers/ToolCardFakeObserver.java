@@ -18,6 +18,9 @@ public class ToolCardFakeObserver implements IToolCardObserver {
         this.realObserver = observer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onTokenChange(int tokens)  {
         Runnable runnable = () -> {
@@ -32,6 +35,9 @@ public class ToolCardFakeObserver implements IToolCardObserver {
         t.start();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardDestroy()  {
         Runnable runnable = () -> {
