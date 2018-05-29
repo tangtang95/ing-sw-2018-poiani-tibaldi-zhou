@@ -24,11 +24,15 @@ public class DrawableCollectionFakeObserver<T> implements IDrawableCollectionObs
      */
     @Override
     public void onElementAdd(T elem)  {
-        try {
-            realObserver.onElementAdd(elem);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onElementAdd(elem);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -36,11 +40,15 @@ public class DrawableCollectionFakeObserver<T> implements IDrawableCollectionObs
      */
     @Override
     public void onElementsAdd(List<T> elemList)  {
-        try {
-            realObserver.onElementsAdd(elemList);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onElementsAdd(elemList);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -48,10 +56,14 @@ public class DrawableCollectionFakeObserver<T> implements IDrawableCollectionObs
      */
     @Override
     public void onElementDraw(T elem)  {
-        try {
-            realObserver.onElementDraw(elem);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onElementDraw(elem);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

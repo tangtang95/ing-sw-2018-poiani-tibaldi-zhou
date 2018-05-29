@@ -16,6 +16,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCar
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
 
@@ -38,7 +39,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedDice(List<Dice> diceList) throws RemoteException {
+    public void notifyNeedDice(List<Dice> diceList) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String response;
         int number;
@@ -62,7 +63,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedNewValue() throws RemoteException {
+    public void notifyNeedNewValue() throws IOException {
         String response;
         int number;
 
@@ -84,7 +85,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedColor(Set<Color> colors) throws RemoteException {
+    public void notifyNeedColor(Set<Color> colors) throws IOException {
         String response;
         int number;
 
@@ -119,10 +120,10 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
      *
      * @param diceValue player that needs to choose a color
      * @param value     delta used to modify diceValue
-     * @throws RemoteException network communication error
+     * @throws IOException network communication error
      */
     @Override
-    public void notifyNeedNewDeltaForDice(int diceValue, int value) throws RemoteException {
+    public void notifyNeedNewDeltaForDice(int diceValue, int value) throws IOException {
         String response;
         int number;
         int minNumber;
@@ -155,7 +156,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
         } while (number < 0);
     }
 
-    private void readRoundTrackParameters(RoundTrack roundTrack) throws RemoteException {
+    private void readRoundTrackParameters(RoundTrack roundTrack) throws IOException {
         String response;
         int roundNumber;
         int diceNumber;
@@ -190,7 +191,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws RemoteException {
+    public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrack).toString(), Level.STANDARD);
@@ -199,7 +200,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedPosition() throws RemoteException {
+    public void notifyNeedPosition() throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String response;
         int row;
@@ -237,7 +238,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedDicePositionOfCertainColor(Color color) throws RemoteException {
+    public void notifyNeedDicePositionOfCertainColor(Color color) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String response;
         int row;
@@ -287,7 +288,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
     }
 
     @Override
-    public void notifyNeedContinueAnswer() throws RemoteException {
+    public void notifyNeedContinueAnswer() throws IOException {
 
     }
 

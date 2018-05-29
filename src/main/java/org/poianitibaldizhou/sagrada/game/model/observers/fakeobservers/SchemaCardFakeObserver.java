@@ -26,11 +26,15 @@ public class SchemaCardFakeObserver implements ISchemaCardObserver {
      */
     @Override
     public void onPlaceDice(Dice dice, Position position)  {
-        try {
-            realObserver.onPlaceDice(dice, position);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onPlaceDice(dice, position);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -38,10 +42,14 @@ public class SchemaCardFakeObserver implements ISchemaCardObserver {
      */
     @Override
     public void onDiceRemove(Dice dice, Position position)  {
-        try {
-            realObserver.onDiceRemove(dice, position);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onDiceRemove(dice, position);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

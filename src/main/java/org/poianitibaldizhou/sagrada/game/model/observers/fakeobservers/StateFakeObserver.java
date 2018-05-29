@@ -27,11 +27,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onSetupGame() {
-        try {
-            realObserver.onSetupGame();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onSetupGame();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -39,11 +43,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onSetupPlayer() {
-        try {
-            realObserver.onSetupPlayer();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onSetupPlayer();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -51,11 +59,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onRoundStart(int round, User roundUser) {
-        try {
-            realObserver.onRoundStart(round, roundUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onRoundStart(round, roundUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -63,11 +75,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
-        try {
-            realObserver.onTurnState(round, isFirstTurn, roundUser, turnUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onTurnState(round, isFirstTurn, roundUser, turnUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -75,11 +91,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onRoundEnd(int round, User roundUser) {
-        try {
-            realObserver.onRoundEnd(round, roundUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onRoundEnd(round, roundUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -87,11 +107,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onEndGame(User roundUser) {
-        try {
-            realObserver.onEndGame(roundUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onEndGame(roundUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -99,11 +123,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
-        try {
-            realObserver.onSkipTurnState(round, isFirstTurn, roundUser, turnUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onSkipTurnState(round, isFirstTurn, roundUser, turnUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -111,11 +139,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onPlaceDiceState(User turnUser) {
-        try {
-            realObserver.onPlaceDiceState(turnUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onPlaceDiceState(turnUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -123,11 +155,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onUseCardState(User turnUser) {
-        try {
-            realObserver.onUseCardState(turnUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onUseCardState(turnUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -135,11 +171,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onEndTurnState(User turnUser) {
-        try {
-            realObserver.onEndTurnState(turnUser);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onEndTurnState(turnUser);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -147,11 +187,15 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) {
-        try {
-            realObserver.onVictoryPointsCalculated(victoryPoints);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onVictoryPointsCalculated(victoryPoints);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 
     /**
@@ -159,10 +203,14 @@ public class StateFakeObserver implements IStateObserver {
      */
     @Override
     public void onResultGame(User winner) {
-        try {
-            realObserver.onResultGame(winner);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onResultGame(winner);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

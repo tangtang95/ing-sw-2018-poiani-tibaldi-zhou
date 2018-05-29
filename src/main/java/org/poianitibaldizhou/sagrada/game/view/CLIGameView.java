@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -117,6 +119,8 @@ public class CLIGameView extends CLIBasicView implements IGameView {
                     new CLIDiceBagView(this));
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         PrinterManager.consolePrint(buildGraphic.
                         buildMessage("-----------------------------WELCOME-------------------------------").
@@ -247,6 +251,8 @@ public class CLIGameView extends CLIBasicView implements IGameView {
                             selectPosition());
                 } catch (RemoteException e) {
                     PrinterManager.consolePrint("NETWORK ERROR", Level.INFORMATION);
+                } catch (IOException e) {
+                    PrinterManager.consolePrint("NETWORK ERROR", Level.ERROR);
                 }
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
@@ -270,9 +276,20 @@ public class CLIGameView extends CLIBasicView implements IGameView {
                 number = -1;
             }
             if (number > 0 && number <= toolCards.size()) {
-                networkManager.getGameController().useToolCard(currentUser.getToken(),
-                        gameName, toolCards.get(number - 1),
-                        new CLIToolCardView(this, toolCards.get(number - 1)));
+                try {
+                    networkManager.getGameController().useToolCard(currentUser.getToken(),
+                            gameName, toolCards.get(number - 1),
+                            new CLIToolCardView(this, toolCards.get(number - 1)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    networkManager.getGameController().useToolCard(currentUser.getToken(),
+                            gameName, toolCards.get(number - 1),
+                            new CLIToolCardView(this,toolCards.get(number - 1)));
+                } catch (IOException e) {
+                    // TODO handle exception
+                }
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 number = -1;
@@ -296,6 +313,8 @@ public class CLIGameView extends CLIBasicView implements IGameView {
                         new CLISchemaCardView(this));
             } catch (RemoteException e) {
                 Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -314,6 +333,8 @@ public class CLIGameView extends CLIBasicView implements IGameView {
                         gameName, toolCard, new CLIToolCardView(this, toolCard));
             } catch (RemoteException e) {
                 Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -333,6 +354,8 @@ public class CLIGameView extends CLIBasicView implements IGameView {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         System.out.println("Mamma " + bufferedReader.readLine());
         /*
+=======
+>>>>>>> c5383a8b211670cbf09a032651a966a99ddb8f3e
         BuildGraphic buildGraphic = new BuildGraphic();
         List<SchemaCard> schemaCardList = new ArrayList<>();
         String response;
@@ -414,5 +437,10 @@ public class CLIGameView extends CLIBasicView implements IGameView {
 
         return Objects.hash(super.hashCode(), commandMap, toolCards, publicObjectiveCards,
                 getCurrentUser(), getGameName(), getCliSchemaCardView(), cliDraftPoolView, cliRoundTrackView);
+    }
+
+    @Override
+    public void notifyModelSynch(DraftPool draftPool, List<Player> players, RoundTrack roundTrack, List<ToolCard> toolCards) {
+        // TODO
     }
 }

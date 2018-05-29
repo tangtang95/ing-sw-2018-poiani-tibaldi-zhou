@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObserver {
     private final transient Map<String, Command> commandMap = new HashMap<>();
@@ -48,11 +49,25 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
         commandMap.put(leaveCommand.getCommandText(), leaveCommand);
 
         Command timeoutCommand = new Command(TIMEOUT_COMMAND, "Show time to reach timeout");
-        timeoutCommand.setCommandAction(() -> networkManager.getLobbyController().requestTimeout(token));
+        timeoutCommand.setCommandAction(() -> {
+            try {
+                networkManager.getLobbyController().requestTimeout(token);
+            } catch (IOException e) {
+                //TODO
+                e.printStackTrace();
+            }
+        });
         commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
 
         Command showUserCommand = new Command(LOBBY_USER_COMMAND, "Show users in lobby");
-        showUserCommand.setCommandAction(() -> networkManager.getLobbyController().requestUsersInLobby(token));
+        showUserCommand.setCommandAction(() -> {
+            try {
+                networkManager.getLobbyController().requestUsersInLobby(token);
+            } catch (IOException e) {
+                // TODO
+                e.printStackTrace();
+            }
+        });
         commandMap.put(showUserCommand.getCommandText(), showUserCommand);
     }
 
@@ -62,6 +77,8 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
             controller.leave(token, username);
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + ": Network error.\n", Level.ERROR);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -93,6 +110,8 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     ": Network error.\n", Level.ERROR);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         consoleListener.wakeUpCommandConsole();
     }
@@ -105,7 +124,15 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
         login();
         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
         consoleListener.setCommandMap(commandMap);
-
+        while (isLoggedIn) {
+            try {
+                sendCommand(commandMap).executeCommand();
+            } catch (IOException e) {
+                Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
+            }catch (NullPointerException e) {
+                isLoggedIn = false;
+            }
+        }
     }
 
     /**
