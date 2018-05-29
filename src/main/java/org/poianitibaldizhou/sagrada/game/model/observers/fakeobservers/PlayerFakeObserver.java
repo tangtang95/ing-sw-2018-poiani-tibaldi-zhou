@@ -10,14 +10,14 @@ public class PlayerFakeObserver implements IPlayerObserver {
 
     private String token;
     private ObserverManager observerManager;
-    private IPlayerObserver realObseerver;
+    private IPlayerObserver realObserver;
 
     public PlayerFakeObserver(String token, ObserverManager observerManager, IPlayerObserver observer) {
         if(observer instanceof PlayerFakeObserver)
             throw new IllegalArgumentException();
         this.token = token;
         this.observerManager = observerManager;
-        this.realObseerver = observer;
+        this.realObserver = observer;
     }
 
     /**
@@ -25,11 +25,16 @@ public class PlayerFakeObserver implements IPlayerObserver {
      */
     @Override
     public void onFavorTokenChange(int value)  {
-        try {
-            realObseerver.onFavorTokenChange(value);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onFavorTokenChange(value);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
@@ -37,10 +42,15 @@ public class PlayerFakeObserver implements IPlayerObserver {
      */
     @Override
     public void onSetOutcome(Outcome outcome)  {
-        try {
-            realObseerver.onSetOutcome(outcome);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onSetOutcome(outcome);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 }

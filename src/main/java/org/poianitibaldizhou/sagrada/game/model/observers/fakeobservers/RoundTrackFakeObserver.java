@@ -26,11 +26,17 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
      */
     @Override
     public void onDicesAddToRound(List<Dice> diceList, int round) {
-        try {
-            realObserver.onDicesAddToRound(diceList, round);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onDicesAddToRound(diceList, round);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
+
     }
 
     /**
@@ -38,11 +44,17 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
      */
     @Override
     public void onDiceAddToRound(Dice dice, int round) {
-        try {
-            realObserver.onDiceAddToRound(dice, round);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onDiceAddToRound(dice, round);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
+
     }
 
     /**
@@ -50,11 +62,17 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
      */
     @Override
     public void onDiceRemoveFromRound(Dice dice, int round) {
-        try {
-            realObserver.onDiceRemoveFromRound(dice, round);
-        } catch(IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onDiceRemoveFromRound(dice, round);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
+
     }
 
     /**
@@ -62,10 +80,16 @@ public class RoundTrackFakeObserver implements IRoundTrackObserver{
      */
     @Override
     public void onDiceSwap(Dice oldDice, Dice newDice, int round) {
-        try {
-            realObserver.onDiceSwap(oldDice, newDice, round);
-        } catch(IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onDiceSwap(oldDice, newDice, round);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
+
     }
 }

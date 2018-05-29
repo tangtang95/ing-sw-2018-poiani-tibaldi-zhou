@@ -47,6 +47,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         synchronized (gameManager.getGameByName(gameName)) {
             IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userJoin(token);
             } catch (InvalidActionException e) {
@@ -77,7 +82,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
             IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userSelectSchemaCard(token, schemaCard);
             } catch (InvalidActionException e) {
@@ -99,8 +111,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
 
             if (!game.getPlayers().contains(player)) {
                 viewMap.get(token).err("You are trying to listening the actions of an non existing player");
@@ -124,9 +144,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
 
-        synchronized (game) {
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
 
             if (!game.getToolCards().contains(toolCard)) {
                 viewMap.get(token).err("You are trying to listening on a non existing toolcard");
@@ -148,8 +174,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userChooseAction(token, actionCommand);
             } catch (InvalidActionException e) {
@@ -168,8 +202,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userPlaceDice(token, dice, position);
             } catch (InvalidActionException e) {
@@ -192,8 +234,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
 
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userUseToolCard(token, toolCard, new ToolCardExecutorFakeObserver(token, gameManager.getObserverManagerByGame(gameName), executorObserver));
             } catch (InvalidActionException e) {
@@ -212,8 +262,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
 
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userChoosePrivateObjectiveCard(token, privateObjectiveCard);
             } catch (InvalidActionException e) {
@@ -232,9 +290,17 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return;
         if (!gameManager.containsGame(gameName))
             viewMap.get(token).err("The game doesn't exist");
-        IGame game = gameManager.getGameByName(gameName);
 
-        synchronized (game) {
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userFireExecutorEvent(token, new DiceExecutorEvent(dice));
             } catch (InvalidActionException e) {
@@ -250,8 +316,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void setNewValue(String token, String gameName, int value, String toolCardName) throws IOException {
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName))
             return;
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userFireExecutorEvent(token, new ValueExecutorEvent(value));
             } catch (InvalidActionException e) {
@@ -267,8 +341,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void setColor(String token, String gameName, Color color, String toolCardName) throws IOException {
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
             return;
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userFireExecutorEvent(token, new ColorExecutorEvent(color));
             } catch (InvalidActionException e) {
@@ -284,8 +366,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void setPosition(String token, String gameName, Position position, String toolCardName) throws IOException {
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
             return;
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if(checkSynch(token, gameName)) {
+                viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+            }
+
             try {
                 game.userFireExecutorEvent(token, new PositionExecutorEvent(position));
             } catch (InvalidActionException e) {
@@ -304,6 +394,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                                   diceBagObserver) throws IOException {
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
             ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
             if (!observerManager.getDisconnectedPlayer().contains(token)) {
                 gameView.err("A player with this name is already connected to the game");
@@ -352,8 +444,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void synchronizeModel(String token, String gameName) throws IOException {
-        IGame game = gameManager.getGameByName(gameName);
-        synchronized (game) {
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+            IGame game = gameManager.getGameByName(gameName);
+
             if (!(game.containsToken(token))) {
                 viewMap.get(token).err("You can't synchronize on a game that you're not playing");
                 return;
@@ -382,7 +476,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * @param gameName
      */
     private void handleIOException(String token, String gameName) {
-
+        // TODO (?)
     }
 
     /**
@@ -451,4 +545,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 break;
         }
     }
+
+    private boolean checkSynch(String token, String gameName) {
+        return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
+    }
+
 }

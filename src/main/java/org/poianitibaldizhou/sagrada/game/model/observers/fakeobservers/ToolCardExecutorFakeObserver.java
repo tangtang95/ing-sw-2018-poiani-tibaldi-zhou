@@ -18,7 +18,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     private IToolCardExecutorObserver realObserver;
 
     public ToolCardExecutorFakeObserver(String token, ObserverManager observerManager, IToolCardExecutorObserver observer) {
-        if(observer instanceof ToolCardExecutorFakeObserver)
+        if (observer instanceof ToolCardExecutorFakeObserver)
             throw new IllegalArgumentException();
         this.token = token;
         this.observerManager = observerManager;
@@ -26,122 +26,172 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     }
 
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
-    public void notifyNeedDice(List<Dice> diceList)  {
-        try {
-            realObserver.notifyNeedDice(diceList);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedDice(List<Dice> diceList) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedDice(diceList);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedNewValue()  {
-        try {
-            realObserver.notifyNeedNewValue();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedNewValue() {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedNewValue();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedColor(Set<Color> colors)  {
-        try {
-            realObserver.notifyNeedColor(colors);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedColor(Set<Color> colors) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedColor(colors);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedNewDeltaForDice(int diceValue, int value)  {
-        try {
-            realObserver.notifyNeedNewDeltaForDice(diceValue, value);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedNewDeltaForDice(int diceValue, int value) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedNewDeltaForDice(diceValue, value);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack)  {
-        try {
-            realObserver.notifyNeedDiceFromRoundTrack(roundTrack);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedDiceFromRoundTrack(roundTrack);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedPosition()  {
-        try {
-            realObserver.notifyNeedPosition();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedPosition() {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedPosition();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedDicePositionOfCertainColor(Color color)  {
-        try {
-            realObserver.notifyNeedDicePositionOfCertainColor(color);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedDicePositionOfCertainColor(Color color) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedDicePositionOfCertainColor(color);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyRepeatAction()  {
-        try {
-            realObserver.notifyRepeatAction();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyRepeatAction() {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyRepeatAction();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyCommandInterrupted(CommandFlow error)  {
-        try {
-            realObserver.notifyCommandInterrupted(error);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyCommandInterrupted(CommandFlow error) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyCommandInterrupted(error);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedContinueAnswer()  {
-        try {
-            realObserver.notifyNeedContinueAnswer();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+    public void notifyNeedContinueAnswer() {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyNeedContinueAnswer();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 }

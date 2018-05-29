@@ -20,19 +20,29 @@ public class ToolCardFakeObserver implements IToolCardObserver {
 
     @Override
     public void onTokenChange(int tokens)  {
-        try {
-            realObserver.onTokenChange(tokens);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onTokenChange(tokens);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     @Override
     public void onCardDestroy()  {
-        try {
-            realObserver.onCardDestroy();
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onCardDestroy();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 }

@@ -30,11 +30,17 @@ public class GameFakeObserver implements IGameObserver {
      */
     @Override
     public void onPlayersCreate(List<Player> players) {
-        try {
-            realObserver.onPlayersCreate(players);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onPlayersCreate(players);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
+
     }
 
     /**
@@ -42,11 +48,16 @@ public class GameFakeObserver implements IGameObserver {
      */
     @Override
     public void onPublicObjectiveCardsDraw(List<PublicObjectiveCard> publicObjectiveCards)  {
-        try {
-            realObserver.onPublicObjectiveCardsDraw(publicObjectiveCards);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onPublicObjectiveCardsDraw(publicObjectiveCards);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
@@ -54,11 +65,16 @@ public class GameFakeObserver implements IGameObserver {
      */
     @Override
     public void onToolCardsDraw(List<ToolCard> toolCards)  {
-        try {
-            realObserver.onToolCardsDraw(toolCards);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onToolCardsDraw(toolCards);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
@@ -66,11 +82,17 @@ public class GameFakeObserver implements IGameObserver {
      */
     @Override
     public void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards)  {
-        try {
-            realObserver.onChoosePrivateObjectiveCards(privateObjectiveCards);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onChoosePrivateObjectiveCards(privateObjectiveCards);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
+
     }
 
     /**
@@ -78,11 +100,16 @@ public class GameFakeObserver implements IGameObserver {
      */
     @Override
     public void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards)  {
-        try {
-            realObserver.onPrivateObjectiveCardDraw(privateObjectiveCards);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onPrivateObjectiveCardDraw(privateObjectiveCards);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 
     /**
@@ -90,10 +117,15 @@ public class GameFakeObserver implements IGameObserver {
      */
     @Override
     public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards)  {
-        try {
-            realObserver.onSchemaCardsDraw(schemaCards);
-        } catch (IOException e) {
-            observerManager.signalDisconnection(token);
-        }
+        Runnable runnable = () -> {
+            try {
+                realObserver.onSchemaCardsDraw(schemaCards);
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.start();
     }
 }
