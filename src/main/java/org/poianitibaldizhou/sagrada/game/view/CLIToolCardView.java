@@ -19,8 +19,8 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.*;
-
-public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorObserver, IToolCardObserver {
+/*
+public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutorObserver, IToolCardObserver {
     private final transient ToolCard toolCard;
     private final transient SchemaCard schemaCard;
     private final String gameName;
@@ -122,6 +122,7 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
      * @param value     delta used to modify diceValue
      * @throws IOException network communication error
      */
+/*
     @Override
     public void notifyNeedNewDeltaForDice(int diceValue, int value) throws IOException {
         String response;
@@ -319,3 +320,4 @@ public class CLIToolCardView extends CLIBasicView implements IToolCardExecutorOb
         return Objects.hash(super.hashCode(), toolCard);
     }
 }
+*/

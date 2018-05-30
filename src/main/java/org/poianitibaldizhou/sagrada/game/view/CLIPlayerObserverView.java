@@ -10,11 +10,11 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class CLIPlayerObserver extends UnicastRemoteObject implements IPlayerObserver {
+public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlayerObserver {
 
     private CLIGameView cliGameView;
 
-    CLIPlayerObserver(CLIGameView cliGameView) throws RemoteException {
+    CLIPlayerObserverView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
     }
@@ -24,10 +24,10 @@ public class CLIPlayerObserver extends UnicastRemoteObject implements IPlayerObs
      */
     @Override
     public void onFavorTokenChange(int value) {
-        User user = cliGameView.getCurrentUser();
-        String message = user.getName() + " has spent " + value + "token";
+        //User user = cliGameView.getCurrentUser();
+        //String message = user.getName() + " has spent " + value + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
     @Override

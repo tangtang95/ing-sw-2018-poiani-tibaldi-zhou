@@ -30,13 +30,13 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      */
     @Override
     public void onDicesAddToRound(List<Dice> diceList, int round){
-        User user = cliGameView.getCurrentUser();
+        //User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
             roundTrack.addDicesToRound(diceList, round);
         }
-        String message = user.getName() + " added a list of dices to the round track at round " + round + ".";
+        //String message = user.getName() + " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceList).toString(), Level.STANDARD);
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceList).toString(), Level.STANDARD);
     }
 
     /**
@@ -44,13 +44,13 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      */
     @Override
     public void onDiceAddToRound(Dice dice, int round){
-        User user = cliGameView.getCurrentUser();
+       // User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
             roundTrack.addDiceToRound(dice, round);
         }
-        String message = user.getName() + " added a dice to the round track at round " + round + ".";
+        //String message = user.getName() + " added a dice to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
     }
 
     /**
@@ -58,13 +58,13 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      */
     @Override
     public void onDiceRemoveFromRound(Dice dice, int round){
-        User user = cliGameView.getCurrentUser();
+        //User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
             roundTrack.removeDiceFromRoundTrack(round, dice);
         }
-        String message = user.getName() + " removed a dice from the round track at round " + round + ".";
+        //String message = user.getName() + " removed a dice from the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
 
     }
 
@@ -73,22 +73,22 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      */
     @Override
     public void onDiceSwap(Dice oldDice, Dice newDice, int round){
-        User user = cliGameView.getCurrentUser();
+        //User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
             try {
                 roundTrack.swapDice(oldDice, newDice, round);
             } catch (DiceNotFoundException e) {
-                PrinterManager.consolePrint("An error has occured when " + user.getName() + "" +
-                        "tried to swap a dice with the round track", Level.INFORMATION);
+                //PrinterManager.consolePrint("An error has occured when " + user.getName() + "" +
+                //        "tried to swap a dice with the round track", Level.INFORMATION);
                 return;
             }
         }
-        String message = user.getName() + " swap a with the round track at round " + round + ".";
+       // String message = user.getName() + " swap a with the round track at round " + round + ".";
         String message2 = "Old dice (no more present in round track) : ";
         String message3 = "New dice (added to the round track) : ";
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(message2).
-                buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(message2).
+            //    buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
     }
 
     public RoundTrack getRoundTrack() {

@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
-import org.poianitibaldizhou.sagrada.game.view.CLIBasicView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -107,12 +106,12 @@ public class ConsoleListener {
                     }
                 } catch (IOException e) {
                     PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                            CLIBasicView.ERROR_READING, Level.ERROR);
+                            BuildGraphic.ERROR_READING, Level.ERROR);
                     break;
                 } catch (NumberFormatException e) {
-                    PrinterManager.consolePrint(CLIBasicView.NOT_A_NUMBER, Level.ERROR);
+                    PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.ERROR);
                 } catch (CommandNotFoundException e) {
-                    PrinterManager.consolePrint(CLIBasicView.COMMAND_NOT_FOUND, Level.ERROR);
+                    PrinterManager.consolePrint(BuildGraphic.COMMAND_NOT_FOUND, Level.ERROR);
                 }
             }
         }

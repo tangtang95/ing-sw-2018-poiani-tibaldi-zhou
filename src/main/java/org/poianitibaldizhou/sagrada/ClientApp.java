@@ -1,8 +1,7 @@
 package org.poianitibaldizhou.sagrada;
 
-import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
-import org.poianitibaldizhou.sagrada.game.view.CLIStartGameView;
+import org.poianitibaldizhou.sagrada.game.view.CLIStartGameScreen;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
@@ -17,7 +16,7 @@ public class ClientApp {
         ScreenManager screenManager = new ScreenManager();
 
         try {
-            screenManager.pushScreen(new CLIStartGameView(networkManager,screenManager));
+            screenManager.pushScreen(new CLIStartGameScreen(networkManager,screenManager));
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "CLI cannot initialize");
         }

@@ -25,8 +25,8 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     @Override
     public void onElementAdd(Dice elem) {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliGameView.getCurrentUser().getName() + " has put a dice in the dice bag.";
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(elem).toString(), Level.STANDARD);
+        //String message = cliGameView.getCurrentUser().getName() + " has put a dice in the dice bag.";
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(elem).toString(), Level.STANDARD);
     }
 
     /**
@@ -35,8 +35,8 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     @Override
     public void onElementsAdd(List<Dice> elemList) {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliGameView.getCurrentUser().getName() + " a list of dice has been inserted in the dice bag";
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(elemList).toString(), Level.STANDARD);
+        //String message = cliGameView.getCurrentUser().getName() + " a list of dice has been inserted in the dice bag";
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(elemList).toString(), Level.STANDARD);
     }
 
     /**
@@ -45,7 +45,7 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     @Override
     public void onElementDraw(Dice elem) {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliGameView.getCurrentUser().getName() + " a dice has been drawn from the dice bag";
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(elem).toString(), Level.STANDARD);
+        //String message = cliGameView.getCurrentUser().getName() + " a dice has been drawn from the dice bag";
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(elem).toString(), Level.STANDARD);
     }
 }

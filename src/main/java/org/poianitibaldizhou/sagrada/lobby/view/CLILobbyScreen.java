@@ -1,8 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.game.view.CLIBasicView;
-import org.poianitibaldizhou.sagrada.game.view.CLIGameView;
+import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -12,30 +11,52 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObserver {
-    private final transient Map<String, Command> commandMap = new HashMap<>();
+/**
+ * CLI Lobby view.
+ */
+public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobbyObserver {
 
+    /**
+     * User's token for the login.
+     */
     private String token;
+
+    /**
+     * User's username for the login.
+     */
     private String username;
-    private boolean isLoggedIn;
+
+    /**
+     * Instance of the console listener.
+     */
     private final transient ConsoleListener consoleListener;
 
+    /**
+     * Controller of the lobby.
+     */
     private final transient ILobbyController controller;
+
+    /**
+     * Lobby commands.
+     */
     private static final String LEAVE_COMMAND = "Leave";
     private static final String TIMEOUT_COMMAND = "Timeout";
     private static final String LOBBY_USER_COMMAND = "Show lobby users";
 
-    public CLILobbyView(ConnectionManager networkManager, ScreenManager screenManager)
+    /**
+     * constructor.
+     *
+     * @param networkManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
+    public CLILobbyScreen(ConnectionManager networkManager, ScreenManager screenManager)
             throws RemoteException {
         super(networkManager, screenManager);
 
         this.controller = networkManager.getLobbyController();
-        this.isLoggedIn = false;
         this.username = null;
         this.token = null;
 
@@ -43,7 +64,11 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
         consoleListener = ConsoleListener.getInstance();
     }
 
-    private void initializeCommands() {
+    /**
+     * Initialize the Lobby's commands.
+     */
+    @Override
+    protected void initializeCommands() {
         Command leaveCommand = new Command(LEAVE_COMMAND, "Leave the lobby");
         leaveCommand.setCommandAction(this::leave);
         commandMap.put(leaveCommand.getCommandText(), leaveCommand);
@@ -53,8 +78,8 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
             try {
                 networkManager.getLobbyController().requestTimeout(token);
             } catch (IOException e) {
-                //TODO
-                e.printStackTrace();
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                        BuildGraphic.ERROR_READING, Level.ERROR);
             }
         });
         commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
@@ -64,24 +89,30 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
             try {
                 networkManager.getLobbyController().requestUsersInLobby(token);
             } catch (IOException e) {
-                // TODO
-                e.printStackTrace();
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                        BuildGraphic.ERROR_READING, Level.ERROR);
             }
         });
         commandMap.put(showUserCommand.getCommandText(), showUserCommand);
     }
 
+    /**
+     * Leave from the Lobby.
+     */
     private void leave() {
-        isLoggedIn = false;
         try {
             controller.leave(token, username);
         } catch (RemoteException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + ": Network error.\n", Level.ERROR);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
         } catch (IOException e) {
-            e.printStackTrace();
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.ERROR_READING, Level.ERROR);
         }
     }
 
+    /**
+     * Login in the Lobby.
+     */
     private void login() {
         consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
@@ -96,43 +127,35 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        ERROR_READING, Level.ERROR);
+                        BuildGraphic.ERROR_READING, Level.ERROR);
                 break;
             } catch (IllegalArgumentException e) {
                 username = null;
             }
         }
-
-        isLoggedIn = true;
-
         try {
             controller.join(token, username, this);
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    ": Network error.\n", Level.ERROR);
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
         } catch (IOException e) {
-            e.printStackTrace();
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.ERROR_READING, Level.ERROR);
         }
         consoleListener.wakeUpCommandConsole();
     }
 
+    /**
+     * Start the CLI.
+     */
     @Override
-    public void run() {
+    public void startCLI() {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
                 Level.STANDARD);
         login();
         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
         consoleListener.setCommandMap(commandMap);
-        while (isLoggedIn) {
-            try {
-                sendCommand(commandMap).executeCommand();
-            } catch (IOException e) {
-                Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-            }catch (NullPointerException e) {
-                isLoggedIn = false;
-            }
-        }
     }
 
     /**
@@ -177,32 +200,38 @@ public class CLILobbyView extends CLIBasicView implements ILobbyView, ILobbyObse
      * {@inheritDoc}
      */
     @Override
-    public void onGameStart(String gameName) throws RemoteException {
+    public void onGameStart(String gameName) {
         PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
-        screenManager.replaceScreen(new CLIGameView(networkManager, screenManager,
-                gameName, new User(username,token)));
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPing(){
         //...
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLILobbyScreen has the same commandMap, controller, token, username.
+     */
     @Override
     public boolean equals(Object o) {
 
         if (this == o) return true;
-        if (!(o instanceof CLILobbyView)) return false;
+        if (!(o instanceof CLILobbyScreen)) return false;
         if (!super.equals(o)) return false;
-        CLILobbyView that = (CLILobbyView) o;
-        return isLoggedIn == that.isLoggedIn &&
-                Objects.equals(commandMap, that.commandMap) &&
+        CLILobbyScreen that = (CLILobbyScreen) o;
+        return  Objects.equals(commandMap, that.commandMap) &&
                 Objects.equals(controller, that.controller) &&
                 Objects.equals(token, that.token) &&
                 Objects.equals(username, that.username);

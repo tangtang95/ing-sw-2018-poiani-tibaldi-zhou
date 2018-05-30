@@ -57,7 +57,7 @@ public class ToolCardExecutorTest {
 
     }
 
-    // TODO fix this test 'cause they run in infinite loop
+    // TODO fix this test 'cause they startCLI in infinite loop
 
     @Test
     public void neededValueTest() throws Exception {

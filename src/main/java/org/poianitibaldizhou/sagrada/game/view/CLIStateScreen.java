@@ -1,24 +1,39 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.PrinterManager;
-import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
-import org.poianitibaldizhou.sagrada.cli.Level;
+import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
-public class CLIStateView extends UnicastRemoteObject implements IStateObserver {
-    private final CLIGameView cliGameView;
+public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
 
-    CLIStateView(CLIGameView cliGameView) throws RemoteException {
-        super();
-        this.cliGameView = cliGameView;
+    private final User myUser;
+    private final String gameName;
+
+    CLIStateScreen(ConnectionManager connectionManager, ScreenManager screenManager, String gameName, User myUser
+                 ) throws RemoteException {
+        super(connectionManager,screenManager);
+
+        this.myUser = myUser;
+        this.gameName = gameName;
+    }
+
+    @Override
+    protected void initializeCommands() {
+        /*
+        For this CLI there are not any commands.
+         */
+    }
+
+    @Override
+    public void startCLI() {
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.setCommandMap(commandMap);
     }
 
     /**
@@ -51,9 +66,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser){
-        PrinterManager.consolePrint("Start of the turn of round " + (round + 1) +
-                " and of the player " + turnUser.getName() + "\n", Level.STANDARD);
-        cliGameView.setCurrentUser(roundUser);
+        if (!myUser.equals(turnUser))
+            PrinterManager.consolePrint("Start of the turn of round " + (round + 1) +
+                    " and of the player " + turnUser.getName() + "\n", Level.STANDARD);
     }
 
     /**
@@ -61,8 +76,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onRoundEnd(int round, User roundUser){
-        PrinterManager.consolePrint("End of the round " + (round + 1) + " of the player " +
-                roundUser.getName() + "\n", Level.STANDARD);
+        if (!myUser.equals(roundUser))
+            PrinterManager.consolePrint("End of the round " + (round + 1) + " of the player " +
+                    roundUser.getName() + "\n", Level.STANDARD);
     }
 
     /**
@@ -87,8 +103,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onPlaceDiceState(User turnUser){
-        PrinterManager.consolePrint("The player  " + turnUser.getName() +
-                " has decided to place a dice on his Window Pattern\n", Level.STANDARD);
+        if (!myUser.equals(turnUser))
+            PrinterManager.consolePrint("The player  " + turnUser.getName() +
+                    " has decided to place a dice on his Window Pattern\n", Level.STANDARD);
     }
 
     /**
@@ -96,8 +113,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onUseCardState(User turnUser){
-        PrinterManager.consolePrint("The player " + turnUser.getName() +
-                " has decided to use a Tool Card\n", Level.STANDARD);
+        if (!myUser.equals(turnUser))
+            PrinterManager.consolePrint("The player " + turnUser.getName() +
+                    " has decided to use a Tool Card\n", Level.STANDARD);
     }
 
     /**
@@ -105,8 +123,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onEndTurnState(User turnUser){
-        PrinterManager.consolePrint("The player " + turnUser.getName() +
-                " ends his turn\n", Level.STANDARD);
+        if (!myUser.equals(turnUser))
+            PrinterManager.consolePrint("The player " + turnUser.getName() +
+                    " ends his turn\n", Level.STANDARD);
     }
 
     @Override
@@ -125,19 +144,5 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         PrinterManager.consolePrint("The winner is " + winner.getName(), Level.STANDARD);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CLIStateView)) return false;
-        if (!super.equals(o)) return false;
-        CLIStateView that = (CLIStateView) o;
-        return Objects.equals(cliGameView, that.cliGameView);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(super.hashCode(), cliGameView);
-    }
 }
 

@@ -48,7 +48,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      */
     @Override
     public void onPlaceDice(Dice dice, Position position) throws RemoteException {
-        User user = cliGameView.getCurrentUser();
+       /* User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             try {
                 schemaCards.get(user.getName()).setDice(dice, position);
@@ -62,6 +62,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
                 buildGraphicDice(dice).toString(), Level.STANDARD);
+                */
     }
 
     /**
@@ -69,6 +70,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      */
     @Override
     public void onDiceRemove(Dice dice, Position position){
+        /*
         User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             schemaCards.get(user.getName()).removeDice(position);
@@ -77,6 +79,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
                 buildGraphicDice(dice).toString(), Level.STANDARD);
+                */
     }
 
     public Map<String, SchemaCard> getSchemaCards() {
