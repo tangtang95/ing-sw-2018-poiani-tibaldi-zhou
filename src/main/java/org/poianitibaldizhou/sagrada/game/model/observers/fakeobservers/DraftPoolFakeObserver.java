@@ -23,8 +23,6 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
      * @param observerManager observer manager of the specified game
      */
     public DraftPoolFakeObserver(String token, IDraftPoolObserver realObserver, ObserverManager observerManager) {
-        if (realObserver instanceof DraftPoolFakeObserver)
-            throw new IllegalArgumentException();
         this.token = token;
         this.realObserver = realObserver;
         this.observerManager = observerManager;

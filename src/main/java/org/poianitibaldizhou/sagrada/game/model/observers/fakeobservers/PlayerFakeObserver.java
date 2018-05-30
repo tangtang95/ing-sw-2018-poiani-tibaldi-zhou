@@ -13,12 +13,18 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     private ObserverManager observerManager;
     private IPlayerObserver realObserver;
 
-    public PlayerFakeObserver(String token, ObserverManager observerManager, IPlayerObserver observer) {
-        if(observer instanceof PlayerFakeObserver)
-            throw new IllegalArgumentException();
+    /**
+     * Creates a fake observer of the player used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real player observer
+     * @param observerManager observer manager of the specified game
+     */
+    public PlayerFakeObserver(String token, ObserverManager observerManager, IPlayerObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
-        this.realObserver = observer;
+        this.realObserver = realObserver;
     }
 
     /**

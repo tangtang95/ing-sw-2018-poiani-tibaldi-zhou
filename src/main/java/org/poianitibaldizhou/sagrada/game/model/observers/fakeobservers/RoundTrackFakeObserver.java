@@ -16,12 +16,18 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     private String token;
     private ObserverManager observerManager;
 
-    public RoundTrackFakeObserver(String token, IRoundTrackObserver observer, ObserverManager observerManager) {
-        if(observer instanceof RoundTrackFakeObserver)
-            throw new IllegalArgumentException();
+    /**
+     * Creates a fake observer of the round track used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real round track observer
+     * @param observerManager observer manager of the specified game
+     */
+    public RoundTrackFakeObserver(String token, IRoundTrackObserver realObserver, ObserverManager observerManager) {
         this.token = token;
         this.observerManager = observerManager;
-        this.realObserver = observer;
+        this.realObserver = realObserver;
     }
 
     /**

@@ -16,12 +16,18 @@ public class StateFakeObserver implements IStateFakeObserver {
     private ObserverManager observerManager;
     private IStateObserver realObserver;
 
-    public StateFakeObserver(String token, ObserverManager observerManager, IStateObserver observer) {
-        if (observer instanceof StateFakeObserver)
-            throw new IllegalArgumentException();
+    /**
+     * Creates a fake observer of the state used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real state observer
+     * @param observerManager observer manager of the specified game
+     */
+    public StateFakeObserver(String token, ObserverManager observerManager, IStateObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
-        this.realObserver = observer;
+        this.realObserver = realObserver;
     }
 
     /**
