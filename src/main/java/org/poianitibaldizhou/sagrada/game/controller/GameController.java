@@ -103,7 +103,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void choosenSchemaCard(String json) throws IOException {
         final String token;
         final String gameName;
-        SchemaCard schemaCard=null;
+        final SchemaCard schemaCard = null;
 
         JSONParser jsonParser = new JSONParser();
         JSONObject  jsonObject;
@@ -111,7 +111,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             jsonObject = (JSONObject) jsonParser.parse(json);
             token = (String) jsonObject.get("token");
             gameName = (String) jsonObject.get("gameName");
-
+            // TODO read schema card (mattia)
         } catch (ParseException | ClassCastException e) {
             return;
         }
@@ -145,7 +145,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void bindPlayer(String token, String gameName, Player player, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
+    public void bindPlayer(String json, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final Player player = null;
+
+        // TODO MATTIA read json
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -176,7 +182,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws IOException {
+    public void bindToolCard(String json, IToolCardObserver toolCardObserver) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final ToolCard toolCard = null;
+
+        // TODO MATTIA (read json)
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -204,7 +216,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}x
      */
     @Override
-    public void chooseAction(String token, String gameName, IActionCommand actionCommand) throws IOException {
+    public void chooseAction(String json) throws IOException {
+        final String gameName = null;
+        final String token = null;
+        final IActionCommand actionCommand = null;
+
+        // TODO MATTIA read json
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -231,7 +249,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void placeDice(String token, String gameName, Dice dice, Position position) throws IOException {
+    public void placeDice(String json) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final Dice dice = null;
+        final Position position = null;
+
+        // TODO MATTIA read json
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -259,8 +284,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver)
+    public void useToolCard(String json, IToolCardExecutorObserver executorObserver)
             throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final ToolCard toolCard = null;
+
+        // TODO Mattia read json
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -286,7 +317,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws IOException {
+    public void choosePrivateObjectiveCard(String json) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final PrivateObjectiveCard privateObjectiveCard = null;
+
+        // TODO MATTIA read json
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -313,7 +350,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setDice(String token, String gameName, Dice dice, String toolCardName) throws IOException {
+    public void setDice(String json) throws IOException {
+        final String gameName = null;
+        final String token = null;
+        final Dice dice = null;
+
+        // TODO Mattia read json
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -339,7 +382,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setNewValue(String token, String gameName, int value, String toolCardName) throws IOException {
+    public void setNewValue(String json) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final Integer value = null;
+
+        // TODO mattia ready json
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token))
             return;
 
@@ -364,7 +413,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setColor(String token, String gameName, Color color, String toolCardName) throws IOException {
+    public void setColor(String json) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final Color color = null;
+
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token))
             return;
 
@@ -389,7 +443,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setPosition(String token, String gameName, Position position, String toolCardName) throws IOException {
+    public void setPosition(String json) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        final Position position = null;
+
+        // TODO mattia ready json
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token))
             return;
 
@@ -414,10 +474,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
+    public void reconnect(String json, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                           Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                           IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                                   diceBagObserver) throws IOException {
+        final String token = null;
+        final String gameName = null;
+
+        // TODO mattia read json
+
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
@@ -469,25 +534,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void synchronizeModel(String token, String gameName) throws IOException {
-        synchronized (gameManager.getGameByName(gameName)) {
-            cleanObservers(gameName);
-            IGame game = gameManager.getGameByName(gameName);
+    public String getToolCards(String json) throws IOException {
+        final String token = null;
+        final String gameName = null;
+        // TODO MATTIA ready json
 
-            if (!(game.containsToken(token))) {
-                viewMap.get(token).err("You can't synchronize on a game that you're not playing");
-                return;
-            }
-
-            viewMap.get(token).notifyModelSynch(game.getDraftPool(), game.getPlayers(), game.getRoundTrack(), game.getToolCards());
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getToolCards(String token, String gameName) throws IOException {
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
@@ -510,7 +561,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getDraftPool(String token, String gameName) throws IOException {
+    public String getDraftPool(String json) throws IOException {
+        final String gameName = null;
+        final String token = null;
+
+        // Todo mattia read json
+
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
@@ -533,7 +589,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getRoundTrack(String token, String gameName) throws IOException {
+    public String getRoundTrack(String json) throws IOException {
+        final String gameName = null;
+        final String token = null;
+
+        // Todo mattia read json
+
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
@@ -554,7 +615,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getToolCardByName(String token, String gameName, String toolCardName) throws IOException {
+    public String getToolCardByName(String json) throws IOException {
+        final String gameName = null;
+        final String token = null;
+        final String toolCardName = null;
+
+        // Todo mattia read json
+
+
         Map<String, String> jsonError = new HashMap<>();
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
@@ -584,7 +652,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getCurrentPlayer(String token, String gameName) throws IOException {
+    public String getCurrentPlayer(String json) throws IOException {
+        final String gameName = null;
+        final String token = null;
+
+        // Todo mattia read json
+
+
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
@@ -698,6 +772,20 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     private boolean checkSynchronize(String token, String gameName) {
         return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
+    }
+
+    private void synchronizeModel(String token, String gameName) throws IOException {
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+            IGame game = gameManager.getGameByName(gameName);
+
+            if (!(game.containsToken(token))) {
+                viewMap.get(token).err("You can't synchronize on a game that you're not playing");
+                return;
+            }
+
+            viewMap.get(token).notifyModelSynch(game.getDraftPool(), game.getPlayers(), game.getRoundTrack(), game.getToolCards());
+        }
     }
 
 }
