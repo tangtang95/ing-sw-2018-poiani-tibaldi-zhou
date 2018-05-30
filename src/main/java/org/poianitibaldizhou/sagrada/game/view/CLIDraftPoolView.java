@@ -28,10 +28,8 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAdd(Dice dice) {
-        synchronized (draftPool) {
-            draftPool.addDice(dice);
-        }
+    public void onDiceAdd(String dice) {
+
         //String message = currentUser.getName() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
@@ -41,7 +39,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice) {
+    public void onDiceRemove(String dice) {
         /*
         synchronized (draftPool) {
             try {
@@ -69,7 +67,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAdd(List<Dice> dices) {
+    public void onDicesAdd(String dices) {
         /*
         synchronized (draftPool) {
             draftPool.addDices(dices);
@@ -84,7 +82,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(List<Dice> dices) {/*
+    public void onDraftPoolReroll(String dices) {/*
         synchronized (draftPool) {
             draftPool.clearPool();
             draftPool.addDices(dices);

@@ -47,7 +47,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      * {@inheritDoc}
      */
     @Override
-    public void onPlaceDice(Dice dice, Position position) throws RemoteException {
+    public void onPlaceDice(String dice, String position) throws RemoteException {
        /* User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             try {
@@ -69,7 +69,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice, Position position){
+    public void onDiceRemove(String dice, String position){
         /*
         User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {

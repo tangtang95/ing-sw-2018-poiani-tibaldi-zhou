@@ -29,11 +29,8 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAddToRound(List<Dice> diceList, int round){
+    public void onDicesAddToRound(String diceList, String round){
         //User user = cliGameView.getCurrentUser();
-        synchronized (roundTrack) {
-            roundTrack.addDicesToRound(diceList, round);
-        }
         //String message = user.getName() + " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceList).toString(), Level.STANDARD);
@@ -43,10 +40,10 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAddToRound(Dice dice, int round){
+    public void onDiceAddToRound(String dice, String round){
        // User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
-            roundTrack.addDiceToRound(dice, round);
+
         }
         //String message = user.getName() + " added a dice to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -57,10 +54,10 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemoveFromRound(Dice dice, int round){
+    public void onDiceRemoveFromRound(String dice, String round){
         //User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
-            roundTrack.removeDiceFromRoundTrack(round, dice);
+
         }
         //String message = user.getName() + " removed a dice from the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -72,17 +69,8 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceSwap(Dice oldDice, Dice newDice, int round){
+    public void onDiceSwap(String oldDice, String newDice, String round){
         //User user = cliGameView.getCurrentUser();
-        synchronized (roundTrack) {
-            try {
-                roundTrack.swapDice(oldDice, newDice, round);
-            } catch (DiceNotFoundException e) {
-                //PrinterManager.consolePrint("An error has occured when " + user.getName() + "" +
-                //        "tried to swap a dice with the round track", Level.INFORMATION);
-                return;
-            }
-        }
        // String message = user.getName() + " swap a with the round track at round " + round + ".";
         String message2 = "Old dice (no more present in round track) : ";
         String message3 = "New dice (added to the round track) : ";

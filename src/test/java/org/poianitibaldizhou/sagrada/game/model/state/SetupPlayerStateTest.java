@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.GameFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.StateFakeObserver;
@@ -99,8 +100,8 @@ public class SetupPlayerStateTest {
 
     @Test
     public void readyCorrectTest() throws Exception {
-        List<List<SchemaCard>> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
-        setupPlayerState.ready(player1, schemaCards1.get(0).get(0));
+        List<FrontBackSchemaCard> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
+        setupPlayerState.ready(player1, schemaCards1.get(0).getSchemaCards().get(0));
         assertTrue(setupPlayerState.isPlayerReady(player1));
         for (String player : playerList) {
             if (!player.equals(player1))
@@ -110,50 +111,50 @@ public class SetupPlayerStateTest {
 
     @Test
     public void readyCorrectFlowTest() throws Exception {
-        List<List<SchemaCard>> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
-        setupPlayerState.ready(player1, schemaCards1.get(0).get(0));
+        List<FrontBackSchemaCard> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
+        setupPlayerState.ready(player1, schemaCards1.get(0).getSchemaCards().get(0));
         assertTrue(setupPlayerState.isPlayerReady(player1));
         for (String player : playerList) {
             if (!player.equals(player1))
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
-        setupPlayerState.ready(player2, setupPlayerState.getSchemaCardsOfPlayer(player2).get(0).get(0));
+        setupPlayerState.ready(player2, setupPlayerState.getSchemaCardsOfPlayer(player2).get(0).getSchemaCards().get(0));
         assertTrue(setupPlayerState.isPlayerReady(player2));
         for (String player : playerList) {
             if (!player.equals(player1) && !player.equals(player2))
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
-        setupPlayerState.ready(player3, setupPlayerState.getSchemaCardsOfPlayer(player3).get(0).get(0));
+        setupPlayerState.ready(player3, setupPlayerState.getSchemaCardsOfPlayer(player3).get(0).getSchemaCards().get(0));
         assertTrue(setupPlayerState.isPlayerReady(player3));
         assertFalse(setupPlayerState.isPlayerReady(player4));
-        setupPlayerState.ready(player4, setupPlayerState.getSchemaCardsOfPlayer(player4).get(0).get(0));
+        setupPlayerState.ready(player4, setupPlayerState.getSchemaCardsOfPlayer(player4).get(0).getSchemaCards().get(0));
         assertTrue(setupPlayerState.isPlayerReady(player4));
         verify(game).setState(ArgumentMatchers.any(SetupGameState.class));
     }
 
     @Test(expected = InvalidActionException.class)
     public void readyExceptionWhenAlreadyReadiedTest() throws Exception {
-        List<List<SchemaCard>> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
-        setupPlayerState.ready(player1, schemaCards1.get(0).get(0));
+        List<FrontBackSchemaCard> schemaCards1 = setupPlayerState.getSchemaCardsOfPlayer(player1);
+        setupPlayerState.ready(player1, schemaCards1.get(0).getSchemaCards().get(0));
         assertTrue(setupPlayerState.isPlayerReady(player1));
         for (String player : playerList) {
             if (!player.equals(player1))
                 assertFalse(setupPlayerState.isPlayerReady(player));
         }
-        setupPlayerState.ready(player1, schemaCards1.get(1).get(0));
+        setupPlayerState.ready(player1, schemaCards1.get(1).getSchemaCards().get(0));
     }
 
     @Test(expected = InvalidActionException.class)
     public void readyExceptionWhenSchemaCardIsDifferentTest() throws Exception {
-        List<List<SchemaCard>> schemaCards2 = setupPlayerState.getSchemaCardsOfPlayer(player2);
-        setupPlayerState.ready(player1, schemaCards2.get(0).get(0));
+        List<FrontBackSchemaCard> schemaCards2 = setupPlayerState.getSchemaCardsOfPlayer(player2);
+        setupPlayerState.ready(player1, schemaCards2.get(0).getSchemaCards().get(0));
     }
 
 
     @Test
     public void containsSchemaCard() throws Exception {
-        List<List<SchemaCard>> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
-        assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0).get(0)));
+        List<FrontBackSchemaCard> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
+        assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0).getSchemaCards().get(0)));
     }
 
 }

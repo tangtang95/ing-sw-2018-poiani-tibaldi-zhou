@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -80,7 +81,7 @@ public class SwapDiceWithRoundTrackTest {
         when(executor.getNeededDice()).thenReturn(dice);
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
 
-        for (IToolCardExecutorObserver obs : observerList)
+        for (IToolCardExecutorFakeObserver obs : observerList)
             verify(obs, times(1)).notifyNeedDiceFromRoundTrack(roundTrack);
     }
 

@@ -17,6 +17,7 @@ import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -131,7 +132,7 @@ public class PlayerTest {
         int beforeCoin = player.getCoins();
         player.removeCoins(1);
         assertEquals(beforeCoin - 1, player.getCoins());
-        for (IPlayerObserver obs: player.getObserverMap().values()) {
+        for (IPlayerFakeObserver obs: player.getObserverMap().values()) {
             verify(obs).onFavorTokenChange(1);
         }
     }

@@ -56,36 +56,30 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onRoundStart(int round, User roundUser){
-        PrinterManager.consolePrint("Start of the round " + (round + 1) + " of the player " +
-                roundUser.getName() + "\n", Level.STANDARD);
+    public void onRoundStart(String round, String roundUser){
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser){
-        if (!myUser.equals(turnUser))
-            PrinterManager.consolePrint("Start of the turn of round " + (round + 1) +
-                    " and of the player " + turnUser.getName() + "\n", Level.STANDARD);
+    public void onTurnState(String round, String isFirstTurn, String  roundUser, String turnUser){
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onRoundEnd(int round, User roundUser){
-        if (!myUser.equals(roundUser))
-            PrinterManager.consolePrint("End of the round " + (round + 1) + " of the player " +
-                    roundUser.getName() + "\n", Level.STANDARD);
+    public void onRoundEnd(String round, String roundUser){
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onEndGame(User roundUser){
+    public void onEndGame(String roundUser){
         PrinterManager.consolePrint("The game is ended\n", Level.STANDARD);
     }
 
@@ -93,46 +87,39 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser){
-        PrinterManager.consolePrint("the turn of round " + (round + 1) +
-                " and of the player " + turnUser.getName() + " has been skipped\n", Level.STANDARD);
+    public void onSkipTurnState(String round, String isFirstTurn, String roundUser, String turnUser){
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onPlaceDiceState(User turnUser){
-        if (!myUser.equals(turnUser))
-            PrinterManager.consolePrint("The player  " + turnUser.getName() +
-                    " has decided to place a dice on his Window Pattern\n", Level.STANDARD);
+    public void onPlaceDiceState(String turnUser){
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onUseCardState(User turnUser){
-        if (!myUser.equals(turnUser))
-            PrinterManager.consolePrint("The player " + turnUser.getName() +
-                    " has decided to use a Tool Card\n", Level.STANDARD);
+    public void onUseCardState(String turnUser){
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onEndTurnState(User turnUser){
-        if (!myUser.equals(turnUser))
-            PrinterManager.consolePrint("The player " + turnUser.getName() +
-                    " ends his turn\n", Level.STANDARD);
+    public void onEndTurnState(String turnUser){
+
     }
 
     @Override
-    public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints){
+    public void onVictoryPointsCalculated(String victoryPoints){
         PrinterManager.consolePrint("Table of the points\n", Level.STANDARD);
         Map<String, String> points = new HashMap<>();
-        victoryPoints.forEach((key, value) -> points.put(key.getUser().getName(), String.valueOf(value)));
+        //victoryPoints.forEach((key, value) -> points.put(key.getUser().getName(), String.valueOf(value)));
         PrinterManager.consolePrint(new BuildGraphic().buildGraphicTable(points).toString(), Level.STANDARD);
     }
 
@@ -140,8 +127,8 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onResultGame(User winner){
-        PrinterManager.consolePrint("The winner is " + winner.getName(), Level.STANDARD);
+    public void onResultGame(String winner){
+        //PrinterManager.consolePrint("The winner is " + winner.getName(), Level.STANDARD);
     }
 
 }

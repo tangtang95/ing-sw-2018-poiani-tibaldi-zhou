@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada;
 
 import org.junit.*;
+import org.junit.Test;
 
 public class TestTemplate {
 

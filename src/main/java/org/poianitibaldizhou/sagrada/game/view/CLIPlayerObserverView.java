@@ -23,7 +23,7 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
      * {@inheritDoc}
      */
     @Override
-    public void onFavorTokenChange(int value) {
+    public void onFavorTokenChange(String value) {
         //User user = cliGameView.getCurrentUser();
         //String message = user.getName() + " has spent " + value + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -31,7 +31,7 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
     }
 
     @Override
-    public void onSetOutcome(Outcome outcome){
-        PrinterManager.consolePrint(outcome.name(),Level.INFORMATION);
+    public void onSetOutcome(String outcome){
+
     }
 }

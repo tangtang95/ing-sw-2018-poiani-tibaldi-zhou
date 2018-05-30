@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -65,7 +66,7 @@ public class ChooseDiceTest {
         dices.add(d1);
         when(draftPool.getDices()).thenReturn(dices);
         command.executeCommand(invokerPlayer, executor, state);
-        for (IToolCardExecutorObserver observer: observerList) {
+        for (IToolCardExecutorFakeObserver observer: observerList) {
             verify(observer).notifyNeedDice(draftPool.getDices());
         }
     }

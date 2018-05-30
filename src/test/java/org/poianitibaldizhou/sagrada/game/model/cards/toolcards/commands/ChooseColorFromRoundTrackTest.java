@@ -9,6 +9,8 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -96,7 +98,7 @@ public class ChooseColorFromRoundTrackTest {
         @Test
         public void executeCommand() throws Exception {
             assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
-            for (IToolCardExecutorObserver obs: observerList) {
+            for (IToolCardExecutorFakeObserver obs: observerList) {
                 verify(obs).notifyNeedColor(colors);
             }
         }

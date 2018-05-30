@@ -8,6 +8,7 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 
 import java.util.HashMap;
@@ -96,7 +97,7 @@ public class ToolCardTest {
         int numberOfFavorTokenToAdd = 1;
         toolCard.addTokens(numberOfFavorTokenToAdd);
         assertEquals(actualTokens + numberOfFavorTokenToAdd, toolCard.getTokens());
-        for (IToolCardObserver obs: toolCard.getObserverMap().values()) {
+        for (IToolCardFakeObserver obs: toolCard.getObserverMap().values()) {
             verify(obs).onTokenChange(numberOfFavorTokenToAdd);
         }
     }
@@ -104,7 +105,7 @@ public class ToolCardTest {
     @Test
     public void destroyToolCard() throws Exception {
         toolCard.destroyToolCard();
-        for (IToolCardObserver obs: toolCard.getObserverMap().values()) {
+        for (IToolCardFakeObserver obs: toolCard.getObserverMap().values()) {
             verify(obs).onCardDestroy();
         }
     }

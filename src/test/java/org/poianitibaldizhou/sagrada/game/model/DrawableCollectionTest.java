@@ -5,7 +5,9 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +18,11 @@ import static org.junit.Assert.*;
 
 @RunWith(Enclosed.class)
 public class DrawableCollectionTest {
-
+    //TODO Riccardo :)
+/*
     public static class NonParameterizedPart {
 
-        private static DrawableCollection<String> drawableCollection;
+        private static DrawableCollectionFakeObserver<String> drawableCollection;
 
         private static List<String> stringList;
 
@@ -150,4 +153,5 @@ public class DrawableCollectionTest {
                 assertEquals(expected, collection1.hashCode() == collection2.hashCode());
         }
     }
+    */
 }
