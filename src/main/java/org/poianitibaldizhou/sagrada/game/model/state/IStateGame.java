@@ -1,19 +1,20 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
 public abstract class IStateGame {
+
+    private static final String ILLEGAL_STATE_EXCEPTION = "SEVERE ERROR: method not implemented in this state";
 
     protected Game game;
 
@@ -32,7 +33,7 @@ public abstract class IStateGame {
      *
      */
     public void nextRound() {
-        throw new IllegalStateException("SEVERE ERROR: method not implemented in this state");
+        throw new IllegalStateException(ILLEGAL_STATE_EXCEPTION);
     }
 
     /**
@@ -54,7 +55,7 @@ public abstract class IStateGame {
      *                                the player has already readied for the game
      */
     public void readyGame(String token) throws InvalidActionException {
-        throw new IllegalStateException("SEVERE ERROR: method not implemented in this state");
+        throw new IllegalStateException(ILLEGAL_STATE_EXCEPTION);
     }
 
     /**
@@ -83,7 +84,7 @@ public abstract class IStateGame {
      *
      */
     public void calculateVictoryPoints() {
-        throw new IllegalStateException("SEVERE ERROR: method not implemented in this state");
+        throw new IllegalStateException(ILLEGAL_STATE_EXCEPTION);
     }
 
     /**
@@ -121,7 +122,7 @@ public abstract class IStateGame {
      *                                the player given is not the player turn ||
      *                                there are no coins to spend
      */
-    public void useCard(Player player, ToolCard toolCard, ToolCardExecutorFakeObserver observer) throws InvalidActionException {
+    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorFakeObserver observer) throws InvalidActionException {
         throw new InvalidActionException();
     }
 

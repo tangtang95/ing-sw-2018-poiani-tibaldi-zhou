@@ -20,33 +20,29 @@ public interface IGameFakeObserver  {
      * Notify the list of players to the user
      *
      * @param players the list of players of the game
-     * @throws IOException network error
      */
-    void onPlayersCreate(List<Player> players) throws IOException;
+    void onPlayersCreate(List<Player> players) ;
 
     /**
      * Notify the list of public objective cards drawn in the game to the user
      *
      * @param publicObjectiveCards the list of public objective cards drawn
-     * @throws IOException network error
      */
-    void onPublicObjectiveCardsDraw(List<PublicObjectiveCard> publicObjectiveCards) throws IOException;
+    void onPublicObjectiveCardsDraw(List<PublicObjectiveCard> publicObjectiveCards) ;
 
     /**
      * Notify the list of tool cards drawn in the game to the user
      *
      * @param toolCards the list of tool cards drawn
-     * @throws IOException network error
      */
-    void onToolCardsDraw(List<ToolCard> toolCards) throws IOException;
+    void onToolCardsDraw(List<ToolCard> toolCards) ;
 
     /**
      * Notify the player to choose one of the privateObjectiveCards
      *
      * @param privateObjectiveCards the list of privateObjectiveCards
-     * @throws IOException network error
      */
-    void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) throws IOException;
+    void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) ;
 
 
     // NOTIFICATION TO ONLY ONE PLAYER
@@ -56,16 +52,14 @@ public interface IGameFakeObserver  {
      *
      * @param privateObjectiveCards the list of private objective cards drawn
      *                              (1 if multi player game and 2 if single player game)
-     * @throws IOException network error
      */
-    void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards) throws IOException;
+    void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards) ;
 
     /**
      * Notify the list of schema cards drawn by the player (send it only to the user)
      *
      * @param schemaCards the list of schema cards drawn
-     * @throws IOException network error
      */
-    void onSchemaCardsDraw(List<FrontBackSchemaCard> schemaCards) throws IOException;
+    void onSchemaCardsDraw(List<FrontBackSchemaCard> schemaCards) ;
 
 }

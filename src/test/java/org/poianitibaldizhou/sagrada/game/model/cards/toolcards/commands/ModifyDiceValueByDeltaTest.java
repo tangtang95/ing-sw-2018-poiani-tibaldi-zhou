@@ -8,12 +8,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.ArrayList;
@@ -21,7 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.mockito.Mockito.*;
 
 @RunWith(Enclosed.class)
@@ -39,12 +38,12 @@ public class ModifyDiceValueByDeltaTest {
         @Mock
         private DraftPool draftPool;
         @Mock
-        private ToolCardExecutorFakeObserver observer1, observer2, observer3;
+        private IToolCardExecutorFakeObserver observer1, observer2, observer3;
         @Mock
         private Dice dice;
 
         private ICommand command;
-        private List<ToolCardExecutorFakeObserver> observerList;
+        private List<IToolCardExecutorFakeObserver> observerList;
         private CommandFlow expected;
         private int delta;
         private int diceNumber;

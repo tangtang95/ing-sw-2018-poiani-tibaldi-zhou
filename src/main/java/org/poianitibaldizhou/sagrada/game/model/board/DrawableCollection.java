@@ -2,17 +2,16 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONArray;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
 
 import java.io.Serializable;
 import java.util.*;
 
 public class DrawableCollection<T extends JSONable> implements Serializable{
     private final List<T> collection;
-    private final transient Map<String, DrawableCollectionFakeObserver<T>> observerMap;
+    private final transient Map<String, IDrawableCollectionFakeObserver<T>> observerMap;
 
     /**
      * Constructor.
@@ -34,7 +33,7 @@ public class DrawableCollection<T extends JSONable> implements Serializable{
      * are not deep copied.
      * @return list of observers
      */
-    public Map<String, DrawableCollectionFakeObserver<T>> getObserverMap() {
+    public Map<String, IDrawableCollectionFakeObserver<T>> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -69,7 +68,7 @@ public class DrawableCollection<T extends JSONable> implements Serializable{
     }
 
     // MODIFIERS
-    public void attachObserver(String token, DrawableCollectionFakeObserver<T> observer) {
+    public void attachObserver(String token, IDrawableCollectionFakeObserver<T> observer) {
         observerMap.put(token, observer);
     }
 

@@ -8,8 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
@@ -129,7 +128,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      *                                there aren't expendable coins
      */
     @Override
-    public void useCard(Player player, ToolCard toolCard, ToolCardExecutorFakeObserver observer)
+    public void useCard(Player player, ToolCard toolCard, IToolCardExecutorFakeObserver observer)
             throws InvalidActionException {
 
         if (!player.equals(currentTurnPlayer))

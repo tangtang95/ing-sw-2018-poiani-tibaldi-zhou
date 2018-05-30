@@ -40,7 +40,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     }
 
     /**
-     * Handle the timeout
+     * Handle the timeout that can happens during the turn state 
      */
     private void handleTimeoutSetUpPlayer() {
         try {

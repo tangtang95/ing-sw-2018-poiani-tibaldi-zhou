@@ -39,12 +39,12 @@ public class ModifyDiceValueTest {
         @Mock
         private DraftPool draftPool;
         @Mock
-        private ToolCardExecutorFakeObserver observer1, observer2, observer3;
+        private IToolCardExecutorFakeObserver observer1, observer2, observer3;
         @Mock
         private Dice dice;
 
         private ICommand command;
-        private List<ToolCardExecutorFakeObserver> observerList;
+        private List<IToolCardExecutorFakeObserver> observerList;
         private CommandFlow expected;
         private int value;
 

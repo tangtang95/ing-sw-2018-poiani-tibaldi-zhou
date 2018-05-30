@@ -3,22 +3,19 @@ package org.poianitibaldizhou.sagrada.game.model.players;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.exception.*;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
-import org.poianitibaldizhou.sagrada.game.model.cards.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
-
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -33,7 +30,7 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
 
-    private transient Map<String, PlayerFakeObserver> observerMap;
+    private transient Map<String, IPlayerFakeObserver> observerMap;
 
     /**
      * Constructor.
@@ -87,11 +84,11 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
      *
      * @return list of observers
      */
-    public Map<String, PlayerFakeObserver> getObserverMap() {
+    public Map<String, IPlayerFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
-    public Map<String, SchemaCardFakeObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
+    public Map<String, ISchemaCardFakeObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -118,7 +115,7 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
         this.outcome = outcome;
     }
 
-    public void attachObserver(String token, PlayerFakeObserver observer) {
+    public void attachObserver(String token, IPlayerFakeObserver observer) {
         observerMap.put(token, observer);
     }
 
@@ -126,7 +123,7 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
         observerMap.remove(token);
     }
 
-    public void attachSchemaCardObserver(String token, SchemaCardFakeObserver schemaCardObserver) {
+    public void attachSchemaCardObserver(String token, ISchemaCardFakeObserver schemaCardObserver) {
         schemaCard.attachObserver(token, schemaCardObserver);
     }
 

@@ -30,7 +30,7 @@ import static org.mockito.Mockito.*;
 public class SwapDiceWithRoundTrackTest {
 
     @Mock
-    private ToolCardExecutorFakeObserver observer1, observer2, observer3;
+    private IToolCardExecutorFakeObserver observer1, observer2, observer3;
 
     @Mock
     private TurnState stateGame;
@@ -49,7 +49,7 @@ public class SwapDiceWithRoundTrackTest {
 
 
     private ICommand command;
-    private List<ToolCardExecutorFakeObserver> observerList;
+    private List<IToolCardExecutorFakeObserver> observerList;
 
     @Before
     public void setUp() throws Exception {
