@@ -1,9 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
-import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.GameManager;
+import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
@@ -42,9 +47,24 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void joinGame(final String token, final String gameName, IGameView view, IGameObserver gameObserver,
+    public void joinGame(final String json, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
                          IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException {
+        // Retriving information from the json
+        final String gameName;
+        final String token;
+        JSONParser jsonParser = new JSONParser();
+        JSONObject  jsonObject;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(json);
+            token = (String) jsonObject.get("token");
+            gameName = (String) jsonObject.get("gameName");
+        } catch (ParseException | ClassCastException e) {
+            view.err("Error in network communication protocol");
+            return;
+        }
+
+        // Operations requested by the method
         if (!gameManager.containsGame(gameName)) {
             view.err("The game doesn't exist");
             return;
@@ -80,7 +100,22 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws IOException {
+    public void choosenSchemaCard(String json) throws IOException {
+        final String token;
+        final String gameName;
+        SchemaCard schemaCard=null;
+
+        JSONParser jsonParser = new JSONParser();
+        JSONObject  jsonObject;
+        try {
+            jsonObject = (JSONObject) jsonParser.parse(json);
+            token = (String) jsonObject.get("token");
+            gameName = (String) jsonObject.get("gameName");
+
+        } catch (ParseException | ClassCastException e) {
+            return;
+        }
+
         if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
 
@@ -166,7 +201,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritDoc}x
      */
     @Override
     public void chooseAction(String token, String gameName, IActionCommand actionCommand) throws IOException {

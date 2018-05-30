@@ -1,19 +1,21 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-public class CLIPlayerObserver implements IPlayerObserver {
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-    private BufferManager bufferManager;
+public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlayerObserver {
+
     private CLIGameView cliGameView;
 
-    CLIPlayerObserver(CLIGameView cliGameView) {
-        this.bufferManager = cliGameView.bufferManager;
+    CLIPlayerObserverView(CLIGameView cliGameView) throws RemoteException {
+        super();
         this.cliGameView = cliGameView;
     }
 
@@ -22,14 +24,14 @@ public class CLIPlayerObserver implements IPlayerObserver {
      */
     @Override
     public void onFavorTokenChange(int value) {
-        User user = cliGameView.getCurrentUser();
-        String message = user.getName() + " has spent " + value + "token";
+        //User user = cliGameView.getCurrentUser();
+        //String message = user.getName() + " has spent " + value + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.LOW);
+        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
     @Override
     public void onSetOutcome(Outcome outcome){
-        bufferManager.consolePrint(outcome.name(),Level.HIGH);
+        PrinterManager.consolePrint(outcome.name(),Level.INFORMATION);
     }
 }

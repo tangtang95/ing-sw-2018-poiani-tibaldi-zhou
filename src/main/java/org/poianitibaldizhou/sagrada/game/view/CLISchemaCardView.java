@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.BufferManager;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
@@ -11,19 +11,20 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaC
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class CLISchemaCardView implements ISchemaCardObserver {
+public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCardObserver {
 
-    private final CLIGameView cliGameView;
-    private final Map<String, SchemaCard> schemaCards;
-    private final BufferManager bufferManager;
+    private transient CLIGameView cliGameView;
+    private transient Map<String, SchemaCard> schemaCards;
 
-    CLISchemaCardView(CLIGameView cliGameView) {
+    CLISchemaCardView(CLIGameView cliGameView) throws RemoteException {
+        super();
         this.cliGameView = cliGameView;
         schemaCards = new HashMap<>();
-        this.bufferManager = cliGameView.bufferManager;
     }
 
     /**
@@ -47,38 +48,57 @@ public class CLISchemaCardView implements ISchemaCardObserver {
      */
     @Override
     public void onPlaceDice(Dice dice, Position position) throws RemoteException {
-        User user = cliGameView.getCurrentUser();
+       /* User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             try {
                 schemaCards.get(user.getName()).setDice(dice, position);
             } catch (RuleViolationException e) {
-                bufferManager.consolePrint("An error has occured when " + user.getName() + " tried to" +
-                        "place a dice in his schema card.", Level.HIGH);
+                PrinterManager.consolePrint("An error has occured when " + user.getName() + " tried to" +
+                        "place a dice in his schema card.", Level.INFORMATION);
                 return;
             }
         }
         String message = user.getName() + " placed a dice on his schema card.";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
-                buildGraphicDice(dice).toString(), Level.LOW);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
+                buildGraphicDice(dice).toString(), Level.STANDARD);
+                */
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(Dice dice, Position position) throws RemoteException {
+    public void onDiceRemove(Dice dice, Position position){
+        /*
         User user = cliGameView.getCurrentUser();
         synchronized (schemaCards.get(user.getName())) {
             schemaCards.get(user.getName()).removeDice(position);
         }
         String message = user.getName() + " removed a dice from his schema card.";
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
-                buildGraphicDice(dice).toString(), Level.LOW);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
+                buildGraphicDice(dice).toString(), Level.STANDARD);
+                */
     }
 
     public Map<String, SchemaCard> getSchemaCards() {
         return schemaCards;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLISchemaCardView)) return false;
+        if (!super.equals(o)) return false;
+        CLISchemaCardView that = (CLISchemaCardView) o;
+        return Objects.equals(cliGameView, that.cliGameView) &&
+                Objects.equals(getSchemaCards(), that.getSchemaCards());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), cliGameView, getSchemaCards());
     }
 }

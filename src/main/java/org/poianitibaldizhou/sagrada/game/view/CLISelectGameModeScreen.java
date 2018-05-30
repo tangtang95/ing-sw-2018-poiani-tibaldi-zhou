@@ -2,36 +2,51 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyView;
+import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyScreen;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
 
-public class CLISelectGameModeMenuView extends CLIMenuView {
-    private final transient Map<String, Command> commandMap = new HashMap<>();
+/**
+ * Select game mode menu.
+ * You can choose between SINGLE player and MULTI player.
+ */
+public class CLISelectGameModeScreen extends CLIBasicScreen {
 
+    /**
+     * SelectGameMode commands.
+     */
     private static final String SINGLE_PLAYER = "Single player";
     private static final String MULTI_PLAYER = "Multi player";
     private static final String GO_BACK = "Go back";
 
-    CLISelectGameModeMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
-            throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+    /**
+     * constructor.
+     *
+     * @param networkManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
+    CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+        super(networkManager, screenManager);
+
         initializeCommands();
     }
 
-    private void initializeCommands() {
+    /**
+     * Initialize the SelectGameMode's commands.
+     */
+    @Override
+    protected void initializeCommands() {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLIGameView(networkManager, screenManager, bufferManager,
-                        "Empire", new User("Tang-Tang", "emperor"))));
+                new CLIStateScreen(networkManager, screenManager, "Empire", new User("Tang", "master")));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");
         multiPlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLILobbyView(networkManager,screenManager, bufferManager)));
+                screenManager.replaceScreen(new CLILobbyScreen(networkManager,screenManager)));
         commandMap.put(multiPlayerCommand.getCommandText(), multiPlayerCommand);
 
         Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");
@@ -39,34 +54,39 @@ public class CLISelectGameModeMenuView extends CLIMenuView {
         commandMap.put(goBackCommand.getCommandText(), goBackCommand);
     }
 
+    /**
+     * Start the CLI.
+     */
     @Override
-    public void run() {
+    public void startCLI() {
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        bufferManager.consolePrint(buildGraphic.
+        PrinterManager.consolePrint(buildGraphic.
                 buildMessage("------------------------Select Game Mode---------------------------").
                 buildGraphicHelp(commandMap).
                 buildMessage("Choose the game mode or go to Start Game Menu: ").toString(),
-                Level.LOW);
+                Level.STANDARD);
 
-        try {
-            getCommand(commandMap).executeCommand();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-        }catch (NullPointerException e) {
-            //...
-        }
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.setCommandMap(commandMap);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIChangeConnectionScreen has the same commandMap.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLISelectGameModeMenuView)) return false;
+        if (!(o instanceof CLISelectGameModeScreen)) return false;
         if (!super.equals(o)) return false;
-        CLISelectGameModeMenuView that = (CLISelectGameModeMenuView) o;
+        CLISelectGameModeScreen that = (CLISelectGameModeScreen) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
 

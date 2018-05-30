@@ -14,7 +14,7 @@ public class ScreenThread extends Thread {
     @Override
     public void run() {
         try {
-            screen.run();
+            screen.startCLI();
         } catch (InterruptedException e) {
             Logger.getAnonymousLogger().log(Level.INFO, "ScreenThread interrupted");
             Thread.currentThread().interrupt();

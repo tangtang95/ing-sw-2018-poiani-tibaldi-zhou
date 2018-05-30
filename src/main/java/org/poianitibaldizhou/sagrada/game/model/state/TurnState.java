@@ -218,7 +218,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      * This method is called when the currentTurnPlayer end his turn: if it's the second turn and the currentTurnPlayer ending the turn
      * is the current currentTurnPlayer who has thrown the dices then the state goes to RoundEndState, otherwise if it's first
      * turn and the currentTurnPlayer ending the turn is the last currentTurnPlayer(the one before the current currentTurnPlayer of the round) then
-     * it starts the second run. Otherwise the turn goes to the next currentTurnPlayer (if is the first turn than the direction is
+     * it starts the second startCLI. Otherwise the turn goes to the next currentTurnPlayer (if is the first turn than the direction is
      * clockwise otherwise it's counter clockwise)
      */
     public void nextTurn() {

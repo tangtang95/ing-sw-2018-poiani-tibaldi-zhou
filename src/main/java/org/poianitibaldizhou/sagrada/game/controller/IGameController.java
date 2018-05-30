@@ -19,8 +19,7 @@ public interface IGameController extends Remote {
     /**
      * Notifies that a player has joined the game.
      *
-     * @param token              player's token
-     * @param gameName           game's name
+     * @param json               player's json that contains his token and the gameName
      * @param view               player's view
      * @param gameObserver       player's game observer
      * @param roundTrackObserver player's round track observer
@@ -29,7 +28,7 @@ public interface IGameController extends Remote {
      * @param diceBagObserver    player's dice bag observer
      * @throws IOException network communication error
      */
-    void joinGame(String token, String gameName, IGameView view, IGameObserver gameObserver,
+    void joinGame(String json, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
                   IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException;
 
@@ -37,12 +36,10 @@ public interface IGameController extends Remote {
      * Notifies the schema card chosen by a certain player.
      * Player must be part of the specified game.
      *
-     * @param token      player's token
-     * @param gameName   game's name
-     * @param schemaCard schema card chosen by a certain player
+     * @param json       json containing player's token, his game name and the schema card that he had chosen
      * @throws IOException network communication error
      */
-    void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws IOException;
+    void choosenSchemaCard(String json) throws IOException;
 
     /**
      * Binds the player  and che schema card observers of a certain player to the specified player and its schema card.

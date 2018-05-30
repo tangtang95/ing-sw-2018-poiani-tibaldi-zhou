@@ -4,33 +4,47 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
-public class CLIStartGameMenuView extends CLIMenuView {
-    private final transient Map<String, Command> commandMap = new HashMap<>();
+/**
+ * The firs CLI launched.
+ * The class contain the command for starting the game.
+ */
+public class CLIStartGameScreen extends CLIBasicScreen {
 
+    /**
+     * StartGame commands.
+     */
     private static final String CHANGE_CONNECTION_MODE = "Change connection mode";
     private static final String START_GAME = "Start game";
     private static final String QUIT = "Quit";
 
-    public CLIStartGameMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
-            throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+    /**
+     * constructor.
+     *
+     * @param networkManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
+    public CLIStartGameScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+        super(networkManager, screenManager);
+
         initializeCommands();
     }
 
-    private void initializeCommands() {
+    /**
+     * Initialize the StartGame's commands.
+     */
+    @Override
+    protected void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLIChangeConnectionMenuView(networkManager, screenManager, bufferManager)));
+                screenManager.pushScreen(new CLIChangeConnectionScreen(networkManager, screenManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
         startGameCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLISelectGameModeMenuView(networkManager, screenManager, bufferManager)));
+                screenManager.pushScreen(new CLISelectGameModeScreen(networkManager, screenManager)));
         commandMap.put(startGameCommand.getCommandText(), startGameCommand);
 
         Command quitCommand = new Command(QUIT, "Quit game");
@@ -38,41 +52,46 @@ public class CLIStartGameMenuView extends CLIMenuView {
         commandMap.put(quitCommand.getCommandText(), quitCommand);
     }
 
-
+    /**
+     * Start the CLI.
+     */
     @Override
-    public void run() {
+    public void startCLI() {
         BuildGraphic buildGraphic = new BuildGraphic();
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
 
-        bufferManager.consolePrint(buildGraphic.
+        PrinterManager.consolePrint(buildGraphic.
                 buildGraphicLogo().
                 buildMessage("-------------------------Start Game Menu---------------------------").
                 buildGraphicHelp(commandMap).
-                buildMessage("Choose action: ").toString(), Level.LOW);
+                buildMessage("Choose action: ").toString(), Level.STANDARD);
 
-        try {
-            getCommand(commandMap).executeCommand();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-        } catch (NullPointerException e) {
-            //...
-        }
-
+        consoleListener.setCommandMap(commandMap);
     }
 
+    /**
+     * Quit from the game.
+     */
     private void quit() {
         screenManager.popScreen();
-        System.exit(0);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIStartGameScreen has the same commandMap.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIStartGameMenuView)) return false;
+        if (!(o instanceof CLIStartGameScreen)) return false;
         if (!super.equals(o)) return false;
-        CLIStartGameMenuView that = (CLIStartGameMenuView) o;
+        CLIStartGameScreen that = (CLIStartGameScreen) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
 

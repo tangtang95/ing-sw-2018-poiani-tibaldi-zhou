@@ -6,20 +6,36 @@ import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Logger;
 
-public class CLIChangeConnectionMenuView extends CLIMenuView {
-    private final transient Map<String, Command> commandMap = new HashMap<>();
+/**
+ * Change connection CLI.
+ * You can choose between RMI and SOCKET.
+ */
+public class CLIChangeConnectionScreen extends CLIBasicScreen {
 
+    /**
+     * ChangeConnection commands.
+     */
     private static final String GO_BACK = "Go back";
 
-    CLIChangeConnectionMenuView(ConnectionManager networkManager, ScreenManager screenManager, BufferManager bufferManager)
-            throws RemoteException {
-        super(networkManager, screenManager, bufferManager);
+    /**
+     * constructor.
+     *
+     * @param networkManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
+    CLIChangeConnectionScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+        super(networkManager, screenManager);
+
         initializeCommands();
     }
 
-    private void initializeCommands() {
+    /**
+     * Initialize the ChangeConnection's commands.
+     */
+    @Override
+    protected void initializeCommands() {
         Command changeConnectionCommand = new Command(
                 networkManager.getNetworkType() == (ConnectionType.RMI) ?
                         ConnectionType.SOCKET.name() : ConnectionType.RMI.name(),
@@ -32,39 +48,50 @@ public class CLIChangeConnectionMenuView extends CLIMenuView {
         commandMap.put(goBackCommand.getCommandText(), goBackCommand);
     }
 
+    /**
+     * Start the CLI.
+     */
     @Override
-    public void run() {
+    public void startCLI() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        bufferManager.consolePrint(buildGraphic.
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+
+        PrinterManager.consolePrint(buildGraphic.
                 buildMessage("----------------------Select Connection Menu-----------------------").
                 buildMessage("Current connection mode: " + networkManager.getNetworkType().name()).
                 buildGraphicHelp(commandMap).
                 buildMessage("Change connection mode or go to Start Game Menu: ").
-                toString(), Level.LOW);
-        try {
-            getCommand(commandMap).executeCommand();
-        } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(java.util.logging.Level.SEVERE, e.toString());
-        } catch (NullPointerException e) {
-            //...
-        }
+                toString(), Level.STANDARD);
+
+        consoleListener.setCommandMap(commandMap);
     }
 
+    /**
+     * Change the connection to the type input.
+     *
+     * @param type the type of connection to switch.
+     */
     private void changeConnection(String type) {
         networkManager.setNetworkType(ConnectionType.valueOf(type));
         screenManager.popScreen();
     }
 
-
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIChangeConnectionScreen has the same commandMap.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIChangeConnectionMenuView)) return false;
+        if (!(o instanceof CLIChangeConnectionScreen)) return false;
         if (!super.equals(o)) return false;
-        CLIChangeConnectionMenuView that = (CLIChangeConnectionMenuView) o;
+        CLIChangeConnectionScreen that = (CLIChangeConnectionScreen) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
 

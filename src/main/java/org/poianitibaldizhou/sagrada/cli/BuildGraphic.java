@@ -10,13 +10,46 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * class for create the graphic of all object in game, like dice, toolCard,
+ * publicObjectiveCard, privateObjectiveCard, table of points and roundTrack.
+ */
 public class BuildGraphic {
+
+    /**
+     * the unique stringBuilder whom append any graphic object.
+     */
     private StringBuilder stringBuilder;
 
+    /**
+     * Error Messages.
+     */
+    public static final String NOT_A_NUMBER = "Is not a number, please retry.\n";
+    public static final String COMMAND_NOT_FOUND = "Command not found, please retry.\n";
+    public static final String ERROR_READING = ": Error while reading from keyboard.\n";
+    public static final String NETWORK_ERROR = ": Network error.\n";
+
+    /**
+     * Card attributes.
+     */
+    private static final String NAME = "Card Name: ";
+    private static final String DESCRIPTION = "Description:\n";
+
+    /**
+     * constructor.
+     */
     public BuildGraphic() {
         stringBuilder = new StringBuilder();
     }
 
+    /**
+     * build the graphic of a list of dices starting from the point start and
+     * finishing in the end point whit UTF-8 code.
+     *
+     * @param diceList list of dices whom create the graphics.
+     * @param start the start point.
+     * @param end the end point.
+     */
     private void buildListDices(List<Dice> diceList, int start, int end) {
         for (int i = start; i < end; i++)
             stringBuilder.append("  [").append(i + 1).append("]   ");
@@ -51,95 +84,164 @@ public class BuildGraphic {
         stringBuilder.append("\n");
     }
 
+    /**
+     * Build the graphic of a list of dices, putting five dices on the same line.
+     *
+     * @param diceList list of dices whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicDices(List<Dice> diceList) {
-        if (diceList.size() <= 5) {
-            buildListDices(diceList, 0, diceList.size());
-        } else {
-            buildListDices(diceList, 0, 5);
-            buildListDices(diceList, 5, diceList.size());
+        if (diceList != null) {
+            if (diceList.size() <= 5) {
+                buildListDices(diceList, 0, diceList.size());
+            } else {
+                buildListDices(diceList, 0, 5);
+                buildListDices(diceList, 5, diceList.size());
+            }
         }
         return this;
     }
 
+    /**
+     * Build the graphic for a single dice.
+     *
+     * @param dice dice whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicDice(Dice dice) {
-        List<Dice> diceList = new ArrayList<>();
-        diceList.add(dice);
-        buildGraphicDices(diceList);
+        if (dice != null) {
+            List<Dice> diceList = new ArrayList<>();
+            diceList.add(dice);
+            buildGraphicDices(diceList);
+        }
         return this;
     }
 
+
+    /**
+     * Append a message to the stringBuilder.
+     *
+     * @param message to append.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildMessage(String message){
-        stringBuilder.append(message).append("\n");
+        if (message != null)
+            stringBuilder.append(message).append("\n");
         return this;
     }
 
+    /**
+     * Build the graphic of a list of toolCard.
+     *
+     * @param toolCards list of toolCards whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicToolCards(List<ToolCard> toolCards) {
-        buildMessage("----------------------------TOOL CARDS---------------------------");
-        for (int i = 0; i < toolCards.size() ; i++) {
-               stringBuilder.append("[").append(i).append("]\n");
-               stringBuilder.append("Card Name: ").append(toolCards.get(i).getName()).append("\n");
-               stringBuilder.append("Color:     ").append(toolCards.get(i).getColor()).append("\n");
-               stringBuilder.append("Description:\n");
-               stringBuilder.append(toolCards.get(i).getDescription()).append("\n\n");
+        if (toolCards != null) {
+            buildMessage("----------------------------TOOL CARDS---------------------------");
+            for (int i = 0; i < toolCards.size(); i++) {
+                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append(NAME).append(toolCards.get(i).getName()).append("\n");
+                stringBuilder.append("Color:     ").append(toolCards.get(i).getColor()).append("\n");
+                stringBuilder.append(DESCRIPTION);
+                stringBuilder.append(toolCards.get(i).getDescription()).append("\n\n");
+            }
         }
         return this;
     }
 
+    /**
+     * Build the graphic of a list of publicObjectiveCards.
+     *
+     * @param publicObjectiveCards list of publicObjectiveCards whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicPublicObjectiveCards(List<PublicObjectiveCard> publicObjectiveCards) {
-        buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
-        for (int i = 0; i < publicObjectiveCards.size() ; i++) {
-            stringBuilder.append("[").append(i).append("]\n");
-            stringBuilder.append("Card Name: ").append(publicObjectiveCards.get(i).getName()).append("\n");
-            stringBuilder.append("Point:     ").append(publicObjectiveCards.get(i).getCardPoints()).append("\n");
-            stringBuilder.append("Description:\n");
-            stringBuilder.append(publicObjectiveCards.get(i).getDescription()).append("\n\n");
+        if (publicObjectiveCards != null) {
+            buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
+            for (int i = 0; i < publicObjectiveCards.size(); i++) {
+                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append(NAME).append(publicObjectiveCards.get(i).getName()).append("\n");
+                stringBuilder.append("Point:     ").append(publicObjectiveCards.get(i).getCardPoints()).append("\n");
+                stringBuilder.append(DESCRIPTION);
+                stringBuilder.append(publicObjectiveCards.get(i).getDescription()).append("\n\n");
+            }
         }
         return this;
     }
 
+    /**
+     * Build the graphic of a list of privateObjectiveCards.
+     *
+     * @param privateObjectiveCards list of privateObjectiveCards whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicPrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) {
-        buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
-        for (int i = 0; i < privateObjectiveCards.size() ; i++) {
-            stringBuilder.append("[").append(i).append("]\n");
-            stringBuilder.append("Card Name: ").append(privateObjectiveCards.get(i).getName()).append("\n");
-            stringBuilder.append("Description:\n");
-            stringBuilder.append(privateObjectiveCards.get(i).getDescription()).append("\n\n");
+        if (privateObjectiveCards != null) {
+            buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
+            for (int i = 0; i < privateObjectiveCards.size(); i++) {
+                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append(NAME).append(privateObjectiveCards.get(i).getName()).append("\n");
+                stringBuilder.append(DESCRIPTION);
+                stringBuilder.append(privateObjectiveCards.get(i).getDescription()).append("\n\n");
+            }
         }
         return this;
     }
 
+    /**
+     * build a formatted table.
+     *
+     * @param table to build.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicTable(Map<String, String> table){
-        table.forEach((key, value) -> {
-            stringBuilder.append(String.format("%10s %3s", key, value));
-            stringBuilder.append("\n");
-        });
+        if(table != null) {
+            table.forEach((key, value) -> {
+                stringBuilder.append(String.format("%10s %3s", key, value));
+                stringBuilder.append("\n");
+            });
+        }
         return this;
     }
 
+    /**
+     * Build the command help.
+     *
+     * @param commandMap list of available command.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicHelp(Map<String, Command> commandMap) {
         int maxLength = 0;
         Command command;
 
-        stringBuilder.append("Available commands:");
-        stringBuilder.append("\n");
-        for (Command com : commandMap.values())
-            if (com.getCommandText().length() > maxLength)
-                maxLength = com.getCommandText().length();
-        for (int i = 0; i < commandMap.keySet().size(); i++) {
-            command = commandMap.get(commandMap.keySet().toArray()[i].toString());
-            stringBuilder.append("[");
-            stringBuilder.append((i + 1));
-            stringBuilder.append("] ");
-            stringBuilder.append(command.getCommandText());
-            for (int j = 0; j < maxLength - command.getCommandText().length(); j++)
-                stringBuilder.append(" ");
-            stringBuilder.append("\t\t");
-            stringBuilder.append(command.getHelpText());
+        if (commandMap != null) {
+            stringBuilder.append("Available commands:");
             stringBuilder.append("\n");
+            for (Command com : commandMap.values())
+                if (com.getCommandText().length() > maxLength)
+                    maxLength = com.getCommandText().length();
+            for (int i = 0; i < commandMap.keySet().size(); i++) {
+                command = commandMap.get(commandMap.keySet().toArray()[i].toString());
+                stringBuilder.append("[");
+                stringBuilder.append((i + 1));
+                stringBuilder.append("] ");
+                stringBuilder.append(command.getCommandText());
+                for (int j = 0; j < maxLength - command.getCommandText().length(); j++)
+                    stringBuilder.append(" ");
+                stringBuilder.append("\t\t");
+                stringBuilder.append(command.getHelpText());
+                stringBuilder.append("\n");
+            }
         }
         return this;
     }
 
+    /**
+     * Build the graphic logo of game.
+     *
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicLogo() {
         int charNumber = 76;
 
@@ -163,20 +265,34 @@ public class BuildGraphic {
         return this;
     }
 
+    /**
+     * Build the graphic of the round Track.
+     *
+     * @param roundTrack to build graphic.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicRoundTrack(RoundTrack roundTrack) {
-        buildMessage("----------------------------ROUND TRACK---------------------------");
-        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-            List<Dice> diceList = roundTrack.getDices(i);
-            stringBuilder.append(buildMessage("Round " + "[" + i + 1 + "]").buildGraphicDices(diceList).toString());
+        if (roundTrack != null) {
+            buildMessage("----------------------------ROUND TRACK---------------------------");
+            for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
+                List<Dice> diceList = roundTrack.getDices(i);
+                stringBuilder.append(buildMessage("Round " + "[" + (i + 1) + "]").buildGraphicDices(diceList).toString());
+            }
         }
         return this;
     }
 
+    /**
+     * @return the stringBuilder to string.
+     */
     @Override
     public String toString() {
         return stringBuilder.toString();
     }
 
+    /**
+     * clean the stringBuilder.
+     */
     public void clear() {
         stringBuilder.delete(0, stringBuilder.length());
     }

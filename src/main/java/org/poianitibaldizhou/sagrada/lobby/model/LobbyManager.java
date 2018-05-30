@@ -21,14 +21,14 @@ public class LobbyManager {
     private ManagerMediator managerMediator;
 
     // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=30s
-    private static final long DELAY_TIME = 600000;
+    private static final long DELAY_TIME = 6000;
 
 
     /**
      * Constructor.
      * Create a manager for the lobby
      *
-     * @param managerMediator
+     * @param managerMediator ...
      */
     public LobbyManager(ManagerMediator managerMediator) {
         this.managerMediator = managerMediator;

@@ -17,7 +17,7 @@ public class Test {
         DraftPool draftPool = new DraftPool();
         draftPool.addDice(new Dice(5, Color.BLUE));
         draftPool.addDice(new Dice(2, Color.GREEN));
-        System.out.println(DraftPool.toJSON(draftPool));
+        System.out.println(draftPool.toJSON());
 
         HashMap<String, String> json = new HashMap<>();
         json.putIfAbsent("error", "test");
