@@ -39,12 +39,12 @@ public class CLIStartGameScreen extends CLIBasicScreen {
     protected void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLIChangeConnectionScreen(networkManager, screenManager)));
+                screenManager.pushScreen(new CLIChangeConnectionScreen(connectionManager, screenManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
         startGameCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLISelectGameModeScreen(networkManager, screenManager)));
+                screenManager.pushScreen(new CLISelectGameModeScreen(connectionManager, screenManager)));
         commandMap.put(startGameCommand.getCommandText(), startGameCommand);
 
         Command quitCommand = new Command(QUIT, "Quit game");
@@ -57,6 +57,7 @@ public class CLIStartGameScreen extends CLIBasicScreen {
      */
     @Override
     public void startCLI() {
+        pauseCLI();
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 

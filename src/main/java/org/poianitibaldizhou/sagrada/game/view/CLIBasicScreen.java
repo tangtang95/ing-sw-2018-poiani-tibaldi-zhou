@@ -22,7 +22,7 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
     /**
      * Network manager for connecting with the server.
      */
-    protected final transient ConnectionManager networkManager;
+    protected final transient ConnectionManager connectionManager;
 
     /**
      * Manager for handler the changed of the screen.
@@ -30,16 +30,21 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
     protected final transient ScreenManager screenManager;
 
     /**
+     * Time to sleep.
+     */
+    private static final int TIME_SLEEP = 100;
+
+    /**
      * constructor.
      *
-     * @param networkManager the network manager for connecting with the server.
+     * @param connectionManager the network manager for connecting with the server.
      * @param screenManager manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIBasicScreen(ConnectionManager networkManager, ScreenManager screenManager)
+    public CLIBasicScreen(ConnectionManager connectionManager, ScreenManager screenManager)
             throws RemoteException {
         super();
-        this.networkManager = networkManager;
+        this.connectionManager = connectionManager;
         this.screenManager = screenManager;
     }
 
@@ -55,8 +60,22 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
     public abstract void startCLI();
 
     /**
+     * This method pose the CLI in pause for TIME_SLEEP millisecond, for
+     * attending the notify.
+     */
+    protected void pauseCLI() {
+        try {
+            Thread.sleep(TIME_SLEEP);
+        } catch (InterruptedException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + ": Error while pausing.\n",
+                    Level.ERROR);
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
      * @param o the other object to compare.
-     * @return true if the CLIChangeConnectionScreen has the same commandMap, networkManager and screenManager.
+     * @return true if the CLIChangeConnectionScreen has the same commandMap, connectionManager and screenManager.
      */
     @Override
     public boolean equals(Object o) {
@@ -65,7 +84,7 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
         if (!super.equals(o)) return false;
         CLIBasicScreen that = (CLIBasicScreen) o;
         return Objects.equals(commandMap, that.commandMap) &&
-                Objects.equals(networkManager, that.networkManager) &&
+                Objects.equals(connectionManager, that.connectionManager) &&
                 Objects.equals(screenManager, that.screenManager);
     }
 
@@ -75,6 +94,6 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), commandMap, networkManager, screenManager);
+        return Objects.hash(super.hashCode(), commandMap, connectionManager, screenManager);
     }
 }

@@ -1,20 +1,22 @@
 package org.poianitibaldizhou.sagrada.cli;
 
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
  * class for create the graphic of all object in game, like dice, toolCard,
  * publicObjectiveCard, privateObjectiveCard, table of points and roundTrack.
+ * All remote object is passed with a json file (string).
  */
 public class BuildGraphic {
+
+    private JSONParser jsonParser;
+    private JSONArray jsonArray;
 
     /**
      * the unique stringBuilder whom append any graphic object.
@@ -34,23 +36,27 @@ public class BuildGraphic {
      */
     private static final String NAME = "Card Name: ";
     private static final String DESCRIPTION = "Description:\n";
+    private static final String JSON_CARD_NAME = "name";
+    private static final String JSON_CARD_DESCRIPTION = "description";
 
     /**
      * constructor.
      */
     public BuildGraphic() {
         stringBuilder = new StringBuilder();
+        jsonParser = new JSONParser();
+        jsonArray = null;
     }
 
     /**
      * build the graphic of a list of dices starting from the point start and
      * finishing in the end point whit UTF-8 code.
      *
-     * @param diceList list of dices whom create the graphics.
+     * @param arrayOfDice array of dices whom create the graphics.
      * @param start the start point.
      * @param end the end point.
      */
-    private void buildListDices(List<Dice> diceList, int start, int end) {
+    private void buildListDices(JSONArray arrayOfDice, int start, int end) {
         for (int i = start; i < end; i++)
             stringBuilder.append("  [").append(i + 1).append("]   ");
         stringBuilder.append("\n");
@@ -67,7 +73,9 @@ public class BuildGraphic {
         stringBuilder.append("\n");
         for (int i = start; i < end; i++) {
             stringBuilder.append((char) 9553 + " ");
-            stringBuilder.append(diceList.get(i).toString());
+            JSONObject dice = (JSONObject) arrayOfDice.get(i);
+            String formatDice = dice.get("value") + "/" + dice.get("color");
+            stringBuilder.append(formatDice);
             stringBuilder.append(" " + (char) 9553 + " ");
         }
         stringBuilder.append("\n");
@@ -87,16 +95,22 @@ public class BuildGraphic {
     /**
      * Build the graphic of a list of dices, putting five dices on the same line.
      *
-     * @param diceList list of dices whom create the graphics.
+     * @param jsonDiceList list of dices whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicDices(List<Dice> diceList) {
-        if (diceList != null) {
-            if (diceList.size() <= 5) {
-                buildListDices(diceList, 0, diceList.size());
-            } else {
-                buildListDices(diceList, 0, 5);
-                buildListDices(diceList, 5, diceList.size());
+    public BuildGraphic buildGraphicDices(String jsonDiceList) {
+        if (jsonDiceList != null) {
+            jsonArray = null;
+            try {
+                jsonArray = (JSONArray) jsonParser.parse(jsonDiceList);
+                if (jsonArray.size() <= 5) {
+                    buildListDices(jsonArray, 0, jsonArray.size());
+                } else {
+                    buildListDices(jsonArray, 0, 5);
+                    buildListDices(jsonArray, 5, jsonArray.size());
+                }
+            } catch (ParseException e) {
+                PrinterManager.consolePrint("Parse exception in buildGraphicDices.\n", Level.ERROR);
             }
         }
         return this;
@@ -108,11 +122,15 @@ public class BuildGraphic {
      * @param dice dice whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicDice(Dice dice) {
+    public BuildGraphic buildGraphicDice(String dice) {
         if (dice != null) {
-            List<Dice> diceList = new ArrayList<>();
-            diceList.add(dice);
-            buildGraphicDices(diceList);
+            jsonArray = null;
+            try {
+                jsonArray = (JSONArray) jsonParser.parse(dice);
+                buildListDices(jsonArray, 0, 1);
+            } catch (ParseException e) {
+                PrinterManager.consolePrint("Parse exception in buildGraphicDice.\n", Level.ERROR);
+            }
         }
         return this;
     }
@@ -136,15 +154,22 @@ public class BuildGraphic {
      * @param toolCards list of toolCards whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicToolCards(List<ToolCard> toolCards) {
+    public BuildGraphic buildGraphicToolCards(String toolCards) {
         if (toolCards != null) {
-            buildMessage("----------------------------TOOL CARDS---------------------------");
-            for (int i = 0; i < toolCards.size(); i++) {
-                stringBuilder.append("[").append(i).append("]\n");
-                stringBuilder.append(NAME).append(toolCards.get(i).getName()).append("\n");
-                stringBuilder.append("Color:     ").append(toolCards.get(i).getColor()).append("\n");
-                stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(toolCards.get(i).getDescription()).append("\n\n");
+            jsonArray = null;
+            try {
+                jsonArray = (JSONArray) jsonParser.parse(toolCards);
+                buildMessage("----------------------------TOOL CARDS---------------------------");
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject toolCard = (JSONObject) jsonArray.get(i);
+                    stringBuilder.append("[").append(i).append("]\n");
+                    stringBuilder.append(NAME).append((String) toolCard.get(JSON_CARD_NAME)).append("\n");
+                    stringBuilder.append("Color:     ").append((String) toolCard.get("color")).append("\n");
+                    stringBuilder.append(DESCRIPTION);
+                    stringBuilder.append((String) toolCard.get(JSON_CARD_DESCRIPTION)).append("\n\n");
+                }
+            } catch (ParseException e) {
+                PrinterManager.consolePrint("Parse exception in buildGraphicToolCards.\n", Level.ERROR);
             }
         }
         return this;
@@ -156,15 +181,22 @@ public class BuildGraphic {
      * @param publicObjectiveCards list of publicObjectiveCards whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicPublicObjectiveCards(List<PublicObjectiveCard> publicObjectiveCards) {
+    public BuildGraphic buildGraphicPublicObjectiveCards(String publicObjectiveCards) {
         if (publicObjectiveCards != null) {
-            buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
-            for (int i = 0; i < publicObjectiveCards.size(); i++) {
-                stringBuilder.append("[").append(i).append("]\n");
-                stringBuilder.append(NAME).append(publicObjectiveCards.get(i).getName()).append("\n");
-                stringBuilder.append("Point:     ").append(publicObjectiveCards.get(i).getCardPoints()).append("\n");
-                stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(publicObjectiveCards.get(i).getDescription()).append("\n\n");
+            jsonArray = null;
+            try {
+                jsonArray = (JSONArray) jsonParser.parse(publicObjectiveCards);
+                buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject poc = (JSONObject) jsonArray.get(i);
+                    stringBuilder.append("[").append(i).append("]\n");
+                    stringBuilder.append(NAME).append((String) poc.get(JSON_CARD_NAME)).append("\n");
+                    stringBuilder.append("Point:     ").append((String) poc.get("point")).append("\n");
+                    stringBuilder.append(DESCRIPTION);
+                    stringBuilder.append((String) poc.get(JSON_CARD_DESCRIPTION)).append("\n\n");
+                }
+            } catch (ParseException e) {
+                PrinterManager.consolePrint("Parse exception in buildGraphicPublicObjectiveCards.\n", Level.ERROR);
             }
         }
         return this;
@@ -176,14 +208,21 @@ public class BuildGraphic {
      * @param privateObjectiveCards list of privateObjectiveCards whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicPrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) {
+    public BuildGraphic buildGraphicPrivateObjectiveCards(String privateObjectiveCards) {
         if (privateObjectiveCards != null) {
-            buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
-            for (int i = 0; i < privateObjectiveCards.size(); i++) {
-                stringBuilder.append("[").append(i).append("]\n");
-                stringBuilder.append(NAME).append(privateObjectiveCards.get(i).getName()).append("\n");
-                stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(privateObjectiveCards.get(i).getDescription()).append("\n\n");
+            jsonArray = null;
+            try {
+                jsonArray = (JSONArray) jsonParser.parse(privateObjectiveCards);
+                buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
+                for (int i = 0; i < jsonArray.size(); i++) {
+                    JSONObject poc = (JSONObject) jsonArray.get(i);
+                    stringBuilder.append("[").append(i).append("]\n");
+                    stringBuilder.append(NAME).append((String) poc.get(JSON_CARD_NAME)).append("\n");
+                    stringBuilder.append(DESCRIPTION);
+                    stringBuilder.append((String) poc.get(JSON_CARD_DESCRIPTION)).append("\n\n");
+                }
+            } catch (ParseException e) {
+                PrinterManager.consolePrint("Parse exception in buildGraphicPrivateObjectiveCards.\n", Level.ERROR);
             }
         }
         return this;
@@ -275,8 +314,8 @@ public class BuildGraphic {
         if (roundTrack != null) {
             buildMessage("----------------------------ROUND TRACK---------------------------");
             for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-                List<Dice> diceList = roundTrack.getDices(i);
-                stringBuilder.append(buildMessage("Round " + "[" + (i + 1) + "]").buildGraphicDices(diceList).toString());
+                //TODO
+                stringBuilder.append(buildMessage("Round " + "[" + (i + 1) + "]"));
             }
         }
         return this;

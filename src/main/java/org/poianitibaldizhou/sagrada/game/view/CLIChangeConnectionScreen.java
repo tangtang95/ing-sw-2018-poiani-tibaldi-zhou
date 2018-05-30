@@ -37,7 +37,7 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
     @Override
     protected void initializeCommands() {
         Command changeConnectionCommand = new Command(
-                networkManager.getNetworkType() == (ConnectionType.RMI) ?
+                connectionManager.getNetworkType() == (ConnectionType.RMI) ?
                         ConnectionType.SOCKET.name() : ConnectionType.RMI.name(),
                 "Change the connection mode");
         changeConnectionCommand.setCommandAction(() -> changeConnection(changeConnectionCommand.getCommandText()));
@@ -58,7 +58,7 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
 
         PrinterManager.consolePrint(buildGraphic.
                 buildMessage("----------------------Select Connection Menu-----------------------").
-                buildMessage("Current connection mode: " + networkManager.getNetworkType().name()).
+                buildMessage("Current connection mode: " + connectionManager.getNetworkType().name()).
                 buildGraphicHelp(commandMap).
                 buildMessage("Change connection mode or go to Start Game Menu: ").
                 toString(), Level.STANDARD);
@@ -72,7 +72,7 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
      * @param type the type of connection to switch.
      */
     private void changeConnection(String type) {
-        networkManager.setNetworkType(ConnectionType.valueOf(type));
+        connectionManager.setNetworkType(ConnectionType.valueOf(type));
         screenManager.popScreen();
     }
 

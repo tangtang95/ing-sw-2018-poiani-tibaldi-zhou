@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
+import org.poianitibaldizhou.sagrada.game.view.CLIRoundScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -48,15 +49,15 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     /**
      * constructor.
      *
-     * @param networkManager the network manager for connecting with the server.
+     * @param connectionManager the network manager for connecting with the server.
      * @param screenManager manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLILobbyScreen(ConnectionManager networkManager, ScreenManager screenManager)
+    public CLILobbyScreen(ConnectionManager connectionManager, ScreenManager screenManager)
             throws RemoteException {
-        super(networkManager, screenManager);
+        super(connectionManager, screenManager);
 
-        this.controller = networkManager.getLobbyController();
+        this.controller = connectionManager.getLobbyController();
         this.username = null;
         this.token = null;
 
@@ -76,7 +77,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         Command timeoutCommand = new Command(TIMEOUT_COMMAND, "Show time to reach timeout");
         timeoutCommand.setCommandAction(() -> {
             try {
-                networkManager.getLobbyController().requestTimeout(token);
+                connectionManager.getLobbyController().requestTimeout(token);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -87,7 +88,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         Command showUserCommand = new Command(LOBBY_USER_COMMAND, "Show users in lobby");
         showUserCommand.setCommandAction(() -> {
             try {
-                networkManager.getLobbyController().requestUsersInLobby(token);
+                connectionManager.getLobbyController().requestUsersInLobby(token);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -202,6 +203,13 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     @Override
     public void onGameStart(String gameName) {
         PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
+        try {
+            screenManager.replaceScreen(new CLIRoundScreen(connectionManager,screenManager,
+                    gameName,new User(username,token)));
+        } catch (RemoteException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
     }
 
     /**
