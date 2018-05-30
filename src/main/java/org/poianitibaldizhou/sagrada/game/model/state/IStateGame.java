@@ -60,10 +60,9 @@ public abstract class IStateGame {
     /**
      * Throw the dices of the diceBag into the draftPool
      *
-     * @param player the player who has the diceBag
-     * @throws InvalidActionException if the state instance != RoundStartState || the throw of the dices is unsuccessful
+     * @throws InvalidActionException if the state instance != RoundStartState
      */
-    public void throwDices(Player player) throws InvalidActionException {
+    public void throwDices() throws InvalidActionException {
         throw new InvalidActionException();
     }
 
@@ -151,6 +150,15 @@ public abstract class IStateGame {
      * @throws InvalidActionException if the state instance != TurnState
      */
     public Player getCurrentPlayer() throws InvalidActionException {
+        throw new InvalidActionException();
+    }
+
+    /**
+     *
+     * @throws InvalidActionException if the state instance != TurnState or
+     * if the state instance != SetupPlayerState
+     */
+    public void forceStateChange() throws InvalidActionException {
         throw new InvalidActionException();
     }
 }

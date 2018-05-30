@@ -205,6 +205,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
+    @Override
+    public void forceStateChange() {
+        // TODO
+    }
 
     /**
      * Release the toolCard execution from UseCardState to SelectActionState (doesn't necessarily means that the

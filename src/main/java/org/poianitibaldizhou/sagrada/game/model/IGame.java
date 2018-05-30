@@ -64,4 +64,6 @@ public interface IGame {
     RoundTrack getRoundTrack();
 
     Player getCurrentPlayer() throws InvalidActionException;
+
+    void forceStateChange() throws InvalidActionException;
 }

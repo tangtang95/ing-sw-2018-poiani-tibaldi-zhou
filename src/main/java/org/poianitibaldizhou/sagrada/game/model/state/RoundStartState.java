@@ -31,7 +31,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void init() {
-        game.getStateObservers().forEach((key, value) -> value.onRoundStart(currentRound, currentRoundPlayer.getUser()));
+        throwDices();
     }
 
     /**
@@ -41,11 +41,9 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      * set the state of the game to the TurnState
      */
     @Override
-    public void throwDices(Player player) throws InvalidActionException {
-        if (!currentRoundPlayer.equals(player))
-            throw new InvalidActionException();
+    public void throwDices() {
         game.addDicesToDraftPoolFromDiceBag();
-        game.setState(new TurnState(game, currentRound, currentRoundPlayer, player, true));
+        game.setState(new TurnState(game, currentRound, currentRoundPlayer, currentRoundPlayer, true));
     }
 
     @Contract(pure = true)

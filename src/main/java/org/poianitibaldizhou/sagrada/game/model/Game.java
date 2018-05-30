@@ -131,6 +131,11 @@ public abstract class Game implements IGame, IGameStrategy {
 
     // INTERFACE METHODS
     @Override
+    public void forceStateChange() throws InvalidActionException{
+        state.forceStateChange();
+    }
+
+    @Override
     public void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException {
         state.fireExecutorEvent(event);
     }

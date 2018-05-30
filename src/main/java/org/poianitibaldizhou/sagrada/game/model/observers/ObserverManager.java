@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
 import sun.nio.ch.ThreadPool;
 
 import java.util.HashMap;
@@ -20,8 +21,9 @@ public class ObserverManager {
 
     /**
      * Creates an observer manager for a certain game, starting from the the list of the player of that game.
+     * This class handles a thread pool for sending updates to the observers.
      *
-     * @param tokenList list of player's token of a certain game
+     * @param tokenList list of player's token of the intended game
      */
     public ObserverManager(List<String> tokenList) {
         disconnectedPlayer = new HashSet<>();
@@ -32,6 +34,8 @@ public class ObserverManager {
             ScheduledExecutorService scheduledTask = Executors.newScheduledThreadPool(1);
             executorHashMap.putIfAbsent(token, scheduledTask);
         });
+
+        executorHashMap.putIfAbsent(TimeOutFakeObserver.TIME_OUT, Executors.newScheduledThreadPool(1));
     }
 
     // GETTER
