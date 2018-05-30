@@ -109,13 +109,4 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     public void err(String err) {
         PrinterManager.consolePrint("ERROR: " + err + "\n", Level.INFORMATION);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void notifyModelSynch(DraftPool draftPool, List<Player> players, RoundTrack roundTrack,
-                                 List<ToolCard> toolCards) {
-        // TODO
-    }
 }

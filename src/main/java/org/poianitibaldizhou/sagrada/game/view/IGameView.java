@@ -10,6 +10,4 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import java.util.List;
 
 public interface IGameView extends IView, IGameObserver{
-    void notifyModelSynch(DraftPool draftPool, List<Player> players, RoundTrack roundTrack,
-                          List<ToolCard> toolCards);
 }
