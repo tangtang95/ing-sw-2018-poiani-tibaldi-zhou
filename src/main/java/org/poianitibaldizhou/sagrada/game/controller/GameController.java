@@ -34,6 +34,14 @@ import java.util.*;
 
 public class GameController extends UnicastRemoteObject implements IGameController {
 
+    private static final transient String INITIAL_CHECK_ERROR = "You're not playing the selected game or the game does not exist";
+    private static final transient String FIRE_EVENT_ERROR = "Can't fire an event now";
+    private static final transient String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
+            "specified game or the specified does not exist.";
+    private static final transient String GET_ERROR_KEY = "error";
+    private static final transient String INVALID_ACTION_ERR = "You can't perform this action now";
+    private static final transient String NOT_SYNCH = "You're not synchronized with the model and need to reconnect";
+
     private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
 
@@ -63,6 +71,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             try {
                 view.err("Error in communication protocol");
             } catch (IOException ignored) {
+                // Ignored because nothing can be done
             }
             return;
         }
@@ -71,6 +80,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             try {
                 view.err("The game doesn't exist");
             } catch (IOException ignored) {
+                // Ignored because nothing can be done
             }
         }
 
@@ -83,6 +93,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 try {
                     view.err("You are not playing in this game or it is impossible to join. Try with a reconnect");
                 } catch (IOException ignored) {
+                    // Ignored because nothing can be done
                 }
                 return;
             }
@@ -125,7 +136,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return;
         }
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -135,8 +146,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName))
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored because nothing can be done
                 }
 
             try {
@@ -173,7 +185,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         // TODO MATTIA read json
 
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -183,8 +195,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored exception because nothing can be done
                 }
             }
 
@@ -220,7 +233,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO MATTIA (read json)
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -230,8 +243,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored exception because nothing can be done here
                 }
             }
 
@@ -265,7 +279,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO MATTIA read json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -275,8 +289,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored because nothing can be done
                 }
             }
 
@@ -284,7 +299,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userChooseAction(token, actionCommand);
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("You cannot take any action right now");
+                    viewMap.get(token).err(INVALID_ACTION_ERR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -310,7 +325,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO MATTIA read json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -320,8 +335,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored because nothing can be done
                 }
             }
 
@@ -332,7 +348,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                     if (e.getException() instanceof RuleViolationException)
                         handleRuleViolationException(viewMap.get(token), (RuleViolationException) e.getException());
                     else
-                        viewMap.get(token).err("You cannot take any action right now");
+                        viewMap.get(token).err(INVALID_ACTION_ERR);
                 } catch (IOException ioe) {
                     handleIOException(token, gameName);
                 }
@@ -351,7 +367,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO Mattia read json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -361,8 +377,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored because nothing can be done here
                 }
             }
 
@@ -389,7 +406,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO MATTIA read json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -400,8 +417,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored because nothing can be done
                 }
             }
 
@@ -429,7 +447,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO Mattia read json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -439,8 +457,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException e) {
+                    // Ignored exception: can't do anything about this
                 }
             }
 
@@ -467,7 +486,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO mattia ready json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -477,8 +496,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored exception: can't do anything about this
                 }
             }
 
@@ -486,7 +506,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new ValueExecutorEvent(value));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("Can't fire an event now");
+                    viewMap.get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -503,7 +523,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final String gameName = null;
         final Color color = null;
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -513,8 +533,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored exception: can't do anything about this
                 }
             }
 
@@ -522,7 +543,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new ColorExecutorEvent(color));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("Can't fire an event now");
+                    viewMap.get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -541,7 +562,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // TODO mattia ready json
 
-        if (!initialCheck(token, gameName))
+        if (initialCheck(token, gameName))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -551,8 +572,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (wasUserDisconnected(token, gameName)) {
                 try {
-                    viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
+                    viewMap.get(token).err(NOT_SYNCH);
                 } catch (IOException ignored) {
+                    // Ignored exception: can't do anything about this
                 }
             }
 
@@ -560,7 +582,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new PositionExecutorEvent(position));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("Can't fire an event now");
+                    viewMap.get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -606,6 +628,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                     return;
                 }
             } catch (IOException ignored) {
+                // Ignored exceptions: can't do anything regarding this
             }
 
             // Attaching observer and view regarding the re-connected player
@@ -625,7 +648,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             observerManager.signalReconnect(token);
             try {
-                gameView.ack("You are now riconnected to the game");
+                gameView.ack(FIRE_EVENT_ERROR);
             } catch (IOException e) {
                 handleIOException(token, gameName);
             }
@@ -643,8 +666,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
-                    "game or the specified does not exist.");
+            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
             return JSONObject.toJSONString(jsonError);
         }
 
@@ -671,8 +693,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
-                    "game or the specified does not exist.");
+            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
             return JSONObject.toJSONString(jsonError);
         }
 
@@ -699,8 +720,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
-                    "game or the specified does not exist.");
+            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
             return JSONObject.toJSONString(jsonError);
         }
 
@@ -728,8 +748,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         Map<String, String> jsonError = new HashMap<>();
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the" +
-                    " specified game or the specified does not exist.");
+            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
             return JSONObject.toJSONString(jsonError);
         }
 
@@ -742,7 +761,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Optional<ToolCard> toolCard = toolCards.stream().filter(card -> card.getName().equals(toolCardName)).findFirst();
         if (!toolCard.isPresent()) {
-            jsonError.putIfAbsent("error", "Can't get because the requested tool card does not exist in game");
+            jsonError.putIfAbsent(GET_ERROR_KEY, "Can't get because the requested tool card does not exist in game");
             return JSONObject.toJSONString(jsonError);
         }
 
@@ -758,11 +777,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final String token = null;
 
         // Todo mattia read json
-        
+
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
-                    "game or the specified does not exist.");
+            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
             return JSONObject.toJSONString(jsonError);
         }
 
@@ -772,7 +790,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             try {
                 player = gameManager.getGameByName(gameName).getCurrentPlayer();
             } catch (InvalidActionException e) {
-                jsonError.putIfAbsent("error", "Can't request for the current player in this precise moment");
+                jsonError.putIfAbsent(GET_ERROR_KEY, "Can't request for the current player in this precise moment");
                 return JSONObject.toJSONString(jsonError);
             }
         }
@@ -883,14 +901,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     private boolean initialCheck(String token, String gameName) {
         if (!viewMap.containsKey(token))
-            return false;
+            return true;
         if (!gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName)) {
             try {
-                viewMap.get(token).err("You're not playing the selected game or the game does not exist");
+                viewMap.get(token).err(INITIAL_CHECK_ERROR);
             } catch (IOException ignored) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
