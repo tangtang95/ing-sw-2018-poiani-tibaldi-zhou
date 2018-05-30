@@ -1,12 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.*;
-
+import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
+import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
+import org.poianitibaldizhou.sagrada.cli.Level;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
-import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.io.BufferedReader;
@@ -14,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
 
 public class CLIGameView extends UnicastRemoteObject implements IGameView {
 

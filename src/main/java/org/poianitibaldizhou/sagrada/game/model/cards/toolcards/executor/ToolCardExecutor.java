@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ToolCardExecutor {
+public class ToolCardExecutor extends Thread{
     // Monitors
     private final Object diceMonitor;
     private final Object colorMonitor;
@@ -44,7 +44,6 @@ public class ToolCardExecutor {
     // Executor's attribute
     private Node<ICommand> coreCommands;
     private Node<ICommand> preCommands;
-    private Thread runCommandsThread;
     private boolean isExecutingCommands;
     private Player player;
     private DraftPool temporaryDraftPool;
@@ -78,6 +77,17 @@ public class ToolCardExecutor {
         this.player = player;
         this.turnState = turnState;
         this.game = game;
+    }
+
+    @Override
+    public void run() {
+        runCommands();
+    }
+
+    @Override
+    public void start() {
+        setIsExecutingCommands(true);
+        super.start();
     }
 
     public void setCoreCommands(Node<ICommand> commands) {
@@ -116,12 +126,10 @@ public class ToolCardExecutor {
         turnState.setSkipTurnPlayers(skipTurnPlayers);
     }
 
-    public void runCommands() {
-        runCommandsThread = Thread.currentThread();
+    private void runCommands() {
         if(coreCommands == null || preCommands == null){
             throw new IllegalStateException("SEVERE ERROR: Need to set the commands before starting the thread");
         }
-        setIsExecutingCommands(true);
         try {
             invokeCommands(preCommands);
             setTemporaryObjects();
@@ -134,7 +142,6 @@ public class ToolCardExecutor {
             setIsExecutingCommands(false);
             turnState.releaseToolCardExecution();
         }
-        runCommandsThread = null;
     }
 
     /**
@@ -155,7 +162,7 @@ public class ToolCardExecutor {
             } else if (commandFlow == CommandFlow.SUB) {
                 root = root.getRightChild();
             } else if (commandFlow == CommandFlow.REPEAT) {
-                observers.forEach(obs -> obs.notifyRepeatAction());
+                observers.forEach(ToolCardExecutorFakeObserver::notifyRepeatAction);
             } else if (commandFlow.getProtocolNumber() == 400) {
                 final CommandFlow finalCommandFlow = commandFlow;
                 observers.forEach(obs -> obs.notifyCommandInterrupted(finalCommandFlow));
@@ -291,9 +298,7 @@ public class ToolCardExecutor {
     }
 
     public void interruptCommandsInvocation() {
-        if(runCommandsThread == null)
-            throw new IllegalStateException("SEVERE ERROR: cannot interrupt non-existent this.runCommandsThread");
-        runCommandsThread.interrupt();
+        this.interrupt();
     }
 
 }

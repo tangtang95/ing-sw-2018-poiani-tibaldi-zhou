@@ -144,7 +144,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         toolCardExecutor.setPreCommands(preCommands);
         toolCardExecutor.setCoreCommands(toolCard.getCommands());
         toolCardExecutor.addObserver(observer);
-        toolCardExecutor.runCommands();
+        toolCardExecutor.start();
     }
 
     /**
