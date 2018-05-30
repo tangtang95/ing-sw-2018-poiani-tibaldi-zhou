@@ -35,8 +35,6 @@ public class GameInjector {
     private static final String CARD_POINTS = "cardPoints";
     private static final String CONSTRAINT_TYPE = "constraintType";
 
-    private static final int NUMBER_OF_SCHEMA_CARDS_FRONT_AND_BACK = 12;
-
 
     @Contract(" -> fail")
     private GameInjector(){
@@ -190,15 +188,12 @@ public class GameInjector {
      *
      * @param schemaCardDrawableCollection DrawableCollection of SchemaCard
      */
-    public static void injectSchemaCards(@NotNull DrawableCollection<List<SchemaCard>> schemaCardDrawableCollection) {
+    public static void injectSchemaCards(@NotNull DrawableCollection<FrontBackSchemaCard> schemaCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
-        List<List<SchemaCard>> schemaCardFrontBack = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_FRONT_AND_BACK; i++) {
-            schemaCardFrontBack.add(new ArrayList<>());
-        }
 
+        List<FrontBackSchemaCard> frontBackSchemaCards = new ArrayList<>();
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/schemaCards.json"));
         } catch (IOException | ParseException e) {
@@ -213,12 +208,12 @@ public class GameInjector {
             injectSchemaMatrix(matrix, constraints);
 
             int numberID = Integer.parseInt(schemaCard.get("id").toString());
-            schemaCardFrontBack.get(numberID).add(new SchemaCard((String) schemaCard.get(CARD_NAME),
+            frontBackSchemaCards.get(numberID).setSchemaCard(new SchemaCard((String) schemaCard.get(CARD_NAME),
                     Integer.parseInt(schemaCard.get("difficulty").toString()),
                     constraints
             ));
         }
-        schemaCardDrawableCollection.addElements(schemaCardFrontBack);
+        schemaCardDrawableCollection.addElements(frontBackSchemaCards);
     }
 
     private static void injectSchemaMatrix(JSONArray matrix, IConstraint[][] constraints) {

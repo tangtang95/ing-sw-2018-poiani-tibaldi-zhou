@@ -30,7 +30,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
 
     CLIToolCardView(CLIGameView cliGameView, ToolCard toolCards)
             throws RemoteException {
-        super(cliGameView.networkManager, cliGameView.screenManager);
+        super(cliGameView.connectionManager, cliGameView.screenManager);
         this.toolCard = toolCards;
         this.gameName = cliGameView.getGameName();
         this.schemaCard = cliGameView.getCliSchemaCardView().getSchemaCard(cliGameView.getCurrentUser().getName());
@@ -53,7 +53,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                 number = -1;
             }
             if (number > 0 && number < diceList.size()) {
-                networkManager.getGameController().setDice(currentUser.getToken(),
+                connectionManager.getGameController().setDice(currentUser.getToken(),
                         gameName, diceList.get(number - 1), toolCard.getName());
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
@@ -75,7 +75,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                networkManager.getGameController().setNewValue(currentUser.getToken(),
+                connectionManager.getGameController().setNewValue(currentUser.getToken(),
                         gameName, number, toolCard.getName());
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
@@ -102,7 +102,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                networkManager.getGameController().setColor( currentUser.getToken(), gameName,
+                connectionManager.getGameController().setColor( currentUser.getToken(), gameName,
                         (Color) colors.toArray()[number - 1], toolCard.getName());
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
@@ -148,7 +148,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                 number = -1;
             }
             if (number == minNumber || number == maxNumber) {
-                networkManager.getGameController().setNewValue(currentUser.getToken(),
+                connectionManager.getGameController().setNewValue(currentUser.getToken(),
                         gameName, number, toolCard.getName());
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
@@ -177,7 +177,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                     diceNumber = 0;
                 }
                 if (diceNumber > 0 && diceNumber < roundTrack.getDices(roundNumber - 1).size()) {
-                    networkManager.getGameController().setDice( currentUser.getToken(), gameName,
+                    connectionManager.getGameController().setDice( currentUser.getToken(), gameName,
                             roundTrack.getDices(roundNumber - 1).get(diceNumber - 1),
                             toolCard.getName());
                 } else {
@@ -224,7 +224,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    networkManager.getGameController().setPosition( currentUser.getToken(), gameName,
+                    connectionManager.getGameController().setPosition( currentUser.getToken(), gameName,
                             new Position(row,column),
                             toolCard.getName());
                 } else {
@@ -263,7 +263,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    networkManager.getGameController().setPosition( currentUser.getToken(), gameName,
+                    connectionManager.getGameController().setPosition( currentUser.getToken(), gameName,
                             new Position(row,column),
                             toolCard.getName());
                 } else {

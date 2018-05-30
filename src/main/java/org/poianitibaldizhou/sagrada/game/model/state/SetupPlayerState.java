@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 public class SetupPlayerState extends IStateGame {
 
     private Set<String> playersReady;
-    private Map<String, List<List<SchemaCard>>> playerSchemaCards;
+    private Map<String, List<FrontBackSchemaCard>> playerSchemaCards;
     private Map<String, List<PrivateObjectiveCard>> privateObjectiveCardMap;
 
     private static final int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
@@ -48,22 +49,23 @@ public class SetupPlayerState extends IStateGame {
         failedNotifyTokens.forEach((token) -> game.getStateObservers().remove(token));
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
-        DrawableCollection<List<SchemaCard>> schemaCards = new DrawableCollection<>();
+        DrawableCollection<FrontBackSchemaCard> frontBackSchemaCards = new DrawableCollection<>();
 
         GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-        GameInjector.injectSchemaCards(schemaCards);
+        GameInjector.injectSchemaCards(frontBackSchemaCards);
 
         for (String token : game.getUserToken()) {
-            List<List<SchemaCard>> schemaCardList = new ArrayList<>();
+            List<FrontBackSchemaCard> schemaCardList = new ArrayList<>();
             for (int i = 0; i < NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS; i++) {
                 try {
-                    schemaCardList.add(schemaCards.draw());
+                    schemaCardList.add(frontBackSchemaCards.draw());
                 } catch (EmptyCollectionException e) {
                     LOGGER.log(Level.SEVERE, "Error for empty collection", e);
                 }
             }
             playerSchemaCards.put(token, schemaCardList);
-            game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
+            //TODO Riccardo
+            //game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
             List<PrivateObjectiveCard> privateObjectiveCardList = new ArrayList<>();
@@ -116,20 +118,17 @@ public class SetupPlayerState extends IStateGame {
 
     @Contract(pure = true)
     public boolean containsSchemaCard(String token, SchemaCard schemaCard) {
-        for (List<SchemaCard> schema : playerSchemaCards.get(token))
+        for (FrontBackSchemaCard schema : playerSchemaCards.get(token))
             if (schema.contains(schemaCard))
                 return true;
         return false;
     }
 
     @Contract(pure = true)
-    public List<List<SchemaCard>> getSchemaCardsOfPlayer(String token) {
-        List<List<SchemaCard>> schemaCards = new ArrayList<>();
-        for (List<SchemaCard> schema : playerSchemaCards.get(token)) {
-            List<SchemaCard> copySchema = new ArrayList<>();
-            for (SchemaCard schemaCard : schema)
-                copySchema.add(SchemaCard.newInstance(schemaCard));
-            schemaCards.add(copySchema);
+    public List<FrontBackSchemaCard> getSchemaCardsOfPlayer(String token) {
+        List<FrontBackSchemaCard> schemaCards = new ArrayList<>();
+        for (FrontBackSchemaCard schema : playerSchemaCards.get(token)) {
+            schemaCards.add(FrontBackSchemaCard.newInstance(schema));
         }
         return schemaCards;
     }

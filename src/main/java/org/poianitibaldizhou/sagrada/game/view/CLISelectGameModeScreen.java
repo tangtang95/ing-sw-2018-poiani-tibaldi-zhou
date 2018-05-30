@@ -41,12 +41,12 @@ public class CLISelectGameModeScreen extends CLIBasicScreen {
     protected void initializeCommands() {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
-                new CLIStateScreen(networkManager, screenManager, "Empire", new User("Tang", "master")));
+                new CLIStateScreen(connectionManager, screenManager, "Empire", new User("Tang", "master")));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");
         multiPlayerCommand.setCommandAction(() ->
-                screenManager.replaceScreen(new CLILobbyScreen(networkManager,screenManager)));
+                screenManager.replaceScreen(new CLILobbyScreen(connectionManager,screenManager)));
         commandMap.put(multiPlayerCommand.getCommandText(), multiPlayerCommand);
 
         Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");

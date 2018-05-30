@@ -106,7 +106,7 @@ public class CLITurnScreen extends CLIRoundScreen {
             }
             if (diceNumber > 0 && diceNumber < cliDraftPoolView.getDraftPool().getDices().size()) {
                 try {
-                    networkManager.getGameController().placeDice(currentUser.getToken(),
+                    connectionManager.getGameController().placeDice(currentUser.getToken(),
                             gameName, cliDraftPoolView.getDraftPool().getDices().get(diceNumber - 1),
                             selectPosition());
                 } catch (RemoteException e) {
@@ -138,14 +138,14 @@ public class CLITurnScreen extends CLIRoundScreen {
             }
             if (number > 0 && number <= toolCards.size()) {
                 try {
-                    networkManager.getGameController().useToolCard(currentUser.getToken(),
+                    connectionManager.getGameController().useToolCard(currentUser.getToken(),
                             gameName, toolCards.get(number - 1),
                             new CLIToolCardView(this, toolCards.get(number - 1)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
-                    networkManager.getGameController().useToolCard(currentUser.getToken(),
+                    connectionManager.getGameController().useToolCard(currentUser.getToken(),
                             gameName, toolCards.get(number - 1),
                             new CLIToolCardView(this,toolCards.get(number - 1)));
                 } catch (IOException e) {
