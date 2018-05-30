@@ -1,4 +1,5 @@
-package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
+package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces;
+
 
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -10,7 +11,7 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.util.List;
 
-public interface IGameObserver extends Remote {
+public interface IGameFakeObserver  {
 
     // NOTIFICATION TO ALL THE PLAYERS
 
@@ -20,7 +21,7 @@ public interface IGameObserver extends Remote {
      * @param players the list of players of the game
      * @throws IOException network error
      */
-    void onPlayersCreate(String players) throws IOException;
+    void onPlayersCreate(List<Player> players) throws IOException;
 
     /**
      * Notify the list of public objective cards drawn in the game to the user
@@ -28,7 +29,7 @@ public interface IGameObserver extends Remote {
      * @param publicObjectiveCards the list of public objective cards drawn
      * @throws IOException network error
      */
-    void onPublicObjectiveCardsDraw(String publicObjectiveCards) throws IOException;
+    void onPublicObjectiveCardsDraw(List<PublicObjectiveCard> publicObjectiveCards) throws IOException;
 
     /**
      * Notify the list of tool cards drawn in the game to the user
@@ -36,7 +37,7 @@ public interface IGameObserver extends Remote {
      * @param toolCards the list of tool cards drawn
      * @throws IOException network error
      */
-    void onToolCardsDraw(String toolCards) throws IOException;
+    void onToolCardsDraw(List<ToolCard> toolCards) throws IOException;
 
     /**
      * Notify the player to choose one of the privateObjectiveCards
@@ -44,7 +45,7 @@ public interface IGameObserver extends Remote {
      * @param privateObjectiveCards the list of privateObjectiveCards
      * @throws IOException network error
      */
-    void onChoosePrivateObjectiveCards(String privateObjectiveCards) throws IOException;
+    void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards) throws IOException;
 
 
     // NOTIFICATION TO ONLY ONE PLAYER
@@ -56,7 +57,7 @@ public interface IGameObserver extends Remote {
      *                              (1 if multi player game and 2 if single player game)
      * @throws IOException network error
      */
-    void onPrivateObjectiveCardDraw(String privateObjectiveCards) throws IOException;
+    void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards) throws IOException;
 
     /**
      * Notify the list of schema cards drawn by the player (send it only to the user)
@@ -64,6 +65,6 @@ public interface IGameObserver extends Remote {
      * @param schemaCards the list of schema cards drawn
      * @throws IOException network error
      */
-    void onSchemaCardsDraw(String schemaCards) throws IOException;
+    void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) throws IOException;
 
 }

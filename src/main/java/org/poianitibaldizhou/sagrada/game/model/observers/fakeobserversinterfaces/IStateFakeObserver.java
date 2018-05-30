@@ -1,5 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
-
+package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -7,30 +6,25 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.util.Map;
 
-public interface IStateObserver extends Remote {
+public interface IStateFakeObserver {
 
     /**
      * Notify the start of setup game state
-     *
-     * @throws IOException network error
      */
-    void onSetupGame() throws IOException;
+    void onSetupGame() ;
 
     /**
      * Notify the start of setup player state
-     *
-     * @throws IOException network error
      */
-    void onSetupPlayer() throws IOException;
+    void onSetupPlayer() ;
 
     /**
      * Notify the start of round
      *
      * @param round     the current round
      * @param roundUser the user of the current round who has the diceBag
-     * @throws IOException network error
      */
-    void onRoundStart(String round, String roundUser) throws IOException;
+    void onRoundStart(int round, User roundUser) ;
 
     /**
      * Notify the start of turn state
@@ -39,26 +33,23 @@ public interface IStateObserver extends Remote {
      * @param isFirstTurn indicates if the turn is the first or the second
      * @param roundUser   the user of the current round who has the diceBag
      * @param turnUser    the user of the current turn
-     * @throws IOException network error
      */
-    void onTurnState(String round, String isFirstTurn, String roundUser, String turnUser) throws IOException;
+    void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) ;
 
     /**
      * Notify the end of the round
      *
      * @param round     the current round
      * @param roundUser the user of the current round who has the diceBag
-     * @throws IOException network error
      */
-    void onRoundEnd(String round, String roundUser) throws IOException;
+    void onRoundEnd(int round, User roundUser) ;
 
     /**
      * Notify the end of the game
      *
      * @param roundUser the user of the current round who has the diceBag
-     * @throws IOException network error
      */
-    void onEndGame(String roundUser) throws IOException;
+    void onEndGame(User roundUser) ;
 
     /**
      * Notify the skip of a turn
@@ -67,47 +58,41 @@ public interface IStateObserver extends Remote {
      * @param isFirstTurn if the turn is the first true, otherwise false
      * @param roundUser   the user of the current round who has the diceBag
      * @param turnUser    the user of the current turn
-     * @throws IOException network error
      */
-    void onSkipTurnState(String round, String isFirstTurn, String roundUser, String turnUser) throws IOException;
+    void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) ;
 
     /**
      * Notify that the turnUser has decided to place a dice
      *
      * @param turnUser the user who has decided to place a dice
-     * @throws IOException network error
      */
-    void onPlaceDiceState(String turnUser) throws IOException;
+    void onPlaceDiceState(User turnUser) ;
 
     /**
      * Notify that the turnUser has decided to use a toolCard
      *
      * @param turnUser the user who has decided to use a toolCard
-     * @throws IOException network error
      */
-    void onUseCardState(String turnUser) throws IOException;
+    void onUseCardState(User turnUser) ;
 
     /**
      * Notify that the turnUser has decided to end his turn
      *
      * @param turnUser the user who has decided to end his turn
-     * @throws IOException network error
      */
-    void onEndTurnState(String turnUser) throws IOException;
+    void onEndTurnState(User turnUser) ;
 
     /**
      * Notify the victory points to all the players
      *
      * @param victoryPoints a map of all victory points (key: username)
-     * @throws IOException network error
      */
-    void onVictoryPointsCalculated(String victoryPoints) throws IOException;
+    void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) ;
 
     /**
      * Notify the winner to the observer
      *
      * @param winner the player who has won the game
-     * @throws IOException network error
      */
-    void onResultGame(String winner) throws IOException;
+    void onResultGame(User winner) ;
 }

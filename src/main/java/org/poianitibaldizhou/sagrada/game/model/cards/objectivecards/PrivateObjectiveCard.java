@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
@@ -8,11 +9,12 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 import java.util.Objects;
 
 @Immutable
-public class PrivateObjectiveCard extends Card implements IScore {
+public class PrivateObjectiveCard extends Card implements IScore, JSONable {
 
     private ColorConstraint colorConstraint;
 
@@ -89,5 +91,13 @@ public class PrivateObjectiveCard extends Card implements IScore {
     @Override
     public int hashCode() {
         return Objects.hash(getName(), getDescription(), getConstraint());
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject pocJSON = new JSONObject();
+        pocJSON.put("name", this.getName());
+        pocJSON.put("description", this.getDescription());
+        return pocJSON;
     }
 }

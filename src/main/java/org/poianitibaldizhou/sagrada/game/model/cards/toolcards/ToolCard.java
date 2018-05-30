@@ -2,9 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
@@ -15,7 +17,7 @@ import java.util.*;
 /**
  * OVERVIEW: Each instance of ToolCard has always tokens >= 0
  */
-public class ToolCard extends Card{
+public class ToolCard extends Card implements JSONable{
 
 
     private final Color color;
@@ -127,5 +129,16 @@ public class ToolCard extends Card{
 
     public static ToolCard newInstance(@NotNull ToolCard toolCard) {
         return new ToolCard(toolCard);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject toolCardJSON = new JSONObject();
+        toolCardJSON.put("name", this.getName());
+        toolCardJSON.put("description", this.getDescription());
+        toolCardJSON.put("color", this.getColor().toString());
+        toolCardJSON.put("cost", this.getCost());
+        toolCardJSON.put("tokens", this.getTokens());
+        return toolCardJSON;
     }
 }

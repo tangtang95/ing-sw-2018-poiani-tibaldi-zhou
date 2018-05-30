@@ -1,12 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
-
+package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
 import java.io.IOException;
-import java.rmi.Remote;
 import java.util.List;
 
-public interface IDraftPoolObserver extends Remote {
+public interface IDraftPoolFakeObserver  {
 
     /**
      * Notify to the observers that a certain dice has been added to the DraftPool
@@ -14,7 +12,7 @@ public interface IDraftPoolObserver extends Remote {
      * @param dice dice that's been added
      * @throws IOException network error
      */
-    void onDiceAdd(String dice) throws IOException;
+    void onDiceAdd(Dice dice) throws IOException;
 
     /**
      * Notify that a certain dice has been removed from the DraftPool
@@ -22,7 +20,7 @@ public interface IDraftPoolObserver extends Remote {
      * @param dice removed dice
      * @throws IOException network error
      */
-    void onDiceRemove(String dice) throws IOException;
+    void onDiceRemove(Dice dice) throws IOException;
 
     /**
      * Notify that a list of dices has been added to the DraftPool.
@@ -30,7 +28,7 @@ public interface IDraftPoolObserver extends Remote {
      * @param dices list of dices added
      * @throws IOException network error
      */
-    void onDicesAdd(String dices) throws IOException;
+    void onDicesAdd(List<Dice> dices) throws IOException;
 
     /**
      * Notify that DraftPool has been entirely re-rolled.
@@ -39,7 +37,7 @@ public interface IDraftPoolObserver extends Remote {
      *              performed
      * @throws IOException network error
      */
-    void onDraftPoolReroll(String dices) throws IOException;
+    void onDraftPoolReroll(List<Dice> dices) throws IOException;
 
     /**
      * Notify that the DraftPool has been cleared and that's, therefore, empty.

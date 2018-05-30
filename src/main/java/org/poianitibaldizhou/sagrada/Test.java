@@ -1,6 +1,12 @@
 package org.poianitibaldizhou.sagrada;
 
+import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -8,6 +14,19 @@ import java.util.concurrent.ScheduledExecutorService;
 public class Test {
 
     public static void main(String[] args) {
+        DraftPool draftPool = new DraftPool();
+        draftPool.addDice(new Dice(5, Color.BLUE));
+        draftPool.addDice(new Dice(2, Color.GREEN));
+        System.out.println(DraftPool.toJSON(draftPool));
+
+        HashMap<String, String> json = new HashMap<>();
+        json.putIfAbsent("error", "test");
+        System.out.println(JSONObject.toJSONString(json));
+    }
+
+    private static void testPool() {
+
+
         ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
 
         // TODO try remove and clear and something like that

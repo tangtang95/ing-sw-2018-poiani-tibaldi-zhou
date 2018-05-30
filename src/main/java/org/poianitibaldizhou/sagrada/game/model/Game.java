@@ -311,6 +311,11 @@ public abstract class Game implements IGame, IGameStrategy {
         return optToken.isPresent();
     }
 
+    @Override
+    public Player getCurrentPlayer() throws InvalidActionException{
+        return state.getCurrentPlayer();
+    }
+
     //MODIFIER
 
     public void detachGameObserver(String token) {

@@ -1,11 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 
 import java.io.IOException;
 
-public class ToolCardFakeObserver implements IToolCardObserver {
+public class ToolCardFakeObserver implements IToolCardFakeObserver{
     private String token;
     private IToolCardObserver realObserver;
     private ObserverManager observerManager;
@@ -25,7 +26,7 @@ public class ToolCardFakeObserver implements IToolCardObserver {
     public void onTokenChange(int tokens)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onTokenChange(tokens);
+                realObserver.onTokenChange(String.valueOf(tokens));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

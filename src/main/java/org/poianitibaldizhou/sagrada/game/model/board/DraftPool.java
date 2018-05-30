@@ -2,16 +2,19 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DraftPoolFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DraftPool implements Serializable {
+public class DraftPool implements Serializable, JSONable {
     private final List<Dice> dices;
     private final transient Map<String, DraftPoolFakeObserver> observerMap;
 
@@ -187,5 +190,21 @@ public class DraftPool implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(DraftPool.class, dices);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONArray diceListJson = new JSONArray();
+        JSONObject dice;
+        JSONObject draftPoolJson = new JSONObject();
+
+        for(Dice d : this.getDices()) {
+            dice = d.toJSON();
+            diceListJson.add(dice);
+        }
+
+        draftPoolJson.putIfAbsent("diceList", diceListJson);
+
+        return draftPoolJson;
     }
 }

@@ -1,26 +1,24 @@
-package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
-
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces;
 
 import java.io.IOException;
 import java.rmi.Remote;
 import java.util.List;
 
-public interface IDrawableCollectionObserver extends Remote {
+public interface IDrawableCollectionFakeObserver<T> {
     /**
      * Notify that an element has been added to the DrawableCollection
      *
      * @param elem element added
      * @throws IOException network error
      */
-    void onElementAdd(String elem) throws IOException;
+    void onElementAdd(T elem) throws IOException;
 
     /**
      * Notify that a list of elements has been added to the DrawableCollection
      *
      * @param elemList list of elements added
      */
-    void onElementsAdd(String elemList) throws IOException;
+    void onElementsAdd(List<T> elemList) throws IOException;
 
 
     /**
@@ -29,5 +27,5 @@ public interface IDrawableCollectionObserver extends Remote {
      * @param elem element removed
      * @throws IOException network error
      */
-    void onElementDraw(String elem) throws IOException;
+    void onElementDraw(T elem) throws IOException;
 }

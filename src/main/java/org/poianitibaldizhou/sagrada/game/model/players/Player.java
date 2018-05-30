@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
@@ -11,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
@@ -22,7 +24,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public abstract class Player implements IVictoryPoints, Serializable {
+public abstract class Player implements IVictoryPoints, Serializable, JSONable {
 
     protected final ICoin coin;
     private final User user;
@@ -230,5 +232,15 @@ public abstract class Player implements IVictoryPoints, Serializable {
                 return true;
         }
         return false;
+    }
+
+    public JSONObject toJSON() {
+        JSONObject playerJSON = new JSONObject();
+
+        playerJSON.put("token", this.getToken());
+        playerJSON.put("username", this.getUser().getName());
+        playerJSON.put("coins", this.getCoins());
+
+        return playerJSON;
     }
 }

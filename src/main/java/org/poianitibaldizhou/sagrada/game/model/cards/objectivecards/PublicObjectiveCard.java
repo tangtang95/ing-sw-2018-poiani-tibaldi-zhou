@@ -1,17 +1,19 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 import java.io.ObjectInputStream;
 import java.util.*;
 
 @Immutable
-public abstract class PublicObjectiveCard extends Card implements IScore {
+public abstract class PublicObjectiveCard extends Card implements IScore, JSONable {
 
     protected final ObjectiveCardType type;
     protected Set<IConstraint> constraints;
@@ -93,4 +95,11 @@ public abstract class PublicObjectiveCard extends Card implements IScore {
         return false;
     }
 
+    public JSONObject toJSON() {
+        JSONObject cardJSON = new JSONObject();
+        cardJSON.put("name", this.getName());
+        cardJSON.put("description", this.getDescription());
+        cardJSON.put("cardPoint", this.getCardPoints());
+        return cardJSON;
+    }
 }

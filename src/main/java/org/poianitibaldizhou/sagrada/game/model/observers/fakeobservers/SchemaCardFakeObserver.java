@@ -3,11 +3,12 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 
 import java.io.IOException;
 
-public class SchemaCardFakeObserver implements ISchemaCardObserver {
+public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
 
     private String token;
     private ObserverManager observerManager;
@@ -28,7 +29,7 @@ public class SchemaCardFakeObserver implements ISchemaCardObserver {
     public void onPlaceDice(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onPlaceDice(dice, position);
+                realObserver.onPlaceDice(dice.toJSON().toJSONString(), position.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -44,7 +45,7 @@ public class SchemaCardFakeObserver implements ISchemaCardObserver {
     public void onDiceRemove(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceRemove(dice, position);
+                realObserver.onDiceRemove(dice.toJSON().toJSONString(), position.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

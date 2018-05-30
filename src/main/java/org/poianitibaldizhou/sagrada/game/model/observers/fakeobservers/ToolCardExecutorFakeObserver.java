@@ -1,17 +1,21 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
+public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserver {
 
     private String token;
     private ObserverManager observerManager;
@@ -32,7 +36,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     public void notifyNeedDice(List<Dice> diceList) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDice(diceList);
+                realObserver.notifyNeedDice(JSONArray.toJSONString(diceList));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -64,7 +68,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     public void notifyNeedColor(Set<Color> colors) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedColor(colors);
+                realObserver.notifyNeedColor(JSONArray.toJSONString(Collections.singletonList(colors)));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -80,7 +84,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     public void notifyNeedNewDeltaForDice(int diceValue, int value) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedNewDeltaForDice(diceValue, value);
+                realObserver.notifyNeedNewDeltaForDice(String.valueOf(diceValue), String.valueOf(value));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -96,7 +100,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDiceFromRoundTrack(roundTrack);
+                realObserver.notifyNeedDiceFromRoundTrack(roundTrack.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -128,7 +132,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     public void notifyNeedDicePositionOfCertainColor(Color color) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDicePositionOfCertainColor(color);
+                realObserver.notifyNeedDicePositionOfCertainColor(color.toString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -160,7 +164,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorObserver {
     public void notifyCommandInterrupted(CommandFlow error) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyCommandInterrupted(error);
+                realObserver.notifyCommandInterrupted(error.toString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

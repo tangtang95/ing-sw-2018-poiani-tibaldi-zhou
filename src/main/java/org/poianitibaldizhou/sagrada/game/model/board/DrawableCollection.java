@@ -2,13 +2,15 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 import java.io.Serializable;
 import java.util.*;
 
-public class DrawableCollection<T> implements Serializable{
+public class DrawableCollection<T extends JSONable> implements Serializable{
     private final List<T> collection;
     private final transient Map<String, DrawableCollectionFakeObserver<T>> observerMap;
 

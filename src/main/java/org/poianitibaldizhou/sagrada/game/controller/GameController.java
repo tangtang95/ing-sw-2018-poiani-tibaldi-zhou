@@ -1,9 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
@@ -41,14 +44,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void joinGame(final String token, final String gameName, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws IOException {
-        if (!gameManager.containsGame(gameName))
+                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException {
+        if (!gameManager.containsGame(gameName)) {
             view.err("The game doesn't exist");
+            return;
+        }
 
         synchronized (gameManager.getGameByName(gameName)) {
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -66,9 +71,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
             game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
             game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
-
-            viewMap.put(token, view);
         }
+
+        viewMap.put(token, view);
     }
 
     /**
@@ -76,17 +81,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void chooseSchemaCard(String token, String gameName, SchemaCard schemaCard) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -98,8 +101,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 }
                 return;
             }
-            viewMap.get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
         }
+
+        viewMap.get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
     }
 
     /**
@@ -107,10 +111,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void bindPlayer(String token, String gameName, Player player, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
@@ -118,7 +120,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             IGame game = gameManager.getGameByName(gameName);
 
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -130,9 +132,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             game.attachSchemaCardObserver(token, player.getSchemaCard(), new SchemaCardFakeObserver(token,
                     gameManager.getObserverManagerByGame(gameName), schemaCardObserver));
             game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, gameManager.getObserverManagerByGame(gameName), playerObserver));
-
-            viewMap.get(token).ack("Binding to " + player.getUser().getName() + " successful");
         }
+
+        viewMap.get(token).ack("Binding to " + player.getUser().getName() + " successful");
     }
 
     /**
@@ -140,17 +142,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void bindToolCard(String token, String gameName, ToolCard toolCard, IToolCardObserver toolCardObserver) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -160,9 +160,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             }
 
             game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, gameManager.getObserverManagerByGame(gameName), toolCardObserver));
-
-            viewMap.get(token).ack("Binding to " + toolCard.getName() + " successful");
         }
+
+        viewMap.get(token).ack("Binding to " + toolCard.getName() + " successful");
     }
 
     /**
@@ -170,17 +170,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void chooseAction(String token, String gameName, IActionCommand actionCommand) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -189,8 +187,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             } catch (InvalidActionException e) {
                 viewMap.get(token).err("You cannot take any action right now");
             }
-            viewMap.get(token).ack("Action performed");
         }
+
+        viewMap.get(token).ack("Action performed");
     }
 
     /**
@@ -198,17 +197,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void placeDice(String token, String gameName, Dice dice, Position position) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -229,10 +226,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void useToolCard(String token, String gameName, ToolCard toolCard, IToolCardExecutorObserver executorObserver)
             throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
@@ -240,7 +235,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             IGame game = gameManager.getGameByName(gameName);
 
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -257,10 +252,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void choosePrivateObjectiveCard(String token, String gameName, PrivateObjectiveCard privateObjectiveCard) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
@@ -268,7 +261,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             IGame game = gameManager.getGameByName(gameName);
 
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -286,10 +279,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setDice(String token, String gameName, Dice dice, String toolCardName) throws IOException {
-        if (!viewMap.containsKey(token))
+        if (!viewMap.containsKey(token) || !gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName))
             return;
-        if (!gameManager.containsGame(gameName))
-            viewMap.get(token).err("The game doesn't exist");
 
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
@@ -297,7 +288,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             IGame game = gameManager.getGameByName(gameName);
 
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -314,7 +305,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setNewValue(String token, String gameName, int value, String toolCardName) throws IOException {
-        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName))
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -322,7 +313,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -339,7 +330,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setColor(String token, String gameName, Color color, String toolCardName) throws IOException {
-        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -347,7 +338,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -364,7 +355,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setPosition(String token, String gameName, Position position, String toolCardName) throws IOException {
-        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getGameByName(gameName).getPlayers().contains(token))
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token))
             return;
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -372,7 +363,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             IGame game = gameManager.getGameByName(gameName);
 
-            if(checkSynch(token, gameName)) {
+            if (checkSynchronize(token, gameName)) {
                 viewMap.get(token).err("You're not synchronized with the model and need to reconnect");
             }
 
@@ -390,7 +381,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                           Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
-                          IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver<Dice>
+                          IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                                   diceBagObserver) throws IOException {
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
@@ -455,6 +446,130 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             viewMap.get(token).notifyModelSynch(game.getDraftPool(), game.getPlayers(), game.getRoundTrack(), game.getToolCards());
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getToolCards(String token, String gameName) throws IOException {
+        Map<String, String> jsonError = new HashMap<>();
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
+            "game or the specified does not exist.");
+            return JSONObject.toJSONString(jsonError);
+        }
+
+        List<ToolCard> toolCards;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            toolCards = gameManager.getGameByName(gameName).getToolCards();
+        }
+
+        StringBuilder toolCardsJSONString = new StringBuilder();
+        toolCards.forEach(toolCard -> toolCardsJSONString.append(toolCard.toJSON().toJSONString()));
+        return toolCardsJSONString.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDraftPool(String token, String gameName) throws IOException {
+        Map<String, String> jsonError = new HashMap<>();
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
+                    "game or the specified does not exist.");
+            return JSONObject.toJSONString(jsonError);
+        }
+
+
+        DraftPool draftPool;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            draftPool = gameManager.getGameByName(gameName).getDraftPool();
+        }
+
+        // BUILD JSON and RETURN IT
+        return draftPool.toJSON().toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getRoundTrack(String token, String gameName) throws IOException {
+        Map<String, String> jsonError = new HashMap<>();
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
+                    "game or the specified does not exist.");
+            return JSONObject.toJSONString(jsonError);
+        }
+
+        RoundTrack roundTrack;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            roundTrack = gameManager.getGameByName(gameName).getRoundTrack();
+        }
+
+        return roundTrack.toJSON().toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getToolCardByName(String token, String gameName, String toolCardName) throws IOException {
+        Map<String, String> jsonError = new HashMap<>();
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the" +
+                    " specified game or the specified does not exist.");
+            return JSONObject.toJSONString(jsonError);
+        }
+
+        List<ToolCard> toolCards;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            IGame game = gameManager.getGameByName(gameName);
+            toolCards = game.getToolCards();
+        }
+
+        Optional<ToolCard> toolCard = toolCards.stream().filter(card -> card.getName().equals(toolCardName)).findFirst();
+        if (!toolCard.isPresent()) {
+            viewMap.get(token).err("Requested tool card does not exist in game");
+            jsonError.putIfAbsent("error", "Can't get because the requested tool card does not exist in game");
+            return JSONObject.toJSONString(jsonError);
+        }
+
+        return toolCard.get().toJSON().toJSONString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getCurrentPlayer(String token, String gameName) throws IOException {
+        Map<String, String> jsonError = new HashMap<>();
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            jsonError.putIfAbsent("error", "Can't get because you're not logged or you are not part of the specified " +
+            "game or the specified does not exist.");
+            return JSONObject.toJSONString(jsonError);
+        }
+
+        Player player;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            try {
+                player = gameManager.getGameByName(gameName).getCurrentPlayer();
+            } catch (InvalidActionException e) {
+                viewMap.get(token).err("Can't request for the current in this precise moment");
+                jsonError.putIfAbsent("error", "Can't request for the current player in this precise moment");
+                return JSONObject.toJSONString(jsonError);
+            }
+        }
+
+        return player.toJSON().toJSONString();
     }
 
 
@@ -546,7 +661,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
     }
 
-    private boolean checkSynch(String token, String gameName) {
+    private boolean checkSynchronize(String token, String gameName) {
         return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
     }
 

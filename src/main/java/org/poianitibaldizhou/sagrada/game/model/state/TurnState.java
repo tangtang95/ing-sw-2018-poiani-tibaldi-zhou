@@ -190,6 +190,23 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Player getCurrentPlayer() {
+        return currentTurnPlayer;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Player getCurrentRoundPlayer() {
+        return currentRoundPlayer;
+    }
+
+
+    /**
      * Release the toolCard execution from UseCardState to SelectActionState (doesn't necessarily means that the
      * toolCard execution is ended)
      */
@@ -247,11 +264,6 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     public ToolCardExecutor getToolCardExecutor() {
         return toolCardExecutor;
-    }
-
-    @Override
-    public Player getCurrentRoundPlayer() {
-        return currentRoundPlayer;
     }
 
     // MODIFIERS

@@ -2,6 +2,8 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -9,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 
@@ -16,7 +19,7 @@ import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.*;
 
-public class SchemaCard implements Serializable {
+public class SchemaCard implements Serializable, JSONable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
@@ -489,5 +492,26 @@ public class SchemaCard implements Serializable {
                         getDice(position.add(deltaRow, deltaColumn)) != null)
                     numberOfAdjacentDice++;
         return numberOfAdjacentDice;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject schemaCardJSON = new JSONObject();
+        JSONObject tile;
+
+        schemaCardJSON.put("name", this.getName());
+        schemaCardJSON.put("difficulty", this.getDifficulty());
+
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                tile = new JSONObject();
+                tile.put("tile", this.getTile(new Position(i, j)).toJSON());
+                tile.put("row", i);
+                tile.put("column", j);
+                schemaCardJSON.put("pos"+i+j, tile);
+            }
+        }
+
+        return schemaCardJSON;
     }
 }

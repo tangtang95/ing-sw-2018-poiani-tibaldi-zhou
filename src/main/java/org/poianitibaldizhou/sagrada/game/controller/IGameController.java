@@ -31,7 +31,7 @@ public interface IGameController extends Remote {
      */
     void joinGame(String token, String gameName, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                  IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver<Dice> diceBagObserver) throws IOException;
+                  IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException;
 
     /**
      * Notifies the schema card chosen by a certain player.
@@ -180,7 +180,7 @@ public interface IGameController extends Remote {
      */
     void reconnect(String token, String gameName, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                    Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
-                   IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver<Dice>
+                   IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                            diceBagObserver) throws IOException;
 
     /**
@@ -191,4 +191,50 @@ public interface IGameController extends Remote {
      * @throws IOException network communication error
      */
     void synchronizeModel(String token, String gameName) throws IOException;
+
+    /**
+     * Get all the tool cards of a certain game
+     *
+     * @param token token of the player requesting the tool cards
+     * @param gameName games'e name
+     * @throws IOException network communication error
+     */
+    String getToolCards(String token, String gameName) throws IOException;
+
+    /**
+     * Get the draft pool of a certain game
+     *
+     * @param token token of the player requesting the draft pool
+     * @param gameName game's name
+     * @throws IOException network communication error
+     */
+    String getDraftPool(String token, String gameName) throws IOException;
+
+    /**
+     * Get the round track of a certain game
+     *
+     * @param token token of the player requesting the draft pool
+     * @param gameName game's name
+     * @throws IOException network communication error
+     */
+    String getRoundTrack(String token, String gameName) throws IOException;
+
+    /**
+     * Get the tool card of a certain game
+     *
+     * @param token player's token
+     * @param gameName game's name
+     * @param toolCardName name of the requested tool card
+     * @throws IOException network communication error
+     */
+    String getToolCardByName(String token, String gameName, String toolCardName) throws IOException;
+
+    /**
+     * Get the current player of a certain game
+     *
+     * @param token player's token
+     * @param gameName game's name
+     * @throws IOException network communication error
+     */
+    String getCurrentPlayer(String token, String gameName) throws IOException;
 }

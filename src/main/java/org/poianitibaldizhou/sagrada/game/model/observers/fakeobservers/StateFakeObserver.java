@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -8,7 +10,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.io.IOException;
 import java.util.Map;
 
-public class StateFakeObserver implements IStateObserver {
+public class StateFakeObserver implements IStateFakeObserver {
 
     private String token;
     private ObserverManager observerManager;
@@ -61,7 +63,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onRoundStart(int round, User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onRoundStart(round, roundUser);
+                realObserver.onRoundStart(String.valueOf(round), roundUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -77,7 +79,8 @@ public class StateFakeObserver implements IStateObserver {
     public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onTurnState(round, isFirstTurn, roundUser, turnUser);
+                realObserver.onTurnState(String.valueOf(round), String.valueOf(isFirstTurn),
+                        roundUser.toJSON().toJSONString(), turnUser.toString().toString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -93,7 +96,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onRoundEnd(int round, User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onRoundEnd(round, roundUser);
+                realObserver.onRoundEnd(String.valueOf(round), roundUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -109,7 +112,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onEndGame(User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onEndGame(roundUser);
+                realObserver.onEndGame(roundUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -125,7 +128,8 @@ public class StateFakeObserver implements IStateObserver {
     public void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onSkipTurnState(round, isFirstTurn, roundUser, turnUser);
+                realObserver.onSkipTurnState(String.valueOf(round), String.valueOf(isFirstTurn),
+                        roundUser.toJSON().toJSONString(), turnUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -141,7 +145,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onPlaceDiceState(User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onPlaceDiceState(turnUser);
+                realObserver.onPlaceDiceState(turnUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -157,7 +161,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onUseCardState(User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onUseCardState(turnUser);
+                realObserver.onUseCardState(turnUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -173,7 +177,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onEndTurnState(User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onEndTurnState(turnUser);
+                realObserver.onEndTurnState(turnUser.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -189,7 +193,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) {
         Runnable runnable = () -> {
             try {
-                realObserver.onVictoryPointsCalculated(victoryPoints);
+                realObserver.onVictoryPointsCalculated(JSONObject.toJSONString(victoryPoints));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -205,7 +209,7 @@ public class StateFakeObserver implements IStateObserver {
     public void onResultGame(User winner) {
         Runnable runnable = () -> {
             try {
-                realObserver.onResultGame(winner);
+                realObserver.onResultGame(winner.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

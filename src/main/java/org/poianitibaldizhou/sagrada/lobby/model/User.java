@@ -2,12 +2,14 @@ package org.poianitibaldizhou.sagrada.lobby.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
+import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class User implements Serializable {
+public class User implements Serializable, JSONable {
     private String name;
     private transient String token;
 
@@ -49,5 +51,13 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "Username: " + this.name;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.putIfAbsent("user", this.getName());
+        jsonObject.putIfAbsent("token", this.getToken());
+        return jsonObject;
     }
 }

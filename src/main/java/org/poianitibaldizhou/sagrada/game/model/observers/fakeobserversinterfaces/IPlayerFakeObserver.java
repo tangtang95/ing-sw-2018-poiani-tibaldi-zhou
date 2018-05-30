@@ -1,11 +1,10 @@
-package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
+package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces;
 
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 
 import java.io.IOException;
-import java.rmi.Remote;
 
-public interface IPlayerObserver extends Remote{
+public interface IPlayerFakeObserver {
 
     /**
      * Notify that the tokens of a certain player has changed
@@ -13,7 +12,7 @@ public interface IPlayerObserver extends Remote{
      * @param value the cost variation
      * @throws IOException network error
      */
-    void onFavorTokenChange(String value) throws IOException;
+    void onFavorTokenChange(int value) throws IOException;
 
     /**
      * Notify the change of outcome of the game to the player
@@ -21,5 +20,5 @@ public interface IPlayerObserver extends Remote{
      * @param outcome new outcome of the player
      * @throws IOException network error
      */
-    void onSetOutcome(String outcome) throws IOException;
+    void onSetOutcome(Outcome outcome) throws IOException;
 }

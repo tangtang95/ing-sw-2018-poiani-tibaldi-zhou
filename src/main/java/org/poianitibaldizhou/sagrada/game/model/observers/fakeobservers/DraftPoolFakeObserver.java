@@ -1,13 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
+import org.json.simple.JSONArray;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDraftPoolFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 
 import java.io.IOException;
 import java.util.List;
 
-public class DraftPoolFakeObserver implements IDraftPoolObserver {
+public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     private IDraftPoolObserver realObserver;
     private String token;
     private ObserverManager observerManager;
@@ -35,7 +37,7 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
     public void onDiceAdd(Dice dice) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceAdd(dice);
+                realObserver.onDiceAdd((dice).toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -51,7 +53,7 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
     public void onDiceRemove(Dice dice) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceRemove(dice);
+                realObserver.onDiceRemove(dice.toJSON().toJSONString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -67,7 +69,9 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
     public void onDicesAdd(List<Dice> dices) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDicesAdd(dices);
+                StringBuilder stringBuilder = new StringBuilder();
+                dices.forEach(dice -> stringBuilder.append(dice.toJSON()));
+                realObserver.onDicesAdd(stringBuilder.toString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -83,7 +87,9 @@ public class DraftPoolFakeObserver implements IDraftPoolObserver {
     public void onDraftPoolReroll(List<Dice> dices) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDraftPoolReroll(dices);
+                StringBuilder stringBuilder = new StringBuilder();
+                dices.forEach(dice -> stringBuilder.append(dice.toJSON()));
+                realObserver.onDraftPoolReroll(stringBuilder.toString());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

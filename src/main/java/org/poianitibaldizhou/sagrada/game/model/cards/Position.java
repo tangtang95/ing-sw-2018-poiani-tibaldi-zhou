@@ -1,12 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class Position implements Serializable {
+public class Position implements Serializable, JSONable {
     private int row;
     private int column;
 
@@ -70,4 +72,11 @@ public class Position implements Serializable {
     }
 
 
+    @Override
+    public JSONObject toJSON() {
+        JSONObject position = new JSONObject();
+        position.putIfAbsent("row", this.getRow());
+        position.putIfAbsent("column", this.getColumn());
+        return position;
+    }
 }

@@ -2,7 +2,10 @@ package org.poianitibaldizhou.sagrada.game.model.board;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.RoundTrackFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 
@@ -13,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoundTrack implements Serializable{
+public class RoundTrack implements Serializable, JSONable{
 
     private final List<List<Dice>> listOfDices;
     private final transient Map<String, RoundTrackFakeObserver> observerMap;
@@ -197,5 +200,28 @@ public class RoundTrack implements Serializable{
      */
     private boolean isRoundAccepted(int round) {
         return round >= FIRST_ROUND && round <= LAST_ROUND;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        JSONObject roundtrackJSON = new JSONObject();
+        JSONObject roundJSON;
+        JSONArray listOfDicePerRoundJSON;
+
+        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
+            listOfDicePerRoundJSON = new JSONArray();
+            roundJSON = new JSONObject();
+
+            roundJSON.put("round", i);
+
+            for(Dice d : this.getDices(i)) {
+                listOfDicePerRoundJSON.add(d.toJSON());
+            }
+
+            roundJSON.put("dices", listOfDicePerRoundJSON);
+            roundtrackJSON.put(""+i,roundJSON);
+        }
+
+        return roundtrackJSON;
     }
 }

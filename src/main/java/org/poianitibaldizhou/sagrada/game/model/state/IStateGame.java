@@ -145,5 +145,12 @@ public abstract class IStateGame {
         throw new InvalidActionException();
     }
 
-
+    /**
+     * Return the player that is actually playing.
+     *
+     * @throws InvalidActionException if the state instance != TurnState
+     */
+    public Player getCurrentPlayer() throws InvalidActionException {
+        throw new InvalidActionException();
+    }
 }

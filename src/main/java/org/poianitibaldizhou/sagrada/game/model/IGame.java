@@ -62,4 +62,6 @@ public interface IGame {
     DraftPool getDraftPool();
 
     RoundTrack getRoundTrack();
+
+    Player getCurrentPlayer() throws InvalidActionException;
 }
