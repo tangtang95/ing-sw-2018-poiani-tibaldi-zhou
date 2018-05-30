@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces;
 
 
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
@@ -65,6 +66,6 @@ public interface IGameFakeObserver  {
      * @param schemaCards the list of schema cards drawn
      * @throws IOException network error
      */
-    void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards) throws IOException;
+    void onSchemaCardsDraw(List<FrontBackSchemaCard> schemaCards) throws IOException;
 
 }

@@ -65,7 +65,7 @@ public class SetupPlayerState extends IStateGame {
             }
             playerSchemaCards.put(token, schemaCardList);
             //TODO Riccardo
-            //game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
+            game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
             List<PrivateObjectiveCard> privateObjectiveCardList = new ArrayList<>();

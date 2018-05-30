@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
@@ -122,14 +123,12 @@ public class GameFakeObserver implements IGameFakeObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onSchemaCardsDraw(List<List<SchemaCard>> schemaCards)  {
+    public void onSchemaCardsDraw(List<FrontBackSchemaCard> schemaCards)  {
         Runnable runnable = () -> {
             try {
                 StringBuilder stringBuilder = new StringBuilder();
                 schemaCards.forEach(doubleFace -> {
-                    doubleFace.forEach(card-> {
-                        // TODO
-                    });
+                    //TODO
                 });
                 realObserver.onSchemaCardsDraw(stringBuilder.toString());
             } catch (IOException e) {

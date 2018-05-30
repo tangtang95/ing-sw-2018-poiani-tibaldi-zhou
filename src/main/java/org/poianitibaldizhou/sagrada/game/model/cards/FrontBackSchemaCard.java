@@ -1,9 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
+import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrontBackSchemaCard {
+public class FrontBackSchemaCard implements JSONable{
 
     private List<SchemaCard> schemaCards;
 
@@ -32,5 +35,11 @@ public class FrontBackSchemaCard {
        for (SchemaCard s : frontBackSchemaCard.getSchemaCards())
            schemaCardList.setSchemaCard(SchemaCard.newInstance(s));
        return schemaCardList;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        // TODO
+        return null;
     }
 }
