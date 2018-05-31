@@ -7,12 +7,11 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 
-import java.rmi.RemoteException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * OVERVIEW: Each instance of ToolCard has always tokens >= 0
@@ -23,7 +22,7 @@ public class ToolCard extends Card implements JSONable{
     private final Color color;
     private int tokens;
     private final transient Node<ICommand> commands;
-    private final transient Map<String, ToolCardFakeObserver> observerMap;
+    private final transient Map<String, IToolCardFakeObserver> observerMap;
 
     private static final int LOW_COST = 1;
     private static final int HIGH_COST = 2;
@@ -63,7 +62,7 @@ public class ToolCard extends Card implements JSONable{
 
     //GETTER
     @Contract(pure = true)
-    public Map<String, ToolCardFakeObserver> getObserverMap() {
+    public Map<String, IToolCardFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -97,7 +96,7 @@ public class ToolCard extends Card implements JSONable{
         observerMap.entrySet().forEach(obs -> obs.getValue().onCardDestroy());
     }
 
-    public void attachToolCardObserver(String token, ToolCardFakeObserver observer) {
+    public void attachToolCardObserver(String token, IToolCardFakeObserver observer) {
         observerMap.put(token, observer);
     }
 

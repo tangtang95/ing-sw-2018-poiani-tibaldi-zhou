@@ -2,18 +2,16 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -23,7 +21,7 @@ public class SchemaCard implements Serializable, JSONable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
-    private final transient Map<String, SchemaCardFakeObserver> observerMap;
+    private final transient Map<String, ISchemaCardFakeObserver> observerMap;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -78,7 +76,7 @@ public class SchemaCard implements Serializable, JSONable {
      *
      * @return list of observers
      */
-    public Map<String, SchemaCardFakeObserver> getObserverMap() {
+    public Map<String, ISchemaCardFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -358,7 +356,7 @@ public class SchemaCard implements Serializable, JSONable {
         return removedDice;
     }
 
-    public void attachObserver(String token, SchemaCardFakeObserver observer) {
+    public void attachObserver(String token, ISchemaCardFakeObserver observer) {
         observerMap.put(token, observer);
     }
 

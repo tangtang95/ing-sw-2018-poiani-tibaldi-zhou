@@ -12,12 +12,18 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     private ObserverManager observerManager;
     private IDrawableCollectionObserver realObserver;
 
-    public DrawableCollectionFakeObserver(String token, IDrawableCollectionObserver observer, ObserverManager observerManager) {
-        if(observer instanceof DrawableCollectionFakeObserver)
-            throw new IllegalArgumentException();
+    /**
+     * Creates a fake observer of a drawable collection used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real drawable collection observer
+     * @param observerManager observer manager of the specified game
+     */
+    public DrawableCollectionFakeObserver(String token, IDrawableCollectionObserver realObserver, ObserverManager observerManager) {
         this.token = token;
         this.observerManager = observerManager;
-        this.realObserver = observer;
+        this.realObserver = realObserver;
     }
 
     /**

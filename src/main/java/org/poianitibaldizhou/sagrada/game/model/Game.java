@@ -13,7 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
@@ -38,8 +38,8 @@ public abstract class Game implements IGame, IGameStrategy {
     private final String name;
     private IStateGame state;
 
-    private final Map<String, GameFakeObserver> gameObservers;
-    private final Map<String, StateFakeObserver> stateObservers;
+    private final Map<String, IGameFakeObserver> gameObservers;
+    private final Map<String, IStateFakeObserver> stateObservers;
 
     protected Game(String name) {
         this.name = name;
@@ -80,14 +80,14 @@ public abstract class Game implements IGame, IGameStrategy {
     /**
      * @return the list of the state observers (reference)
      */
-    public Map<String, StateFakeObserver> getStateObservers() {
+    public Map<String, IStateFakeObserver> getStateObservers() {
         return stateObservers;
     }
 
     /**
      * @return the map of the game observers (reference)
      */
-    public Map<String, GameFakeObserver> getGameObservers() {
+    public Map<String, IGameFakeObserver> getGameObservers() {
         return gameObservers;
     }
 
@@ -130,6 +130,11 @@ public abstract class Game implements IGame, IGameStrategy {
 
 
     // INTERFACE METHODS
+    @Override
+    public void forceStateChange() throws InvalidActionException{
+        state.forceStateChange();
+    }
+
     @Override
     public void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException {
         state.fireExecutorEvent(event);
@@ -208,27 +213,27 @@ public abstract class Game implements IGame, IGameStrategy {
 
     // OBSERVER ATTACH (INTERFACE METHODS)
     @Override
-    public void attachStateObserver(String token, StateFakeObserver stateObserver) {
+    public void attachStateObserver(String token, IStateFakeObserver stateObserver) {
         stateObservers.put(token, stateObserver);
     }
 
     @Override
-    public void attachGameObserver(String userToken, GameFakeObserver gameObserver) {
+    public void attachGameObserver(String userToken, IGameFakeObserver gameObserver) {
         gameObservers.put(userToken, gameObserver);
     }
 
     @Override
-    public void attachRoundTrackObserver(String token, RoundTrackFakeObserver roundTrackObserver) {
+    public void attachRoundTrackObserver(String token, IRoundTrackFakeObserver roundTrackObserver) {
         roundTrack.attachObserver(token, roundTrackObserver);
     }
 
     @Override
-    public void attachDraftPoolObserver(String token, DraftPoolFakeObserver draftPoolObserver) {
+    public void attachDraftPoolObserver(String token, IDraftPoolFakeObserver draftPoolObserver) {
         draftPool.attachObserver(token, draftPoolObserver);
     }
 
     @Override
-    public void attachToolCardObserver(String token, ToolCard toolCard, ToolCardFakeObserver toolCardObserver) {
+    public void attachToolCardObserver(String token, ToolCard toolCard, IToolCardFakeObserver toolCardObserver) {
         for (ToolCard card : toolCards) {
             if (card.getName().equals(toolCard.getName())) {
                 card.attachToolCardObserver(token, toolCardObserver);
@@ -239,12 +244,12 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     @Override
-    public void attachDiceBagObserver(String token, DrawableCollectionFakeObserver<Dice> drawableCollectionObserver) {
+    public void attachDiceBagObserver(String token, IDrawableCollectionFakeObserver<Dice> drawableCollectionObserver) {
         diceBag.attachObserver(token, drawableCollectionObserver);
     }
 
     @Override
-    public void attachSchemaCardObserver(String token, SchemaCard schemaCard, SchemaCardFakeObserver schemaCardObserver) {
+    public void attachSchemaCardObserver(String token, SchemaCard schemaCard, ISchemaCardFakeObserver schemaCardObserver) {
         for (Player player : players.values()) {
             if (player.getSchemaCard().getName().equals(schemaCard.getName())) {
                 player.attachSchemaCardObserver(token, schemaCardObserver);
@@ -255,7 +260,7 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     @Override
-    public void attachPlayerObserver(String token, Player player, PlayerFakeObserver playerObserver) {
+    public void attachPlayerObserver(String token, Player player, IPlayerFakeObserver playerObserver) {
         for (Player p : players.values()) {
             if (p.getUser().equals(player.getUser())) {
                 p.attachObserver(token, playerObserver);
@@ -285,7 +290,7 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     @Override
-    public void userUseToolCard(String token, ToolCard toolCard, ToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException {
+    public void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.useCard(players.get(token), toolCard, executorObserver);

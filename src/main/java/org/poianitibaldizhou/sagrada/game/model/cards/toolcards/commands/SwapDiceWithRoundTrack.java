@@ -1,14 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.exception.DisconnectedException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -37,7 +35,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         Dice dice = toolCardExecutor.getNeededDice();
         Dice roundTrackDice;
         int round;
-        List<ToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
+        List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
 
         observerList.forEach(observer -> observer.notifyNeedDiceFromRoundTrack(roundTrack));

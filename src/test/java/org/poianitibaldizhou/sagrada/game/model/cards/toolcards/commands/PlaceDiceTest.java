@@ -39,7 +39,7 @@ public class PlaceDiceTest {
     @Mock
     private DraftPool draftPool;
     @Mock
-    private ToolCardExecutorFakeObserver observer1, observer2, observer3;
+    private IToolCardExecutorFakeObserver observer1, observer2, observer3;
     @Mock
     private Dice dice;
     @Mock
@@ -47,7 +47,7 @@ public class PlaceDiceTest {
 
 
     private ICommand command;
-    private List<ToolCardExecutorFakeObserver> observerList;
+    private List<IToolCardExecutorFakeObserver> observerList;
     private Position position;
 
     @Before

@@ -64,7 +64,6 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             playerSchemaCards.put(token, schemaCardList);
-            //TODO Riccardo
             game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
@@ -109,6 +108,11 @@ public class SetupPlayerState extends IStateGame {
             return;
         }
         throw new InvalidActionException();
+    }
+
+    @Override
+    public void forceStateChange() {
+        // TODO
     }
 
     @Contract(pure = true)

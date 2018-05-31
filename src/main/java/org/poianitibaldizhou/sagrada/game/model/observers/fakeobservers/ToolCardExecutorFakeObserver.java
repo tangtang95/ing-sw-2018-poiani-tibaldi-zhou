@@ -21,12 +21,18 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     private ObserverManager observerManager;
     private IToolCardExecutorObserver realObserver;
 
-    public ToolCardExecutorFakeObserver(String token, ObserverManager observerManager, IToolCardExecutorObserver observer) {
-        if (observer instanceof ToolCardExecutorFakeObserver)
-            throw new IllegalArgumentException();
+    /**
+     * Creates a fake observer of the draft pool used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real draft pool observer
+     * @param observerManager observer manager of the specified game
+     */
+    public ToolCardExecutorFakeObserver(String token, ObserverManager observerManager, IToolCardExecutorObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
-        this.realObserver = observer;
+        this.realObserver = realObserver;
     }
 
     /**

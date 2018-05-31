@@ -38,9 +38,9 @@ public class IfContinueTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new IfContinue();
-        List<ToolCardExecutorFakeObserver> observerList = new ArrayList<>();
+        List<IToolCardExecutorFakeObserver> observerList = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            observerList.add(mock(ToolCardExecutorFakeObserver.class));
+            observerList.add(mock(IToolCardExecutorFakeObserver.class));
         }
         when(toolCardExecutor.getObservers()).thenReturn(observerList);
     }

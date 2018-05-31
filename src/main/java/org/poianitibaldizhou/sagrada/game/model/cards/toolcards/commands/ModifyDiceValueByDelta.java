@@ -2,11 +2,10 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -50,7 +49,7 @@ public class ModifyDiceValueByDelta implements ICommand {
         Dice dice = toolCardExecutor.getNeededDice();
         toolCardExecutor.setNeededDice(dice);
 
-        List<ToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
+        List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         observerList.forEach(obs -> obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue()));
 
         int newValue = toolCardExecutor.getNeededValue();

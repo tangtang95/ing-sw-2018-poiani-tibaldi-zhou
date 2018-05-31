@@ -6,25 +6,28 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.RoundTrackFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IRoundTrackFakeObserver;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RoundTrack implements Serializable, JSONable{
+public class RoundTrack implements Serializable, JSONable {
+
 
     private final List<List<Dice>> listOfDices;
-    private final transient Map<String, RoundTrackFakeObserver> observerMap;
+    private final transient Map<String, IRoundTrackFakeObserver> observerMap;
     private int numberOfDices;
 
     public static final int NUMBER_OF_TRACK = 10;
     public static final int FIRST_ROUND = 0;
     public static final int LAST_ROUND = NUMBER_OF_TRACK - 1;
+
+    private static final String ILLEGAL_ARGUMENT_MESSAGE = "Round must be in [" + LAST_ROUND + ",  " + FIRST_ROUND + "]. " +
+            "Round specified:  ";
+
 
     /**
      * Constructor.
@@ -63,12 +66,13 @@ public class RoundTrack implements Serializable, JSONable{
     }
 
     //GETTER
+
     /**
      * Returns the a copied list of the observer. The single elements are not copied.
      *
      * @return copied observer list
      */
-    public Map<String, RoundTrackFakeObserver> getObserverMap() {
+    public Map<String, IRoundTrackFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -99,6 +103,7 @@ public class RoundTrack implements Serializable, JSONable{
     }
 
     // MODIFIERS
+
     /**
      * Place a list of dices in the specified round of the roundTrack.
      * Notifies the observers that a list of dices has been added to a certain round.
@@ -109,9 +114,8 @@ public class RoundTrack implements Serializable, JSONable{
      */
     public void addDicesToRound(@NotNull List<Dice> dices, int round) {
         if (!isRoundAccepted(round))
-            throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
-                    "Round specified: " + round);
-        if(!dices.isEmpty()) {
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
+        if (!dices.isEmpty()) {
             numberOfDices += dices.size();
             listOfDices.get(round).addAll(dices);
             observerMap.forEach((key, value) -> value.onDicesAddToRound(dices, round));
@@ -128,8 +132,8 @@ public class RoundTrack implements Serializable, JSONable{
      */
     public void addDiceToRound(@NotNull Dice dice, int round) {
         if (!isRoundAccepted(round))
-            throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
-                    "Round specified: " + round);
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
+
         listOfDices.get(round).add(dice);
         numberOfDices += 1;
         observerMap.forEach((key, value) -> value.onDiceAddToRound(dice, round));
@@ -146,8 +150,7 @@ public class RoundTrack implements Serializable, JSONable{
      */
     public void removeDiceFromRoundTrack(int round, @NotNull Dice dice) {
         if (!isRoundAccepted(round))
-            throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
-                    "Round specified: " + round);
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
         if (!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
         numberOfDices -= 1;
@@ -161,13 +164,12 @@ public class RoundTrack implements Serializable, JSONable{
      * @param oldDice the oldDice to replace
      * @param newDice the newDice to replace
      * @param round   the round from where to replace the dice
-     * @throws DiceNotFoundException if dice is not founded at the specified round
+     * @throws DiceNotFoundException    if dice is not founded at the specified round
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
     public void swapDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
-        if(!isRoundAccepted(round))
-            throw new IllegalArgumentException("Round must be in [" + LAST_ROUND + ", " + FIRST_ROUND + "]. " +
-                    "Round specified: " + round);
+        if (!isRoundAccepted(round))
+            throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
 
         boolean diceFounded = false;
         List<Dice> dices = listOfDices.get(round);
@@ -184,7 +186,7 @@ public class RoundTrack implements Serializable, JSONable{
             throw new DiceNotFoundException("oldDice not founded!");
     }
 
-    public void attachObserver(String token, RoundTrackFakeObserver roundTrackObserver) {
+    public void attachObserver(String token, IRoundTrackFakeObserver roundTrackObserver) {
         observerMap.put(token, roundTrackObserver);
     }
 
@@ -214,12 +216,12 @@ public class RoundTrack implements Serializable, JSONable{
 
             roundJSON.put("round", i);
 
-            for(Dice d : this.getDices(i)) {
+            for (Dice d : this.getDices(i)) {
                 listOfDicePerRoundJSON.add(d.toJSON());
             }
 
             roundJSON.put("dices", listOfDicePerRoundJSON);
-            roundtrackJSON.put(""+i,roundJSON);
+            roundtrackJSON.put("" + i, roundJSON);
         }
 
         return roundtrackJSON;

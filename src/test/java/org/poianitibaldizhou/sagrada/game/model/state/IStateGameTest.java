@@ -58,7 +58,7 @@ public class IStateGameTest {
 
     @Test(expected = Exception.class)
     public void throwDices() throws Exception {
-        stateGame.throwDices(mock(Player.class));
+        stateGame.throwDices();
     }
 
     @Test(expected = Exception.class)

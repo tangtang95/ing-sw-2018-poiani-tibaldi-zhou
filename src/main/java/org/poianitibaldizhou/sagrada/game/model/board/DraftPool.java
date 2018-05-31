@@ -7,8 +7,8 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DraftPoolFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDraftPoolFakeObserver;
 
 import java.io.Serializable;
 import java.util.*;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class DraftPool implements Serializable, JSONable {
     private final List<Dice> dices;
-    private final transient Map<String, DraftPoolFakeObserver> observerMap;
+    private final transient Map<String, IDraftPoolFakeObserver> observerMap;
 
 
     /**
@@ -38,7 +38,7 @@ public class DraftPool implements Serializable, JSONable {
      * @return list of the observers listening to the draftpool
      */
     @Contract(pure = true)
-    public Map<String, DraftPoolFakeObserver> getObserverMap() {
+    public Map<String, IDraftPoolFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
@@ -64,7 +64,7 @@ public class DraftPool implements Serializable, JSONable {
     }
 
     // MODIFIERS
-    public void attachObserver(String token, @NotNull DraftPoolFakeObserver observer) {
+    public void attachObserver(String token, @NotNull IDraftPoolFakeObserver observer) {
         observerMap.put(token, observer);
     }
 

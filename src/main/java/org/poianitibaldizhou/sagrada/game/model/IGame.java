@@ -9,47 +9,45 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 public interface IGame {
 
-    void attachStateObserver(String token, StateFakeObserver stateObserver);
+    void attachStateObserver(String token, IStateFakeObserver stateObserver);
 
-    void attachGameObserver(String userToken, GameFakeObserver gameObserver);
+    void attachGameObserver(String userToken, IGameFakeObserver gameObserver);
 
-    void attachRoundTrackObserver(String token, RoundTrackFakeObserver roundTrackObserver);
+    void attachRoundTrackObserver(String token, IRoundTrackFakeObserver roundTrackObserver);
 
-    void attachDraftPoolObserver(String token, DraftPoolFakeObserver draftPoolObserver);
+    void attachDraftPoolObserver(String token, IDraftPoolFakeObserver draftPoolObserver);
 
-    void attachToolCardObserver(String token, ToolCard toolCard, ToolCardFakeObserver toolCardObserver);
+    void attachToolCardObserver(String token, ToolCard toolCard, IToolCardFakeObserver toolCardObserver);
 
-    void attachDiceBagObserver(String token, DrawableCollectionFakeObserver<Dice> drawableCollectionObserver);
+    void attachDiceBagObserver(String token, IDrawableCollectionFakeObserver<Dice> drawableCollectionObserver);
 
-    void attachSchemaCardObserver(String token, SchemaCard schemaCard, SchemaCardFakeObserver schemaCardObserver);
+    void attachSchemaCardObserver(String token, SchemaCard schemaCard, ISchemaCardFakeObserver schemaCardObserver);
 
-    void attachPlayerObserver(String token, Player player, PlayerFakeObserver playerObserver);
+    void attachPlayerObserver(String token, Player player, IPlayerFakeObserver playerObserver);
 
     void detachObservers(String token);
 
-    void userFireExecutorEvent(String token, ExecutorEvent event) throws IllegalArgumentException, InvalidActionException;
+    void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException;
 
-    void userJoin(String token) throws IllegalArgumentException, InvalidActionException;
+    void userJoin(String token) throws InvalidActionException;
 
-    void userSelectSchemaCard(String token, SchemaCard schemaCard) throws IllegalArgumentException, InvalidActionException;
+    void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException;
 
-    void userPlaceDice(String token, Dice dice, Position position) throws IllegalArgumentException, InvalidActionException;
+    void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException;
 
-    void userUseToolCard(String token, ToolCard toolCard, ToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException;
+    void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorFakeObserver executorObserver) throws InvalidActionException;
 
-    void userChooseAction(String token, IActionCommand action) throws IllegalArgumentException, InvalidActionException;
+    void userChooseAction(String token, IActionCommand action) throws InvalidActionException;
 
-    void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws IllegalArgumentException, InvalidActionException;
+    void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException;
 
     boolean containsToken(String token);
 
@@ -64,4 +62,6 @@ public interface IGame {
     RoundTrack getRoundTrack();
 
     Player getCurrentPlayer() throws InvalidActionException;
+
+    void forceStateChange() throws InvalidActionException;
 }

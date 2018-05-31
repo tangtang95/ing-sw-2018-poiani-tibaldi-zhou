@@ -32,10 +32,10 @@ public class ChooseDiceTest {
     @Mock
     private DraftPool draftPool;
     @Mock
-    private ToolCardExecutorFakeObserver observer1, observer2, observer3;
+    private IToolCardExecutorFakeObserver observer1, observer2, observer3;
 
     private ICommand command;
-    private List<ToolCardExecutorFakeObserver> observerList;
+    private List<IToolCardExecutorFakeObserver> observerList;
 
     @Before
     public void setUp() throws Exception {

@@ -1,11 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.rmi.RemoteException;
@@ -29,8 +28,8 @@ public class ModifyDiceValue implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
-        List<ToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
-        observerList.forEach(ToolCardExecutorFakeObserver::notifyNeedNewValue);
+        List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
+        observerList.forEach(IToolCardExecutorFakeObserver::notifyNeedNewValue);
         int integer = toolCardExecutor.getNeededValue();
         if (integer < Dice.MIN_VALUE || integer > Dice.MAX_VALUE)
             return CommandFlow.REPEAT;

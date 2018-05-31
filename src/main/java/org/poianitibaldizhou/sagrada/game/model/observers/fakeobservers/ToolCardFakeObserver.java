@@ -11,12 +11,18 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
     private IToolCardObserver realObserver;
     private ObserverManager observerManager;
 
-    public ToolCardFakeObserver(String token, ObserverManager observerManager, IToolCardObserver observer) {
-        if(observer instanceof ToolCardFakeObserver)
-            throw new IllegalArgumentException();
+    /**
+     * Creates a fake observer of the tool card used to manage the asynchronous call made to various client
+     * and network communication errors
+     *
+     * @param token player's token of the real observer
+     * @param realObserver real tool card observer
+     * @param observerManager observer manager of the specified game
+     */
+    public ToolCardFakeObserver(String token, ObserverManager observerManager, IToolCardObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
-        this.realObserver = observer;
+        this.realObserver = realObserver;
     }
 
     /**
