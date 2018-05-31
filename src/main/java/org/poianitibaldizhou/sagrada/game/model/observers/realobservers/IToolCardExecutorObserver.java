@@ -38,11 +38,10 @@ public interface IToolCardExecutorObserver extends Remote {
     /**
      * Notify the requirement of a new value for a dice that need to respect the delta variation
      *
-     * @param diceValue the dice number to change
-     * @param value the delta variation to apply (increment or decrement)
+     * @param message message containing dice value an the delta
      * @throws IOException network error
      */
-    void notifyNeedNewDeltaForDice(String diceValue, String value) throws IOException;
+    void notifyNeedNewDeltaForDice(String message) throws IOException;
 
     /**
      * Notify the requirement of a dice from the roundTrack

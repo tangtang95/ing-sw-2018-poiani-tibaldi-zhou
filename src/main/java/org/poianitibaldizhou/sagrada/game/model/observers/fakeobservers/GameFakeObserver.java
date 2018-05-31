@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IGameFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,6 +18,8 @@ public class GameFakeObserver implements IGameFakeObserver {
     private IGameObserver realObserver;
     private ObserverManager observerManager;
     private String token;
+
+    private ServerNetworkProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the game used to manage the asynchronous call made to various client
@@ -27,9 +30,11 @@ public class GameFakeObserver implements IGameFakeObserver {
      * @param observerManager observer manager of the specified game
      */
     public GameFakeObserver(String token, IGameObserver realObserver, ObserverManager observerManager) {
-        this.realObserver = realObserver;
         this.token = token;
         this.observerManager = observerManager;
+        this.realObserver = realObserver;
+
+        serverNetworkProtocol = new ServerNetworkProtocol();
     }
 
 
@@ -40,11 +45,7 @@ public class GameFakeObserver implements IGameFakeObserver {
     public void onPlayersCreate(List<Player> players) {
         Runnable runnable = () -> {
             try {
-                StringBuilder json = new StringBuilder();
-                players.forEach(player -> {
-                    json.append(player.toJSON().toJSONString());
-                });
-                realObserver.onPlayersCreate(json.toString());
+                realObserver.onPlayersCreate(serverNetworkProtocol.createMessage(players));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -60,9 +61,7 @@ public class GameFakeObserver implements IGameFakeObserver {
     public void onPublicObjectiveCardsDraw(List<PublicObjectiveCard> publicObjectiveCards)  {
         Runnable runnable = () -> {
             try {
-                StringBuilder json = new StringBuilder();
-                publicObjectiveCards.forEach(card -> json.append(card.toJSON().toJSONString()));
-                realObserver.onPublicObjectiveCardsDraw(json.toString());
+                realObserver.onPublicObjectiveCardsDraw(serverNetworkProtocol.createMessage(publicObjectiveCards));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -78,9 +77,7 @@ public class GameFakeObserver implements IGameFakeObserver {
     public void onToolCardsDraw(List<ToolCard> toolCards)  {
         Runnable runnable = () -> {
             try {
-                StringBuilder stringBuilder  = new StringBuilder();
-                toolCards.forEach(card -> stringBuilder.append(card.toJSON().toJSONString()));
-                realObserver.onToolCardsDraw(stringBuilder.toString());
+                realObserver.onToolCardsDraw(serverNetworkProtocol.createMessage(toolCards));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -96,9 +93,7 @@ public class GameFakeObserver implements IGameFakeObserver {
     public void onChoosePrivateObjectiveCards(List<PrivateObjectiveCard> privateObjectiveCards)  {
         Runnable runnable = () -> {
             try {
-                StringBuilder stringBuilder = new StringBuilder();
-                privateObjectiveCards.forEach(card -> stringBuilder.append(card.toJSON().toJSONString()));
-                realObserver.onChoosePrivateObjectiveCards(stringBuilder.toString());
+                realObserver.onChoosePrivateObjectiveCards(serverNetworkProtocol.createMessage(privateObjectiveCards));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -114,9 +109,7 @@ public class GameFakeObserver implements IGameFakeObserver {
     public void onPrivateObjectiveCardDraw(List<PrivateObjectiveCard> privateObjectiveCards)  {
         Runnable runnable = () -> {
             try {
-                StringBuilder stringBuilder = new StringBuilder();
-                privateObjectiveCards.forEach(card -> stringBuilder.append(card.toJSON().toJSONString()));
-                realObserver.onPrivateObjectiveCardDraw(stringBuilder.toString());
+                realObserver.onPrivateObjectiveCardDraw(serverNetworkProtocol.createMessage(privateObjectiveCards));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -132,11 +125,7 @@ public class GameFakeObserver implements IGameFakeObserver {
     public void onSchemaCardsDraw(List<FrontBackSchemaCard> schemaCards)  {
         Runnable runnable = () -> {
             try {
-                StringBuilder stringBuilder = new StringBuilder();
-                schemaCards.forEach(doubleFace -> {
-                    //TODO
-                });
-                realObserver.onSchemaCardsDraw(stringBuilder.toString());
+                realObserver.onSchemaCardsDraw(serverNetworkProtocol.createMessage(schemaCards));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

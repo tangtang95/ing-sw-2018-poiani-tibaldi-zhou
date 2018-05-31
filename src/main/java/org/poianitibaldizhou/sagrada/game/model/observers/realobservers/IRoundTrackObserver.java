@@ -11,38 +11,33 @@ public interface IRoundTrackObserver extends Remote {
     /**
      * Notify that a list of dices has been added to a certain round.
      *
-     * @param diceList list of dices added
-     * @param round    the dices have been added to this round
+     * @param message string message containing the list of dices and the round
      * @throws IOException network error
      */
-    void onDicesAddToRound(String diceList, String round) throws IOException;
+    void onDicesAddToRound(String message) throws IOException;
 
     /**
      * Notify that a dice has been added to a certain round.
      *
-     * @param dice  dice added
-     * @param round dice's been added to this round
+     * @param message string message containing the dice and the round
      * @throws IOException network error
      */
-    void onDiceAddToRound(String dice, String round) throws IOException;
+    void onDiceAddToRound(String message) throws IOException;
 
     /**
      * Notify that a dice's been removed from a certain round
      *
-     * @param dice  dice removed
-     * @param round dice's been removed in this round
+     * @param message string message containing the the dice and the round
      * @throws IOException network error
      */
-    void onDiceRemoveFromRound(String dice, String round) throws IOException;
+    void onDiceRemoveFromRound(String message) throws IOException;
 
     /**
      * Notify that a dice of a certain round has been removed and that a new dice
      * has been added at its place.
      *
-     * @param oldDice dice removed
-     * @param newDice dice added
-     * @param round   round in which the swap occurs
+     * @param message string message containing the old dice, the new dice and the round
      * @throws IOException network error
      */
-    void onDiceSwap(String oldDice, String newDice, String round) throws IOException;
+    void onDiceSwap(String message) throws IOException;
 }

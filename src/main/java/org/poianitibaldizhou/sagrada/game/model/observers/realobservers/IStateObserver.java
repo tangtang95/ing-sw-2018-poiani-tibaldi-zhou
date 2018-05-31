@@ -26,31 +26,27 @@ public interface IStateObserver extends Remote {
     /**
      * Notify the start of round
      *
-     * @param round     the current round
-     * @param roundUser the user of the current round who has the diceBag
+     * @param message message containing the current round and the user who has the dice bag
      * @throws IOException network error
      */
-    void onRoundStart(String round, String roundUser) throws IOException;
+    void onRoundStart(String message) throws IOException;
 
     /**
      * Notify the start of turn state
      *
-     * @param round       the current round of the turn state
-     * @param isFirstTurn indicates if the turn is the first or the second
-     * @param roundUser   the user of the current round who has the diceBag
-     * @param turnUser    the user of the current turn
+     * @param message message containing the current round, the turn, the user who has the dice bag and the user
+     *                of the current turn
      * @throws IOException network error
      */
-    void onTurnState(String round, String isFirstTurn, String roundUser, String turnUser) throws IOException;
+    void onTurnState(String message) throws IOException;
 
     /**
      * Notify the end of the round
      *
-     * @param round     the current round
-     * @param roundUser the user of the current round who has the diceBag
+     * @param message message containing the current round and the user who has the dice bag
      * @throws IOException network error
      */
-    void onRoundEnd(String round, String roundUser) throws IOException;
+    void onRoundEnd(String message) throws IOException;
 
     /**
      * Notify the end of the game
@@ -63,13 +59,11 @@ public interface IStateObserver extends Remote {
     /**
      * Notify the skip of a turn
      *
-     * @param round       the current round
-     * @param isFirstTurn if the turn is the first true, otherwise false
-     * @param roundUser   the user of the current round who has the diceBag
-     * @param turnUser    the user of the current turn
+     * @param message     message containing the current round, the turn (true if first), the user who has the dicebag
+     *                    and the user of the current turn
      * @throws IOException network error
      */
-    void onSkipTurnState(String round, String isFirstTurn, String roundUser, String turnUser) throws IOException;
+    void onSkipTurnState(String message) throws IOException;
 
     /**
      * Notify that the turnUser has decided to place a dice

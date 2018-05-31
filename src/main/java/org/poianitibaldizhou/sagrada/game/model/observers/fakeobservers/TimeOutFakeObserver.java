@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
 import java.util.Map;
@@ -26,6 +27,8 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private Thread timeOutThreadSetupPlayer;
     private Thread timeOutThreadTurnState;
 
+    private ServerNetworkProtocol serverNetworkProtocol;
+
     /**
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
      *
@@ -37,6 +40,8 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         this.realObserver = realObserver;
         this.observerManager = observerManager;
         this.game = game;
+
+        serverNetworkProtocol = new ServerNetworkProtocol();
     }
 
     /**
@@ -49,7 +54,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                     game.forceStateChange();
             }
         } catch (InvalidActionException e) {
-            // TODO maybe concurrent problem if done in this way
             Logger.getAnonymousLogger().log(Level.INFO, "Impossible because have to happen in this way");
         }
     }
@@ -68,8 +72,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
                     Runnable notify = () -> realObserver.forEach((token, obs) -> {
                         try {
-                            // TODO Mattia fix json here with protocol class
-                            obs.onTimeOut(turnUser.toJSON().toJSONString());
+                            obs.onTimeOut(serverNetworkProtocol.createMessage(turnUser));
                         } catch (IOException e) {
                             observerManager.notifyDisconnection(token);
                         }
@@ -79,7 +82,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 }
             }
         } catch (InvalidActionException e) {
-            // TODO maybe concurrent problem if done in this way
             Logger.getAnonymousLogger().log(Level.INFO, "Impossible because have to happen in this way");
         }
     }

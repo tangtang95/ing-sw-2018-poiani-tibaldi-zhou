@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IRoundTrackFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
 import java.util.List;
@@ -15,6 +16,8 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     private IRoundTrackObserver realObserver;
     private String token;
     private ObserverManager observerManager;
+
+    private ServerNetworkProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the round track used to manage the asynchronous call made to various client
@@ -28,6 +31,8 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
+
+        serverNetworkProtocol = new ServerNetworkProtocol();
     }
 
     /**
@@ -37,7 +42,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDicesAddToRound(List<Dice> diceList, int round) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDicesAddToRound(JSONArray.toJSONString(diceList), String.valueOf(round));
+                realObserver.onDicesAddToRound(serverNetworkProtocol.createMessage(diceList, round));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -53,7 +58,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDiceAddToRound(Dice dice, int round) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceAddToRound(dice.toJSON().toJSONString(), String.valueOf(round));
+                realObserver.onDiceAddToRound(serverNetworkProtocol.createMessage(dice, round));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -69,7 +74,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDiceRemoveFromRound(Dice dice, int round) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceRemoveFromRound(dice.toJSON().toJSONString(), String.valueOf(round));
+                realObserver.onDiceRemoveFromRound(serverNetworkProtocol.createMessage(dice, round));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -85,7 +90,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDiceSwap(Dice oldDice, Dice newDice, int round) {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceSwap(oldDice.toJSON().toJSONString(), newDice.toJSON().toJSONString(), String.valueOf(round));
+                realObserver.onDiceSwap(serverNetworkProtocol.createMessage(oldDice, newDice, round));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
