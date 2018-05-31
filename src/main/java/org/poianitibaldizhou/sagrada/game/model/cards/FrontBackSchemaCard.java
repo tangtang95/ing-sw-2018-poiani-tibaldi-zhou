@@ -42,4 +42,9 @@ public class FrontBackSchemaCard implements JSONable{
         // TODO
         return null;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

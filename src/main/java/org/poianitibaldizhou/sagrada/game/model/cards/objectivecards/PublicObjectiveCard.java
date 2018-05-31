@@ -102,4 +102,9 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
         cardJSON.put("cardPoint", this.getCardPoints());
         return cardJSON;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

@@ -100,4 +100,9 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
         pocJSON.put("description", this.getDescription());
         return pocJSON;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

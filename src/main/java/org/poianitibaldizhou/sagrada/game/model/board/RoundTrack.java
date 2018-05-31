@@ -224,4 +224,9 @@ public class RoundTrack implements Serializable, JSONable{
 
         return roundtrackJSON;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

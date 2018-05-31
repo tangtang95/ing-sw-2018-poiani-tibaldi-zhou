@@ -180,4 +180,9 @@ public class Tile implements Serializable, JSONable{
 
         return tileJSON;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

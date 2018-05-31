@@ -514,4 +514,9 @@ public class SchemaCard implements Serializable, JSONable {
 
         return schemaCardJSON;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

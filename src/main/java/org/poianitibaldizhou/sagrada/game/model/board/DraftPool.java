@@ -207,4 +207,9 @@ public class DraftPool implements Serializable, JSONable {
 
         return draftPoolJson;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

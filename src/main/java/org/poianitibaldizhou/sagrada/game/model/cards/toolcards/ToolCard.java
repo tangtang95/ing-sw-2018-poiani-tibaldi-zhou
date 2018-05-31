@@ -131,6 +131,10 @@ public class ToolCard extends Card implements JSONable{
         return new ToolCard(toolCard);
     }
 
+    public static ToolCard newInstance() {
+        return null;
+    }
+
     @Override
     public JSONObject toJSON() {
         JSONObject toolCardJSON = new JSONObject();
@@ -140,5 +144,10 @@ public class ToolCard extends Card implements JSONable{
         toolCardJSON.put("cost", this.getCost());
         toolCardJSON.put("tokens", this.getTokens());
         return toolCardJSON;
+    }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
     }
 }

@@ -79,4 +79,9 @@ public class Position implements Serializable, JSONable {
         position.putIfAbsent("column", this.getColumn());
         return position;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

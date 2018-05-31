@@ -243,4 +243,9 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
 
         return playerJSON;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

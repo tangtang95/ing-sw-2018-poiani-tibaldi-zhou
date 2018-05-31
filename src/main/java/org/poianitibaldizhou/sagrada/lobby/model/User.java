@@ -60,4 +60,9 @@ public class User implements Serializable, JSONable {
         jsonObject.putIfAbsent("token", this.getToken());
         return jsonObject;
     }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return null;
+    }
 }

@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -119,11 +120,41 @@ public class Dice implements Serializable, JSONable{
         return "" + numberConstraint.toString() + "/" + colorConstraint.toString();
     }
 
+    /**
+     * Convert a dice in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject obj = new JSONObject();
-        obj.put("value", this.getNumber());
-        obj.put("color", this.getColor().toString());
+        JSONObject diceObject = new JSONObject();
+        diceObject.put("value", this.getNumber());
+        diceObject.put("color", this.getColor().name());
+        obj.put(SharedConstants.TYPE, SharedConstants.DICE);
+        obj.put(SharedConstants.BODY,diceObject);
         return obj;
+    }
+
+    /**
+     * Convert a json string in a dice object.
+     *
+     * @param jsonObject a JSONObject that contains a dice.
+     * @return a Dice object.
+     */
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return new Dice(Integer.parseInt(jsonObject.get("value").toString()),
+                Color.valueOf((String) jsonObject.get("color")));
+    }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private Dice(){
+        this.numberConstraint = null;
+        this.colorConstraint = null;
     }
 }
