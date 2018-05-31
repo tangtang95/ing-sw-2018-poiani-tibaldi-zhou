@@ -1,9 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
-import org.jetbrains.annotations.Async;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
-import sun.nio.ch.ThreadPool;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class ObserverManager {
 

@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
@@ -9,6 +8,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -20,6 +21,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     private String token;
     private ObserverManager observerManager;
     private IToolCardExecutorObserver realObserver;
+    private final ServerNetworkProtocol serverProtocol = new ServerNetworkProtocol();
 
     /**
      * Creates a fake observer of the draft pool used to manage the asynchronous call made to various client
@@ -42,7 +44,10 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDice(List<Dice> diceList) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDice(JSONArray.toJSONString(diceList));
+                realObserver.notifyNeedDice(serverProtocol.createMessage(
+                        SharedConstants.DICE_LIST_KEY,
+                        diceList
+                ));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

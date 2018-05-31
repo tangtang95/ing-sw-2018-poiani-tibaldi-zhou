@@ -22,6 +22,11 @@ public class Dice implements Serializable, JSONable{
     public static final int MIN_VALUE = 1;
     public static final int MAX_VALUE = 6;
 
+    /**
+     * Dice param for network protocol.
+     */
+    private static final String JSON_VALUE = "value";
+    private static final String JSON_COLOR = "color";
 
     /**
      * Constructor.
@@ -128,13 +133,13 @@ public class Dice implements Serializable, JSONable{
     @Override
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
-        JSONObject obj = new JSONObject();
-        JSONObject diceObject = new JSONObject();
-        diceObject.put("value", this.getNumber());
-        diceObject.put("color", this.getColor().name());
-        obj.put(SharedConstants.TYPE, SharedConstants.DICE);
-        obj.put(SharedConstants.BODY,diceObject);
-        return obj;
+        JSONObject main = new JSONObject();
+        JSONObject diceJSON = new JSONObject();
+        diceJSON.put(JSON_VALUE, this.getNumber());
+        diceJSON.put(JSON_COLOR, this.getColor().name());
+        main.put(SharedConstants.TYPE, SharedConstants.DICE);
+        main.put(SharedConstants.BODY,diceJSON);
+        return main;
     }
 
     /**
@@ -145,8 +150,8 @@ public class Dice implements Serializable, JSONable{
      */
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return new Dice(Integer.parseInt(jsonObject.get("value").toString()),
-                Color.valueOf((String) jsonObject.get("color")));
+        return new Dice(Integer.parseInt(jsonObject.get(JSON_VALUE).toString()),
+                Color.valueOf((String) jsonObject.get(JSON_COLOR)));
     }
 
     /**

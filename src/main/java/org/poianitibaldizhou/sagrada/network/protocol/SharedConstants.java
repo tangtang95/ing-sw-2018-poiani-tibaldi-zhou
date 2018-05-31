@@ -26,10 +26,18 @@ public class SharedConstants {
     public static final String TOOL_CARD = "toolCard";
     public static final String PUBLIC_OBJECTIVE_CARD = "publicObjectiveCard";
     public static final String PRIVATE_OBJECTIVE_CARD = "privateObjectiveCard";
+    public static final String SCHEMA_CARD = "schemaCard";
     public static final String DRAFT_POOL = "draftPool";
     public static final String ROUND_TRACK = "roundTrack";
     public static final String POSITION = "position";
     public static final String PLAYER = "player";
     public static final String USER = "user";
 
+    /**
+     * Key protocol communication
+     */
+    public static final String GAME_NAME_KEY = "GameNameKey";
+    public static final String TOKEN_KEY = "TokenKey";
+    public static final String DICE_LIST_KEY = "DiceListKey";
+    public static final String DICE_KEY = "DiceKey";
 }

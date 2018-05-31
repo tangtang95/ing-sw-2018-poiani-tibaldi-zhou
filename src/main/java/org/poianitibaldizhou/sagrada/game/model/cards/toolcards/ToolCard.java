@@ -2,13 +2,20 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +25,6 @@ import java.util.Objects;
  */
 public class ToolCard extends Card implements JSONable{
 
-
     private final Color color;
     private int tokens;
     private final transient Node<ICommand> commands;
@@ -26,6 +32,11 @@ public class ToolCard extends Card implements JSONable{
 
     private static final int LOW_COST = 1;
     private static final int HIGH_COST = 2;
+
+    /**
+     * ToolCard param for network protocol.
+     */
+    private static final String JSON_COST = "cost";
 
     /**
      * Constructor.
@@ -93,7 +104,7 @@ public class ToolCard extends Card implements JSONable{
     }
 
     public void destroyToolCard() {
-        observerMap.entrySet().forEach(obs -> obs.getValue().onCardDestroy());
+        observerMap.forEach((key, value) -> value.onCardDestroy());
     }
 
     public void attachToolCardObserver(String token, IToolCardFakeObserver observer) {
@@ -130,23 +141,61 @@ public class ToolCard extends Card implements JSONable{
         return new ToolCard(toolCard);
     }
 
-    public static ToolCard newInstance() {
-        return null;
-    }
-
+    /**
+     * Convert a toolCard in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
         JSONObject toolCardJSON = new JSONObject();
-        toolCardJSON.put("name", this.getName());
-        toolCardJSON.put("description", this.getDescription());
-        toolCardJSON.put("color", this.getColor().toString());
-        toolCardJSON.put("cost", this.getCost());
-        toolCardJSON.put("tokens", this.getTokens());
-        return toolCardJSON;
+        toolCardJSON.put(JSON_NAME, this.getName());
+        toolCardJSON.put(JSON_DESCRIPTION, this.getDescription());
+        toolCardJSON.put(JSON_COLOR, this.getColor().name());
+        toolCardJSON.put(JSON_COST, this.getCost());
+        toolCardJSON.put(JSON_TOKEN, this.getTokens());
+        main.put(SharedConstants.TYPE, SharedConstants.TOOL_CARD);
+        main.put(SharedConstants.BODY,toolCardJSON);
+        return main;
     }
 
+    /**
+     * Convert a json string in a toolCard object.
+     *
+     * @param jsonObject a JSONObject that contains a name of the toolCard.
+     * @return a ToolCard object or null if the jsonObject is wrong.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
+        JSONParser jsonParser = new JSONParser();
+        JSONArray jsonArray;
+
+        try {
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/toolCards.json"));
+            for (Object object : Objects.requireNonNull(jsonArray)) {
+                JSONObject toolCard = (JSONObject) object;
+                if (toolCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString()))
+                    return new ToolCard(Color.valueOf((String) toolCard.get("cardColour")),
+                            (String) toolCard.get(GameInjector.CARD_NAME),
+                            (String) toolCard.get(GameInjector.CARD_DESCRIPTION),
+                            (String) toolCard.get("action"));
+            }
+        } catch (IOException | ParseException e) {
+            return null;
+        }
         return null;
+    }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private ToolCard(){
+        super(null, null);
+        this.color = null;
+        this.commands = null;
+        this.observerMap = null;
     }
 }

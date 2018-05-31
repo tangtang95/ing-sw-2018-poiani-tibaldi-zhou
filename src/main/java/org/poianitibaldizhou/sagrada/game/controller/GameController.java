@@ -26,6 +26,8 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -44,6 +46,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
+    private final transient ServerNetworkProtocol serverProtocol = new ServerNetworkProtocol();
 
     public GameController(GameManager gameManager) throws RemoteException {
         super();
@@ -440,12 +443,18 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setDice(String json) {
-        final String gameName = null;
-        final String token = null;
-        final Dice dice = null;
+    public void setDice(String json) throws IOException {
+        String gameName;
+        String token;
+        Dice dice;
 
-        // TODO Mattia read json
+        try {
+            gameName = (String) serverProtocol.getResponseByKey(json, SharedConstants.GAME_NAME_KEY);
+            token = (String) serverProtocol.getResponseByKey(json, SharedConstants.TOKEN_KEY);
+            dice = (Dice) serverProtocol.getResponseByKey(json, SharedConstants.DICE_KEY);
+        } catch (ParseException e) {
+            throw new IOException();
+        }
 
         if (initialCheck(token, gameName))
             return;

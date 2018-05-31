@@ -1,14 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-
 import java.io.IOException;
 import java.rmi.Remote;
-import java.util.List;
-import java.util.Set;
 
 public interface IToolCardExecutorObserver extends Remote {
     /**

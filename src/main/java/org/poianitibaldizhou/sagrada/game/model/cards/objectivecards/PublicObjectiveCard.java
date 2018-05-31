@@ -3,20 +3,19 @@ package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
-import java.io.ObjectInputStream;
 import java.util.*;
 
 @Immutable
 public abstract class PublicObjectiveCard extends Card implements IScore, JSONable {
 
     protected final ObjectiveCardType type;
-    protected Set<IConstraint> constraints;
+    protected transient Set<IConstraint> constraints;
     private final int cardPoints;
 
     /**
@@ -67,9 +66,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
 
 
     public List<IConstraint> getConstraint() {
-        List<IConstraint> constraints = new ArrayList<>();
-        constraints.addAll(this.constraints);
-        return constraints;
+        return new ArrayList<>(this.constraints);
     }
 
     public ObjectiveCardType getType() {
@@ -95,16 +92,60 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
         return false;
     }
 
+    /**
+     * Convert a publicObjectiveCard in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
+    @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
         JSONObject cardJSON = new JSONObject();
-        cardJSON.put("name", this.getName());
-        cardJSON.put("description", this.getDescription());
+        cardJSON.put(JSON_NAME, this.getName());
+        cardJSON.put(JSON_DESCRIPTION, this.getDescription());
         cardJSON.put("cardPoint", this.getCardPoints());
-        return cardJSON;
+        main.put(SharedConstants.TYPE, SharedConstants.PUBLIC_OBJECTIVE_CARD);
+        main.put(SharedConstants.BODY,cardJSON);
+        return main;
+    }
+
+    /**
+     * Convert a json string in a publicObjectiveCard object.
+     *
+     * @param jsonObject a JSONObject that contains a name of the publicObjectiveCard.
+     * @return a publicObjectiveCard object or null if the jsonObject is wrong.
+     */
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        /*This method is empty because the client never send a publicObjectiveCard*/
+        return null;
+    }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private PublicObjectiveCard(){
+        super(null,null);
+        this.type = null;
+        this.cardPoints = 0;
     }
 
     @Override
-    public Object toObject(JSONObject jsonObject) {
-        return null;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PublicObjectiveCard)) return false;
+        PublicObjectiveCard that = (PublicObjectiveCard) o;
+        return getCardPoints() == that.getCardPoints() &&
+                getType() == that.getType() &&
+                this.getName().equals(that.getName()) &&
+                this.getDescription().equals(that.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getType(), getCardPoints(), getName(), getDescription());
     }
 }

@@ -170,19 +170,31 @@ public class Tile implements Serializable, JSONable{
         return newTile;
     }
 
+    /**
+     * Convert a tile in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject tileJSON =  new JSONObject();
-
         if(this.getDice() != null)
             tileJSON.put("dice", this.getDice().toJSON());
         else
-            tileJSON.put("dice", "No dice present");
+            tileJSON.put("dice", null);
 
         return tileJSON;
     }
 
+    /**
+     * Convert a json string in a Tile object.
+     *
+     * @param jsonObject a JSONObject that contains a Tile.
+     * @return a tile object or null if the jsonObject is wrong.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
+        /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }
 }

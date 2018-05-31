@@ -1,8 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -10,7 +14,10 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Objects;
 
 @Immutable
@@ -93,16 +100,55 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
         return Objects.hash(getName(), getDescription(), getConstraint());
     }
 
+    /**
+     * Convert a privateObjectiveCard in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
         JSONObject pocJSON = new JSONObject();
-        pocJSON.put("name", this.getName());
-        pocJSON.put("description", this.getDescription());
-        return pocJSON;
+        pocJSON.put(JSON_NAME, this.getName());
+        pocJSON.put(JSON_DESCRIPTION, this.getDescription());
+        pocJSON.put(JSON_COLOR,this.colorConstraint.getColor().name());
+        main.put(SharedConstants.TYPE, SharedConstants.PRIVATE_OBJECTIVE_CARD);
+        main.put(SharedConstants.BODY,pocJSON);
+        return main;
     }
 
+    /**
+     * Convert a json string in a privateObjectiveCard object.
+     *
+     * @param jsonObject a JSONObject that contains a name of the privateObjectiveCard.
+     * @return a privateObjectiveCard object or null if the jsonObject is wrong.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
+        JSONParser jsonParser = new JSONParser();
+        JSONArray jsonArray;
+        try {
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/privateObjectiveCards.json"));
+            for (Object object : Objects.requireNonNull(jsonArray)) {
+                JSONObject privateObjectiveCard = (JSONObject) object;
+                if (privateObjectiveCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString()))
+                    return new PrivateObjectiveCard(
+                            (String) privateObjectiveCard.get(GameInjector.CARD_NAME),
+                            (String) privateObjectiveCard.get(GameInjector.CARD_DESCRIPTION),
+                            Color.valueOf((String) privateObjectiveCard.get("cardColor")));
+            }
+        } catch (IOException | ParseException e) {
+            return null;
+        }
         return null;
+    }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private PrivateObjectiveCard() {
+        super(null,null);
     }
 }

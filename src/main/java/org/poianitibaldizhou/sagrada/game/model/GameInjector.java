@@ -30,10 +30,10 @@ import java.util.logging.Logger;
 public class GameInjector {
     private static final Logger LOGGER = Logger.getLogger(GameInjector.class.getName());
 
-    private static final String CARD_NAME = "cardName";
-    private static final String CARD_DESCRIPTION = "cardDescription";
-    private static final String CARD_POINTS = "cardPoints";
-    private static final String CONSTRAINT_TYPE = "constraintType";
+    public static final String CARD_NAME = "cardName";
+    public static final String CARD_DESCRIPTION = "cardDescription";
+    public static final String CARD_POINTS = "cardPoints";
+    public static final String CONSTRAINT_TYPE = "constraintType";
 
 
     @Contract(" -> fail")

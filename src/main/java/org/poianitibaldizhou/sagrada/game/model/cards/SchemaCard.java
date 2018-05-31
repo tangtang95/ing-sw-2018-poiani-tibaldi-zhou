@@ -102,7 +102,7 @@ public class SchemaCard implements Serializable, JSONable {
      * @return the tile requested by position
      */
     @Contract(pure = true)
-    public Tile getTile(Position position) {
+    private Tile getTile(Position position) {
         return Tile.newInstance(tileMatrix[position.getRow()][position.getColumn()]);
     }
 
@@ -116,7 +116,7 @@ public class SchemaCard implements Serializable, JSONable {
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, Position position, PlacementRestrictionType restriction,
+    private boolean isDicePositionable(Dice dice, Position position, PlacementRestrictionType restriction,
                                       DiceRestrictionType diceRestriction) {
         if (isEmpty()) {
             return isBorderPosition(position) &&
@@ -153,7 +153,7 @@ public class SchemaCard implements Serializable, JSONable {
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, Position position) {
+    private boolean isDicePositionable(Dice dice, Position position) {
         return isDicePositionable(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
@@ -256,7 +256,7 @@ public class SchemaCard implements Serializable, JSONable {
      *                                this.isEmpty() && !this.isOutOfBounds(row,column) ||
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
-    public void setDice(Dice dice, Position position) throws RuleViolationException, RemoteException {
+    public void setDice(Dice dice, Position position) throws RuleViolationException{
         setDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 
@@ -273,7 +273,7 @@ public class SchemaCard implements Serializable, JSONable {
      *                                this.isEmpty() && !this.isOutOfBounds(row,column) ||
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
-    public void setDice(Dice dice, int row, int column) throws RuleViolationException, RemoteException {
+    public void setDice(Dice dice, int row, int column) throws RuleViolationException{
         setDice(dice, new Position(row, column));
     }
 
@@ -338,7 +338,7 @@ public class SchemaCard implements Serializable, JSONable {
      *                                !this.isEmpty() && getNumberOfAdjacentDices() == 0
      */
     public void setDice(Dice dice, int row, int column, PlacementRestrictionType restriction,
-                        DiceRestrictionType diceRestriction) throws RuleViolationException, RemoteException {
+                        DiceRestrictionType diceRestriction) throws RuleViolationException{
         setDice(dice, new Position(row, column), restriction, diceRestriction);
     }
 
@@ -404,7 +404,7 @@ public class SchemaCard implements Serializable, JSONable {
         stringBuilder.append("  -----   -----   -----   -----   -----  \n");
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                stringBuilder.append("|  " + tileMatrix[i][j].toString() + "  ");
+                stringBuilder.append("|  ").append(tileMatrix[i][j].toString()).append("  ");
             }
             stringBuilder.append("|\n");
             stringBuilder.append("  -----   -----   -----   -----   -----  \n");

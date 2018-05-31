@@ -6,14 +6,11 @@ import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
 
 public class ServerNetworkProtocolTest {
 
@@ -50,22 +47,22 @@ public class ServerNetworkProtocolTest {
 
     @Test
     public void test() {
-        System.out.println(serverNetworkProtocol.createMessage(new Dice(3, Color.YELLOW)));
-        System.out.println(serverNetworkProtocol.createMessage("ciao", "antonio", 45, 78));
-        System.out.println(serverNetworkProtocol.createMessage(diceMap));
+        System.out.println(serverNetworkProtocol.createMessage( new Dice(3, Color.YELLOW)));
+        System.out.println(serverNetworkProtocol.createMessage("1","2","3", "4", "ciao", "antonio", 45, 78));
+        System.out.println(serverNetworkProtocol.createMessage("map",diceMap));
     }
 
     @Test
     public void test2() {
-        String message = serverNetworkProtocol.createMessage(diceList, new Dice(3, Color.YELLOW));
+        String message = serverNetworkProtocol.createMessage("1", "2",diceList, new Dice(3, Color.YELLOW));
         try {
-            System.out.println(serverNetworkProtocol.parsingResponse(message).toString());
+            System.out.println(serverNetworkProtocol.getResponseByKey(message,"1").toString());
         } catch (ParseException e) {
             System.out.println("PARSING ERROR");
         }
-        message = serverNetworkProtocol.createMessage(diceMap);
+        message = serverNetworkProtocol.createMessage("1",diceMap);
         try {
-            System.out.println(serverNetworkProtocol.parsingResponse(message).toString());
+            System.out.println(serverNetworkProtocol.getResponseByKey(message, "1").toString());
         } catch (ParseException e) {
             System.out.println("PARSING ERROR");
         }
