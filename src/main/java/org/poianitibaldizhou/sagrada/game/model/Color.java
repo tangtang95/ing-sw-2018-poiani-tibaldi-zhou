@@ -1,9 +1,32 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-public enum Color {
+import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+
+public enum Color implements JSONable{
     BLUE,
-    RED,
+    RED ,
     GREEN,
     YELLOW,
-    PURPLE
+    PURPLE;
+
+    /**
+     * fake constructor.
+     */
+    Color(){}
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
+        main.put(SharedConstants.TYPE, SharedConstants.COLOR);
+        main.put(SharedConstants.BODY,this.name());
+        return main;
+    }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return Color.valueOf(jsonObject.toString());
+    }
 }

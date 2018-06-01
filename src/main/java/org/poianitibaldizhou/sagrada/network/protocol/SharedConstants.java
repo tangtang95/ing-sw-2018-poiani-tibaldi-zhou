@@ -22,6 +22,7 @@ public class SharedConstants {
     public static final String MAP = "map";
     public static final String STRING = "string";
     public static final String INTEGER = "integer";
+    public static final String COLOR = "color";
     public static final String DICE = "dice";
     public static final String TOOL_CARD = "toolCard";
     public static final String PUBLIC_OBJECTIVE_CARD = "publicObjectiveCard";
@@ -32,6 +33,7 @@ public class SharedConstants {
     public static final String POSITION = "position";
     public static final String PLAYER = "player";
     public static final String USER = "user";
+    public static final String COMMAND_FLOW = "commandFlow";
 
     /**
      * Key protocol communication

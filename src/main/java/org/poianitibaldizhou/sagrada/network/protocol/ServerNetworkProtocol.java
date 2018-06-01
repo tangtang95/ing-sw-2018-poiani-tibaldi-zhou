@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
@@ -11,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -47,10 +49,12 @@ public class ServerNetworkProtocol {
         classMap.put(SharedConstants.TOOL_CARD, ToolCard.class);
         classMap.put(SharedConstants.USER, User.class);
         classMap.put(SharedConstants.SCHEMA_CARD, SchemaCard.class);
+        classMap.put(SharedConstants.COLOR, Color.class);
+        classMap.put(SharedConstants.COMMAND_FLOW, CommandFlow.class);
     }
 
     /**
-     * build a formatted message for communication from server to client.
+     * Build a formatted message for communication from server to client.
      * Require a list of key string and then a list of object to send, the method
      * associated tha first key with the first object to send.
      *

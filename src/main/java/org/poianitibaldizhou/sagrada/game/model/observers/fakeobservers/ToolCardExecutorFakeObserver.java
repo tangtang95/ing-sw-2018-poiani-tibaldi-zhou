@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.json.simple.JSONArray;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
@@ -12,7 +11,6 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +19,8 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     private String token;
     private ObserverManager observerManager;
     private IToolCardExecutorObserver realObserver;
-    private final ServerNetworkProtocol serverProtocol = new ServerNetworkProtocol();
+
+    private ServerNetworkProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the draft pool used to manage the asynchronous call made to various client
@@ -35,6 +34,8 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
+
+        serverNetworkProtocol = new ServerNetworkProtocol();
     }
 
     /**
@@ -44,7 +45,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDice(List<Dice> diceList) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDice(serverProtocol.createMessage(
+                realObserver.notifyNeedDice(serverNetworkProtocol.createMessage(
                         SharedConstants.DICE_LIST_KEY,
                         diceList
                 ));
@@ -79,7 +80,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedColor(Set<Color> colors) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedColor(JSONArray.toJSONString(Collections.singletonList(colors)));
+                realObserver.notifyNeedColor(serverNetworkProtocol.createMessage(colors));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -95,7 +96,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedNewDeltaForDice(int diceValue, int value) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedNewDeltaForDice(String.valueOf(diceValue), String.valueOf(value));
+                realObserver.notifyNeedNewDeltaForDice(serverNetworkProtocol.createMessage(diceValue, value));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -111,7 +112,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDiceFromRoundTrack(roundTrack.toJSON().toJSONString());
+                realObserver.notifyNeedDiceFromRoundTrack(serverNetworkProtocol.createMessage(roundTrack));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -143,7 +144,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDicePositionOfCertainColor(Color color) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDicePositionOfCertainColor(color.toString());
+                realObserver.notifyNeedDicePositionOfCertainColor(serverNetworkProtocol.createMessage(color));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -175,7 +176,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyCommandInterrupted(CommandFlow error) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyCommandInterrupted(error.toString());
+                realObserver.notifyCommandInterrupted(serverNetworkProtocol.createMessage(error));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
 
@@ -13,6 +14,8 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     private String token;
     private ObserverManager observerManager;
     private ISchemaCardObserver realObserver;
+
+    private ServerNetworkProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the schema card used to manage the asynchronous call made to various client
@@ -26,6 +29,8 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
+
+        serverNetworkProtocol = new ServerNetworkProtocol();
     }
 
     /**
@@ -35,7 +40,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onPlaceDice(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onPlaceDice(dice.toJSON().toJSONString(), position.toJSON().toJSONString());
+                realObserver.onPlaceDice(serverNetworkProtocol.createMessage(dice, position));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -51,7 +56,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onDiceRemove(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceRemove(dice.toJSON().toJSONString(), position.toJSON().toJSONString());
+                realObserver.onDiceRemove(serverNetworkProtocol.createMessage(dice, position));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

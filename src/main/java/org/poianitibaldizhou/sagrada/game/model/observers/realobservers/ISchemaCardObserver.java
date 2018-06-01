@@ -1,26 +1,24 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.Position;
-
 import java.io.IOException;
 import java.rmi.Remote;
-public interface ISchemaCardObserver extends Remote{
+
+public interface ISchemaCardObserver extends Remote {
 
     /**
      * Notify that a dice's been placed in a certain position
      *
-     * @param dice     dice placed
-     * @param position placement position
+     * @param message string message containing the dice and the position
+     * @throws IOException network communication error
      */
-    void onPlaceDice(String dice, String position) throws IOException;
+    void onPlaceDice(String message) throws IOException;
 
 
     /**
      * Notify that a dice's been removed from a certain position
      *
-     * @param dice     dice removed
-     * @param position removal position
+     * @param message
+     * @throws IOException network communication error
      */
-    void onDiceRemove(String dice, String position) throws IOException;
+    void onDiceRemove(String message) throws IOException;
 }
