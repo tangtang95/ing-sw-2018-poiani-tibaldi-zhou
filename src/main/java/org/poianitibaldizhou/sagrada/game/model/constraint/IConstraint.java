@@ -18,8 +18,4 @@ public interface IConstraint extends Serializable{
      */
     int getIndexValue();
 
-    /**
-     * @return the constraint to a complete string
-     */
-    String toTotalString();
 }

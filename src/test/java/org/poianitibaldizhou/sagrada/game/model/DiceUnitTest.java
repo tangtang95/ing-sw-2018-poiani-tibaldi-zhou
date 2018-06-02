@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -30,6 +32,26 @@ public class DiceUnitTest {
         when(colorConstraint.getColor()).thenReturn(Color.BLUE);
         when(numberConstraint.getNumber()).thenReturn(5);
         dice = new Dice(numberConstraint, colorConstraint);
+    }
+
+    @Test
+    public void testToJSON(){
+        Dice dice = new Dice(5,Color.YELLOW);
+        String message = "{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":5}}";
+        assertTrue(message.equals(dice.toJSON().toJSONString()));
+
+    }
+
+    @Test
+    public void testToObject(){
+        Dice dice = new Dice(5,Color.YELLOW);
+        String message = "{\"color\":\"YELLOW\",\"value\":5}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertTrue((dice.toObject((JSONObject) jsonParser.parse(message))).equals(dice));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test

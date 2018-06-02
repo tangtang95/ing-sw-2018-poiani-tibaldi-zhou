@@ -1,6 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import edu.emory.mathcs.backport.java.util.Collections;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
@@ -37,6 +40,47 @@ public class RoundTrackTest {
         dices.add(dice3);
         dices.add(dice4);
         roundTrack = new RoundTrack();
+    }
+
+    @Test
+    public void testToJSON(){
+        roundTrack.addDiceToRound(dice1, 3);
+        roundTrack.addDiceToRound(dice2, 3);
+        roundTrack.addDiceToRound(dice3, 2);
+        String message = "{\"type\":\"roundTrack\",\"body\":{\"roundList\":[" +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":0}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":1}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":1}}]},\"round\":2}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":4}},{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":2}}]},\"round\":3}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":4}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":5}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":6}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":7}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":8}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":9}]}}";
+        assertTrue(message.equals(roundTrack.toJSON().toJSONString()));
+
+    }
+
+    @Test
+    public void testToObject(){
+        String message = "{\"roundList\":[" +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":0}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":1}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":1}}]},\"round\":2}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":4}},{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":2}}]},\"round\":3}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":4}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":5}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":6}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":7}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":8}," +
+                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":9}]}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertTrue((roundTrack.toObject((JSONObject) jsonParser.parse(message)))== null);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @After

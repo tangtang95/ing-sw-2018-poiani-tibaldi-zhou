@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -9,9 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DraftPoolFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +55,37 @@ public class DraftPoolTest {
         observerList.put("obs2", observer2);
         observerList.put("obs3", observer3);
         observerList.forEach((key, value) -> dp.attachObserver(key, value));
+    }
+
+    @Test
+    public void testToJSON() {
+        String message = "{\"type\":\"draftPool\",\"body\":{\"diceList\":{\"type\":\"collection\",\"body\":" +
+                "[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":5}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":2}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"PURPLE\",\"value\":1}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":6}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"GREEN\",\"value\":3}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":6}}]}}}";
+
+        assertTrue(message.equals(dp.toJSON().toJSONString()));
+    }
+
+    @Test
+    public void testToObject() {
+        String message = "{\"diceList\":{\"type\":\"collection\",\"body\":" +
+                "[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":5}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":2}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"PURPLE\",\"value\":1}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":6}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"GREEN\",\"value\":3}}," +
+                "{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":6}}]}}";
+       org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertTrue(dp.toObject((JSONObject) jsonParser.parse(message)) == null);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Test

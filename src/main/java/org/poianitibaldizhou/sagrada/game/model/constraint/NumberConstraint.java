@@ -82,9 +82,6 @@ public class NumberConstraint implements IConstraint {
         return String.valueOf(number);
     }
 
-    @Override
-    public String toTotalString() {return String.valueOf(number);}
-
     public int hashCode() {
         return Objects.hash(getNumber());
     }

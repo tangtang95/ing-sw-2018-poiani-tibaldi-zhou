@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.junit.Assert.*;
 
 public class ServerNetworkProtocolTest {
 
@@ -66,34 +67,32 @@ public class ServerNetworkProtocolTest {
     }
 
     @Test
-    public void test() {/*
-        System.out.println(serverNetworkProtocol.createMessage( new Dice(3, Color.YELLOW)));
-        System.out.println(serverNetworkProtocol.createMessage("1","2","3", "4", "ciao", "antonio", 45, 78));
-        System.out.println(serverNetworkProtocol.createMessage("map",diceMap));
-        */
-        System.out.println(schemaCard.toString());
-        System.out.println(serverNetworkProtocol.createMessage("schema",schemaCard));
+    public void test() {
+        String message = "{\"test\":{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":3}}}";
+        assertEquals(message,serverNetworkProtocol.createMessage( "test",new Dice(3, Color.YELLOW)));
+        String message1 = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
+                "\"3\":{\"type\":\"integer\",\"body\":\"45\"},\"4\":{\"type\":\"integer\",\"body\":\"78\"}}";
+        assertEquals(message1,serverNetworkProtocol.createMessage("1","2","3", "4", "ciao", "antonio", 45, 78));
+        String message2 = "{\"map\":{\"type\":\"map\",\"body\":" +
+                "{\"{\\\"type\\\":\\\"string\\\",\\\"body\\\":\\\"1\\\"}\":\"{\\\"type\\\":\\\"dice\\\"," +
+                "\\\"body\\\":{\\\"color\\\":\\\"BLUE\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
+                "\\\"body\\\":\\\"4\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"RED\\\"," +
+                "\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\",\\\"body\\\":\\\"3\\\"}\":\"{\\\"type\\\":\\\"dice\\\"," +
+                "\\\"body\\\":{\\\"color\\\":\\\"YELLOW\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
+                "\\\"body\\\":\\\"6\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"PURPLE\\\"," +
+                "\\\"value\\\":1}}\"}}}";
+        assertEquals(message2,serverNetworkProtocol.createMessage("map",diceMap));
     }
 
     @Test
     public void test2() {
-        String message = serverNetworkProtocol.createMessage("1", "2",diceList, new Dice(3, Color.YELLOW));
+        String message = serverNetworkProtocol.createMessage("1", "2", "3",diceList, diceMap, schemaCard);
         try {
-            System.out.println(serverNetworkProtocol.getResponseByKey(message,"1").toString());
+            assertEquals(diceList,serverNetworkProtocol.getResponseByKey(message,"1"));
+            assertEquals(diceMap,serverNetworkProtocol.getResponseByKey(message,"2"));
+            assertEquals(schemaCard,serverNetworkProtocol.getResponseByKey(message,"3"));
         } catch (ParseException e) {
-            System.out.println("PARSING ERROR");
-        }
-        message = serverNetworkProtocol.createMessage("1",diceMap);
-        try {
-            System.out.println(serverNetworkProtocol.getResponseByKey(message, "1").toString());
-        } catch (ParseException e) {
-            System.out.println("PARSING ERROR");
-        }
-        message = serverNetworkProtocol.createMessage("schema",schemaCard);
-        try {
-            System.out.println(schemaCard.equals(serverNetworkProtocol.getResponseByKey(message, "schema")));
-        } catch (ParseException e) {
-            System.out.println("PARSING ERROR");
+            fail("PARSING ERROR");
         }
     }
 }

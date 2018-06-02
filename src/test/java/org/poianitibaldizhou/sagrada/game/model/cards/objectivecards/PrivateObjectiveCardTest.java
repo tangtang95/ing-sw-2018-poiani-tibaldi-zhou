@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.game.model.*;
@@ -67,10 +69,11 @@ public class PrivateObjectiveCardTest {
         assertEquals("Wrong score",0, privateObjectiveCard.getScore(schemaCard));
     }
 
-    @Test
+
     /**
      * Test branch coverage of PrivateObjectiveCard.getMultiPlayerScore().
      */
+    @Test
     public void testBranchCoverage() throws Exception {
         schemaCard = new SchemaCard("TestBranchCoverage", 3, constraints);
         schemaCard.setDice(new Dice(4, Color.BLUE),0,1);
@@ -115,5 +118,26 @@ public class PrivateObjectiveCardTest {
         assertNotEquals(poc2.hashCode(), poc1.hashCode());
         assertNotEquals(poc2.hashCode(), poc2a.hashCode());
         assertEquals(poc2a.hashCode(), poc2b.hashCode());
+    }
+
+    @Test
+    public void testToJSON(){
+        privateObjectiveCard = new PrivateObjectiveCard("Sfumature gialle", "Test", Color.YELLOW);
+        String message = "{\"type\":\"privateObjectiveCard\",\"body\":{\"color\":\"YELLOW\",\"name\":\"Sfumature gialle\",\"description\":\"Test\"}}";
+        assertTrue(message.equals(privateObjectiveCard.toJSON().toJSONString()));
+
+    }
+
+    @Test
+    public void testToObject(){
+        privateObjectiveCard = new PrivateObjectiveCard("Sfumature Rosse - Privata",
+                "Somma dei valori su tutti i dadi rossi", Color.RED);
+        String message = "{\"name\":\"Sfumature Rosse - Privata\"}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertTrue((privateObjectiveCard.toObject((JSONObject) jsonParser.parse(message))).equals(privateObjectiveCard));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

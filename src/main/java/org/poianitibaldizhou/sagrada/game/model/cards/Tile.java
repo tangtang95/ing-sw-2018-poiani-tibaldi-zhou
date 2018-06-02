@@ -189,12 +189,14 @@ public class Tile implements Serializable, JSONable{
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
         JSONObject tileJSON =  new JSONObject();
-        if(this.getDice() != null) {
+        if(this.getDice() != null)
             tileJSON.put(SharedConstants.DICE, this.getDice().toJSON());
-            tileJSON.put(JSON_CONSTRAINT, this.getConstraint().toTotalString());
-        }
+        if (this.getConstraint() instanceof ColorConstraint)
+            tileJSON.put(JSON_CONSTRAINT, ((ColorConstraint) this.getConstraint()).getColor().name());
+        else if (this.getConstraint() instanceof NumberConstraint)
+            tileJSON.put(JSON_CONSTRAINT, ((NumberConstraint) this.getConstraint()).getNumber());
         else
-            tileJSON.put(JSON_CONSTRAINT, this.getConstraint().toTotalString());
+            tileJSON.put(JSON_CONSTRAINT, null);
         main.put(SharedConstants.TYPE, SharedConstants.TILE);
         main.put(SharedConstants.BODY,tileJSON);
         return main;
@@ -210,7 +212,10 @@ public class Tile implements Serializable, JSONable{
     public Object toObject(JSONObject jsonObject) {
         Tile tile;
         try {
-            tile = new Tile(new NumberConstraint(Integer.parseInt(jsonObject.get(JSON_CONSTRAINT).toString())));
+            if (jsonObject.get(JSON_CONSTRAINT) != null)
+                tile = new Tile(new NumberConstraint(Integer.parseInt(jsonObject.get(JSON_CONSTRAINT).toString())));
+            else
+                tile = new Tile(new NoConstraint());
         } catch (NumberFormatException e) {
             tile = new Tile( new ColorConstraint(Color.valueOf((String) jsonObject.get(JSON_CONSTRAINT))));
         }

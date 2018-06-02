@@ -81,9 +81,6 @@ public class ColorConstraint implements IConstraint {
         return color.name().substring(0, 1);
     }
 
-    @Override
-    public String toTotalString() {return color.name();}
-
     public int hashCode() {
         return Objects.hash(getColor());
     }

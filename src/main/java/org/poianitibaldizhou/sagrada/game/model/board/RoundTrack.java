@@ -34,6 +34,7 @@ public class RoundTrack implements Serializable, JSONable {
      */
     private static final String JSON_ROUND = "round";
     private static final String JSON_DICE_LIST = "diceList";
+    private static final String JSON_ROUND_LIST = "roundList";
 
     /**
      * Constructor.
@@ -219,13 +220,12 @@ public class RoundTrack implements Serializable, JSONable {
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
-        JSONObject collection = new JSONObject();
-        JSONArray listOfDicePerRoundJSON;
-
         JSONArray rounds = new JSONArray();
+        JSONObject roundTrackJson = new JSONObject();
 
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-            listOfDicePerRoundJSON = new JSONArray();
+            JSONObject collection = new JSONObject();
+            JSONArray listOfDicePerRoundJSON = new JSONArray();
             JSONObject  roundJSON = new JSONObject();
             for (Dice d : this.getDices(i)) {
                 listOfDicePerRoundJSON.add(d.toJSON());
@@ -236,9 +236,9 @@ public class RoundTrack implements Serializable, JSONable {
             roundJSON.put(JSON_DICE_LIST, collection);
             rounds.add(roundJSON);
         }
-
+        roundTrackJson.put(JSON_ROUND_LIST, rounds);
         main.put(SharedConstants.TYPE, SharedConstants.ROUND_TRACK);
-        main.put(SharedConstants.BODY,rounds);
+        main.put(SharedConstants.BODY,roundTrackJson);
         return main;
     }
 

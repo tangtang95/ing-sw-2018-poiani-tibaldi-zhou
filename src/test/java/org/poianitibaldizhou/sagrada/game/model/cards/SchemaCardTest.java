@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.*;
@@ -224,10 +226,38 @@ public class SchemaCardTest {
 
     @Test
     public void toStringTest(){
-        // TODO this is not a test
-        System.out.println(emptySchemaCard.toString() + "\n");
-        System.out.println(schemaCard.toString() + "\n");
-        System.out.println(fullSchemaCard.toString() + "\n");
+        String empty = "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n";
+        String schema = "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |  4/Y  |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n";
+
+        String full = "  -----   -----   -----   -----   -----  \n" +
+                "|       |   2   |   Y   |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |   4   |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |   R   |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n";
+
+        assertEquals(empty,emptySchemaCard.toString());
+        assertEquals(schema,schemaCard.toString());
+        assertEquals(full,fullSchemaCard.toString());
     }
 
     @Test
@@ -295,5 +325,106 @@ public class SchemaCardTest {
         assertNotEquals(schemaCard.hashCode(), fullSchemaCard.hashCode());
         assertNotEquals(emptySchemaCard.hashCode(), fullSchemaCard.hashCode());
         assertNotEquals(schemaCard.hashCode(), Dice.class.hashCode());
+    }
+
+    @Test
+    public void testToJSON(){
+        String message = "{\"type\":\"schemaCard\",\"body\":{\"difficulty\":1,\"name\":\"test1\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}";
+        assertTrue(message.equals(emptySchemaCard.toJSON().toJSONString()));
+        message = "{\"type\":\"schemaCard\",\"body\":{\"difficulty\":2,\"name\":\"test3\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":2}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"YELLOW\"}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":4}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"RED\"}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}";
+        assertTrue(message.equals(fullSchemaCard.toJSON().toJSONString()));
+    }
+
+    @Test
+    public void testToObject(){
+        String message = "{\"difficulty\":1,\"name\":\"test1\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}";
+        String message1 = "{\"difficulty\":2,\"name\":\"test3\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":2}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"YELLOW\"}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":4}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"RED\"}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertTrue((emptySchemaCard.toObject((JSONObject) jsonParser.parse(message))).equals(emptySchemaCard));
+            assertTrue((fullSchemaCard.toObject((JSONObject) jsonParser.parse(message1))).equals(fullSchemaCard));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

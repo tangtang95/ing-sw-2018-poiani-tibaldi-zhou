@@ -183,10 +183,11 @@ public class ToolCard extends Card implements JSONable{
                             (String) toolCard.get(GameInjector.CARD_NAME),
                             (String) toolCard.get(GameInjector.CARD_DESCRIPTION),
                             (String) toolCard.get("action"));
-                    card.tokens = Integer.parseInt((String) toolCard.get(JSON_TOKENS));
+                    card.tokens = Integer.parseInt(jsonObject.get(JSON_TOKENS).toString());
+                    break;
                 }
             }
-        } catch (IOException | ParseException e) {
+        } catch (IOException | ParseException | NumberFormatException e) {
             return null;
         }
         return card;

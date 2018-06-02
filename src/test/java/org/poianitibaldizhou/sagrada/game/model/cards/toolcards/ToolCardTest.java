@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,13 +11,13 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 
 public class ToolCardTest {
@@ -42,9 +44,7 @@ public class ToolCardTest {
         observerList.put("obs2",observer2);
         observerList.put("obs3",observer3);
         observerList.put("obs4",observer4);
-        observerList.forEach((key, value) -> {
-            toolCard.attachToolCardObserver(key, value);
-        });
+        observerList.forEach((key, value) -> toolCard.attachToolCardObserver(key, value));
         toolCard.detachToolCardObserver("obs4");
         observerList.remove("obs4");
     }
@@ -57,7 +57,7 @@ public class ToolCardTest {
     }
 
     @Test
-    public void attachObserverTest() throws Exception {
+    public void attachObserverTest(){
         ToolCard card = new ToolCard(Color.BLUE,"name", "description",
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         card.attachToolCardObserver("obs1", observer1);
@@ -65,7 +65,7 @@ public class ToolCardTest {
     }
 
     @Test
-    public void detachObserverTest() throws Exception {
+    public void detachObserverTest() {
         ToolCard card = new ToolCard(Color.BLUE,"name", "description",
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         card.attachToolCardObserver("obs1", observer1);
@@ -77,7 +77,7 @@ public class ToolCardTest {
     }
 
     @Test
-    public void getterTest() throws Exception {
+    public void getterTest()  {
         ToolCard card = new ToolCard(Color.BLUE,"name", "description",
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         Node<ICommand> commands = new Node<>(new ChooseDice());
@@ -92,7 +92,7 @@ public class ToolCardTest {
     }
 
     @Test
-    public void addTokens() throws Exception {
+    public void addTokens(){
         int actualTokens = toolCard.getTokens();
         int numberOfFavorTokenToAdd = 1;
         toolCard.addTokens(numberOfFavorTokenToAdd);
@@ -103,7 +103,7 @@ public class ToolCardTest {
     }
 
     @Test
-    public void destroyToolCard() throws Exception {
+    public void destroyToolCard(){
         toolCard.destroyToolCard();
         for (IToolCardFakeObserver obs: toolCard.getObserverMap().values()) {
             verify(obs).onCardDestroy();
@@ -111,12 +111,12 @@ public class ToolCardTest {
     }
 
     @Test
-    public void newInstance() throws Exception {
+    public void newInstance() {
         // TODO
     }
 
     @Test
-    public void hashCodeTest() throws Exception {
+    public void hashCodeTest()  {
         ToolCard other;
         other = new ToolCard(Color.BLUE,"testName", "testDescription",
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
@@ -162,5 +162,28 @@ public class ToolCardTest {
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         assertEquals(other, toolCard);
 
+    }
+
+    @Test
+    public void testToJSON(){
+        String message = "{\"type\":\"toolCard\",\"body\":" +
+                "{\"cost\":1,\"color\":\"RED\",\"name\":\"testName\",\"description\":\"testDescription\",\"token\":0}}";
+        assertTrue(message.equals(toolCard.toJSON().toJSONString()));
+
+    }
+
+    @Test
+    public void testToObject(){
+        ToolCard trueToolCard = new ToolCard(Color.PURPLE,
+                "Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][8-CA]");
+        String message = "{\"name\":\"Pinza Sgrossatrice\",\"token\":0}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertTrue((trueToolCard.toObject((JSONObject) jsonParser.parse(message))).equals(trueToolCard));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 }
