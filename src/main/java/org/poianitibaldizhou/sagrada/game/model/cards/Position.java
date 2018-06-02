@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -11,6 +12,12 @@ import java.util.Objects;
 public class Position implements Serializable, JSONable {
     private int row;
     private int column;
+
+    /**
+     * Position param for network protocol.
+     */
+    private static final String JSON_ROW = "row";
+    private static final String JSON_COLUMN = "column";
 
     /**
      * Constructor.
@@ -72,16 +79,39 @@ public class Position implements Serializable, JSONable {
     }
 
 
+    /**
+     * Convert a Position in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
         JSONObject position = new JSONObject();
-        position.putIfAbsent("row", this.getRow());
-        position.putIfAbsent("column", this.getColumn());
-        return position;
+        position.putIfAbsent(JSON_ROW, this.getRow());
+        position.putIfAbsent(JSON_COLUMN, this.getColumn());
+        main.put(SharedConstants.TYPE, SharedConstants.POSITION);
+        main.put(SharedConstants.BODY,position);
+        return main;
     }
 
+    /**
+     * Convert a json string in a Position object.
+     *
+     * @param jsonObject a JSONObject that contains a Position.
+     * @return a Position object.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return null;
+        return new Position(
+                Integer.parseInt(jsonObject.get(JSON_ROW).toString()),
+                Integer.parseInt(jsonObject.get(JSON_COLUMN).toString()));
     }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private Position(){ }
 }

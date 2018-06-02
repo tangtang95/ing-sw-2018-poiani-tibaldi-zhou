@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -40,6 +41,7 @@ public class ServerNetworkProtocol {
         classMap.put(SharedConstants.DRAFT_POOL, DraftPool.class);
         classMap.put(SharedConstants.INTEGER, Integer.class);
         classMap.put(SharedConstants.MAP, Map.class);
+        classMap.put(SharedConstants.TILE, Tile.class);
         classMap.put(SharedConstants.PLAYER, Player.class);
         classMap.put(SharedConstants.POSITION, Position.class);
         classMap.put(SharedConstants.PRIVATE_OBJECTIVE_CARD, PrivateObjectiveCard.class);
@@ -182,7 +184,7 @@ public class ServerNetworkProtocol {
      * @return a correct object converted.
      */
     @SuppressWarnings("unchecked")
-    private Object convertToObject(JSONObject jsonObject) {
+    public Object convertToObject(JSONObject jsonObject) {
         String className = (String) jsonObject.get(SharedConstants.TYPE);
 
         if (className.equals(SharedConstants.STRING))

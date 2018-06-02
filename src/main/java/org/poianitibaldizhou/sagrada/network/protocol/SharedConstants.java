@@ -5,9 +5,7 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
-    private SharedConstants() {
-
-    }
+    private SharedConstants() { }
 
     /**
      * JSONObject attributes.
@@ -23,6 +21,7 @@ public class SharedConstants {
     public static final String STRING = "string";
     public static final String INTEGER = "integer";
     public static final String COLOR = "color";
+    public static final String TILE = "tile";
     public static final String DICE = "dice";
     public static final String TOOL_CARD = "toolCard";
     public static final String PUBLIC_OBJECTIVE_CARD = "publicObjectiveCard";

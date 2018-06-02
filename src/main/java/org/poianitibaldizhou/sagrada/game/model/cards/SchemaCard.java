@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
@@ -12,9 +13,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.*;
 
 public class SchemaCard implements Serializable, JSONable {
@@ -23,8 +25,16 @@ public class SchemaCard implements Serializable, JSONable {
     private final Tile[][] tileMatrix;
     private final transient Map<String, ISchemaCardFakeObserver> observerMap;
 
+    private final transient ServerNetworkProtocol protocol = new ServerNetworkProtocol();
+
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
+
+    /**
+     * SchemaCard param for network protocol.
+     */
+    private static final String JSON_DIFFICULTY = "difficulty";
+    private static final String JSON_MATRIX = "matrix";
 
     /**
      * Constructor: creates a SchemaCard without any dice on it
@@ -43,6 +53,20 @@ public class SchemaCard implements Serializable, JSONable {
                 this.tileMatrix[i][j] = new Tile(constraints[i][j]);
             }
         }
+    }
+
+    /**
+     * Constructor: creates a SchemaCard with dice on it
+     *
+     * @param name        the name of the schema card
+     * @param difficulty  the difficulty of the schema card
+     * @param tileMatrix a matrix of tile with or without dice (NUMBER_OF_ROWS x NUMBER_OF_COLUMNS)
+     */
+    public SchemaCard(String name, int difficulty, Tile[][] tileMatrix) {
+        this.name = name;
+        this.difficulty = difficulty;
+        this.tileMatrix = tileMatrix;
+        this.observerMap = new HashMap<>();
     }
 
     /**
@@ -311,10 +335,12 @@ public class SchemaCard implements Serializable, JSONable {
             }
             int numberOfAdjacentDices = getNumberOfAdjacentDices(position);
             if (!diceRestriction.getDiceRestriction().isCorrectNumberOfAdjacentDices(numberOfAdjacentDices)) {
-                if (diceRestriction == DiceRestrictionType.NORMAL)
+                if (diceRestriction == DiceRestrictionType.NORMAL) {
                     throw new RuleViolationException(RuleViolationType.NO_DICE_NEAR);
-                else
+                }
+                else {
                     throw new RuleViolationException(RuleViolationType.HAS_DICE_NEAR);
+                }
             }
         }
         tileMatrix[position.getRow()][position.getColumn()].setDice(dice, restriction);
@@ -492,29 +518,64 @@ public class SchemaCard implements Serializable, JSONable {
         return numberOfAdjacentDice;
     }
 
+    /**
+     * Convert a schemaCard in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
+        JSONArray matrix = new JSONArray();
         JSONObject schemaCardJSON = new JSONObject();
-        JSONObject tile;
 
-        schemaCardJSON.put("name", this.getName());
-        schemaCardJSON.put("difficulty", this.getDifficulty());
+        schemaCardJSON.put(Card.JSON_NAME, this.getName());
+        schemaCardJSON.put(JSON_DIFFICULTY, this.getDifficulty());
 
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                tile = new JSONObject();
-                tile.put("tile", this.getTile(new Position(i, j)).toJSON());
-                tile.put("row", i);
-                tile.put("column", j);
-                schemaCardJSON.put("pos"+i+j, tile);
-            }
+            JSONArray row = new JSONArray();
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++)
+                row.add(this.getTile(new Position(i,j)).toJSON());
+            matrix.add(row);
         }
-
-        return schemaCardJSON;
+        schemaCardJSON.put(JSON_MATRIX, matrix);
+        main.put(SharedConstants.TYPE, SharedConstants.SCHEMA_CARD);
+        main.put(SharedConstants.BODY,schemaCardJSON);
+        return main;
     }
 
+    /**
+     * Convert a json string in a SchemaCard object.
+     *
+     * @param jsonObject a JSONObject that contains a schema card.
+     * @return a SchemaCard object.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return null;
+        Tile[][] tiles = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        JSONArray matrix = (JSONArray) jsonObject.get(JSON_MATRIX);
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            JSONArray row = (JSONArray) matrix.get(i);
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                tiles[i][j] = (Tile) protocol.convertToObject((JSONObject) row.get(j));
+            }
+        }
+        return new SchemaCard(
+                jsonObject.get(Card.JSON_NAME).toString(),
+                Integer.parseInt(jsonObject.get(JSON_DIFFICULTY).toString()),
+                tiles
+        );
+    }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private SchemaCard() {
+        this.tileMatrix = null;
+        this.difficulty = 0;
+        this.name = null;
+        this.observerMap =null;
     }
 }

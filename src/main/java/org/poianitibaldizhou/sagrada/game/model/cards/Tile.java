@@ -5,11 +5,16 @@ import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -24,7 +29,12 @@ public class Tile implements Serializable, JSONable{
 
     private final IConstraint constraint;
     private Dice dice;
+    private final transient ServerNetworkProtocol protocol = new ServerNetworkProtocol();
 
+    /**
+     * Tile param for network protocol.
+     */
+    private static final String JSON_CONSTRAINT = "constraint";
 
     /**
      * Constructor: create a tile with no constraint on it
@@ -177,13 +187,17 @@ public class Tile implements Serializable, JSONable{
      */
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
         JSONObject tileJSON =  new JSONObject();
-        if(this.getDice() != null)
-            tileJSON.put("dice", this.getDice().toJSON());
+        if(this.getDice() != null) {
+            tileJSON.put(SharedConstants.DICE, this.getDice().toJSON());
+            tileJSON.put(JSON_CONSTRAINT, this.getConstraint().toTotalString());
+        }
         else
-            tileJSON.put("dice", null);
-
-        return tileJSON;
+            tileJSON.put(JSON_CONSTRAINT, this.getConstraint().toTotalString());
+        main.put(SharedConstants.TYPE, SharedConstants.TILE);
+        main.put(SharedConstants.BODY,tileJSON);
+        return main;
     }
 
     /**
@@ -194,7 +208,21 @@ public class Tile implements Serializable, JSONable{
      */
     @Override
     public Object toObject(JSONObject jsonObject) {
-        /*This method is empty because the client never send a publicObjectiveCard*/
-        return null;
+        Tile tile;
+        try {
+            tile = new Tile(new NumberConstraint(Integer.parseInt(jsonObject.get(JSON_CONSTRAINT).toString())));
+        } catch (NumberFormatException e) {
+            tile = new Tile( new ColorConstraint(Color.valueOf((String) jsonObject.get(JSON_CONSTRAINT))));
+        }
+        try {
+            if (jsonObject.containsKey(SharedConstants.DICE)) {
+                Dice readDice = (Dice) protocol.convertToObject(
+                        (JSONObject) jsonObject.get(SharedConstants.DICE));
+                tile.setDice(readDice);
+            }
+        } catch (RuleViolationException e) {
+            return null;
+        }
+        return tile;
     }
 }

@@ -29,7 +29,9 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAddToRound(String diceList, String round){
+    public void onDicesAddToRound(String jString){
+        String diceList;
+        String round;
         //User user = cliGameView.getCurrentUser();
         //String message = user.getName() + " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -40,7 +42,9 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAddToRound(String dice, String round){
+    public void onDiceAddToRound(String jString){
+        String dice;
+        String round;
        // User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
 
@@ -54,7 +58,9 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemoveFromRound(String dice, String round){
+    public void onDiceRemoveFromRound(String jString){
+        String diceList;
+        String round;
         //User user = cliGameView.getCurrentUser();
         synchronized (roundTrack) {
 
@@ -69,7 +75,10 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceSwap(String oldDice, String newDice, String round){
+    public void onDiceSwap(String jString){
+        String oldDice;
+        String newDice;
+        String round;
         //User user = cliGameView.getCurrentUser();
        // String message = user.getName() + " swap a with the round track at round " + round + ".";
         String message2 = "Old dice (no more present in round track) : ";

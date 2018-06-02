@@ -56,23 +56,29 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onRoundStart(String round, String roundUser){
-
+    public void onRoundStart(String jString){
+        String round;
+        String roundUser;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onTurnState(String round, String isFirstTurn, String  roundUser, String turnUser){
-
+    public void onTurnState(String jString){
+        String round;
+        String isFirstTurn;
+        String  roundUser;
+        String turnUser;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onRoundEnd(String round, String roundUser){
+    public void onRoundEnd(String jString){
+        String round;
+        String roundUser;
     }
 
     /**
@@ -87,8 +93,11 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onSkipTurnState(String round, String isFirstTurn, String roundUser, String turnUser){
-
+    public void onSkipTurnState(String jString){
+        String round;
+        String isFirstTurn;
+        String roundUser;
+        String turnUser;
     }
 
     /**

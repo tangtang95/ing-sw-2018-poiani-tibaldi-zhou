@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IRoundTrackFakeObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,6 +29,11 @@ public class RoundTrack implements Serializable, JSONable {
     private static final String ILLEGAL_ARGUMENT_MESSAGE = "Round must be in [" + LAST_ROUND + ",  " + FIRST_ROUND + "]. " +
             "Round specified:  ";
 
+    /**
+     * RoundTrack param for network protocol.
+     */
+    private static final String JSON_ROUND = "round";
+    private static final String JSON_DICE_LIST = "diceList";
 
     /**
      * Constructor.
@@ -113,7 +119,7 @@ public class RoundTrack implements Serializable, JSONable {
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
     public void addDicesToRound(@NotNull List<Dice> dices, int round) {
-        if (!isRoundAccepted(round))
+        if (isAcceptedRound(round))
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
         if (!dices.isEmpty()) {
             numberOfDices += dices.size();
@@ -131,7 +137,7 @@ public class RoundTrack implements Serializable, JSONable {
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
     public void addDiceToRound(@NotNull Dice dice, int round) {
-        if (!isRoundAccepted(round))
+        if (isAcceptedRound(round))
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
 
         listOfDices.get(round).add(dice);
@@ -149,7 +155,7 @@ public class RoundTrack implements Serializable, JSONable {
      *                                  exceeds [FIRST_ROUND, LAST_ROUND]
      */
     public void removeDiceFromRoundTrack(int round, @NotNull Dice dice) {
-        if (!isRoundAccepted(round))
+        if (isAcceptedRound(round))
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
         if (!listOfDices.get(round).remove(dice))
             throw new IllegalArgumentException("Dice not present in round track");
@@ -168,7 +174,7 @@ public class RoundTrack implements Serializable, JSONable {
      * @throws IllegalArgumentException if round exceeds [FIRST_ROUND, LAST_ROUND]
      */
     public void swapDice(Dice oldDice, Dice newDice, int round) throws DiceNotFoundException {
-        if (!isRoundAccepted(round))
+        if (isAcceptedRound(round))
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_MESSAGE + round);
 
         boolean diceFounded = false;
@@ -200,35 +206,51 @@ public class RoundTrack implements Serializable, JSONable {
      * @param round value to check
      * @return true if round is in the defined interval, false otherwise
      */
-    private boolean isRoundAccepted(int round) {
-        return round >= FIRST_ROUND && round <= LAST_ROUND;
+    private boolean isAcceptedRound(int round) {
+        return round < FIRST_ROUND || round > LAST_ROUND;
     }
 
+    /**
+     * Convert a roundTrack in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
-        JSONObject roundtrackJSON = new JSONObject();
-        JSONObject roundJSON;
+        JSONObject main = new JSONObject();
+        JSONObject collection = new JSONObject();
         JSONArray listOfDicePerRoundJSON;
+
+        JSONArray rounds = new JSONArray();
 
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             listOfDicePerRoundJSON = new JSONArray();
-            roundJSON = new JSONObject();
-
-            roundJSON.put("round", i);
-
+            JSONObject  roundJSON = new JSONObject();
             for (Dice d : this.getDices(i)) {
                 listOfDicePerRoundJSON.add(d.toJSON());
             }
-
-            roundJSON.put("dices", listOfDicePerRoundJSON);
-            roundtrackJSON.put("" + i, roundJSON);
+            collection.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
+            collection.put(SharedConstants.BODY,listOfDicePerRoundJSON);
+            roundJSON.put(JSON_ROUND, i);
+            roundJSON.put(JSON_DICE_LIST, collection);
+            rounds.add(roundJSON);
         }
 
-        return roundtrackJSON;
+        main.put(SharedConstants.TYPE, SharedConstants.ROUND_TRACK);
+        main.put(SharedConstants.BODY,rounds);
+        return main;
     }
 
+    /**
+     * Convert a json string in a roundTrack object.
+     *
+     * @param jsonObject a JSONObject that contains a roundTrack.
+     * @return a roundTrack object.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
+        /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }
 }

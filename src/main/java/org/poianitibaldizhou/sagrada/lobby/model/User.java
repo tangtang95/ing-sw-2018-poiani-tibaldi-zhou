@@ -4,6 +4,7 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,6 +13,12 @@ import java.util.Objects;
 public class User implements Serializable, JSONable {
     private String name;
     private transient String token;
+
+    /**
+     * User param for network protocol.
+     */
+    private static final String JSON_USER_NAME = "userName";
+    private static final String JSON_TOKEN = "token";
 
     /**
      * Constructor.
@@ -53,16 +60,38 @@ public class User implements Serializable, JSONable {
         return "Username: " + this.name;
     }
 
+    /**
+     * Convert a User in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.putIfAbsent("user", this.getName());
-        jsonObject.putIfAbsent("token", this.getToken());
-        return jsonObject;
+        jsonObject.putIfAbsent(JSON_USER_NAME, this.getName());
+        jsonObject.putIfAbsent(JSON_TOKEN, this.getToken());
+        main.put(SharedConstants.TYPE, SharedConstants.USER);
+        main.put(SharedConstants.BODY,jsonObject);
+        return main;
     }
 
+    /**
+     * Convert a json string in a User object.
+     *
+     * @param jsonObject a JSONObject that contains a User.
+     * @return a User object.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return null;
+        return new User(jsonObject.get(JSON_USER_NAME).toString(),
+                jsonObject.get(JSON_TOKEN).toString());
     }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private User(){}
 }

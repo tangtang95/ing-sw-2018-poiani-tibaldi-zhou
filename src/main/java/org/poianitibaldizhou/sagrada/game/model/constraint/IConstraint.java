@@ -17,4 +17,9 @@ public interface IConstraint extends Serializable{
      * @return index value useful in an array to count the number of constraint founded
      */
     int getIndexValue();
+
+    /**
+     * @return the constraint to a complete string
+     */
+    String toTotalString();
 }

@@ -37,6 +37,7 @@ public class ToolCard extends Card implements JSONable{
      * ToolCard param for network protocol.
      */
     private static final String JSON_COST = "cost";
+    private static final String JSON_TOKENS = "token";
 
     /**
      * Constructor.
@@ -155,7 +156,7 @@ public class ToolCard extends Card implements JSONable{
         toolCardJSON.put(JSON_DESCRIPTION, this.getDescription());
         toolCardJSON.put(JSON_COLOR, this.getColor().name());
         toolCardJSON.put(JSON_COST, this.getCost());
-        toolCardJSON.put(JSON_TOKEN, this.getTokens());
+        toolCardJSON.put(JSON_TOKENS, this.getTokens());
         main.put(SharedConstants.TYPE, SharedConstants.TOOL_CARD);
         main.put(SharedConstants.BODY,toolCardJSON);
         return main;
@@ -171,21 +172,24 @@ public class ToolCard extends Card implements JSONable{
     public Object toObject(JSONObject jsonObject) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
+        ToolCard card = null;
 
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/toolCards.json"));
             for (Object object : Objects.requireNonNull(jsonArray)) {
                 JSONObject toolCard = (JSONObject) object;
-                if (toolCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString()))
-                    return new ToolCard(Color.valueOf((String) toolCard.get("cardColour")),
+                if (toolCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString())) {
+                    card = new ToolCard(Color.valueOf((String) toolCard.get("cardColour")),
                             (String) toolCard.get(GameInjector.CARD_NAME),
                             (String) toolCard.get(GameInjector.CARD_DESCRIPTION),
                             (String) toolCard.get("action"));
+                    card.tokens = Integer.parseInt((String) toolCard.get(JSON_TOKENS));
+                }
             }
         } catch (IOException | ParseException e) {
             return null;
         }
-        return null;
+        return card;
     }
 
     /**

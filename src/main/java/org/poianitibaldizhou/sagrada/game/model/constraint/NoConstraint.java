@@ -44,6 +44,9 @@ public class NoConstraint implements IConstraint {
         return " ";
     }
 
+    @Override
+    public String toTotalString() {return null;}
+
     public int hashCode() {
         return Objects.hash(NoConstraint.class);
     }

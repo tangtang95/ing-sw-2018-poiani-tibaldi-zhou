@@ -27,7 +27,7 @@ public enum CommandFlow implements JSONable{
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
-        main.put(SharedConstants.TYPE, SharedConstants.COLOR);
+        main.put(SharedConstants.TYPE, SharedConstants.COMMAND_FLOW);
         main.put(SharedConstants.BODY,this.name());
         return main;
     }

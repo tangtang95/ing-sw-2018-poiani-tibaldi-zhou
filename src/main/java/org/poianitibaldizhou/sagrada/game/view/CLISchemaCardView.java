@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
@@ -43,44 +44,6 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onPlaceDice(String dice, String position) throws RemoteException {
-       /* User user = cliGameView.getCurrentUser();
-        synchronized (schemaCards.get(user.getName())) {
-            try {
-                schemaCards.get(user.getName()).setDice(dice, position);
-            } catch (RuleViolationException e) {
-                PrinterManager.consolePrint("An error has occured when " + user.getName() + " tried to" +
-                        "place a dice in his schema card.", Level.INFORMATION);
-                return;
-            }
-        }
-        String message = user.getName() + " placed a dice on his schema card.";
-        BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
-                buildGraphicDice(dice).toString(), Level.STANDARD);
-                */
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onDiceRemove(String dice, String position){
-        /*
-        User user = cliGameView.getCurrentUser();
-        synchronized (schemaCards.get(user.getName())) {
-            schemaCards.get(user.getName()).removeDice(position);
-        }
-        String message = user.getName() + " removed a dice from his schema card.";
-        BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(position.toString()).
-                buildGraphicDice(dice).toString(), Level.STANDARD);
-                */
-    }
 
     public Map<String, SchemaCard> getSchemaCards() {
         return schemaCards;
@@ -100,5 +63,15 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
     public int hashCode() {
 
         return Objects.hash(super.hashCode(), cliGameView, getSchemaCards());
+    }
+
+    @Override
+    public void onPlaceDice(String message) throws IOException {
+
+    }
+
+    @Override
+    public void onDiceRemove(String message) throws IOException {
+
     }
 }

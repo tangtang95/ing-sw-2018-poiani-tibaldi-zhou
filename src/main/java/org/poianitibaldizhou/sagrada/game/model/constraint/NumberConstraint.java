@@ -4,7 +4,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,14 +75,15 @@ public class NumberConstraint implements IConstraint {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof NumberConstraint))
-            return false;
-        return this.getNumber() == ((NumberConstraint) obj).getNumber();
+        return obj instanceof NumberConstraint && this.getNumber() == ((NumberConstraint) obj).getNumber();
     }
 
     public String toString() {
         return String.valueOf(number);
     }
+
+    @Override
+    public String toTotalString() {return String.valueOf(number);}
 
     public int hashCode() {
         return Objects.hash(getNumber());

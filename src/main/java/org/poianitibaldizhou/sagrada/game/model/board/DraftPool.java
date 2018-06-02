@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDraftPoolFakeObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.*;
@@ -18,6 +19,10 @@ public class DraftPool implements Serializable, JSONable {
     private final List<Dice> dices;
     private final transient Map<String, IDraftPoolFakeObserver> observerMap;
 
+    /**
+     * draftPool param for network protocol.
+     */
+    private static final String JSON_DICE_LIST = "diceList";
 
     /**
      * Constructor.
@@ -31,11 +36,11 @@ public class DraftPool implements Serializable, JSONable {
     // GETTER
 
     /**
-     * Returns the list of the observer of the draftpool
+     * Returns the list of the observer of the draftPool
      * Another list is created for this task, but the single elements are not deep
      * copied.
      *
-     * @return list of the observers listening to the draftpool
+     * @return list of the observers listening to the draftPool
      */
     @Contract(pure = true)
     public Map<String, IDraftPoolFakeObserver> getObserverMap() {
@@ -192,24 +197,37 @@ public class DraftPool implements Serializable, JSONable {
         return Objects.hash(DraftPool.class, dices);
     }
 
+    /**
+     * Convert a draftPool in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
     @Override
+    @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
+        JSONObject draftPoolBody = new JSONObject();
         JSONArray diceListJson = new JSONArray();
-        JSONObject dice;
         JSONObject draftPoolJson = new JSONObject();
-
-        for(Dice d : this.getDices()) {
-            dice = d.toJSON();
-            diceListJson.add(dice);
-        }
-
-        draftPoolJson.putIfAbsent("diceList", diceListJson);
-
-        return draftPoolJson;
+        for(Dice d : this.getDices())
+            diceListJson.add(d.toJSON());
+        draftPoolJson.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
+        draftPoolJson.put(SharedConstants.BODY,diceListJson);
+        draftPoolBody.putIfAbsent(JSON_DICE_LIST, draftPoolJson);
+        main.put(SharedConstants.TYPE, SharedConstants.DRAFT_POOL);
+        main.put(SharedConstants.BODY,draftPoolBody);
+        return main;
     }
 
+    /**
+     * Convert a json string in a draftPool object.
+     *
+     * @param jsonObject a JSONObject that contains a draftPool.
+     * @return a draftPool object.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
+        /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }
 }
