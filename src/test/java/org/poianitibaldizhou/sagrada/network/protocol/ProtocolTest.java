@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
@@ -17,7 +18,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class ServerNetworkProtocolTest {
+public class ProtocolTest {
 
     @DataPoint
     public static List<Dice> diceList;
@@ -85,6 +86,7 @@ public class ServerNetworkProtocolTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void test2() {
         String message = serverNetworkProtocol.createMessage("1", "2", "3",diceList, diceMap, schemaCard);
         try {
@@ -94,5 +96,16 @@ public class ServerNetworkProtocolTest {
         } catch (ParseException e) {
             fail("PARSING ERROR");
         }
+
+        ClientNetworkProtocol clientNetworkProtocol = new ClientNetworkProtocol();
+        String send = serverNetworkProtocol.createMessage("1", "2", "3",diceList, diceMap, schemaCard);
+        try {
+            List<JSONObject> listOfDice = (List<JSONObject>) clientNetworkProtocol.getResponseByKey(send,"1");
+            String response = clientNetworkProtocol.createMessage("1", listOfDice);
+            assertEquals(diceList,serverNetworkProtocol.getResponseByKey(response,"1"));
+        } catch (ParseException e) {
+            fail("PARSING ERROR");
+        }
+
     }
 }

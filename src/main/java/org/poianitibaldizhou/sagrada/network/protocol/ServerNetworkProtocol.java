@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
 import java.util.*;
 
 /**
- * Class to convert to string the object for communicating with clients.
+ * Class to convert to string the object for communicating with client.
  */
 public class ServerNetworkProtocol {
 
