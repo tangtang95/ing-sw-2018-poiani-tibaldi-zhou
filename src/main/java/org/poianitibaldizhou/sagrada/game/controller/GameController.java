@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
-import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -35,9 +34,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     private static final transient String INITIAL_CHECK_ERROR = "You're not playing the selected game or the game does not exist";
     private static final transient String FIRE_EVENT_ERROR = "Can't fire an event now";
-    private static final transient String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
-            "specified game or the specified does not exist.";
-    private static final transient String GET_ERROR_KEY = "error";
     private static final transient String INVALID_ACTION_ERR = "You can't perform this action now";
     private static final transient String NOT_SYNCH = "You're not synchronized with the model and need to reconnect";
 
@@ -105,10 +101,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void chosenSchemaCard(String json) throws IOException {
-        String token = networkGetItem.getToken(json);
-        String gameName = networkGetItem.getGameName(json);
-        SchemaCard schemaCard = networkGetItem.getSchemaCard(json);
+    public void chosenSchemaCard(String message) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        SchemaCard schemaCard = networkGetItem.getSchemaCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -151,10 +147,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void bindPlayer(String json, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
-        String token = networkGetItem.getToken(json);
-        String gameName = networkGetItem.getGameName(json);
-        User user = networkGetItem.getUser(json);
+    public void bindPlayer(String message, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        User user = networkGetItem.getUser(message);
         Player player = null;
 
         if (initialCheck(token, gameName))
@@ -624,10 +620,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = networkGetItem.getToken(message);
         String gameName = networkGetItem.getGameName(message);
 
-        Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
-            return JSONObject.toJSONString(jsonError);
+            return networkGetItem.getErrorMessage();
         }
 
         List<ToolCard> toolCards;
@@ -649,10 +643,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = networkGetItem.getGameName(message);
         String token = networkGetItem.getToken(message);
 
-        Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
-            return JSONObject.toJSONString(jsonError);
+            return networkGetItem.getErrorMessage();
         }
 
 
@@ -674,10 +666,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = networkGetItem.getGameName(message);
         String token = networkGetItem.getToken(message);
 
-        Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
-            return JSONObject.toJSONString(jsonError);
+            return networkGetItem.getErrorMessage();
         }
 
         RoundTrack roundTrack;
@@ -698,11 +688,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = networkGetItem.getToken(message);
         String toolCardName = networkGetItem.getToolCard(message).getName();
 
-        Map<String, String> jsonError = new HashMap<>();
-
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
-            return JSONObject.toJSONString(jsonError);
+            return networkGetItem.getErrorMessage();
         }
 
         List<ToolCard> toolCards;
@@ -714,8 +701,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Optional<ToolCard> toolCard = toolCards.stream().filter(card -> card.getName().equals(toolCardName)).findFirst();
         if (!toolCard.isPresent()) {
-            jsonError.putIfAbsent(GET_ERROR_KEY, "Can't get because the requested tool card does not exist in game");
-            return JSONObject.toJSONString(jsonError);
+            return networkGetItem.getErrorMessage();
         }
 
         return toolCard.get().toJSON().toJSONString();
@@ -729,10 +715,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = networkGetItem.getGameName(message);
         String token = networkGetItem.getToken(message);
 
-        Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            jsonError.putIfAbsent(GET_ERROR_KEY, GET_ERROR);
-            return JSONObject.toJSONString(jsonError);
+            return networkGetItem.getErrorMessage();
         }
 
         Player player;
@@ -741,8 +725,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             try {
                 player = gameManager.getGameByName(gameName).getCurrentPlayer();
             } catch (InvalidActionException e) {
-                jsonError.putIfAbsent(GET_ERROR_KEY, "Can't request for the current player in this precise moment");
-                return JSONObject.toJSONString(jsonError);
+                return networkGetItem.getErrorMessage();
             }
         }
 

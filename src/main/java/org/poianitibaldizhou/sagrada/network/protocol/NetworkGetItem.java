@@ -11,6 +11,8 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActio
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NetworkGetItem {
     private ServerNetworkProtocol serverNetworkProtocol;
@@ -142,5 +144,11 @@ public class NetworkGetItem {
         }
 
         return color;
+    }
+
+    public String getErrorMessage() {
+        Map<String, String> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
+        return serverNetworkProtocol.mapToJSONString(error);
     }
 }

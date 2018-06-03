@@ -217,6 +217,10 @@ public class ServerNetworkProtocol {
         }
         throw new IllegalArgumentException();
     }
+
+    public String mapToJSONString(Map<String, String> map) {
+        return JSONObject.toJSONString(map);
+    }
 }
 
 

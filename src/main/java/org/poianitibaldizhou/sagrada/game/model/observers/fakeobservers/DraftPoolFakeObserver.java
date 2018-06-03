@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.json.simple.JSONArray;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDraftPoolFakeObserver;
