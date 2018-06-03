@@ -1,11 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IGameFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class GameFakeObserver implements IGameFakeObserver {
     private IGameObserver realObserver;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private String token;
 
     private ServerNetworkProtocol serverNetworkProtocol;
@@ -29,7 +28,7 @@ public class GameFakeObserver implements IGameFakeObserver {
      * @param realObserver real game observer
      * @param observerManager observer manager of the specified game
      */
-    public GameFakeObserver(String token, IGameObserver realObserver, ObserverManager observerManager) {
+    public GameFakeObserver(String token, IGameObserver realObserver, GameObserverManager observerManager) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

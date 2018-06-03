@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.graphics.controller.LobbyController;
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;

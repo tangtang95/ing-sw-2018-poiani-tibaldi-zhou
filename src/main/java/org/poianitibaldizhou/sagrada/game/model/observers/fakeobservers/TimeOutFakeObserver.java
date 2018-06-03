@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -21,7 +21,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private static final long TIME = 60000;
 
     private Map<String, ITimeOutObserver> realObserver;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private final IGame game;
 
     private Thread timeOutThreadSetupPlayer;
@@ -36,7 +36,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      * @param observerManager observer manager for the specifid game
      * @param game game in which the timeout happens
      */
-    public TimeOutFakeObserver(Map<String, ITimeOutObserver> realObserver, ObserverManager observerManager, IGame game) {
+    public TimeOutFakeObserver(Map<String, ITimeOutObserver> realObserver, GameObserverManager observerManager, IGame game) {
         this.realObserver = realObserver;
         this.observerManager = observerManager;
         this.game = game;

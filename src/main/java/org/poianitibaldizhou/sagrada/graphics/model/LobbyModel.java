@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
 import org.poianitibaldizhou.sagrada.IView;
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class LobbyModel {
 
     public void requestGetUsers() throws IOException {
         //TODO IMPLEMENT
-        connectionManager.getLobbyController().requestUsersInLobby(token);
+        connectionManager.getLobbyController().getUsersInLobby(token);
     }
 
     public void leave() throws IOException {

@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
@@ -11,7 +11,7 @@ import java.io.IOException;
 public class PlayerFakeObserver implements IPlayerFakeObserver {
 
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private IPlayerObserver realObserver;
 
     private ServerNetworkProtocol serverNetworkProtocol;
@@ -24,7 +24,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
      * @param realObserver real player observer
      * @param observerManager observer manager of the specified game
      */
-    public PlayerFakeObserver(String token, ObserverManager observerManager, IPlayerObserver realObserver) {
+    public PlayerFakeObserver(String token, GameObserverManager observerManager, IPlayerObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
@@ -12,7 +12,7 @@ import java.io.IOException;
 public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
 
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private ISchemaCardObserver realObserver;
 
     private ServerNetworkProtocol serverNetworkProtocol;
@@ -25,7 +25,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
      * @param realObserver real schema card observer
      * @param observerManager observer manager of the specified game
      */
-    public SchemaCardFakeObserver(String token, ObserverManager observerManager, ISchemaCardObserver realObserver) {
+    public SchemaCardFakeObserver(String token, GameObserverManager observerManager, ISchemaCardObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

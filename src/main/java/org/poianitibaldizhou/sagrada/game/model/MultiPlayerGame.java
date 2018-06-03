@@ -33,7 +33,7 @@ public class MultiPlayerGame extends Game{
      * set the state to SetupPlayerState
      *
      */
-    public MultiPlayerGame(String name, List<User> users) throws RemoteException {
+    public MultiPlayerGame(String name, List<User> users)  {
         super(name);
         this.users.addAll(users);
 

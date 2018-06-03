@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.ManagerMediator;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public class GameManager {
     private Map<String, IGame> gameMap;
-    private Map<String, ObserverManager> observerManagerMap;
+    private Map<String, GameObserverManager> observerManagerMap;
 
     private Map<String, List<String>> playersByGame;
     private List<String> players;
@@ -31,7 +31,7 @@ public class GameManager {
 
     /**
      * Adds a game to the list of current gameMap, if it's not present.
-     * It also creates the ObserverManager associated with the game
+     * It also creates the GameObserverManager associated with the game
      * If the game is already present, does nothing.
      *
      * @param game game to add
@@ -40,7 +40,7 @@ public class GameManager {
     public synchronized void addGame(IGame game, String gameName) {
         if(gameMap.putIfAbsent(gameName, game) == null){
             playersByGame.put(gameName, new ArrayList<>());
-            observerManagerMap.putIfAbsent(gameName, new ObserverManager(getPlayersByGame(gameName)));
+            observerManagerMap.putIfAbsent(gameName, new GameObserverManager(getPlayersByGame(gameName)));
         }
     }
 
@@ -103,7 +103,7 @@ public class GameManager {
         return gameMap.values().stream().map(IGame::getName).anyMatch(s -> s.equals(gameName));
     }
 
-    public ObserverManager getObserverManagerByGame(String gameName) {
+    public GameObserverManager getObserverManagerByGame(String gameName) {
         return observerManagerMap.get(gameName);
     }
 
@@ -111,6 +111,4 @@ public class GameManager {
     public synchronized List<IGame> getGameMap() {
         return new ArrayList<>(gameMap.values());
     }
-
-
 }

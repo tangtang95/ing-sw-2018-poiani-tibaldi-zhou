@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -13,7 +13,7 @@ import java.util.Map;
 public class StateFakeObserver implements IStateFakeObserver {
 
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private IStateObserver realObserver;
 
     private ServerNetworkProtocol serverNetworkProtocol;
@@ -26,7 +26,7 @@ public class StateFakeObserver implements IStateFakeObserver {
      * @param realObserver real state observer
      * @param observerManager observer manager of the specified game
      */
-    public StateFakeObserver(String token, ObserverManager observerManager, IStateObserver realObserver) {
+    public StateFakeObserver(String token, GameObserverManager observerManager, IStateObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

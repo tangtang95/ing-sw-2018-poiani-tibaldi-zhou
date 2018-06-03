@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.apache.maven.settings.Server;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
@@ -13,7 +12,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
 
     private IDrawableCollectionObserver realObserver;
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
 
     private ServerNetworkProtocol serverNetworkProtocol;
 
@@ -25,7 +24,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
      * @param realObserver real drawable collection observer
      * @param observerManager observer manager of the specified game
      */
-    public DrawableCollectionFakeObserver(String token, IDrawableCollectionObserver realObserver, ObserverManager observerManager) {
+    public DrawableCollectionFakeObserver(String token, IDrawableCollectionObserver realObserver, GameObserverManager observerManager) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

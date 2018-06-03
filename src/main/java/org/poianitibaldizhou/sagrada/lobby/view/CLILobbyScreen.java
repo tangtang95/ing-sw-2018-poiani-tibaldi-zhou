@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.game.view.CLIRoundScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
@@ -77,7 +77,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         Command timeoutCommand = new Command(TIMEOUT_COMMAND, "Show time to reach timeout");
         timeoutCommand.setCommandAction(() -> {
             try {
-                connectionManager.getLobbyController().requestTimeout(token);
+                connectionManager.getLobbyController().getTimeout(token);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -88,7 +88,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         Command showUserCommand = new Command(LOBBY_USER_COMMAND, "Show users in lobby");
         showUserCommand.setCommandAction(() -> {
             try {
-                connectionManager.getLobbyController().requestUsersInLobby(token);
+                connectionManager.getLobbyController().getUsersInLobby(token);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);

@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-public class ObserverManager {
+public class GameObserverManager {
 
     private Set<String> disconnectedPlayer;
     private Set<String> disconnectedPlayerNotNotified;
@@ -22,7 +22,7 @@ public class ObserverManager {
      *
      * @param tokenList list of player's token of the intended game
      */
-    public ObserverManager(List<String> tokenList) {
+    public GameObserverManager(List<String> tokenList) {
         disconnectedPlayer = new HashSet<>();
         disconnectedPlayerNotNotified = new HashSet<>();
         executorHashMap = new HashMap<>();

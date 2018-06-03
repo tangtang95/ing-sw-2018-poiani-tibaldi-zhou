@@ -146,6 +146,11 @@ public class NetworkGetItem {
         return color;
     }
 
+    public String getUserName(String message) throws IOException {
+        // TODO
+        return "username";
+    }
+
     public String getErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);

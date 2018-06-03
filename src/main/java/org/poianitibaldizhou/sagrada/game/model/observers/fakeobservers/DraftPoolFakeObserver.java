@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDraftPoolFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
@@ -12,7 +12,7 @@ import java.util.List;
 public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     private IDraftPoolObserver realObserver;
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
 
     private ServerNetworkProtocol serverNetworkProtocol;
 
@@ -24,7 +24,7 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
      * @param realObserver real draft pool observer
      * @param observerManager observer manager of the specified game
      */
-    public DraftPoolFakeObserver(String token, IDraftPoolObserver realObserver, ObserverManager observerManager) {
+    public DraftPoolFakeObserver(String token, IDraftPoolObserver realObserver, GameObserverManager observerManager) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

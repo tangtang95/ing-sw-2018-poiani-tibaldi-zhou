@@ -1,9 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IRoundTrackFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
@@ -15,7 +13,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
 
     private IRoundTrackObserver realObserver;
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
 
     private ServerNetworkProtocol serverNetworkProtocol;
 
@@ -27,7 +25,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
      * @param realObserver real round track observer
      * @param observerManager observer manager of the specified game
      */
-    public RoundTrackFakeObserver(String token, IRoundTrackObserver realObserver, ObserverManager observerManager) {
+    public RoundTrackFakeObserver(String token, IRoundTrackObserver realObserver, GameObserverManager observerManager) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

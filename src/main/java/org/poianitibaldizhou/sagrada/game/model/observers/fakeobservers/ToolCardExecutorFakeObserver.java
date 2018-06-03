@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
@@ -17,7 +17,7 @@ import java.util.Set;
 public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserver {
 
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private IToolCardExecutorObserver realObserver;
 
     private ServerNetworkProtocol serverNetworkProtocol;
@@ -30,7 +30,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
      * @param realObserver real draft pool observer
      * @param observerManager observer manager of the specified game
      */
-    public ToolCardExecutorFakeObserver(String token, ObserverManager observerManager, IToolCardExecutorObserver realObserver) {
+    public ToolCardExecutorFakeObserver(String token, GameObserverManager observerManager, IToolCardExecutorObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;

@@ -28,9 +28,9 @@ public class ManagerMediator {
         return lobbyManager;
     }
 
-    public String createMultiPlayerGame(List<User> users) throws RemoteException {
+    public String createMultiPlayerGame(List<User> users)  {
         String gameName = UUID.randomUUID().toString();
-        IGame game= new MultiPlayerGame(gameName, users);
+        IGame game = new MultiPlayerGame(gameName, users);
         gameManager.addGame(game, gameName);
         return gameName;
     }

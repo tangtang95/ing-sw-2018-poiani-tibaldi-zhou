@@ -3,18 +3,15 @@ package org.poianitibaldizhou.sagrada.lobby;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class LobbyTest {

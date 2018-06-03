@@ -16,7 +16,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ColorEx
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.DiceExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.PositionExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ValueExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -80,7 +80,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 return;
             }
 
-            ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
             game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
             game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
             game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
@@ -563,7 +563,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
             cleanObservers(gameName);
-            ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
             IGame game = gameManager.getGameByName(gameName);
             try {
                 if (!observerManager.getDisconnectedPlayer().contains(token)) {
@@ -753,7 +753,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     private void cleanObservers(String gameName) {
         synchronized (gameManager.getGameByName(gameName)) {
-            ObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
             Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
             Set<String> disconnected = observerManager.getDisconnectedPlayer();
             List<Player> playerList = gameManager.getGameByName(gameName).getPlayers();
