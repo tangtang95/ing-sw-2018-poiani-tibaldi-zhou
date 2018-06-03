@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada;
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 
-public class ControllerManager {
+public class ControllerManager{
 
     private IGameController gameController;
     private ILobbyController lobbyController;
