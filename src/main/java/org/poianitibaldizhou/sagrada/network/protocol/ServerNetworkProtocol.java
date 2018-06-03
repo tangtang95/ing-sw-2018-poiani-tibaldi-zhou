@@ -217,8 +217,6 @@ public class ServerNetworkProtocol {
         }
         throw new IllegalArgumentException();
     }
-
-
 }
 
 

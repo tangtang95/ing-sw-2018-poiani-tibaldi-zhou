@@ -1,8 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -26,8 +24,7 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
-import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.network.protocol.NetworkGetItem;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -46,38 +43,24 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
-    private final transient ServerNetworkProtocol serverProtocol = new ServerNetworkProtocol();
+
+    private final NetworkGetItem networkGetItem;
 
     public GameController(GameManager gameManager) throws RemoteException {
         super();
         this.gameManager = gameManager;
+        this.networkGetItem = new NetworkGetItem();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void joinGame(final String json, IGameView view, IGameObserver gameObserver,
+    public void joinGame(final String message, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) {
-        // Retriving information from the json
-        final String gameName;
-        final String token;
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject;
-        // todo mattia probably this needs to be fixed with network protocol decode class
-        try {
-            jsonObject = (JSONObject) jsonParser.parse(json);
-            token = (String) jsonObject.get("token");
-            gameName = (String) jsonObject.get("gameName");
-        } catch (ParseException | ClassCastException e) {
-            try {
-                view.err("Error in communication protocol");
-            } catch (IOException ignored) {
-                // Ignored because nothing can be done
-            }
-            return;
-        }
+                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
 
         if (!gameManager.containsGame(gameName)) {
             try {
@@ -108,7 +91,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
             game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
 
-
             viewMap.put(token, view);
         }
 
@@ -123,21 +105,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void chosenSchemaCard(String json) {
-        final String token;
-        final String gameName;
-        final SchemaCard schemaCard = null;
-
-        JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject;
-        try {
-            jsonObject = (JSONObject) jsonParser.parse(json);
-            token = (String) jsonObject.get("token");
-            gameName = (String) jsonObject.get("gameName");
-            // TODO read schema card (mattia)
-        } catch (ParseException | ClassCastException e) {
-            return;
-        }
+    public void chosenSchemaCard(String json) throws IOException {
+        String token = networkGetItem.getToken(json);
+        String gameName = networkGetItem.getGameName(json);
+        SchemaCard schemaCard = networkGetItem.getSchemaCard(json);
 
         if (initialCheck(token, gameName))
             return;
@@ -180,13 +151,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void bindPlayer(String json, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) {
-        final String token = null;
-        final String gameName = null;
-        final Player player = null;
-
-        // TODO MATTIA read json
-
+    public void bindPlayer(String json, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
+        String token = networkGetItem.getToken(json);
+        String gameName = networkGetItem.getGameName(json);
+        User user = networkGetItem.getUser(json);
+        Player player = null;
 
         if (initialCheck(token, gameName))
             return;
@@ -203,6 +172,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                     // Ignored exception because nothing can be done
                 }
             }
+
+            for(Player p : game.getPlayers())
+                if(p.getUser().equals(user))
+                    player = p;
+
+            if(player == null)
+                throw new IOException();
 
             if (!game.getPlayers().contains(player)) {
                 try {
@@ -229,12 +205,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void bindToolCard(String json, IToolCardObserver toolCardObserver) {
-        final String token = null;
-        final String gameName = null;
-        final ToolCard toolCard = null;
-
-        // TODO MATTIA (read json)
+    public void bindToolCard(String message, IToolCardObserver toolCardObserver) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        ToolCard toolCard = networkGetItem.getToolCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -275,12 +249,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}x
      */
     @Override
-    public void chooseAction(String json) {
-        final String gameName = null;
-        final String token = null;
-        final IActionCommand actionCommand = null;
-
-        // TODO MATTIA read json
+    public void chooseAction(String message) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
+        IActionCommand actionCommand = networkGetItem.getActionCommand(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -320,13 +292,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void placeDice(String json) {
-        final String token = null;
-        final String gameName = null;
-        final Dice dice = null;
-        final Position position = null;
-
-        // TODO MATTIA read json
+    public void placeDice(String message) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        Dice dice = networkGetItem.getDice(message);
+        Position position = networkGetItem.getPosition(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -363,12 +333,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void useToolCard(String json, IToolCardExecutorObserver executorObserver) {
-        final String token = null;
-        final String gameName = null;
-        final ToolCard toolCard = null;
-
-        // TODO Mattia read json
+    public void useToolCard(String message, IToolCardExecutorObserver executorObserver) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        ToolCard toolCard = networkGetItem.getToolCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -402,12 +370,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void choosePrivateObjectiveCard(String json) {
-        final String token = null;
-        final String gameName = null;
-        final PrivateObjectiveCard privateObjectiveCard = null;
-
-        // TODO MATTIA read json
+    public void choosePrivateObjectiveCard(String message) throws IOException {
+        final String token = networkGetItem.getToken(message);
+        final String gameName = networkGetItem.getGameName(message);
+        final PrivateObjectiveCard privateObjectiveCard = networkGetItem.getPrivateObjectiveCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -443,18 +409,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setDice(String json) throws IOException {
-        String gameName;
-        String token;
-        Dice dice;
-
-        try {
-            gameName = (String) serverProtocol.getResponseByKey(json, SharedConstants.GAME_NAME_KEY);
-            token = (String) serverProtocol.getResponseByKey(json, SharedConstants.TOKEN_KEY);
-            dice = (Dice) serverProtocol.getResponseByKey(json, SharedConstants.DICE_KEY);
-        } catch (ParseException e) {
-            throw new IOException();
-        }
+    public void setDice(String message) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
+        Dice dice = networkGetItem.getDice(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -488,12 +446,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setNewValue(String json) {
-        final String token = null;
-        final String gameName = null;
-        final Integer value = null;
-
-        // TODO mattia ready json
+    public void setNewValue(String message) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        Integer value = networkGetItem.getInteger(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -527,10 +483,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setColor(String json) {
-        final String token = null;
-        final String gameName = null;
-        final Color color = null;
+    public void setColor(String message) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        Color color = networkGetItem.getColor(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -564,12 +520,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void setPosition(String json) {
-        final String token = null;
-        final String gameName = null;
-        final Position position = null;
-
-        // TODO mattia ready json
+    public void setPosition(String message) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
+        Position position = networkGetItem.getPosition(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -603,14 +557,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void reconnect(String json, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
+    public void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                           Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                           IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
-                                  diceBagObserver) {
-        final String token = null;
-        final String gameName = null;
-
-        // TODO mattia read json
+                                  diceBagObserver) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
 
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
@@ -668,10 +620,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getToolCards(String json) {
-        final String token = null;
-        final String gameName = null;
-        // TODO MATTIA ready json
+    public String getToolCards(String message) throws IOException {
+        String token = networkGetItem.getToken(message);
+        String gameName = networkGetItem.getGameName(message);
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
@@ -694,11 +645,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getDraftPool(String json) {
-        final String gameName = null;
-        final String token = null;
-
-        // Todo mattia read json
+    public String getDraftPool(String message) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
@@ -721,11 +670,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getRoundTrack(String json) {
-        final String gameName = null;
-        final String token = null;
-
-        // Todo mattia read json
+    public String getRoundTrack(String message) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
@@ -746,13 +693,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getToolCardByName(String json) {
-        final String gameName = null;
-        final String token = null;
-        final String toolCardName = null;
-
-        // Todo mattia read json
-
+    public String getToolCardByName(String message) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
+        String toolCardName = networkGetItem.getToolCard(message).getName();
 
         Map<String, String> jsonError = new HashMap<>();
 
@@ -781,11 +725,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getCurrentPlayer(String json) {
-        final String gameName = null;
-        final String token = null;
-
-        // Todo mattia read json
+    public String getCurrentPlayer(String message) throws IOException {
+        String gameName = networkGetItem.getGameName(message);
+        String token = networkGetItem.getToken(message);
 
         Map<String, String> jsonError = new HashMap<>();
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
