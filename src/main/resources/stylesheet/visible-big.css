@@ -19,3 +19,12 @@
     -fx-background-radius: 3em;
     -fx-background-insets: 2em;
 }
+
+.negative-button{
+    -fx-background-color: white;
+}
+
+.positive-button{
+    //TODO fix color
+    -fx-background-color: blue;
+}

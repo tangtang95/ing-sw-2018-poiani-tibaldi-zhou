@@ -5,23 +5,27 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import org.poianitibaldizhou.sagrada.graphics.model.ConnectionModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.IPAddressValidator;
 import org.poianitibaldizhou.sagrada.graphics.utils.UsernameValidator;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class StartMenuController extends Controller implements Initializable {
 
@@ -72,6 +76,7 @@ public class StartMenuController extends Controller implements Initializable {
     public JFXRadioButton radioButtonSocket;
 
     private ToggleGroup connectionToggleGroup;
+
     private ConnectionModel connectionModel;
 
     @Override
@@ -97,6 +102,16 @@ public class StartMenuController extends Controller implements Initializable {
         connectionToggleGroup = new ToggleGroup();
         radioButtonRMI.setToggleGroup(connectionToggleGroup);
         radioButtonSocket.setToggleGroup(connectionToggleGroup);
+        radioButtonRMI.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue && portTextField.getText().equals(String.valueOf(ConnectionType.SOCKET.getPort()))){
+                portTextField.setText(String.valueOf(ConnectionType.RMI.getPort()));
+            }
+        });
+        radioButtonSocket.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue && portTextField.getText().equals(String.valueOf(ConnectionType.RMI.getPort()))){
+                portTextField.setText(String.valueOf(ConnectionType.SOCKET.getPort()));
+            }
+        });
 
         NumberValidator numberValidator = new NumberValidator();
         numberValidator.setMessage("Solo numeri");
@@ -156,31 +171,50 @@ public class StartMenuController extends Controller implements Initializable {
         playSceneTransition(rootPane, (event) -> stage.close());
     }
 
+    @FXML
     public void onMultiPlayerCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
         usernameTextField.setText("");
     }
 
+    @FXML
     public void onMultiPlayerPlayButton(ActionEvent actionEvent) {
         if(usernameTextField.validate()){
 
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/lobby.fxml"));
+
+            try {
+                Parent root = loader.load();
+                LobbyController controller = loader.getController();
+                controller.setStage(stage);
+                ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
+                        connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                controller.setConnectionManager(usernameTextField.getText(), connectionManager);
+                switchScene(root);
+            } catch (IOException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+            }
         }
     }
 
+    @FXML
     public void onSinglePlayerCloseButton(ActionEvent actionEvent) {
         difficultyToggleGroup.selectToggle(radioButtonMedium);
         closeEveryPane();
     }
 
+    @FXML
     public void onSinglePlayerPlayButton(ActionEvent actionEvent) {
 
     }
 
+    @FXML
     public void onConnectionCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
         updateConnectionPaneView();
     }
 
+    @FXML
     public void onConnectionApplyButton(ActionEvent actionEvent) {
         if(ipTextField.validate() && portTextField.validate()) {
             connectionModel.setIpAddress(ipTextField.getText());
@@ -199,15 +233,9 @@ public class StartMenuController extends Controller implements Initializable {
         connectionToggleGroup.selectToggle(selectedRadioButton);
     }
 
-    private void switchScene(Parent rootPane) {
-        Scene scene = new Scene(rootPane, stage.getWidth(), stage.getHeight());
-        stage.setScene(scene);
-    }
-
     private void closeEveryPane(){
         connectionPane.setVisible(false);
         singlePlayerPane.setVisible(false);
         multiPlayerPane.setVisible(false);
-
     }
 }

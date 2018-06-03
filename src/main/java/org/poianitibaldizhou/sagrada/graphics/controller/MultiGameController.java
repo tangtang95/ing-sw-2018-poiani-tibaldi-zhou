@@ -20,7 +20,6 @@ import java.util.ResourceBundle;
 
 public class MultiGameController extends Controller implements Initializable {
 
-
     @FXML
     public Pane canvasPane;
 

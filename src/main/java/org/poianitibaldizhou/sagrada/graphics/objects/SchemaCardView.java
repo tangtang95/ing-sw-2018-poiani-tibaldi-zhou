@@ -2,9 +2,9 @@ package org.poianitibaldizhou.sagrada.graphics.objects;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.graphics.utils.TextureJSONParser;
 
 import java.io.IOException;
 import java.util.logging.Level;
