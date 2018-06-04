@@ -77,14 +77,15 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     }
 
     @Override
-    public void onUserJoin(User user) throws IOException {
+    public void onUserJoin(String message) throws IOException {
         clearGrid();
         List<String> users = controller.getUsers();
         users.forEach(this::addUser);
     }
 
     @Override
-    public void onUserExit(User user) throws IOException {
+    public void onUserExit(String message) throws IOException {
+        User user = new User("dsad", "dasd");
         if(!user.getName().equals(controller.getMyUsername())) {
             clearGrid();
             List<String> users = controller.getUsers();
@@ -93,7 +94,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     }
 
     @Override
-    public void onGameStart(String gameName) throws IOException {
+    public void onGameStart(String message) throws IOException {
 
     }
 

@@ -19,7 +19,7 @@ public class LobbyModel {
 
     public void login(IView view, ILobbyObserver observer) throws IOException {
         token = connectionManager.getLobbyController().login(username, view);
-        connectionManager.getLobbyController().join(token, username, observer);
+        connectionManager.getLobbyController().join(/*TO FIX, need json message*/token, observer);
     }
 
     public String getUsername() {
@@ -32,11 +32,11 @@ public class LobbyModel {
 
     public void requestGetUsers() throws IOException {
         //TODO IMPLEMENT
-        connectionManager.getLobbyController().getUsersInLobby(token);
+        connectionManager.getLobbyController().getUsersInLobby();
     }
 
     public void leave() throws IOException {
-        connectionManager.getLobbyController().leave(token, username);
+        connectionManager.getLobbyController().leave(/*TO FIX, need json message*/token);
         connectionManager.close();
     }
 }
