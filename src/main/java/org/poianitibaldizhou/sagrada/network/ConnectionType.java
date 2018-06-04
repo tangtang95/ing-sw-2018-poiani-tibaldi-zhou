@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network;
 
+
 import org.poianitibaldizhou.sagrada.ServerApp;
 
 public enum ConnectionType {

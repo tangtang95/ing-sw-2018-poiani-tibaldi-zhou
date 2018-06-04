@@ -1,4 +1,8 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
-public class DiceWrapper {
+import jdk.nashorn.internal.ir.annotations.Immutable;
+
+@Immutable
+public final class DiceWrapper {
+
 }

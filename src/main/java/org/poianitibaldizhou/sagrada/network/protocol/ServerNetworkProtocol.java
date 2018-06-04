@@ -147,8 +147,13 @@ public class ServerNetworkProtocol {
     }
 
     public String getUserName(String message) throws IOException {
-        // TODO
-        return "username";
+        String username;
+        try {
+            username = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+        } catch (ParseException e) {
+            throw new IOException();
+        }
+        return username;
     }
 
     public String getErrorMessage() {
