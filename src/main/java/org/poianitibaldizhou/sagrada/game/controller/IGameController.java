@@ -19,7 +19,7 @@ public interface IGameController extends Remote {
     /**
      * Notifies that a player has joined the game.
      *
-     * @param message               player's message that contains his token and the gameName
+     * @param message            player's message that contains his token and the gameName
      * @param view               player's view
      * @param gameObserver       player's game observer
      * @param roundTrackObserver player's round track observer
@@ -45,7 +45,7 @@ public interface IGameController extends Remote {
      * Binds the player  and che schema card observers of a certain player to the specified player and its schema card.
      * The player identified by token must be part of the specified game.
      *
-     * @param message               message containing player's token, player that needs to be bind and
+     * @param message            message containing player's token, player that needs to be bind and
      * @param playerObserver     player's observer
      * @param schemaCardObserver schema card observer of the schema card of player
      * @throws IOException network communication error
@@ -57,7 +57,7 @@ public interface IGameController extends Remote {
      * Binds the tool card observer of a certain player to the specified tool card.
      * Player must be part of the specified game.
      *
-     * @param message             message containing player's token, game's name and toolcard that need to be binded
+     * @param message          message containing player's token, game's name and toolcard that need to be binded
      * @param toolCardObserver player's tool card observer
      * @throws IOException network communication error
      */
@@ -86,7 +86,7 @@ public interface IGameController extends Remote {
      * The players must be part of the specified game.
      *
      * @param executorObserver player's observer for tool card execution
-     * @param message             message containing player's token, game's name and tool card that the player wants to use
+     * @param message          message containing player's token, game's name and tool card that the player wants to use
      * @throws IOException network communication error
      */
     void useToolCard(String message, IToolCardExecutorObserver executorObserver) throws IOException;
@@ -96,7 +96,7 @@ public interface IGameController extends Remote {
      * The player must be part of the specified game.
      *
      * @param message message containing player's token, game's name and private objective card chosen by the
-     *             player
+     *                player
      * @throws IOException network communication error
      */
     void choosePrivateObjectiveCard(String message) throws IOException;
@@ -138,7 +138,7 @@ public interface IGameController extends Remote {
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
-     * @param message               message containing player's token and game's name
+     * @param message            message containing player's token and game's name
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)

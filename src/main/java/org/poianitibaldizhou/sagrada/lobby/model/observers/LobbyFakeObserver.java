@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.lobby.model.observers;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
@@ -12,14 +13,14 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     private LobbyObserverManager observerManager;
     private ILobbyObserver realObserver;
 
-    private JSONServerProtocol serverNetworkProtocol;
+    private ServerCreateMessage serverCreateMessage;
 
     public LobbyFakeObserver(String token, ILobbyObserver realObserver, LobbyObserverManager observerManager) {
         this.token = token;
         this.realObserver = realObserver;
         this.observerManager = observerManager;
 
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -29,7 +30,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onUserJoin(User user) {
         Runnable runnable = () -> {
             try {
-                realObserver.onUserJoin(serverNetworkProtocol.appendMessage(user));
+                realObserver.onUserJoin(serverCreateMessage.createUserMessage(user).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -45,7 +46,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onUserExit(User user) {
         Runnable runnable = () -> {
             try {
-                realObserver.onUserExit(serverNetworkProtocol.appendMessage(user));
+                realObserver.onUserExit(serverCreateMessage.createUserMessage(user).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -61,7 +62,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onGameStart(String gameName) {
         Runnable runnable = () -> {
             try {
-                realObserver.onGameStart(serverNetworkProtocol.appendMessage(gameName));
+                realObserver.onGameStart(serverCreateMessage.createGamenNameMessage(gameName).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

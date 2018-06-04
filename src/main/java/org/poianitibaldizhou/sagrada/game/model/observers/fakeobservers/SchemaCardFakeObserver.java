@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     private GameObserverManager observerManager;
     private ISchemaCardObserver realObserver;
 
-    private JSONServerProtocol serverNetworkProtocol;
+    private ServerCreateMessage serverCreateMessage;
 
     /**
      * Creates a fake observer of the schema card used to manage the asynchronous call made to various client
@@ -30,7 +31,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -40,7 +41,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onPlaceDice(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onPlaceDice(serverNetworkProtocol.appendMessage(dice, position));
+                realObserver.onPlaceDice(serverCreateMessage.createDiceMessage(dice).createPositionMessage(position).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -56,7 +57,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onDiceRemove(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceRemove(serverNetworkProtocol.appendMessage(dice, position));
+                realObserver.onDiceRemove(serverCreateMessage.createDiceMessage(dice).createPositionMessage(position).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

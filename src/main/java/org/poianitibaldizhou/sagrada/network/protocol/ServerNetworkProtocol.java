@@ -147,13 +147,19 @@ public class ServerNetworkProtocol {
     }
 
     public String getUserName(String message) throws IOException {
-        // TODO
-        return "username";
+        String username;
+        try {
+            username = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+        } catch (ParseException e) {
+            throw new IOException();
+        }
+        return username;
     }
 
     public String getErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
-        return serverNetworkProtocol.mapToJSONString(error);
+        //TODO RICCARDO
+        return null;
     }
 }

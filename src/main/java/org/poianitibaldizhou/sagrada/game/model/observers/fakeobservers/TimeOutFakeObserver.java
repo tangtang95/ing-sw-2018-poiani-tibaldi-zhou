@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOut
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 import java.util.Map;
@@ -27,7 +28,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private Thread timeOutThreadSetupPlayer;
     private Thread timeOutThreadTurnState;
 
-    private JSONServerProtocol serverNetworkProtocol;
+    private ServerCreateMessage serverCreateMessage;
 
     /**
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
@@ -41,7 +42,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         this.observerManager = observerManager;
         this.game = game;
 
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -72,7 +73,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
                     Runnable notify = () -> realObserver.forEach((token, obs) -> {
                         try {
-                            obs.onTimeOut(serverNetworkProtocol.appendMessage(turnUser));
+                            obs.onTimeOut(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
                         } catch (IOException e) {
                             observerManager.notifyDisconnection(token);
                         }

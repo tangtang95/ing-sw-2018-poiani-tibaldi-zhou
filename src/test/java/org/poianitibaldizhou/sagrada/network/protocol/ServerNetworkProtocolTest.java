@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-public class ProtocolTest {
+public class ServerNetworkProtocolTest {
 
     @DataPoint
     public static List<Dice> diceList;
@@ -35,12 +35,13 @@ public class ProtocolTest {
     @BeforeClass
     public static void setUpClass() {
         diceList = new ArrayList<>();
-        serverNetworkProtocol = new JSONServerProtocol();
         diceMap = new HashMap<>();
     }
 
     @Before
     public void setUp() {
+        serverNetworkProtocol = new JSONServerProtocol();
+
         diceList.add(new Dice(1, Color.BLUE));
         diceList.add(new Dice(2, Color.GREEN));
         diceList.add(new Dice(3, Color.BLUE));
@@ -55,12 +56,12 @@ public class ProtocolTest {
         IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                matrix[i][j]= new ColorConstraint(Color.YELLOW);
+                matrix[i][j] = new ColorConstraint(Color.YELLOW);
             }
         }
         schemaCard = new SchemaCard("TestToolCard", 100, matrix);
         try {
-            schemaCard.setDice(new Dice(4,Color.YELLOW),0,0);
+            schemaCard.setDice(new Dice(4, Color.YELLOW), 0, 0);
         } catch (RuleViolationException e) {
             e.printStackTrace();
         }
@@ -68,12 +69,22 @@ public class ProtocolTest {
     }
 
     @Test
-    public void test() {
+    public void testDiceMessage() {
         String message = "{\"test\":{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":3}}}";
-        assertEquals(message,serverNetworkProtocol.appendMessage( "test",new Dice(3, Color.YELLOW)));
-        String message1 = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
+        serverNetworkProtocol.appendMessage("test", new Dice(3, Color.YELLOW));
+        assertEquals(message, serverNetworkProtocol.buildMessage());
+    }
+
+    @Test
+    public void testMixedMessage() {
+        String message = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
                 "\"3\":{\"type\":\"integer\",\"body\":\"45\"},\"4\":{\"type\":\"integer\",\"body\":\"78\"}}";
-        assertEquals(message1,serverNetworkProtocol.appendMessage("1","2","3", "4", "ciao", "antonio", 45, 78));
+        serverNetworkProtocol.appendMessage("1", "2", "3", "4", "ciao", "antonio", 45, 78);
+        assertEquals(message, serverNetworkProtocol.buildMessage());
+    }
+
+    @Test
+    public void testMixedMessage2() {
         String message2 = "{\"map\":{\"type\":\"map\",\"body\":" +
                 "{\"{\\\"type\\\":\\\"string\\\",\\\"body\\\":\\\"1\\\"}\":\"{\\\"type\\\":\\\"dice\\\"," +
                 "\\\"body\\\":{\\\"color\\\":\\\"BLUE\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
@@ -82,30 +93,7 @@ public class ProtocolTest {
                 "\\\"body\\\":{\\\"color\\\":\\\"YELLOW\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
                 "\\\"body\\\":\\\"6\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"PURPLE\\\"," +
                 "\\\"value\\\":1}}\"}}}";
-        assertEquals(message2,serverNetworkProtocol.appendMessage("map",diceMap));
-    }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void test2() {
-        String message = serverNetworkProtocol.appendMessage("1", "2", "3",diceList, diceMap, schemaCard);
-        try {
-            assertEquals(diceList,serverNetworkProtocol.getResponseByKey(message,"1"));
-            assertEquals(diceMap,serverNetworkProtocol.getResponseByKey(message,"2"));
-            assertEquals(schemaCard,serverNetworkProtocol.getResponseByKey(message,"3"));
-        } catch (ParseException e) {
-            fail("PARSING ERROR");
-        }
-
-        JSONClientProtocol clientNetworkProtocol = new JSONClientProtocol();
-        String send = serverNetworkProtocol.appendMessage("1", "2", "3",diceList, diceMap, schemaCard);
-        try {
-            List<JSONObject> listOfDice = (List<JSONObject>) clientNetworkProtocol.getResponseByKey(send,"1");
-            String response = clientNetworkProtocol.appendMessage("1", listOfDice);
-            assertEquals(diceList,serverNetworkProtocol.getResponseByKey(response,"1"));
-        } catch (ParseException e) {
-            fail("PARSING ERROR");
-        }
-
+        assertEquals(message2, serverNetworkProtocol.buildMessage());
     }
 }

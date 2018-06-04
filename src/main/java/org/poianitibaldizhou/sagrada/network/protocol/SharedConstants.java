@@ -5,6 +5,8 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
+
+
     private SharedConstants() { }
 
     /**
@@ -33,15 +35,31 @@ public class SharedConstants {
     public static final String PLAYER = "player";
     public static final String USER = "user";
     public static final String COMMAND_FLOW = "commandFlow";
+    public static final String ELEM = "elem";
+    public static final String OUTCOME = "outcome";
+    public static final String OLD_DICE = "oldDice";
+    public static final String NEW_DICE = "newDice";
+    public static final String ROUND_USER = "roundUser";
+    public static final String TURN_USER = "turnUser";
+    public static final String BOOLEAN = "boolean";
+    public static final String VICTORY_POINT_MAP = "victoryPointMap";
+    public static final String COLOR_LIST_KEY = "colorListKey";
+    public static final String DICE_VALUE = "diceValue";
     public static final String FRONT_BACK_SCHEMA_CARD = "frontBackSchemaCard";
 
     /**
      * Key protocol communication
      */
-    public static final String GAME_NAME_KEY = "GameNameKey";
-    public static final String TOKEN_KEY = "TokenKey";
-    public static final String DICE_LIST_KEY = "DiceListKey";
-    public static final String DICE_KEY = "DiceKey";
+    public static final String GAME_NAME_KEY = "gameNameKey";
+    public static final String TOKEN_KEY = "tokenKey";
+    public static final String DICE_LIST_KEY = "diceListKey";
+    public static final String ELEM_LIST_KEY = "elemListKey";
+    public static final String USER_LIST_KEY = "userListKey";
+    public static final String PUBLIC_OBJECTIVE_CARD_LIST_KEY = "publicObjectiveCardListKey";
+    public static final String TOOL_CARD_LIST_KEY = "toolCardList";
+    public static final String PRIVATE_OBJECTIVE_CARD_LIST_KEY = "privateObjectiveCardListKey";
+    public static final String FRONT_CARD_LIST_KEY = "frontBackSchemaCardListKey";
+    public static final String USER_NAME_STRING = "usernameKey";
 
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";

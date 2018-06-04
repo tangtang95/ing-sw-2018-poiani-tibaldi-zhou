@@ -18,7 +18,6 @@ public class User implements Serializable, JSONable {
      * User param for network protocol.
      */
     private static final String JSON_USER_NAME = "userName";
-    private static final String JSON_TOKEN = "token";
 
     /**
      * Constructor.
@@ -30,6 +29,16 @@ public class User implements Serializable, JSONable {
     public User(String name, String token) {
         this.name = name;
         this.token = token;
+    }
+
+    /**
+     * Constructor.
+     * Creates a new User with a certain name and token.
+     *
+     * @param name User's name
+     */
+    public User(String name) {
+        this.name = name;
     }
 
     @Contract(pure = true)
@@ -71,7 +80,6 @@ public class User implements Serializable, JSONable {
         JSONObject main = new JSONObject();
         JSONObject jsonObject = new JSONObject();
         jsonObject.putIfAbsent(JSON_USER_NAME, this.getName());
-        jsonObject.putIfAbsent(JSON_TOKEN, this.getToken());
         main.put(SharedConstants.TYPE, SharedConstants.USER);
         main.put(SharedConstants.BODY,jsonObject);
         return main;
@@ -85,8 +93,7 @@ public class User implements Serializable, JSONable {
      */
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return new User(jsonObject.get(JSON_USER_NAME).toString(),
-                jsonObject.get(JSON_TOKEN).toString());
+        return new User(jsonObject.get(JSON_USER_NAME).toString());
     }
 
     /**

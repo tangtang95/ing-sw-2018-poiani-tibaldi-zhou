@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
@@ -14,7 +15,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     private GameObserverManager observerManager;
     private IPlayerObserver realObserver;
 
-    private JSONServerProtocol serverNetworkProtocol;
+    private ServerCreateMessage serverCreateMessage;
 
     /**
      * Creates a fake observer of the player used to manage the asynchronous call made to various client
@@ -29,7 +30,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -39,7 +40,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     public void onFavorTokenChange(int value)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onFavorTokenChange(serverNetworkProtocol.appendMessage(value));
+                realObserver.onFavorTokenChange(serverCreateMessage.createMessageValue(value).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -55,7 +56,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     public void onSetOutcome(Outcome outcome)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onSetOutcome(serverNetworkProtocol.appendMessage(outcome));
+                realObserver.onSetOutcome(serverCreateMessage.createOutcomeMessage(outcome).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
