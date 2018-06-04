@@ -5,7 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.ManagerMediator;
+import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 
@@ -18,7 +18,7 @@ public class LobbyManagerTest {
     private LobbyManager lobbyManager;
 
     @Mock
-    private ManagerMediator managerMediator;
+    private MediatorManager managerMediator;
 
     @Mock
     private ILobbyObserver lobbyObserver1, lobbyObserver2, lobbyObserver3,
