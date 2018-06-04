@@ -151,4 +151,9 @@ public class ServerCreateMessage {
         jsonServerProtocol.appendMessage(SharedConstants.COMMAND_FLOW, commandFlow);
         return this;
     }
+
+    public ServerCreateMessage createGamenNameMessage(String gameName) {
+        jsonServerProtocol.appendMessage(SharedConstants.GAME_NAME_KEY, gameName);
+        return this;
+    }
 }
