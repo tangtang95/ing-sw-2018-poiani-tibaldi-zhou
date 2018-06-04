@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
@@ -53,6 +54,7 @@ public class ServerNetworkProtocol {
         classMap.put(SharedConstants.SCHEMA_CARD, SchemaCard.class);
         classMap.put(SharedConstants.COLOR, Color.class);
         classMap.put(SharedConstants.COMMAND_FLOW, CommandFlow.class);
+        classMap.put(SharedConstants.FRONT_BACK_SCHEMA_CARD, FrontBackSchemaCard.class);
     }
 
     /**

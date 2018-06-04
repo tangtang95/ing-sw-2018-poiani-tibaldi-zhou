@@ -33,6 +33,7 @@ public class SharedConstants {
     public static final String PLAYER = "player";
     public static final String USER = "user";
     public static final String COMMAND_FLOW = "commandFlow";
+    public static final String FRONT_BACK_SCHEMA_CARD = "frontBackSchemaCard";
 
     /**
      * Key protocol communication
