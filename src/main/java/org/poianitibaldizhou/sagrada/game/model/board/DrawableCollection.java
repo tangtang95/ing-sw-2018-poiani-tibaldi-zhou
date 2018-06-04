@@ -10,7 +10,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class DrawableCollection<T extends JSONable> implements Serializable{
-    private final List<T> collection;
+    private final transient List<T> collection;
     private final transient Map<String, IDrawableCollectionFakeObserver<T>> observerMap;
 
     /**

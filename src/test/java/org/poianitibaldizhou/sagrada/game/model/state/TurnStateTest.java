@@ -112,7 +112,7 @@ public class TurnStateTest {
         /*TurnState turnState = new TurnState(game, 0, player1, player1, true);
         turnState.init();
         turnState.chooseAction(player1, new UseCardAction());
-        ToolCard card = new ToolCard(Color.BLUE,"name", "description",
+        ToolCard card = new ToolCard(ColorWrapper.BLUE,"name", "description",
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         when(player1.isCardUsable(card)).thenReturn(true);
         when(game.getPreCommands(card)).thenReturn(new Node<>(new ClearAll()));

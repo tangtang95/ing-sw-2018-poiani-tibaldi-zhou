@@ -5,10 +5,10 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import java.io.IOException;
 import java.util.List;
 
-public class ClientNetworkProtocol {
+public class ClientGetMessage {
     private JSONClientProtocol jsonClientProtocol;
 
-    public ClientNetworkProtocol() {
+    public ClientGetMessage() {
         jsonClientProtocol = new JSONClientProtocol();
     }
 

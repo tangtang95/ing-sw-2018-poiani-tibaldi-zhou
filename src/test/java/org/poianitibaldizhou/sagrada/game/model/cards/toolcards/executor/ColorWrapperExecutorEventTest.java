@@ -13,7 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import static org.junit.Assert.*;
 
-public class ColorExecutorEventTest {
+public class ColorWrapperExecutorEventTest {
 
     @Mock
     private Game game;

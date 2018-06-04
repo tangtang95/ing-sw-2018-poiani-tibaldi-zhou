@@ -25,7 +25,7 @@ public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
     /**
      * Returns the score obtained by a SchemaCard following the rule implied by DiagonalPublicObjectiveCard.
      * Basically, for each dice inside the schemaCard which has at least one diagonal adjacent dice with the same
-     * color (if ObjectiveCardType is Color type) the score increase by cardPoints
+     * color (if ObjectiveCardType is ColorWrapper type) the score increase by cardPoints
      *
      * @param schema SchemaCard on which DiagonalPublicObjectiveCard rules needs to be applied
      * @return score obtained
@@ -44,7 +44,7 @@ public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
     }
 
     /**
-     * Return the number of similar dice (i.e. if ObjectiveCardType is Color type then a similar dice is a dice
+     * Return the number of similar dice (i.e. if ObjectiveCardType is ColorWrapper type then a similar dice is a dice
      * with the same color) diagonally adjacent
      *
      *

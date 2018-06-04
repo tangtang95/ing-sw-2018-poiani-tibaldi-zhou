@@ -56,12 +56,12 @@ public class ServerNetworkProtocolTest {
         IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                matrix[i][j]= new ColorConstraint(Color.YELLOW);
+                matrix[i][j] = new ColorConstraint(Color.YELLOW);
             }
         }
         schemaCard = new SchemaCard("TestToolCard", 100, matrix);
         try {
-            schemaCard.setDice(new Dice(4,Color.YELLOW),0,0);
+            schemaCard.setDice(new Dice(4, Color.YELLOW), 0, 0);
         } catch (RuleViolationException e) {
             e.printStackTrace();
         }
@@ -71,7 +71,7 @@ public class ServerNetworkProtocolTest {
     @Test
     public void testDiceMessage() {
         String message = "{\"test\":{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":3}}}";
-        serverNetworkProtocol.appendMessage( "test",new Dice(3, Color.YELLOW));
+        serverNetworkProtocol.appendMessage("test", new Dice(3, Color.YELLOW));
         assertEquals(message, serverNetworkProtocol.buildMessage());
     }
 
@@ -79,8 +79,8 @@ public class ServerNetworkProtocolTest {
     public void testMixedMessage() {
         String message = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
                 "\"3\":{\"type\":\"integer\",\"body\":\"45\"},\"4\":{\"type\":\"integer\",\"body\":\"78\"}}";
-        serverNetworkProtocol.appendMessage("1","2","3", "4", "ciao", "antonio", 45, 78);
-        assertEquals(message,serverNetworkProtocol.buildMessage());
+        serverNetworkProtocol.appendMessage("1", "2", "3", "4", "ciao", "antonio", 45, 78);
+        assertEquals(message, serverNetworkProtocol.buildMessage());
     }
 
     @Test
@@ -93,7 +93,7 @@ public class ServerNetworkProtocolTest {
                 "\\\"body\\\":{\\\"color\\\":\\\"YELLOW\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
                 "\\\"body\\\":\\\"6\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"PURPLE\\\"," +
                 "\\\"value\\\":1}}\"}}}";
-        serverNetworkProtocol.appendMessage("map",diceMap);
+
         assertEquals(message2, serverNetworkProtocol.buildMessage());
     }
 }

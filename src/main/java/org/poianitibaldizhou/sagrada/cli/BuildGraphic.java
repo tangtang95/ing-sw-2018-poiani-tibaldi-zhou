@@ -164,7 +164,7 @@ public class BuildGraphic {
                     JSONObject toolCard = (JSONObject) jsonArray.get(i);
                     stringBuilder.append("[").append(i).append("]\n");
                     stringBuilder.append(NAME).append((String) toolCard.get(JSON_CARD_NAME)).append("\n");
-                    stringBuilder.append("Color:     ").append((String) toolCard.get("color")).append("\n");
+                    stringBuilder.append("ColorWrapper:     ").append((String) toolCard.get("color")).append("\n");
                     stringBuilder.append(DESCRIPTION);
                     stringBuilder.append((String) toolCard.get(JSON_CARD_DESCRIPTION)).append("\n\n");
                 }
