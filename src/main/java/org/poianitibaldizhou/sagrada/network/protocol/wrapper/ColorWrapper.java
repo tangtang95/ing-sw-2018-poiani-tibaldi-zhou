@@ -36,6 +36,6 @@ public enum ColorWrapper implements JSONable{
 
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return ColorWrapper.valueOf(jsonObject.toString());
+        return ColorWrapper.valueOf(jsonObject.get(SharedConstants.BODY).toString());
     }
 }

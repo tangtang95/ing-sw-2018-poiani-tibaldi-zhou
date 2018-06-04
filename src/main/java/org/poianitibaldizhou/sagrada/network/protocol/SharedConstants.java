@@ -5,8 +5,6 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
-
-
     private SharedConstants() { }
 
     /**
@@ -32,7 +30,6 @@ public class SharedConstants {
     public static final String DRAFT_POOL = "draftPool";
     public static final String ROUND_TRACK = "roundTrack";
     public static final String POSITION = "position";
-    public static final String PLAYER = "player";
     public static final String USER = "user";
     public static final String COMMAND_FLOW = "commandFlow";
     public static final String ELEM = "elem";

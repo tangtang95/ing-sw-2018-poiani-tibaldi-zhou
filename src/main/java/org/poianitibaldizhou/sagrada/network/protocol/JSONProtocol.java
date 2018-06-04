@@ -16,7 +16,7 @@ public class JSONProtocol {
     private final Map<String, Class> classMap;
     private final JSONObject packet = new JSONObject();
 
-    public JSONProtocol(Map<String, Class> classMap) {
+    JSONProtocol(Map<String, Class> classMap) {
         this.classMap = classMap;
     }
 
@@ -164,9 +164,12 @@ public class JSONProtocol {
         Class[] interfaces = classMap.get(className).getInterfaces();
         Boolean isConvertible = false;
 
-        for (Class c : interfaces)
-            if (c.isAssignableFrom(JSONable.class.getClass()))
+        for (Class c : interfaces) {
+            if (JSONable.class.isAssignableFrom(c)){
                 isConvertible = true;
+                break;
+            }
+        }
         if (isConvertible) {
             try {
                 Method method = classMap.get(className).getDeclaredMethod("toObject", JSONObject.class);

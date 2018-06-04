@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
 @Immutable
 public final class UserWrapper implements JSONable{
 
@@ -57,5 +59,19 @@ public final class UserWrapper implements JSONable{
     @SuppressWarnings("unused")
     private UserWrapper(){
         this.username = null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserWrapper)) return false;
+        UserWrapper that = (UserWrapper) o;
+        return getUsername().equals(that.getUsername());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getUsername());
     }
 }

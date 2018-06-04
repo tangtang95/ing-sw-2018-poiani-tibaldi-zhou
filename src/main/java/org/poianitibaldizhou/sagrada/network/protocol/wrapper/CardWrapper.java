@@ -6,6 +6,13 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable
 @Immutable
 public abstract class CardWrapper implements JSONable{
 
+    /**
+     * Card param for network protocol.
+     */
+    protected static final String JSON_NAME = "name";
+    protected static final String JSON_DESCRIPTION = "description";
+    protected static final String JSON_COLOR = "color";
+
     protected String name;
     protected String description;
 

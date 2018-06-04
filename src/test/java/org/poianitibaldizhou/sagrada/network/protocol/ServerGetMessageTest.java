@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,7 +11,10 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +22,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class ServerNetworkProtocolTest {
+public class ServerGetMessageTest {
 
     @DataPoint
     public static List<Dice> diceList;
@@ -95,5 +99,29 @@ public class ServerNetworkProtocolTest {
                 "\\\"value\\\":1}}\"}}}";
 
         assertEquals(message2, serverNetworkProtocol.buildMessage());
+    }
+
+    @Test
+    public void testP() {
+        JSONClientProtocol jsonClientProtocol = new JSONClientProtocol();
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
+        ServerGetMessage serverGetMessage = new ServerGetMessage();
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        UserWrapper user = new UserWrapper("riccardo");
+
+        jsonClientProtocol.appendMessage("user", user);
+        String message = jsonClientProtocol.buildMessage();
+        try {
+            User response = serverGetMessage.getUser(message);
+            String send = serverCreateMessage.createUserMessage(response).buildMessage();
+
+            assertEquals(user,jsonClientProtocol.getResponseByKey(send,"user"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

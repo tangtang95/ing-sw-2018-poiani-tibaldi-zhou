@@ -14,10 +14,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServerNetworkProtocol {
+public class ServerGetMessage {
     private JSONServerProtocol serverNetworkProtocol;
 
-    public ServerNetworkProtocol() {
+    public ServerGetMessage() {
         serverNetworkProtocol = new JSONServerProtocol();
     }
 

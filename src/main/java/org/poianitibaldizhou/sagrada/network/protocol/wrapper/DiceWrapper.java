@@ -1,13 +1,15 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+@Immutable
 public class DiceWrapper implements JSONable{
 
     /**
-     * Dice param for network protocol.
+     * DiceWrapper param for network protocol.
      */
     private static final String JSON_VALUE = "value";
     private static final String JSON_COLOR = "color";

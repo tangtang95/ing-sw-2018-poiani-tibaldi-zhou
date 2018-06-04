@@ -23,7 +23,7 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -40,12 +40,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
 
-    private final ServerNetworkProtocol networkGetItem;
+    private final ServerGetMessage networkGetItem;
 
     public GameController(GameManager gameManager) throws RemoteException {
         super();
         this.gameManager = gameManager;
-        this.networkGetItem = new ServerNetworkProtocol();
+        this.networkGetItem = new ServerGetMessage();
     }
 
     /**

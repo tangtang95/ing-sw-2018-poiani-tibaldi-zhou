@@ -27,6 +27,6 @@ public enum Color implements JSONable{
 
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return Color.valueOf(jsonObject.toString());
+        return Color.valueOf(jsonObject.get(SharedConstants.BODY).toString());
     }
 }

@@ -1,10 +1,12 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONClientProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+@Immutable
 public class TileWrapper implements JSONable{
 
     private final String constraint;
@@ -26,7 +28,7 @@ public class TileWrapper implements JSONable{
     }
 
     /**
-     * Convert a tile in a JSONObject.
+     * Convert a TileWrapper in a JSONObject.
      *
      * @return a JSONObject.
      */
@@ -43,9 +45,9 @@ public class TileWrapper implements JSONable{
     }
 
     /**
-     * Convert a json string in a Tile object.
+     * Convert a json string in a TileWrapper object.
      *
-     * @param jsonObject a JSONObject that contains a Tile.
+     * @param jsonObject a JSONObject that contains a TileWrapper.
      * @return a tile object or null if the jsonObject is wrong.
      */
     @Override
@@ -55,7 +57,9 @@ public class TileWrapper implements JSONable{
         tile = new TileWrapper((String) jsonObject.get(JSON_CONSTRAINT));
 
         if (jsonObject.containsKey(SharedConstants.DICE)) {
-
+            DiceWrapper readDice = (DiceWrapper) protocol.convertToObject(
+                    (JSONObject) jsonObject.get(SharedConstants.DICE));
+            tile.setDice(readDice);
         }
         return tile;
     }

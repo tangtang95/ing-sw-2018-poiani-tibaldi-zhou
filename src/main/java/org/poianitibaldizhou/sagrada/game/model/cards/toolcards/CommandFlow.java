@@ -34,6 +34,6 @@ public enum CommandFlow implements JSONable{
 
     @Override
     public Object toObject(JSONObject jsonObject) {
-        return CommandFlow.valueOf(jsonObject.toString());
+        return CommandFlow.valueOf(jsonObject.get(SharedConstants.BODY).toString());
     }
 }
