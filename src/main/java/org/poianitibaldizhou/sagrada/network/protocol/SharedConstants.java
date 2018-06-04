@@ -43,6 +43,7 @@ public class SharedConstants {
     public static final String VICTORY_POINT_MAP = "victorypointmap";
     public static final String COLOR_LIST_KEY = "ColorListKey";
     public static final String DICE_VALUE = "Dice value";
+    public static final String FRONT_BACK_SCHEMA_CARD = "frontBackSchemaCard";
 
     /**
      * Key protocol communication

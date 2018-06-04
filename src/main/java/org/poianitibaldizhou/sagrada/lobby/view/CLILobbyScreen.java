@@ -101,6 +101,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      * Leave from the Lobby.
      */
     private void leave() {
+        /*
         try {
             controller.leave(token, username);
         } catch (RemoteException e) {
@@ -109,6 +110,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.ERROR_READING, Level.ERROR);
         }
+        */
     }
 
     /**
@@ -134,6 +136,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                 username = null;
             }
         }
+        /*
         try {
             controller.join(token, username, this);
         } catch (RemoteException e) {
@@ -144,6 +147,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                     BuildGraphic.ERROR_READING, Level.ERROR);
         }
         consoleListener.wakeUpCommandConsole();
+        */
     }
 
     /**
@@ -179,22 +183,26 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      * {@inheritDoc}
      */
     @Override
-    public void onUserJoin(User user) {
+    public void onUserJoin(String user) {
+        /*
         if (!user.getName().equals(username))
             PrinterManager.consolePrint("User " + user.getName() + " joined the Lobby\n", Level.INFORMATION);
+            */
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onUserExit(User user){
+    public void onUserExit(String user){
+        /*
         if (!user.getName().equals(username)) {
             PrinterManager.consolePrint("User " + user.getName() + " left the Lobby\n", Level.INFORMATION);
         } else {
             PrinterManager.consolePrint("You have left the lobby.\n", Level.INFORMATION);
             screenManager.popScreen();
         }
+        */
     }
 
     /**

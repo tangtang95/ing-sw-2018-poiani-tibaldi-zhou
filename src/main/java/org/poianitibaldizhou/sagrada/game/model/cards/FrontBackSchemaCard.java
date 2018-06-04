@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,14 +47,36 @@ public class FrontBackSchemaCard implements JSONable{
         return schemaCards.get(1);
     }
 
-    @Override
-    public JSONObject toJSON() {
-        // TODO
-        return null;
-    }
+    /**
+     * Convert a FrontBackSchemaCard in a JSONObject.
+     *
+     * @return a JSONObject.
+     */
 
     @Override
+    @SuppressWarnings("unchecked")
+    public JSONObject toJSON() {
+        JSONObject main = new JSONObject();
+        JSONObject frontBack = new JSONObject();
+        JSONArray jsonArray = new JSONArray();
+        for (SchemaCard s : this.getSchemaCards())
+            jsonArray.add(s.toJSON());
+        frontBack.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
+        frontBack.put(SharedConstants.BODY,jsonArray);
+        main.put(SharedConstants.TYPE, SharedConstants.FRONT_BACK_SCHEMA_CARD);
+        main.put(SharedConstants.BODY,frontBack);
+        return main;
+    }
+
+    /**
+     * Convert a json string in a FrontBackSchemaCard object.
+     *
+     * @param jsonObject a JSONObject that contains a FrontBackSchemaCard.
+     * @return a FrontBackSchemaCard object.
+     */
+    @Override
     public Object toObject(JSONObject jsonObject) {
+        /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }
 }
