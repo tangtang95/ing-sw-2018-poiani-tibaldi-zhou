@@ -26,7 +26,7 @@ public class ColorConstraint implements IConstraint {
 
     /**
      * Global method.
-     * Return a list of all colorConstraints for each value of enum Color
+     * Return a list of all colorConstraints for each value of enum ColorWrapper
      *
      * @return a list of all colorConstraints
      */

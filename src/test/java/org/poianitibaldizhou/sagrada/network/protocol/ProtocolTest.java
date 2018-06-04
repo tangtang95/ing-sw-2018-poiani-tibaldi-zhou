@@ -101,7 +101,7 @@ public class ProtocolTest {
         String send = serverNetworkProtocol.appendMessage("1", "2", "3",diceList, diceMap, schemaCard);
         try {
             List<JSONObject> listOfDice = (List<JSONObject>) clientNetworkProtocol.getResponseByKey(send,"1");
-            String response = clientNetworkProtocol.createMessage("1", listOfDice);
+            String response = clientNetworkProtocol.appendMessage("1", listOfDice);
             assertEquals(diceList,serverNetworkProtocol.getResponseByKey(response,"1"));
         } catch (ParseException e) {
             fail("PARSING ERROR");

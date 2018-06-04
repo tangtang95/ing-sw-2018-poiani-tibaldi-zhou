@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(Enclosed.class)
-public class ChooseColorFromRoundTrackTest {
+public class ChooseColorWrapperFromRoundTrackTest {
 
     @RunWith(Parameterized.class)
     public static class ParameterizedPart {

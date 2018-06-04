@@ -85,7 +85,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
     }
 
     @Override
-    public void notifyNeedColor(Set<Color> colors) throws IOException {
+    public void notifyNeedColor(Set<ColorWrapper> colors) throws IOException {
         String response;
         int number;
 
@@ -103,7 +103,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
             }
             if (number > 0 && number < 7) {
                 connectionManager.getGameController().setColor( currentUser.getToken(), gameName,
-                        (Color) colors.toArray()[number - 1], toolCard.getName());
+                        (ColorWrapper) colors.toArray()[number - 1], toolCard.getName());
             } else {
                 PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
                 number = -1;
@@ -239,7 +239,7 @@ public class CLIToolCardView extends CLIBasicScreen implements IToolCardExecutor
     }
 
     @Override
-    public void notifyNeedDicePositionOfCertainColor(Color color) throws IOException {
+    public void notifyNeedDicePositionOfCertainColor(ColorWrapper color) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String response;
         int row;

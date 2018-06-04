@@ -77,7 +77,7 @@ public class TenagliaARotelleTest {
         turnState.useCard(player1, toolCard, mock(IToolCardExecutorObserver.class));
         while (!(turnState.getPlayerState() instanceof SelectActionState))
             Thread.sleep(100);
-        Dice dice = new Dice(4, Color.YELLOW);
+        Dice dice = new Dice(4, ColorWrapper.YELLOW);
         Position pos = new Position(0, 2);
         turnState.userFireExecutorEvent(new DiceExecutorEvent(dice));
         turnState.userFireExecutorEvent(new PositionExecutorEvent(pos));

@@ -12,6 +12,8 @@ import java.util.*;
  */
 public class JSONClientProtocol {
 
+    private final JSONObject packet = new JSONObject();
+
     /**
      * Build a formatted message for communication from client to server.
      * Require a list of key string and then a list of object to send, the method
@@ -19,12 +21,10 @@ public class JSONClientProtocol {
      *
      * @param args list of object to send.
      * @param <T>  generic object to send.
-     * @return formatted string or null if it fail.
      */
     @SuppressWarnings("unchecked")
     @SafeVarargs
-    public final <T> String createMessage(T... args) {
-        JSONObject packet = new JSONObject();
+    public final <T> void appendMessage(T... args) {
         List<String> key = new ArrayList<>();
         int pos = 0;
         int keyPos = 0;
@@ -56,9 +56,15 @@ public class JSONClientProtocol {
                 }
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            return null;
+            //...
         }
-        return packet.toJSONString();
+    }
+
+    /**
+     * @return the packet to string
+     */
+    public String buildMessage() {
+        return  packet.toJSONString();
     }
 
     /**
@@ -97,4 +103,6 @@ public class JSONClientProtocol {
             throw new ParseException(0);
         }
     }
+
+
 }
