@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.IView;
-import org.poianitibaldizhou.sagrada.network.protocol.NetworkGetItem;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -22,13 +22,13 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
 
     private final transient LobbyManager lobbyManager;
 
-    private final transient NetworkGetItem networkGetItem;
+    private final transient ServerNetworkProtocol networkGetItem;
 
     public LobbyController(LobbyManager lobbyManager) throws RemoteException {
         super();
         this.lobbyManager = lobbyManager;
 
-        networkGetItem = new NetworkGetItem();
+        networkGetItem = new ServerNetworkProtocol();
     }
 
     /**

@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
     private IToolCardObserver realObserver;
     private GameObserverManager observerManager;
 
-    private ServerNetworkProtocol serverNetworkProtocol;
+    private JSONServerProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the tool card used to manage the asynchronous call made to various client
@@ -27,7 +27,7 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new ServerNetworkProtocol();
+        serverNetworkProtocol = new JSONServerProtocol();
     }
 
     /**
@@ -37,7 +37,7 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
     public void onTokenChange(int tokens)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onTokenChange(serverNetworkProtocol.createMessage(tokens));
+                realObserver.onTokenChange(serverNetworkProtocol.appendMessage(tokens));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

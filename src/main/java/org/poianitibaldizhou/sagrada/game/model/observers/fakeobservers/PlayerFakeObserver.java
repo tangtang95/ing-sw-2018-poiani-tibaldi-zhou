@@ -4,7 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 
 import java.io.IOException;
 
@@ -14,7 +14,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     private GameObserverManager observerManager;
     private IPlayerObserver realObserver;
 
-    private ServerNetworkProtocol serverNetworkProtocol;
+    private JSONServerProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the player used to manage the asynchronous call made to various client
@@ -29,7 +29,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new ServerNetworkProtocol();
+        serverNetworkProtocol = new JSONServerProtocol();
     }
 
     /**
@@ -39,7 +39,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     public void onFavorTokenChange(int value)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onFavorTokenChange(serverNetworkProtocol.createMessage(value));
+                realObserver.onFavorTokenChange(serverNetworkProtocol.appendMessage(value));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -55,7 +55,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     public void onSetOutcome(Outcome outcome)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onSetOutcome(serverNetworkProtocol.createMessage(outcome));
+                realObserver.onSetOutcome(serverNetworkProtocol.appendMessage(outcome));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

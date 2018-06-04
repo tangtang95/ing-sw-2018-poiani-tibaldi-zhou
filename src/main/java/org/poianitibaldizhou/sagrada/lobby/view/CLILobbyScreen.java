@@ -77,7 +77,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         Command timeoutCommand = new Command(TIMEOUT_COMMAND, "Show time to reach timeout");
         timeoutCommand.setCommandAction(() -> {
             try {
-                connectionManager.getLobbyController().getTimeout(token);
+                connectionManager.getLobbyController().getTimeout();
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -88,7 +88,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         Command showUserCommand = new Command(LOBBY_USER_COMMAND, "Show users in lobby");
         showUserCommand.setCommandAction(() -> {
             try {
-                connectionManager.getLobbyController().getUsersInLobby(token);
+                connectionManager.getLobbyController().getUsersInLobby();
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
