@@ -30,6 +30,11 @@ public class ServerCreateMessage {
         return this;
     }
 
+    public ServerCreateMessage createTokenMessage(String token) {
+        jsonServerProtocol.appendMessage(SharedConstants.TOKEN_KEY, token);
+        return this;
+    }
+
     public ServerCreateMessage createDiceSwapMessage(Dice oldDice, Dice newDice) {
         jsonServerProtocol.appendMessage(SharedConstants.OLD_DICE, oldDice);
         jsonServerProtocol.appendMessage(SharedConstants.NEW_DICE, newDice);
@@ -91,12 +96,6 @@ public class ServerCreateMessage {
         return this;
     }
 
-    public String buildMessage() {
-        String temp = jsonServerProtocol.buildMessage();
-        jsonServerProtocol = new JSONServerProtocol();
-        return temp;
-    }
-
     public ServerCreateMessage createUserMessage(User user) {
         jsonServerProtocol.appendMessage(SharedConstants.USER, user);
         return this;
@@ -155,5 +154,11 @@ public class ServerCreateMessage {
     public ServerCreateMessage createGamenNameMessage(String gameName) {
         jsonServerProtocol.appendMessage(SharedConstants.GAME_NAME_KEY, gameName);
         return this;
+    }
+
+    public String buildMessage() {
+        String temp = jsonServerProtocol.buildMessage();
+        jsonServerProtocol = new JSONServerProtocol();
+        return temp;
     }
 }

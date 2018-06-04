@@ -47,6 +47,8 @@ public class LobbyObserverManager {
     }
 
     public void pushThreadInQueue(String token, Runnable notify) {
+        System.out.println(token);
+        System.out.println(scheduledExecutorServiceMap.get(token) == null);
         scheduledExecutorServiceMap.get(token).submit(notify);
     }
 }

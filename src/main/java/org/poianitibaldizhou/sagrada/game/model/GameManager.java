@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.ManagerMediator;
+import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 
 import java.rmi.RemoteException;
@@ -19,9 +19,9 @@ public class GameManager {
 
     private Map<String, List<String>> playersByGame;
     private List<String> players;
-    private final ManagerMediator managerMediator;
+    private final MediatorManager managerMediator;
 
-    public GameManager(ManagerMediator managerMediator) {
+    public GameManager(MediatorManager managerMediator) {
         this.managerMediator = managerMediator;
         gameMap = new HashMap<>();
         playersByGame = new HashMap<>();
@@ -99,16 +99,16 @@ public class GameManager {
         return gameMap.containsKey(gameName)? new ArrayList<>(playersByGame.get(gameName)) : null;
     }
 
-    public boolean containsGame(final String gameName) {
+    public synchronized boolean containsGame(final String gameName) {
         return gameMap.values().stream().map(IGame::getName).anyMatch(s -> s.equals(gameName));
     }
 
-    public GameObserverManager getObserverManagerByGame(String gameName) {
+    public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
         return observerManagerMap.get(gameName);
     }
 
     @Contract(pure = true)
-    public synchronized List<IGame> getGameMap() {
+    public synchronized List<IGame> getGameList() {
         return new ArrayList<>(gameMap.values());
     }
 }

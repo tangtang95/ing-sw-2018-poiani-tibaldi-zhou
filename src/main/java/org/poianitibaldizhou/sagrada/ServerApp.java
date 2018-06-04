@@ -1,9 +1,7 @@
 package org.poianitibaldizhou.sagrada;
 
 import org.poianitibaldizhou.sagrada.game.controller.GameController;
-import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
-import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
 
 import java.io.IOException;
@@ -22,7 +20,7 @@ public class ServerApp {
     public static final int SERVER_RMI_PORT = 1099;
 
     public static void main(String[] args) throws RemoteException {
-        ManagerMediator managerMediator = new ManagerMediator();
+        MediatorManager managerMediator = new MediatorManager();
         LobbyController lobbyController = new LobbyController(managerMediator.getLobbyManager());
         GameController gameController = new GameController(managerMediator.getGameManager());
         ControllerManager controllerManager = new ControllerManager(gameController, lobbyController);

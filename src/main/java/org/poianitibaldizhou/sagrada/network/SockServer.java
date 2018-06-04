@@ -1,10 +1,9 @@
 package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.ControllerManager;
-import org.poianitibaldizhou.sagrada.ManagerMediator;
+import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.controller.GameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
-import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
 
 import java.io.IOException;
@@ -20,7 +19,7 @@ public class SockServer {
     public static final int SERVER_PORT = 9090;
 
     public static void main(String[] args) throws RemoteException {
-        ManagerMediator managerMediator = new ManagerMediator();
+        MediatorManager managerMediator = new MediatorManager();
         LobbyController lobbyController = new LobbyController(managerMediator.getLobbyManager());
         GameController gameController = new GameController(managerMediator.getGameManager());
         ControllerManager controllerManager = new ControllerManager(gameController, lobbyController);

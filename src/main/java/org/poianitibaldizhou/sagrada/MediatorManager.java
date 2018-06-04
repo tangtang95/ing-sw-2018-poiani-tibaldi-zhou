@@ -3,19 +3,19 @@ package org.poianitibaldizhou.sagrada;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.UUID;
 
-public class ManagerMediator {
+public class MediatorManager {
 
     private GameManager gameManager;
     private LobbyManager lobbyManager;
 
-    public ManagerMediator(){
+    public MediatorManager(){
         gameManager = new GameManager(this);
         lobbyManager = new LobbyManager(this);
     }
@@ -35,4 +35,19 @@ public class ManagerMediator {
         return gameName;
     }
 
+    /**
+     * Returns true if a player with this user name is already playing
+     *
+     * @param username username considered
+     * @return true if a player with username is already playing in some game, false otherwise
+     */
+    public boolean isAlreadyLogged(String username) {
+        for(IGame game : gameManager.getGameList()) {
+            for(Player player : game.getPlayers()) {
+                if(player.getUser().getName().equals(username))
+                    return true;
+            }
+        }
+        return false;
+    }
 }

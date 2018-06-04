@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -24,11 +25,14 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
 
     private final transient ServerGetMessage networkGetItem;
 
+    private final transient ServerCreateMessage serverCreateMessage;
+
     public LobbyController(LobbyManager lobbyManager) throws RemoteException {
         super();
         this.lobbyManager = lobbyManager;
 
         networkGetItem = new ServerGetMessage();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -56,8 +60,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
             handleIOException(token);
         }
 
-        // TODO make this return with network protocol
-        return token;
+        return serverCreateMessage.createTokenMessage(token).buildMessage();
     }
 
     /**
@@ -127,12 +130,14 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     }
 
     private void clearObserver() {
-        LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
-        lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
-            lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
-            lobbyObserverManager.disconnectionNotified(token);
-            viewMap.remove(token);
-        });
+        if(lobbyManager.isLobbyActive()) {
+            LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
+            lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
+                lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
+                lobbyObserverManager.disconnectionNotified(token);
+                viewMap.remove(token);
+            });
+        }
     }
 
     /**

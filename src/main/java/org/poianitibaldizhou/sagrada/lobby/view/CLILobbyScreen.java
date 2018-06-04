@@ -7,6 +7,9 @@ import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +42,9 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      */
     private final transient ILobbyController controller;
 
+    private transient final ClientGetMessage clientGetMessage;
+    private transient ClientCreateMessage clientCreateMessage;
+
     /**
      * Lobby commands.
      */
@@ -60,6 +66,8 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         this.controller = connectionManager.getLobbyController();
         this.username = null;
         this.token = null;
+        this.clientGetMessage = new ClientGetMessage();
+        this.clientCreateMessage = new ClientCreateMessage();
 
         initializeCommands();
         consoleListener = ConsoleListener.getInstance();
@@ -101,16 +109,15 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      * Leave from the Lobby.
      */
     private void leave() {
-        /*
         try {
-            controller.leave(token, username);
+            controller.leave(clientCreateMessage.createTokenMessage(token).createUsernameMessage(username).buildMessage());
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.ERROR_READING, Level.ERROR);
         }
-        */
+
     }
 
     /**
@@ -126,7 +133,9 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                 if (username.equals(""))
                     throw new IllegalArgumentException();
                 else {
-                    token = controller.login(username, this);
+                    String message = controller.login(clientCreateMessage.createUsernameMessage(username).buildMessage(),
+                            this);
+                    token = clientGetMessage.getToken(message);
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
@@ -136,9 +145,9 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                 username = null;
             }
         }
-        /*
+
         try {
-            controller.join(token, username, this);
+            controller.join(clientCreateMessage.createUsernameMessage(username).createTokenMessage(token).buildMessage(), this);
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
@@ -147,7 +156,6 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                     BuildGraphic.ERROR_READING, Level.ERROR);
         }
         consoleListener.wakeUpCommandConsole();
-        */
     }
 
     /**
@@ -183,33 +191,35 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      * {@inheritDoc}
      */
     @Override
-    public void onUserJoin(String user) {
-        /*
-        if (!user.getName().equals(username))
-            PrinterManager.consolePrint("User " + user.getName() + " joined the Lobby\n", Level.INFORMATION);
-            */
+    public void onUserJoin(String user) throws IOException {
+        System.out.println(user);
+        UserWrapper userWrapper = clientGetMessage.userUserWrapper(user);
+        if (!userWrapper.getUsername().equals(username))
+            PrinterManager.consolePrint("User " + userWrapper.getUsername() + " joined the Lobby\n", Level.INFORMATION);
+
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onUserExit(String user){
-        /*
-        if (!user.getName().equals(username)) {
-            PrinterManager.consolePrint("User " + user.getName() + " left the Lobby\n", Level.INFORMATION);
+    public void onUserExit(String user) throws IOException {
+        UserWrapper userWrapper = clientGetMessage.userUserWrapper(user);
+        if (!userWrapper.getUsername().equals(username)) {
+            PrinterManager.consolePrint("User " + userWrapper.getUsername() + " left the Lobby\n", Level.INFORMATION);
         } else {
             PrinterManager.consolePrint("You have left the lobby.\n", Level.INFORMATION);
             screenManager.popScreen();
         }
-        */
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onGameStart(String gameName) {
+    public void onGameStart(String message) throws IOException {
+        String gameName = clientGetMessage.getGameName(message);
+
         PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
         try {
             screenManager.replaceScreen(new CLIRoundScreen(connectionManager,screenManager,
