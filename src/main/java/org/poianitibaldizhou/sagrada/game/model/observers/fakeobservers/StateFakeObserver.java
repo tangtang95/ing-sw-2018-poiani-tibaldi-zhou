@@ -1,13 +1,17 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
+import org.apache.maven.settings.Server;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
+import javax.print.attribute.IntegerSyntax;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class StateFakeObserver implements IStateFakeObserver {
@@ -16,7 +20,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     private GameObserverManager observerManager;
     private IStateObserver realObserver;
 
-    private JSONServerProtocol serverNetworkProtocol;
+    private ServerCreateMessage serverCreateMessage;
 
     /**
      * Creates a fake observer of the state used to manage the asynchronous call made to various client
@@ -31,7 +35,7 @@ public class StateFakeObserver implements IStateFakeObserver {
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -73,7 +77,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onRoundStart(int round, User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onRoundStart(serverNetworkProtocol.appendMessage(round, roundUser));
+                realObserver.onRoundStart(serverCreateMessage.createUserMessage(roundUser).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -89,7 +93,8 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onTurnState(serverNetworkProtocol.appendMessage(round, isFirstTurn, round, turnUser));
+                realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createBooleanMessage(isFirstTurn).
+                        createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -105,7 +110,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onRoundEnd(int round, User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onRoundEnd(serverNetworkProtocol.appendMessage(round, roundUser));
+                realObserver.onRoundEnd(serverCreateMessage.createRoundUserMessage(roundUser).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -121,7 +126,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onEndGame(User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onEndGame(serverNetworkProtocol.appendMessage(roundUser));
+                realObserver.onEndGame(serverCreateMessage.createRoundUserMessage(roundUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -137,7 +142,8 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onSkipTurnState(serverNetworkProtocol.appendMessage(round, isFirstTurn, roundUser, turnUser));
+                realObserver.onSkipTurnState(serverCreateMessage.createMessageValue(round).createBooleanMessage(isFirstTurn).
+                        createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -153,7 +159,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onPlaceDiceState(User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onPlaceDiceState(serverNetworkProtocol.appendMessage(turnUser));
+                realObserver.onPlaceDiceState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -169,7 +175,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onUseCardState(User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onUseCardState(serverNetworkProtocol.appendMessage(turnUser));
+                realObserver.onUseCardState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -185,7 +191,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onEndTurnState(User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onEndTurnState(serverNetworkProtocol.appendMessage(turnUser));
+                realObserver.onEndTurnState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -201,7 +207,9 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) {
         Runnable runnable = () -> {
             try {
-                realObserver.onVictoryPointsCalculated(serverNetworkProtocol.appendMessage(victoryPoints));
+                HashMap<User, Integer> map = new HashMap<>();
+                victoryPoints.forEach((k, v) -> map.putIfAbsent(k.getUser(), v));
+                realObserver.onVictoryPointsCalculated(serverCreateMessage.createVictoryPointMapMessage(map).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -217,7 +225,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onResultGame(User winner) {
         Runnable runnable = () -> {
             try {
-                realObserver.onResultGame(serverNetworkProtocol.appendMessage(winner));
+                realObserver.onResultGame(serverCreateMessage.createUserMessage(winner).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

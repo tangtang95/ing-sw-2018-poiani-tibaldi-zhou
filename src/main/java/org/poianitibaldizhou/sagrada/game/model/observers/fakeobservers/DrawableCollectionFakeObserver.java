@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +15,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     private String token;
     private GameObserverManager observerManager;
 
-    private JSONServerProtocol serverNetworkProtocol;
+    private ServerCreateMessage serverCreateMessage;
 
     /**
      * Creates a fake observer of a drawable collection used to manage the asynchronous call made to various client
@@ -29,7 +30,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -39,7 +40,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     public void onElementAdd(T elem)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onElementAdd(serverNetworkProtocol.appendMessage(elem));
+                realObserver.onElementAdd(serverCreateMessage.createElem(elem).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -55,7 +56,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     public void onElementsAdd(List<T> elemList)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onElementsAdd(serverNetworkProtocol.appendMessage(elemList));
+                realObserver.onElementsAdd(serverCreateMessage.createElemList(elemList).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -71,7 +72,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     public void onElementDraw(T elem)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onElementDraw(serverNetworkProtocol.appendMessage(elem));
+                realObserver.onElementDraw(serverCreateMessage.createElem(elem).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
