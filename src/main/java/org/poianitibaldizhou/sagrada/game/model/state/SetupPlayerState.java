@@ -10,7 +10,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
-import java.rmi.RemoteException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +17,7 @@ import java.util.logging.Logger;
 public class SetupPlayerState extends IStateGame {
 
     private Set<String> playersReady;
-    private Map<String, List<FrontBackSchemaCard>> playerSchemaCards;
+    private Map<String, List<FrontBackSchemaCard>> playerFrontBackSchemaCards;
     private Map<String, List<PrivateObjectiveCard>> privateObjectiveCardMap;
 
     private static final int NUMBER_OF_SCHEMA_CARDS_PER_PLAYERS = 2;
@@ -35,7 +34,7 @@ public class SetupPlayerState extends IStateGame {
     public SetupPlayerState(Game game) {
         super(game);
         playersReady = new HashSet<>();
-        playerSchemaCards = new HashMap<>();
+        playerFrontBackSchemaCards = new HashMap<>();
         privateObjectiveCardMap = new HashMap<>();
     }
 
@@ -63,7 +62,7 @@ public class SetupPlayerState extends IStateGame {
                     LOGGER.log(Level.SEVERE, "Error for empty collection", e);
                 }
             }
-            playerSchemaCards.put(token, schemaCardList);
+            playerFrontBackSchemaCards.put(token, schemaCardList);
             game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
@@ -79,7 +78,6 @@ public class SetupPlayerState extends IStateGame {
             if (!game.getGameObservers().containsKey(token))
                 throw new IllegalStateException("SEVERE ERROR: cannot find token");
             game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
-
         }
 
     }
@@ -102,7 +100,7 @@ public class SetupPlayerState extends IStateGame {
             playersReady.add(token);
             game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
-                game.getGameObservers().forEach((key, value) -> {value.onPlayersCreate(game.getPlayers()); });
+                game.getGameObservers().forEach((key, value) -> value.onPlayersCreate(game.getPlayers()));
                 game.setState(new SetupGameState(game));
             }
             return;
@@ -110,9 +108,19 @@ public class SetupPlayerState extends IStateGame {
         throw new InvalidActionException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void forceStateChange() {
-        // TODO
+        game.getPlayers().forEach(player -> {
+            if(!playersReady.contains(player)) {
+                game.setPlayerSchemaCard(player.getToken(), playerFrontBackSchemaCards.get(player.getToken()).get(0).getFrontSchemaCard(),
+                        privateObjectiveCardMap.get(player.getToken()));
+            }
+        });
+
+        game.setState(new SetupGameState(game));
     }
 
     @Contract(pure = true)
@@ -122,7 +130,7 @@ public class SetupPlayerState extends IStateGame {
 
     @Contract(pure = true)
     public boolean containsSchemaCard(String token, SchemaCard schemaCard) {
-        for (FrontBackSchemaCard schema : playerSchemaCards.get(token))
+        for (FrontBackSchemaCard schema : playerFrontBackSchemaCards.get(token))
             if (schema.contains(schemaCard))
                 return true;
         return false;
@@ -131,7 +139,7 @@ public class SetupPlayerState extends IStateGame {
     @Contract(pure = true)
     public List<FrontBackSchemaCard> getSchemaCardsOfPlayer(String token) {
         List<FrontBackSchemaCard> schemaCards = new ArrayList<>();
-        for (FrontBackSchemaCard schema : playerSchemaCards.get(token)) {
+        for (FrontBackSchemaCard schema : playerFrontBackSchemaCards.get(token)) {
             schemaCards.add(FrontBackSchemaCard.newInstance(schema));
         }
         return schemaCards;

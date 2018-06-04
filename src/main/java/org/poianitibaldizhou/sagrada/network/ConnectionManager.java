@@ -6,12 +6,12 @@ import org.poianitibaldizhou.sagrada.network.strategycontroller.RMIStrategyContr
 import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
 
-//TODO make network manager lazy
 public class ConnectionManager implements StrategyController{
 
     private ConnectionType networkType;
     private StrategyController strategyController;
     private final String ipAddress;
+    private final int port;
 
     /**
      * Constructor.
@@ -20,8 +20,9 @@ public class ConnectionManager implements StrategyController{
      * @param ipAddress the ip address of the server
      * @param networkType the network type of connection desired
      */
-    public ConnectionManager(String ipAddress, ConnectionType networkType) {
+    public ConnectionManager(String ipAddress, int port, ConnectionType networkType) {
         this.ipAddress = ipAddress;
+        this.port = port;
         setNetworkType(networkType);
     }
 
@@ -55,10 +56,10 @@ public class ConnectionManager implements StrategyController{
             strategyController.close();
         switch (networkType){
             case RMI:
-                strategyController = new RMIStrategyController(ipAddress, networkType.getPort());
+                strategyController = new RMIStrategyController(ipAddress, port);
                 break;
             case SOCKET:
-                strategyController = new SocketStrategyController(ipAddress, networkType.getPort());
+                strategyController = new SocketStrategyController(ipAddress, port);
                 break;
             default:
                 throw new IllegalArgumentException("network type undefined");

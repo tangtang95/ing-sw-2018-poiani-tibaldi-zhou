@@ -1,18 +1,21 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
-import com.sun.org.apache.bcel.internal.generic.ILOAD;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyFakeObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Lobby implements Serializable {
     private List<User> userList;
     private String name;
     private boolean gameStarted;
-    private LobbyManager lobbyManager;
+    private final transient Map<String, ILobbyFakeObserver> lobbyObserverMap;
 
     public static final int MAX_PLAYER = 8;
 
@@ -23,10 +26,10 @@ public class Lobby implements Serializable {
      *
      * @param name lobby's name
      */
-    public Lobby(String name, LobbyManager lobbyManager) {
+    public Lobby(String name) {
         this.name = name;
-        this.lobbyManager = lobbyManager;
         userList = new ArrayList<>();
+        lobbyObserverMap = new HashMap<>();
         gameStarted = false;
     }
 
@@ -47,8 +50,15 @@ public class Lobby implements Serializable {
     }
 
     public String getName() {
-
         return name;
+    }
+
+    public void attachObserver(String token, ILobbyFakeObserver lobbyFakeObserver) {
+        lobbyObserverMap.putIfAbsent(token, lobbyFakeObserver);
+    }
+
+    public void detachObserver(String token) {
+        lobbyObserverMap.remove(token);
     }
 
     /**
@@ -59,26 +69,10 @@ public class Lobby implements Serializable {
      *
      * @param user user joined
      * @return true if the lobby is full after the player join, false otherwise
-     * @throws RemoteException
      */
-    public boolean join(User user) throws RemoteException {
+    public boolean join(User user) {
         this.userList.add(user);
-
-        System.out.println("Observer size : " + lobbyManager.getLobbyObserver().size());
-
-        List<ILobbyObserver> removeList = new ArrayList<>();
-
-        for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
-            try {
-                lo.onUserJoin(user);
-            } catch (IOException re) {
-                removeList.add(lo);
-            }
-        }
-
-        for(ILobbyObserver observer : removeList)
-            lobbyManager.userDisconnectedDetected(observer);
-
+        lobbyObserverMap.forEach((key, value) -> value.onUserJoin(user));
         return userList.size() == MAX_PLAYER;
     }
 
@@ -89,19 +83,9 @@ public class Lobby implements Serializable {
      *
      * @param user user left
      */
-    public void leave(User user) throws RemoteException {
+    public void leave(User user) {
         this.userList.remove(user);
-        List<ILobbyObserver> removeList = new ArrayList<>();
-        for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
-            try {
-                lo.onUserExit(user);
-            } catch (IOException e) {
-                removeList.add(lo);
-            }
-        }
-
-        for(ILobbyObserver observer : removeList)
-            lobbyManager.userDisconnectedDetected(observer);
+        lobbyObserverMap.forEach((key, value) -> value.onUserExit(user));
     }
 
     /**
@@ -109,11 +93,6 @@ public class Lobby implements Serializable {
      */
     public void gameStart(String gameName) {
         gameStarted = true;
-
-        for (ILobbyObserver lo : lobbyManager.getLobbyObserver()) {
-            try {
-                lo.onGameStart(gameName);
-            } catch (IOException e) {}
-        }
+        lobbyObserverMap.forEach((key, value) -> value.onGameStart(gameName));
     }
 }

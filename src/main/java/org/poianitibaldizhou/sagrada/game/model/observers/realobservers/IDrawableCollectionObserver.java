@@ -1,10 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-
 import java.io.IOException;
 import java.rmi.Remote;
-import java.util.List;
 
 public interface IDrawableCollectionObserver extends Remote {
     /**

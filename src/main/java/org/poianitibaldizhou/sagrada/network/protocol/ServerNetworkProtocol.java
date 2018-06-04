@@ -1,237 +1,159 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * Class to convert to string the object for communicating with client.
- */
 public class ServerNetworkProtocol {
+    private JSONServerProtocol serverNetworkProtocol;
 
-    private final Map<String, Class> classMap = new HashMap<>();
-
-    /**
-     * constructor.
-     * Set up the classMap with the loadable class of the game.
-     */
     public ServerNetworkProtocol() {
-        classMap.put(SharedConstants.COLLECTION, Collection.class);
-        classMap.put(SharedConstants.DICE, Dice.class);
-        classMap.put(SharedConstants.DRAFT_POOL, DraftPool.class);
-        classMap.put(SharedConstants.INTEGER, Integer.class);
-        classMap.put(SharedConstants.MAP, Map.class);
-        classMap.put(SharedConstants.TILE, Tile.class);
-        classMap.put(SharedConstants.PLAYER, Player.class);
-        classMap.put(SharedConstants.POSITION, Position.class);
-        classMap.put(SharedConstants.PRIVATE_OBJECTIVE_CARD, PrivateObjectiveCard.class);
-        classMap.put(SharedConstants.PUBLIC_OBJECTIVE_CARD, PublicObjectiveCard.class);
-        classMap.put(SharedConstants.ROUND_TRACK, RoundTrack.class);
-        classMap.put(SharedConstants.STRING, String.class);
-        classMap.put(SharedConstants.TOOL_CARD, ToolCard.class);
-        classMap.put(SharedConstants.USER, User.class);
-        classMap.put(SharedConstants.SCHEMA_CARD, SchemaCard.class);
-        classMap.put(SharedConstants.COLOR, Color.class);
-        classMap.put(SharedConstants.COMMAND_FLOW, CommandFlow.class);
-        classMap.put(SharedConstants.FRONT_BACK_SCHEMA_CARD, FrontBackSchemaCard.class);
+        serverNetworkProtocol = new JSONServerProtocol();
     }
 
-    /**
-     * Build a formatted message for communication from server to client.
-     * Require a list of key string and then a list of object to send, the method
-     * associated tha first key with the first object to send.
-     *
-     * @param args list of object to send.
-     * @param <T>  generic object to send.
-     * @return formatted string or null if it fail.
-     */
-    @SuppressWarnings("unchecked")
-    @SafeVarargs
-    public final <T> String createMessage(T... args) {
-        JSONObject packet = new JSONObject();
-        List<String> key = new ArrayList<>();
-        int pos = 0;
-        int keyPos = 0;
+    public String getToken(String message) throws IOException {
+        String token;
 
         try {
-            for (T t : args) {
-                if (pos < args.length / 2) {
-                    key.add((String) t);
-                    pos++;
-                }
-                else {
-                    if (t instanceof Collection<?>) {
-                        JSONObject jsonObject = new JSONObject();
-                        JSONArray list = new JSONArray();
-                        ((Collection) t).forEach(elem -> list.add(convertToJSON(elem)));
-                        jsonObject.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
-                        jsonObject.put(SharedConstants.BODY, list);
-                        packet.put(key.get(keyPos),jsonObject);
-                    } else if (t instanceof Map<?, ?>) {
-                        JSONObject main = new JSONObject();
-                        JSONObject jsonObject = new JSONObject();
-                        ((Map) t).forEach((k, v) -> jsonObject.put(convertToJSON(k).toJSONString(),
-                                convertToJSON(v).toJSONString()));
-                        main.put(SharedConstants.TYPE, SharedConstants.MAP);
-                        main.put(SharedConstants.BODY, jsonObject);
-                        packet.put(key.get(keyPos),main);
-                    } else
-                        packet.put(key.get(keyPos),convertToJSON(t));
-                    keyPos++;
-                }
-            }
-        } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            return null;
+            token = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOKEN_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
         }
-        return packet.toJSONString();
+
+        return token;
     }
 
-    /**
-     * parse a string message for communication from client to server.
-     *
-     * @param response response from client.
-     * @param key for accessing to the correct elem in the body message.
-     * @return a correct object (parameter to read).
-     * @throws ParseException launch when the message format is wrong.
-     */
-    @SuppressWarnings("unchecked")
-    public Object getResponseByKey(String response, String key) throws ParseException {
-        JSONParser jsonParser = new JSONParser();
-        JSONObject body = (JSONObject) jsonParser.parse(response);
-        JSONObject elem = (JSONObject) body.get(key);
+    public String getGameName(String message) throws IOException {
+        String gameName;
         try {
-            if (elem.get(SharedConstants.TYPE).equals(SharedConstants.COLLECTION)) {
-                JSONArray list = (JSONArray) elem.get(SharedConstants.BODY);
-                List<Object> genericList = new ArrayList<>();
-                for (Object obj : Objects.requireNonNull(list))
-                    genericList.add(convertToObject((JSONObject) obj));
-                return genericList;
-            }
-            if (elem.get(SharedConstants.TYPE).equals(SharedConstants.MAP)) {
-                JSONObject map = (JSONObject) elem.get(SharedConstants.BODY);
-                Map<Object, Object> genericMap = new HashMap<>();
-                for (Object obj : map.entrySet()) {
-                    Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) obj;
-                    genericMap.put(convertToObject(
-                            (JSONObject) jsonParser.parse(entry.getKey().toString())),
-                            convertToObject(
-                                    (JSONObject) jsonParser.parse(entry.getValue().toString())));
-                }
-                return genericMap;
-            }
-            return convertToObject(elem);
-        } catch (IllegalArgumentException | ParseException e) {
-            throw new ParseException(0);
+            gameName = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.GAME_NAME_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
         }
+        return gameName;
     }
 
-    /**
-     * Convert a generic to a JSONObject.
-     * The method call the toJSON of the object
-     *
-     * @param t   object to convert a JSONObject.
-     * @param <T> generic object to convert.
-     * @return JSONObject.
-     */
-    @SuppressWarnings("unchecked")
-    private <T> JSONObject convertToJSON(T t) {
-        JSONObject jsonObject;
-        if (t instanceof JSONable)
-            return ((JSONable) t).toJSON();
+    public SchemaCard getSchemaCard(String message) throws IOException {
+        SchemaCard schemaCard;
+        try {
+            schemaCard = (SchemaCard) serverNetworkProtocol.getResponseByKey(message, SharedConstants.SCHEMA_CARD);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
 
-        if (t instanceof String) {
-            jsonObject = new JSONObject();
-            jsonObject.put(SharedConstants.TYPE, SharedConstants.STRING);
-            jsonObject.put(SharedConstants.BODY, t.toString());
-            return jsonObject;
-        }
-        if (t instanceof Integer) {
-            jsonObject = new JSONObject();
-            jsonObject.put(SharedConstants.TYPE, SharedConstants.INTEGER);
-            jsonObject.put(SharedConstants.BODY, t.toString());
-            return jsonObject;
-        }
-        throw new IllegalArgumentException();
+        return schemaCard;
     }
 
-    /**
-     * Convert a JSONObject to a correct game object.
-     * The method control that to the JSONObject passed corresponds a class
-     * JSONable in game and with java reflection it calls the toObject method.
-     * <p>
-     * The method use a fake constructor for get a object upon which call the invoke.
-     *
-     * @param jsonObject JSONObject to convert.
-     * @return a correct object converted.
-     */
-    @SuppressWarnings("unchecked")
-    public Object convertToObject(JSONObject jsonObject) {
-        String className = (String) jsonObject.get(SharedConstants.TYPE);
+    public User getUser(String message) throws IOException {
+        User user;
 
-        if (className.equals(SharedConstants.STRING))
-            return jsonObject.get(SharedConstants.BODY).toString();
-        if (className.equals(SharedConstants.INTEGER))
-            return Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
-
-        Class[] interfaces = classMap.get(className).getInterfaces();
-        Boolean isConvertible = false;
-
-        for (Class c : interfaces)
-            if (c.isAssignableFrom(JSONable.class.getClass()))
-                isConvertible = true;
-        if (isConvertible) {
-            try {
-                Method method = classMap.get(className).getDeclaredMethod("toObject", JSONObject.class);
-                Constructor fakeConstructor = null;
-                for (Constructor constructor : classMap.get(className).getDeclaredConstructors())
-                    if (constructor.getParameterCount() == 0) {
-                        constructor.setAccessible(true);
-                        fakeConstructor = constructor;
-                    }
-                if (fakeConstructor != null)
-                    return method.invoke(fakeConstructor.newInstance(),
-                            (JSONObject) jsonObject.get(SharedConstants.BODY));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException
-                    | InstantiationException e) {
-                throw new IllegalArgumentException();
-            }
+        try {
+            user = (User) serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
         }
-        throw new IllegalArgumentException();
+
+        return user;
     }
 
+    public Position getPosition(String message) throws IOException {
+        Position position;
 
+        try {
+            position = (Position) serverNetworkProtocol.getResponseByKey(message, SharedConstants.POSITION);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return position;
+    }
+
+    public Dice getDice(String message) throws IOException {
+        Dice dice;
+
+        try {
+            dice = (Dice) serverNetworkProtocol.getResponseByKey(message, SharedConstants.DICE);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return dice;
+    }
+
+    public ToolCard getToolCard(String message) throws IOException {
+        ToolCard toolCard;
+
+        try {
+            toolCard = (ToolCard) serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOOL_CARD);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return toolCard;
+    }
+
+    public IActionCommand getActionCommand(String message) throws IOException {
+        IActionCommand actionCommand = null;
+
+        // TODO mattia??
+
+        return actionCommand;
+    }
+
+    public PrivateObjectiveCard getPrivateObjectiveCard(String message) throws IOException {
+        PrivateObjectiveCard privateObjectiveCard;
+
+        try {
+            privateObjectiveCard = (PrivateObjectiveCard) serverNetworkProtocol.getResponseByKey(message, SharedConstants.PRIVATE_OBJECTIVE_CARD);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return privateObjectiveCard;
+    }
+
+    public Integer getInteger(String message) throws IOException {
+        Integer value;
+
+        try {
+            value = (Integer) serverNetworkProtocol.getResponseByKey(message, SharedConstants.INTEGER);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return value;
+    }
+
+    public Color getColor(String message) throws IOException {
+        Color color;
+
+        try {
+            color = (Color) serverNetworkProtocol.getResponseByKey(message, SharedConstants.COLOR);
+        } catch(ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return color;
+    }
+
+    public String getUserName(String message) throws IOException {
+        // TODO
+        return "username";
+    }
+
+    public String getErrorMessage() {
+        Map<String, String> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
+        return serverNetworkProtocol.mapToJSONString(error);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

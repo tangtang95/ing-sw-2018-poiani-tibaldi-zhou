@@ -2,12 +2,12 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 
 import java.io.IOException;
 import java.util.Map;
@@ -21,13 +21,13 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private static final long TIME = 60000;
 
     private Map<String, ITimeOutObserver> realObserver;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private final IGame game;
 
     private Thread timeOutThreadSetupPlayer;
     private Thread timeOutThreadTurnState;
 
-    private ServerNetworkProtocol serverNetworkProtocol;
+    private JSONServerProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
@@ -36,12 +36,12 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      * @param observerManager observer manager for the specifid game
      * @param game game in which the timeout happens
      */
-    public TimeOutFakeObserver(Map<String, ITimeOutObserver> realObserver, ObserverManager observerManager, IGame game) {
+    public TimeOutFakeObserver(Map<String, ITimeOutObserver> realObserver, GameObserverManager observerManager, IGame game) {
         this.realObserver = realObserver;
         this.observerManager = observerManager;
         this.game = game;
 
-        serverNetworkProtocol = new ServerNetworkProtocol();
+        serverNetworkProtocol = new JSONServerProtocol();
     }
 
     /**
@@ -72,7 +72,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
                     Runnable notify = () -> realObserver.forEach((token, obs) -> {
                         try {
-                            obs.onTimeOut(serverNetworkProtocol.createMessage(turnUser));
+                            obs.onTimeOut(serverNetworkProtocol.appendMessage(turnUser));
                         } catch (IOException e) {
                             observerManager.notifyDisconnection(token);
                         }

@@ -1,0 +1,66 @@
+{"frames": {
+
+"retro.png":
+{
+	"frame": {"x":1,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"sfumatureBlu.png":
+{
+	"frame": {"x":1,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"sfumatureGialle.png":
+{
+	"frame": {"x":361,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"sfumatureRosse.png":
+{
+	"frame": {"x":361,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"sfumatureVerdi.png":
+{
+	"frame": {"x":721,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"sfumatureViola.png":
+{
+	"frame": {"x":721,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "private-objective-cards.png",
+	"format": "RGBA8888",
+	"size": {"w":1080,"h":1004},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:39a9ce822b200904e4d222e97fd7b053:dd4ade91a6f4201e01d6f4d12097e709:cec14ee734cf13611e9c2785014895d3$"
+}
+}

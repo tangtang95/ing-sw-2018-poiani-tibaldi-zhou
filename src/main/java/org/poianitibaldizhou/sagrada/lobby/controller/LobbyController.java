@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.LobbyObserverManager;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.IView;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -20,109 +22,117 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
 
     private final transient LobbyManager lobbyManager;
 
+    private final transient ServerNetworkProtocol networkGetItem;
+
     public LobbyController(LobbyManager lobbyManager) throws RemoteException {
         super();
         this.lobbyManager = lobbyManager;
+
+        networkGetItem = new ServerNetworkProtocol();
     }
 
     /**
-     * Implements the login of an User with an username and a view.
-     * If an User is already logged with username, returns an empty token (login is thus failed).
-     *
-     * @param username user's name
-     * @param view     user's view
-     * @return login's token
-     * @throws IOException if an username with a certain view is already logged or if there are
-     *                     some problems with the communication architecture
+     * {@inheritDoc}
      */
     @Override
-    public synchronized String login(String username, IView view) throws IOException {
-        String token = "";
+    public synchronized String login(String message, IView view) throws IOException {
+        String username = networkGetItem.getUserName(message);
+        String token;
+
         try {
             token = lobbyManager.login(username);
-        } catch (IOException re) {
-            view.err("Another user is logged with this username. Please, choose a new username.");
-            return token;
+        } catch(IllegalArgumentException e) {
+            view.err("An user with this username already exists");
+            return "";
         }
+
+        clearObserver();
+
         viewMap.put(token, view);
-        view.ack("You are now logged as: " + username);
+
+        try {
+            view.ack("You are now logged as: " + username);
+        } catch(IOException e) {
+            handleIOException(token);
+        }
+
+        // TODO make this return with network protocol
         return token;
     }
 
     /**
-     * An user identified with token and username leaves the lobby.
-     *
-     * @param token    user's token
-     * @param username user's name
-     * @throws IOException if authorization fails or if there are problems in the communication
-     *                     architecture
+     * {@inheritDoc}
      */
     @Override
-    public synchronized void leave(String token, String username) throws IOException {
+    public synchronized void leave(String message) throws IOException {
+        final String token = networkGetItem.getToken(message);
+        final String username = networkGetItem.getUserName(message);
+
         if (!authorize(token, username))
-            throw new IOException("Authorization failed");
-        try {
-            lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
-        } catch (IOException re) {
-            viewMap.get(token).err("Can't leave the lobby.");
             return;
-        }
+
+        clearObserver();
+
+        lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
+
         viewMap.get(token).ack("Lobby left");
         viewMap.remove(token);
     }
 
     /**
-     * An user identified by token and username join the lobby. It also carries an lobbyObserver
-     * in order to receive notification of what happens.
-     * If the user has already joined, signals an error message to the user's view.
-     *
-     * @param token         user's token
-     * @param username      user's name
-     * @param lobbyObserver observer of the lobby for the client
-     * @throws IOException the remote exception
+     * {@inheritDoc}
      */
     @Override
-    public synchronized void join(String token, String username, ILobbyObserver lobbyObserver) throws IOException {
+    public synchronized void join(String message, ILobbyObserver lobbyObserver) throws IOException {
+        final String token = networkGetItem.getToken(message);
+        final String username = networkGetItem.getUserName(message);
+
         if (!authorize(token, username)) {
             throw new IOException("Authorization failed");
         }
-        try {
-            lobbyManager.userJoinLobby(lobbyObserver, lobbyManager.getUserByToken(token));
-        } catch (IOException re) {
-            viewMap.get(token).err("You have already joined the lobby.");
-            return;
-        }
-        viewMap.get(token).ack("You're now in the lobby");
-    }
 
-    /**
-     * Requests the list of users that are currently in the lobby
-     *
-     * @param token requesting user's token
-     * @throws IOException network communication error
-     */
-    @Override
-    public void requestUsersInLobby(String token) throws IOException {
+        clearObserver();
+
+        lobbyManager.userJoinLobby(lobbyObserver, lobbyManager.getUserByToken(token));
         try {
-            viewMap.get(token).ack(lobbyManager.getLobbyUsers().toString());
-        } catch (IOException re) {
-            viewMap.get(token).err("No lobby is active. Join to create one.");
+            viewMap.get(token).ack("You're now in the lobby");
+        } catch(IOException e) {
+            lobbyManager.getLobbyObserverManager().signalDisconnection(token);
         }
     }
 
     /**
-     * Requests the time needed to reach timeout in milliseconds
-     *
-     * @param token requesting user's token
-     * @throws IOException network communication error
+     * {@inheritDoc}
      */
     @Override
-    public void requestTimeout(String token) throws IOException {
-        try {
-            viewMap.get(token).ack(formatTimeout(lobbyManager.getTimeToTimeout()));
-        } catch (IOException re) {
-            viewMap.get(token).err("None lobby is active. Join to create one.");
-        }
+    public String getUsersInLobby() throws IOException {
+        // TODO make this return with network protocol
+        clearObserver();
+        return lobbyManager.getLobbyUsers().toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTimeout() throws IOException {
+        // TODO make this return with network protocol
+        clearObserver();
+        return (formatTimeout(lobbyManager.getTimeToTimeout()));
+    }
+
+    private void handleIOException(String token) {
+        LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
+        lobbyObserverManager.signalDisconnection(token);
+    }
+
+    private void clearObserver() {
+        LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
+        lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
+            lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
+            lobbyObserverManager.disconnectionNotified(token);
+            viewMap.remove(token);
+        });
     }
 
     /**
@@ -134,11 +144,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     private boolean authorize(String token, String username) {
         User user;
-        try {
-            user = lobbyManager.getUserByToken(token);
-        } catch (IOException re) {
-            return false;
-        }
+        user = lobbyManager.getUserByToken(token);
         return user.getName().equals(username);
     }
 

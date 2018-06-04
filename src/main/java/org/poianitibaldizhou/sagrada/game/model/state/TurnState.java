@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
@@ -204,9 +205,14 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         return currentRoundPlayer;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void forceStateChange() {
-        // TODO
+        toolCardExecutor.interruptCommandsInvocation();
+        if(!(playerState instanceof EndTurnState))
+            setPlayerState(new EndTurnState(this));
     }
 
     /**

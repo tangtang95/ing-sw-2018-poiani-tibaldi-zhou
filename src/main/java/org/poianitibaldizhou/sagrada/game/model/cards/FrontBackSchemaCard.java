@@ -39,11 +39,20 @@ public class FrontBackSchemaCard implements JSONable{
        return schemaCardList;
     }
 
+    public SchemaCard getFrontSchemaCard() {
+        return schemaCards.get(0);
+    }
+
+    public SchemaCard getBackSchemaCard() {
+        return schemaCards.get(1);
+    }
+
     /**
      * Convert a FrontBackSchemaCard in a JSONObject.
      *
      * @return a JSONObject.
      */
+
     @Override
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {

@@ -19,7 +19,7 @@ public interface IGameController extends Remote {
     /**
      * Notifies that a player has joined the game.
      *
-     * @param json               player's json that contains his token and the gameName
+     * @param message               player's message that contains his token and the gameName
      * @param view               player's view
      * @param gameObserver       player's game observer
      * @param roundTrackObserver player's round track observer
@@ -28,7 +28,7 @@ public interface IGameController extends Remote {
      * @param diceBagObserver    player's dice bag observer
      * @throws IOException network communication error
      */
-    void joinGame(String json, IGameView view, IGameObserver gameObserver,
+    void joinGame(String message, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
                   IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException;
 
@@ -36,109 +36,109 @@ public interface IGameController extends Remote {
      * Notifies the schema card chosen by a certain player.
      * Player must be part of the specified game.
      *
-     * @param json json containing player's token, his game name and the schema card that he had chosen
+     * @param message message containing player's token, his game name and the schema card that he had chosen
      * @throws IOException network communication error
      */
-    void chosenSchemaCard(String json) throws IOException;
+    void chosenSchemaCard(String message) throws IOException;
 
     /**
      * Binds the player  and che schema card observers of a certain player to the specified player and its schema card.
      * The player identified by token must be part of the specified game.
      *
-     * @param json               json containing player's token, player that needs to be bind and
+     * @param message               message containing player's token, player that needs to be bind and
      * @param playerObserver     player's observer
      * @param schemaCardObserver schema card observer of the schema card of player
      * @throws IOException network communication error
      */
-    void bindPlayer(String json, IPlayerObserver playerObserver
+    void bindPlayer(String message, IPlayerObserver playerObserver
             , ISchemaCardObserver schemaCardObserver) throws IOException;
 
     /**
      * Binds the tool card observer of a certain player to the specified tool card.
      * Player must be part of the specified game.
      *
-     * @param json             json containing player's token, game's name and toolcard that need to be binded
+     * @param message             message containing player's token, game's name and toolcard that need to be binded
      * @param toolCardObserver player's tool card observer
      * @throws IOException network communication error
      */
-    void bindToolCard(String json, IToolCardObserver toolCardObserver) throws IOException;
+    void bindToolCard(String message, IToolCardObserver toolCardObserver) throws IOException;
 
     /**
      * Notifies the action chosen by a certain player.
      * The player must be part of the specified game.
      *
-     * @param json json containing player's token, game's name and action that the player has chosen
+     * @param message message containing player's token, game's name and action that the player has chosen
      * @throws IOException network communication error
      */
-    void chooseAction(String json) throws IOException;
+    void chooseAction(String message) throws IOException;
 
     /**
      * Notifies that a player wants to place a dice in a certain position.
      * The player must be part of the specified game.
      *
-     * @param json json containing player's token, game's name, dice placed and position
+     * @param message message containing player's token, game's name, dice placed and position
      * @throws IOException network communication error
      */
-    void placeDice(String json) throws IOException;
+    void placeDice(String message) throws IOException;
 
     /**
      * Notifies that a player wants to use a specific tool card.
      * The players must be part of the specified game.
      *
      * @param executorObserver player's observer for tool card execution
-     * @param json             json containing player's token, game's name and tool card that the player wants to use
+     * @param message             message containing player's token, game's name and tool card that the player wants to use
      * @throws IOException network communication error
      */
-    void useToolCard(String json, IToolCardExecutorObserver executorObserver) throws IOException;
+    void useToolCard(String message, IToolCardExecutorObserver executorObserver) throws IOException;
 
     /**
      * Indicates the chosen private objective cards of a certain player.
      * The player must be part of the specified game.
      *
-     * @param json json containing player's token, game's name and private objective card chosen by the
+     * @param message message containing player's token, game's name and private objective card chosen by the
      *             player
      * @throws IOException network communication error
      */
-    void choosePrivateObjectiveCard(String json) throws IOException;
+    void choosePrivateObjectiveCard(String message) throws IOException;
 
     /**
      * Set a dice on a certain toolcard for its purpose.
      * This method assumes that game's toolcards contains the specified toolcard.
      *
-     * @param json json containing player's token, game's name and dice to set
+     * @param message message containing player's token, game's name and dice to set
      */
-    void setDice(String json) throws IOException;
+    void setDice(String message) throws IOException;
 
     /**
      * Set a a new value needed for a dice on a certain toolcard and its purpose.
      * This method assumes that game's toolcards contains the specified toolcard.
      *
-     * @param json json containing game's name player's token and value to set
+     * @param message message containing game's name player's token and value to set
      */
-    void setNewValue(String json) throws IOException;
+    void setNewValue(String message) throws IOException;
 
     /**
      * Set a new color needed for a certain toolcard and its purpose.
      * This method assumes that game's toolcards contains the specified toolcard.
      *
-     * @param json json containing game played, player's token and color to set
+     * @param message message containing game played, player's token and color to set
      */
-    void setColor(String json) throws IOException;
+    void setColor(String message) throws IOException;
 
     /**
      * Set a new color needed for a certain toolcard and its purpose.
      * This method assumes that game's toolcards contains the specified toolcard.
      *
-     * @param json json containing game's name, player's token and position to set
+     * @param message message containing game's name, player's token and position to set
      * @throws IOException
      */
-    void setPosition(String json) throws IOException;
+    void setPosition(String message) throws IOException;
 
     /**
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
-     * @param json               json containing player's token and game's name
+     * @param message               message containing player's token and game's name
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)
@@ -150,7 +150,7 @@ public interface IGameController extends Remote {
      * @param diceBagObserver    player's dice bag observer
      * @throws IOException network communication error
      */
-    void reconnect(String json, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
+    void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                    Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                    IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                            diceBagObserver) throws IOException;
@@ -158,40 +158,40 @@ public interface IGameController extends Remote {
     /**
      * Get all the tool cards of a certain game
      *
-     * @param json json containing the token of the player requesting the tool cards and the game's name
+     * @param message message containing the token of the player requesting the tool cards and the game's name
      * @throws IOException network communication error
      */
-    String getToolCards(String json) throws IOException;
+    String getToolCards(String message) throws IOException;
 
     /**
      * Get the draft pool of a certain game
      *
-     * @param json json containing the token of the player requesting the draft pool and the game's name
+     * @param message message containing the token of the player requesting the draft pool and the game's name
      * @throws IOException network communication error
      */
-    String getDraftPool(String json) throws IOException;
+    String getDraftPool(String message) throws IOException;
 
     /**
      * Get the round track of a certain game
      *
-     * @param json json containing the token of the player requesting the draft pool and the name of the game
+     * @param message message containing the token of the player requesting the draft pool and the name of the game
      * @throws IOException network communication error
      */
-    String getRoundTrack(String json) throws IOException;
+    String getRoundTrack(String message) throws IOException;
 
     /**
      * Get the tool card of a certain game
      *
-     * @param json json containing player's token, game's name and name of the requested tool card
+     * @param message message containing player's token, game's name and name of the requested tool card
      * @throws IOException network communication error
      */
-    String getToolCardByName(String json) throws IOException;
+    String getToolCardByName(String message) throws IOException;
 
     /**
      * Get the current player of a certain game
      *
-     * @param json json containing player's token and game name
+     * @param message message containing player's token and game name
      * @throws IOException network communication error
      */
-    String getCurrentPlayer(String json) throws IOException;
+    String getCurrentPlayer(String message) throws IOException;
 }

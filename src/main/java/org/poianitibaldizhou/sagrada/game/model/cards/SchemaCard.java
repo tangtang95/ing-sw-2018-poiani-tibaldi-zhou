@@ -13,7 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
@@ -25,7 +25,7 @@ public class SchemaCard implements Serializable, JSONable {
     private final Tile[][] tileMatrix;
     private final transient Map<String, ISchemaCardFakeObserver> observerMap;
 
-    private final transient ServerNetworkProtocol protocol = new ServerNetworkProtocol();
+    private final transient JSONServerProtocol protocol = new JSONServerProtocol();
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;

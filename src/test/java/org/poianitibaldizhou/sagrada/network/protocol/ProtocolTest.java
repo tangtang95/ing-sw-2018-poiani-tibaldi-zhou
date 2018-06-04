@@ -24,7 +24,7 @@ public class ProtocolTest {
     public static List<Dice> diceList;
 
     @DataPoint
-    public static ServerNetworkProtocol serverNetworkProtocol;
+    public static JSONServerProtocol serverNetworkProtocol;
 
     @DataPoint
     public static Map<String, Dice> diceMap;
@@ -35,7 +35,7 @@ public class ProtocolTest {
     @BeforeClass
     public static void setUpClass() {
         diceList = new ArrayList<>();
-        serverNetworkProtocol = new ServerNetworkProtocol();
+        serverNetworkProtocol = new JSONServerProtocol();
         diceMap = new HashMap<>();
     }
 
@@ -70,10 +70,10 @@ public class ProtocolTest {
     @Test
     public void test() {
         String message = "{\"test\":{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":3}}}";
-        assertEquals(message,serverNetworkProtocol.createMessage( "test",new Dice(3, Color.YELLOW)));
+        assertEquals(message,serverNetworkProtocol.appendMessage( "test",new Dice(3, Color.YELLOW)));
         String message1 = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
                 "\"3\":{\"type\":\"integer\",\"body\":\"45\"},\"4\":{\"type\":\"integer\",\"body\":\"78\"}}";
-        assertEquals(message1,serverNetworkProtocol.createMessage("1","2","3", "4", "ciao", "antonio", 45, 78));
+        assertEquals(message1,serverNetworkProtocol.appendMessage("1","2","3", "4", "ciao", "antonio", 45, 78));
         String message2 = "{\"map\":{\"type\":\"map\",\"body\":" +
                 "{\"{\\\"type\\\":\\\"string\\\",\\\"body\\\":\\\"1\\\"}\":\"{\\\"type\\\":\\\"dice\\\"," +
                 "\\\"body\\\":{\\\"color\\\":\\\"BLUE\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
@@ -82,13 +82,13 @@ public class ProtocolTest {
                 "\\\"body\\\":{\\\"color\\\":\\\"YELLOW\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
                 "\\\"body\\\":\\\"6\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"PURPLE\\\"," +
                 "\\\"value\\\":1}}\"}}}";
-        assertEquals(message2,serverNetworkProtocol.createMessage("map",diceMap));
+        assertEquals(message2,serverNetworkProtocol.appendMessage("map",diceMap));
     }
 
     @Test
     @SuppressWarnings("unchecked")
     public void test2() {
-        String message = serverNetworkProtocol.createMessage("1", "2", "3",diceList, diceMap, schemaCard);
+        String message = serverNetworkProtocol.appendMessage("1", "2", "3",diceList, diceMap, schemaCard);
         try {
             assertEquals(diceList,serverNetworkProtocol.getResponseByKey(message,"1"));
             assertEquals(diceMap,serverNetworkProtocol.getResponseByKey(message,"2"));
@@ -97,8 +97,8 @@ public class ProtocolTest {
             fail("PARSING ERROR");
         }
 
-        ClientNetworkProtocol clientNetworkProtocol = new ClientNetworkProtocol();
-        String send = serverNetworkProtocol.createMessage("1", "2", "3",diceList, diceMap, schemaCard);
+        JSONClientProtocol clientNetworkProtocol = new JSONClientProtocol();
+        String send = serverNetworkProtocol.appendMessage("1", "2", "3",diceList, diceMap, schemaCard);
         try {
             List<JSONObject> listOfDice = (List<JSONObject>) clientNetworkProtocol.getResponseByKey(send,"1");
             String response = clientNetworkProtocol.createMessage("1", listOfDice);

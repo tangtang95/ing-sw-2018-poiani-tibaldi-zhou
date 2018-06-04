@@ -42,4 +42,8 @@ public class SharedConstants {
     public static final String TOKEN_KEY = "TokenKey";
     public static final String DICE_LIST_KEY = "DiceListKey";
     public static final String DICE_KEY = "DiceKey";
+
+    public static final transient String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
+            "specified game or the specified does not exist or the requested object does not exist";
+    public static final transient String GET_ERROR_KEY = "error";
 }

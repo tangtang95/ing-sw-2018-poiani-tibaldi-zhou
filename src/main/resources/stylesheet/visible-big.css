@@ -1,4 +1,30 @@
-.button{
+.button-menu{
     -fx-font-size: 3em;
     -fx-background-color: transparent;
+}
+
+.label{
+    -fx-font-size: 1.1em;
+}
+
+.title{
+    -fx-font-size: 2em;
+}
+
+.menu-pane{
+    -fx-border-color: black;
+    -fx-border-radius: 3em;
+    -fx-border-insets: 2em;
+    -fx-background-color: snow;
+    -fx-background-radius: 3em;
+    -fx-background-insets: 2em;
+}
+
+.negative-button{
+    -fx-background-color: white;
+}
+
+.positive-button{
+    //TODO fix color
+    -fx-background-color: blue;
 }

@@ -2,20 +2,20 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
-import org.poianitibaldizhou.sagrada.game.model.observers.ObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 
 import java.io.IOException;
 
 public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
 
     private String token;
-    private ObserverManager observerManager;
+    private GameObserverManager observerManager;
     private ISchemaCardObserver realObserver;
 
-    private ServerNetworkProtocol serverNetworkProtocol;
+    private JSONServerProtocol serverNetworkProtocol;
 
     /**
      * Creates a fake observer of the schema card used to manage the asynchronous call made to various client
@@ -25,12 +25,12 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
      * @param realObserver real schema card observer
      * @param observerManager observer manager of the specified game
      */
-    public SchemaCardFakeObserver(String token, ObserverManager observerManager, ISchemaCardObserver realObserver) {
+    public SchemaCardFakeObserver(String token, GameObserverManager observerManager, ISchemaCardObserver realObserver) {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
 
-        serverNetworkProtocol = new ServerNetworkProtocol();
+        serverNetworkProtocol = new JSONServerProtocol();
     }
 
     /**
@@ -40,7 +40,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onPlaceDice(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onPlaceDice(serverNetworkProtocol.createMessage(dice, position));
+                realObserver.onPlaceDice(serverNetworkProtocol.appendMessage(dice, position));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -56,7 +56,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onDiceRemove(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
-                realObserver.onDiceRemove(serverNetworkProtocol.createMessage(dice, position));
+                realObserver.onDiceRemove(serverNetworkProtocol.appendMessage(dice, position));
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

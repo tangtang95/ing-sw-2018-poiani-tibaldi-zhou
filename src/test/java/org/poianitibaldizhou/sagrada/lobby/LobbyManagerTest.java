@@ -6,16 +6,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.ManagerMediator;
-import org.poianitibaldizhou.sagrada.lobby.model.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class LobbyManagerTest {

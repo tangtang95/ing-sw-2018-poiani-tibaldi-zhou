@@ -1,0 +1,138 @@
+{"frames": {
+
+"alesatorePerLaminaDiRame.png":
+{
+	"frame": {"x":361,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"diluentePerPastaSalda.png":
+{
+	"frame": {"x":721,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"lathekin.png":
+{
+	"frame": {"x":1081,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"martelletto.png":
+{
+	"frame": {"x":1441,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"pennelloPerEglomise.png":
+{
+	"frame": {"x":1,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"pennelloPerPastaSalda.png":
+{
+	"frame": {"x":361,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"pinzaSgrossatrice.png":
+{
+	"frame": {"x":721,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"retro.png":
+{
+	"frame": {"x":1081,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"rigaInSughero.png":
+{
+	"frame": {"x":1441,"y":503,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"stripCutter.png":
+{
+	"frame": {"x":1,"y":1005,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"taglierinaCircolare.png":
+{
+	"frame": {"x":361,"y":1005,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"taglierinaManuale.png":
+{
+	"frame": {"x":721,"y":1005,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"TamponeDiamantato.png":
+{
+	"frame": {"x":1,"y":1,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+},
+"tenagliaARotelle.png":
+{
+	"frame": {"x":1081,"y":1005,"w":358,"h":500},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
+	"sourceSize": {"w":358,"h":500},
+	"pivot": {"x":0.5,"y":0.5}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "tool-cards.png",
+	"format": "RGBA8888",
+	"size": {"w":1800,"h":1506},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:b3e41199c0ad2feaddba86b367dd20fb:ae7e25b126bef28add3904d043cdb539:2ca2925a4aaa3d2dc4455a2ae68c0a8b$"
+}
+}
