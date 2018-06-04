@@ -23,10 +23,10 @@ public class ClientGetMessage {
         return null;
     }
 
-    public UserWrapper userUserWrapper(String message) throws IOException {
+    public UserWrapper getUserWrapper(String message) throws IOException {
         UserWrapper userWrapper;
         try {
-            userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(SharedConstants.USER, message);
+            userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER);
         } catch (ParseException | ClassCastException e) {
             e.printStackTrace();
             throw new IOException();
@@ -37,7 +37,7 @@ public class ClientGetMessage {
     public String getGameName(String message) throws IOException {
         String gameName;
         try {
-            gameName = (String) jsonClientProtocol.getResponseByKey(SharedConstants.GAME_NAME_KEY, message);
+            gameName = (String) jsonClientProtocol.getResponseByKey(message,SharedConstants.GAME_NAME_KEY);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -47,7 +47,7 @@ public class ClientGetMessage {
     public String getToken(String message) throws IOException {
         String token;
         try {
-            token = (String) jsonClientProtocol.getResponseByKey(SharedConstants.TOKEN_KEY, message);
+            token = (String) jsonClientProtocol.getResponseByKey(message,SharedConstants.TOKEN_KEY );
         } catch(ParseException | ClassCastException e) {
             throw new IOException();
         }

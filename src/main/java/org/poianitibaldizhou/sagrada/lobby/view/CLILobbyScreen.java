@@ -42,7 +42,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      */
     private final transient ILobbyController controller;
 
-    private transient final ClientGetMessage clientGetMessage;
+    private final transient ClientGetMessage clientGetMessage;
     private transient ClientCreateMessage clientCreateMessage;
 
     /**
@@ -192,8 +192,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      */
     @Override
     public void onUserJoin(String user) throws IOException {
-        System.out.println(user);
-        UserWrapper userWrapper = clientGetMessage.userUserWrapper(user);
+        UserWrapper userWrapper = clientGetMessage.getUserWrapper(user);
         if (!userWrapper.getUsername().equals(username))
             PrinterManager.consolePrint("User " + userWrapper.getUsername() + " joined the Lobby\n", Level.INFORMATION);
 
@@ -204,7 +203,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      */
     @Override
     public void onUserExit(String user) throws IOException {
-        UserWrapper userWrapper = clientGetMessage.userUserWrapper(user);
+        UserWrapper userWrapper = clientGetMessage.getUserWrapper(user);
         if (!userWrapper.getUsername().equals(username)) {
             PrinterManager.consolePrint("User " + userWrapper.getUsername() + " left the Lobby\n", Level.INFORMATION);
         } else {
