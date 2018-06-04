@@ -1,6 +1,9 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.apache.velocity.runtime.directive.Parse;
+import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,5 +21,36 @@ public class ClientGetMessage {
 
     public List<DiceWrapper> getDiceList(String message) throws IOException {
         return null;
+    }
+
+    public UserWrapper userUserWrapper(String message) throws IOException {
+        UserWrapper userWrapper;
+        try {
+            userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(SharedConstants.USER, message);
+        } catch (ParseException | ClassCastException e) {
+            e.printStackTrace();
+            throw new IOException();
+        }
+        return userWrapper;
+    }
+
+    public String getGameName(String message) throws IOException {
+        String gameName;
+        try {
+            gameName = (String) jsonClientProtocol.getResponseByKey(SharedConstants.GAME_NAME_KEY, message);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return gameName;
+    }
+
+    public String getToken(String message) throws IOException {
+        String token;
+        try {
+            token = (String) jsonClientProtocol.getResponseByKey(SharedConstants.TOKEN_KEY, message);
+        } catch(ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return token;
     }
 }

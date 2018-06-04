@@ -99,11 +99,11 @@ public class GameManager {
         return gameMap.containsKey(gameName)? new ArrayList<>(playersByGame.get(gameName)) : null;
     }
 
-    public boolean containsGame(final String gameName) {
+    public synchronized boolean containsGame(final String gameName) {
         return gameMap.values().stream().map(IGame::getName).anyMatch(s -> s.equals(gameName));
     }
 
-    public GameObserverManager getObserverManagerByGame(String gameName) {
+    public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
         return observerManagerMap.get(gameName);
     }
 

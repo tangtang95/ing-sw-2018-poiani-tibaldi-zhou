@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.IView;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerNetworkProtocol;
 
 import java.io.IOException;
@@ -24,11 +25,14 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
 
     private final transient ServerNetworkProtocol networkGetItem;
 
+    private final transient ServerCreateMessage serverCreateMessage;
+
     public LobbyController(LobbyManager lobbyManager) throws RemoteException {
         super();
         this.lobbyManager = lobbyManager;
 
         networkGetItem = new ServerNetworkProtocol();
+        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -56,8 +60,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
             handleIOException(token);
         }
 
-        // TODO make this return with network protocol
-        return token;
+        return serverCreateMessage.createTokenMessage(token).buildMessage();
     }
 
     /**
@@ -127,12 +130,14 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     }
 
     private void clearObserver() {
-        LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
-        lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
-            lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
-            lobbyObserverManager.disconnectionNotified(token);
-            viewMap.remove(token);
-        });
+        if(lobbyManager.isLobbyActive()) {
+            LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
+            lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
+                lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
+                lobbyObserverManager.disconnectionNotified(token);
+                viewMap.remove(token);
+            });
+        }
     }
 
     /**

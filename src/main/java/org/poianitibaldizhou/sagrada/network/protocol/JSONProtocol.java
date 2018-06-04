@@ -34,7 +34,6 @@ public class JSONProtocol {
         List<String> key = new ArrayList<>();
         int pos = 0;
         int keyPos = 0;
-
         try {
             for (T t : args) {
                 if (pos < args.length / 2) {
@@ -57,8 +56,9 @@ public class JSONProtocol {
                         main.put(SharedConstants.TYPE, SharedConstants.MAP);
                         main.put(SharedConstants.BODY, jsonObject);
                         packet.put(key.get(keyPos),main);
-                    } else
-                        packet.put(key.get(keyPos),convertToJSON(t));
+                    } else {
+                        packet.put(key.get(keyPos), convertToJSON(t));
+                    }
                     keyPos++;
                 }
             }
@@ -109,6 +109,7 @@ public class JSONProtocol {
             }
             return convertToObject(elem);
         } catch (IllegalArgumentException | ParseException e) {
+            e.printStackTrace();
             throw new ParseException(0);
         }
     }

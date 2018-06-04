@@ -189,6 +189,17 @@ public class LobbyManager {
 
 
     /**
+     * Returns true if there is an istance of a lobby active.
+     * The lobby is active if there at least one player.
+     *
+     *
+     * @return true if there a lobby active, false otherwise.
+     */
+    public boolean isLobbyActive() {
+        return !(lobby == null);
+    }
+
+    /**
      * Handles timeout. When timeout is signaled, if the number of players in the lobby
      * are greater or equal then 2, the game starts, otherwise timeout gets restarted.
      */
