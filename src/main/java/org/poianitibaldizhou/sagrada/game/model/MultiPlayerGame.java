@@ -14,7 +14,6 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,6 +83,14 @@ public class MultiPlayerGame extends Game{
     @Override
     public boolean isSinglePlayer() {
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void forceGameTermination(Player winner) {
+        getState().forceTermination(winner);
     }
 
     @Override

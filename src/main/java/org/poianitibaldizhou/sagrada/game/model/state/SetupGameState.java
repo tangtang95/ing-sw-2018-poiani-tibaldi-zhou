@@ -26,7 +26,7 @@ public class SetupGameState extends IStateGame {
      * @param game the current game
      */
 
-    SetupGameState(Game game) {
+    public SetupGameState(Game game) {
         super(game);
     }
 

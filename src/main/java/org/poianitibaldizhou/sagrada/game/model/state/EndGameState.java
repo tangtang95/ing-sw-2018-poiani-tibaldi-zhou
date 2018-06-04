@@ -21,7 +21,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * @param game               the current game
      * @param currentRoundPlayer the current player of the round who has the diceBag
      */
-    EndGameState(Game game, Player currentRoundPlayer) {
+    public EndGameState(Game game, Player currentRoundPlayer) {
         super(game);
         this.currentRoundPlayer = currentRoundPlayer;
     }
@@ -33,7 +33,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void init() {
-        game.getStateObservers().forEach((key, value) -> {value.onEndGame(currentRoundPlayer.getUser()); });
+        game.getStateObservers().forEach((key, value) -> {value.onEndGame(currentRoundPlayer.getUser());});
         game.handleEndGame();
     }
 
@@ -41,7 +41,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      * {@inheritDoc}
      */
     @Override
-    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
+    public void choosePrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) {
         game.selectPrivateObjectiveCard(player, privateObjectiveCard);
         calculateVictoryPoints();
     }

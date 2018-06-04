@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
@@ -161,5 +162,12 @@ public abstract class IStateGame {
      */
     public void forceStateChange() throws InvalidActionException {
         throw new InvalidActionException();
+    }
+
+    /**
+     * Force the termination of the game
+     */
+    public void forceTermination(Player winner) {
+        game.setState(new ForcedEndGame(game, winner));
     }
 }

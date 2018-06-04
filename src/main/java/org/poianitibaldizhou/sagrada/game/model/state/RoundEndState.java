@@ -19,7 +19,7 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
      *
      * @param game the game needed for changing state and other things to do
      */
-    RoundEndState(Game game, int currentRound, Player currentRoundPlayer) {
+    public RoundEndState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
         this.currentRound = currentRound;
         this.currentRoundPlayer = currentRoundPlayer;

@@ -138,7 +138,7 @@ public interface IGameController extends Remote {
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
-     * @param message            message containing player's token and game's name
+     * @param message            message containing player's token
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)

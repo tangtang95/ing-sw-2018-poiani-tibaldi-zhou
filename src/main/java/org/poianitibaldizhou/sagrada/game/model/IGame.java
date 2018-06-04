@@ -64,4 +64,8 @@ public interface IGame {
     Player getCurrentPlayer() throws InvalidActionException;
 
     void forceStateChange() throws InvalidActionException;
+
+    boolean isSinglePlayer();
+
+    void forceGameTermination(Player winner);
 }
