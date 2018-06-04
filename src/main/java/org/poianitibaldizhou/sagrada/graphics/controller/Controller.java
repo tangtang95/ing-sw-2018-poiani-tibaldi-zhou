@@ -8,13 +8,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 
 public abstract class Controller {
 
     protected Stage stage;
+    protected SceneManager sceneManager;
 
     public void setStage(Stage stage){
         this.stage = stage;
+    }
+
+    public void setSceneManager(SceneManager sceneManager) {
+        this.sceneManager = sceneManager;
     }
 
     public void playSceneTransition(Node node, EventHandler<ActionEvent> eventHandler){
