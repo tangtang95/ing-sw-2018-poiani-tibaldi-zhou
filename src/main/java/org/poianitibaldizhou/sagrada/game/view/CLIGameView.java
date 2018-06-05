@@ -22,14 +22,26 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     private final transient ClientGetMessage clientGetMessage;
     private final transient ClientCreateMessage clientCreateMessage;
+    private final transient String token;
+    private final transient String gameName;
 
     private transient UserWrapper currentUser;
 
-    public CLIGameView(ConnectionManager connectionManager) throws RemoteException {
+    public CLIGameView(ConnectionManager connectionManager, String token, String gameName) throws RemoteException {
         this.connectionManager = connectionManager;
         this.currentUser = null;
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();
+        this.gameName = gameName;
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getGameName() {
+        return gameName;
     }
 
     public ClientGetMessage getClientGetMessage() {

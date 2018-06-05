@@ -1,9 +1,9 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.apache.velocity.runtime.directive.Parse;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
@@ -123,5 +123,41 @@ public class ClientGetMessage {
         }
 
         return diceWrapper;
+    }
+
+    public PositionWrapper getPosition(String message) throws IOException {
+        PositionWrapper positionWrapper;
+
+        try {
+            positionWrapper = (PositionWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.POSITION);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return positionWrapper;
+    }
+
+    public List<ColorWrapper> getColorList(String message) throws IOException {
+        List<ColorWrapper> colorWrappers;
+
+        try {
+            colorWrappers = (List<ColorWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return colorWrappers;
+    }
+
+    public Integer getDiceValue(String message) throws IOException {
+        Integer value;
+
+        try {
+            value = (Integer) jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE_VALUE);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return value;
     }
 }

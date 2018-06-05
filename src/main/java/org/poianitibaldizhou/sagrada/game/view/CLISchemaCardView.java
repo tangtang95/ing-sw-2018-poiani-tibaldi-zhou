@@ -1,45 +1,24 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
+import org.poianitibaldizhou.sagrada.cli.Level;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCardObserver {
 
     private transient CLIGameView cliGameView;
-    private transient Map<String, SchemaCard> schemaCards;
 
     public CLISchemaCardView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
-        schemaCards = new HashMap<>();
-    }
-
-    /**
-     * Add a schema card of a certain player playing in the game.
-     *
-     * @param userName user's name
-     * @param schemaCard user's schemacard
-     */
-    public void addSchemaCard(String userName, SchemaCard schemaCard) {
-        schemaCards.putIfAbsent(userName, schemaCard);
-    }
-
-    public SchemaCard getSchemaCard(String userName) {
-        synchronized (schemaCards.get(userName)) {
-            return schemaCards.get(userName);
-        }
-    }
-
-
-    public Map<String, SchemaCard> getSchemaCards() {
-        return schemaCards;
     }
 
     @Override
@@ -48,23 +27,29 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         if (!(o instanceof CLISchemaCardView)) return false;
         if (!super.equals(o)) return false;
         CLISchemaCardView that = (CLISchemaCardView) o;
-        return Objects.equals(cliGameView, that.cliGameView) &&
-                Objects.equals(getSchemaCards(), that.getSchemaCards());
+        return Objects.equals(cliGameView, that.cliGameView);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), cliGameView, getSchemaCards());
+        return Objects.hash(super.hashCode(), cliGameView);
     }
 
     @Override
     public void onPlaceDice(String message) throws IOException {
-
+        PositionWrapper positionWrapper = cliGameView.getClientGetMessage().getPosition(message);
+        DiceWrapper diceWrapper = cliGameView.getClientGetMessage().getDice(message);
+        String printMessage = cliGameView.getCurrentUser().getUsername() + " has placed a dice in position " + positionWrapper.toString();
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
     @Override
     public void onDiceRemove(String message) throws IOException {
-
+        PositionWrapper positionWrapper = cliGameView.getClientGetMessage().getPosition(message);
+        DiceWrapper diceWrapper = cliGameView.getClientGetMessage().getDice(message);
+        String printMessage = cliGameView.getCurrentUser().getUsername() + " has removed a dice in position " + positionWrapper.toString();
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 }

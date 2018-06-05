@@ -16,6 +16,9 @@ public class DiceWrapper implements JSONable{
     private static final String JSON_VALUE = "value";
     private static final String JSON_COLOR = "color";
 
+    public static final int MAX_VALUE = 6;
+    public static final int MIN_VALUE = 1;
+
     private final int number;
     private final ColorWrapper color;
 

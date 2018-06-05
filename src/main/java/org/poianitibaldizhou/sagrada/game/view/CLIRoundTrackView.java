@@ -27,7 +27,6 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      */
     @Override
     public void onDicesAddToRound(String message) throws IOException {
-
         Integer round = cliGameView.getClientGetMessage().getValue(message);
         List<DiceWrapper> diceWrapperList = cliGameView.getClientGetMessage().getDiceList(message);
         String printMessage = cliGameView.getCurrentUser().getUsername() + " added a list of dices to the round track at round " + round + ".";
@@ -77,19 +76,17 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
                 buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
     }
 
-    /*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof CLIRoundTrackView)) return false;
         if (!super.equals(o)) return false;
         CLIRoundTrackView that = (CLIRoundTrackView) o;
-        return Objects.equals(cliGameView, that.cliGameView) &&
-                Objects.equals(getRoundTrack(), that.getRoundTrack());
+        return Objects.equals(cliGameView, that.cliGameView);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), cliGameView, getRoundTrack());
-    }*/
+        return Objects.hash(super.hashCode(), cliGameView);
+    }
 }

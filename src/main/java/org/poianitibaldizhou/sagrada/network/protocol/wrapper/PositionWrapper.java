@@ -6,7 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 @Immutable
-public final class PositionWrapper implements JSONable{
+public final class PositionWrapper implements JSONable {
 
     private final int row;
     private final int column;
@@ -43,7 +43,7 @@ public final class PositionWrapper implements JSONable{
         position.putIfAbsent(JSON_ROW, this.getRow());
         position.putIfAbsent(JSON_COLUMN, this.getColumn());
         main.put(SharedConstants.TYPE, SharedConstants.POSITION);
-        main.put(SharedConstants.BODY,position);
+        main.put(SharedConstants.BODY, position);
         return main;
     }
 
@@ -60,11 +60,16 @@ public final class PositionWrapper implements JSONable{
                 Integer.parseInt(jsonObject.get(JSON_COLUMN).toString()));
     }
 
+    @Override
+    public String toString() {
+        return "(" + getRow() + ", " + getColumn() + ")";
+    }
+
     /**
      * Fake constructor.
      */
     @SuppressWarnings("unused")
-    private PositionWrapper(){
+    private PositionWrapper() {
         this.column = 0;
         this.row = 0;
     }
