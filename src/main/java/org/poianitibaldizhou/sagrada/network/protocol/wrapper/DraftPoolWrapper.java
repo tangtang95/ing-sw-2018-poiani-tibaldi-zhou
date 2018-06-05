@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Immutable
 public final class DraftPoolWrapper implements JSONable{
@@ -18,15 +19,21 @@ public final class DraftPoolWrapper implements JSONable{
      */
     private static final String JSON_DICE_LIST = "diceList";
 
-    private final Collection<DiceWrapper> dices;
+    private final List<DiceWrapper> dices;
 
     public DraftPoolWrapper(Collection<DiceWrapper> dices) {
         this.dices = new ArrayList<>(dices);
     }
 
-    public Collection<DiceWrapper> getDices() {
+    public List<DiceWrapper> getDices() {
         return new ArrayList<>(dices);
     }
+
+    public DiceWrapper getDice(int index) {
+        return dices.get(index);
+    }
+
+    public int size(){return dices.size();}
 
     /**
      * Convert a draftPoolWrapper in a JSONObject.

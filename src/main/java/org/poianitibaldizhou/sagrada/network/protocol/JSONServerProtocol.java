@@ -17,6 +17,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.lang.reflect.Constructor;
@@ -53,6 +56,9 @@ public class JSONServerProtocol extends JSONProtocol{
         classMap.put(SharedConstants.SCHEMA_CARD, SchemaCard.class);
         classMap.put(SharedConstants.COLOR, Color.class);
         classMap.put(SharedConstants.COMMAND_FLOW, CommandFlow.class);
+        classMap.put(SharedConstants.END_TURN_ACTION, EndTurnState.class);
+        classMap.put(SharedConstants.PLACE_DICE_ACTION, PlaceDiceState.class);
+        classMap.put(SharedConstants.USE_TOOL_CARD_ACTION, UseCardAction.class);
     }
 
 }

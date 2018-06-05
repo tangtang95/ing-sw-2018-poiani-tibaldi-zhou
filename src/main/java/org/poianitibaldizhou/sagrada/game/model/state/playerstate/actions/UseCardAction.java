@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions;
 
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.UseCardState;
 
@@ -26,5 +27,15 @@ public class UseCardAction implements IActionCommand {
     @Override
     public int hashCode() {
         return Objects.hash(UseCardAction.class);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return null;
+    }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return new UseCardAction();
     }
 }

@@ -1,8 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 public class ClientCreateMessage {
     private JSONClientProtocol jsonClientProtocol;
@@ -50,6 +48,26 @@ public class ClientCreateMessage {
 
     public ClientCreateMessage createColorMessage(ColorWrapper color) {
         jsonClientProtocol.appendMessage(SharedConstants.COLOR, color);
+        return this;
+    }
+
+    public ClientCreateMessage createAnswerMessage(Boolean bool) {
+        jsonClientProtocol.appendMessage(SharedConstants.BOOLEAN, bool);
+        return this;
+    }
+
+    public ClientCreateMessage createPositionMessage(PositionWrapper positionWrapper) {
+        jsonClientProtocol.appendMessage(SharedConstants.POSITION, positionWrapper);
+        return this;
+    }
+
+    public ClientCreateMessage createToolCardMessage(ToolCardWrapper toolCardWrapper) {
+        jsonClientProtocol.appendMessage(SharedConstants.TOOL_CARD, toolCardWrapper);
+        return this;
+    }
+
+    public ClientCreateMessage createActionMessage(IActionWrapper iActionWrapper) {
+        jsonClientProtocol.appendMessage(SharedConstants.ACTION_KEY, iActionWrapper);
         return this;
     }
 }

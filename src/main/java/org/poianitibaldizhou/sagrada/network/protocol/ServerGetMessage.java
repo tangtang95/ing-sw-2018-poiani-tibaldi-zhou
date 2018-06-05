@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -103,10 +105,12 @@ public class ServerGetMessage {
     }
 
     public IActionCommand getActionCommand(String message) throws IOException {
-        IActionCommand actionCommand = null;
-
-        // TODO mattia??
-
+        IActionCommand actionCommand;
+        try {
+            actionCommand = (IActionCommand) serverNetworkProtocol.getResponseByKey(message, SharedConstants.ACTION_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
         return actionCommand;
     }
 
@@ -150,10 +154,22 @@ public class ServerGetMessage {
         String username;
         try {
             username = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
-        } catch (ParseException e) {
+        } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
         return username;
+    }
+
+    public Boolean getBoolean(String message) throws IOException {
+        Boolean bool;
+
+        try {
+            bool = (Boolean) serverNetworkProtocol.getResponseByKey(message, SharedConstants.BOOLEAN);
+        } catch(ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return bool;
     }
 
     public String getErrorMessage() {

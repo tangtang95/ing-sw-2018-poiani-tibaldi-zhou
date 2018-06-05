@@ -191,6 +191,16 @@ public class BuildGraphic {
         return this;
     }
 
+    public BuildGraphic buildGraphicPrivateObjectiveCard(PrivateObjectiveCardWrapper privateObjectiveCard) {
+        if (privateObjectiveCard != null) {
+            buildMessage("------------------------PRIVATE OBJECTIVE CARD-----------------------");
+            stringBuilder.append(NAME).append(privateObjectiveCard.getName()).append("\n");
+            stringBuilder.append(DESCRIPTION);
+            stringBuilder.append(privateObjectiveCard.getDescription()).append("\n\n");
+        }
+        return this;
+    }
+
     /**
      * build a formatted table.
      *
@@ -286,7 +296,16 @@ public class BuildGraphic {
 
     public BuildGraphic buildGraphicSchemaCard(SchemaCardWrapper schemaCard) {
         if (schemaCard != null) {
+            buildMessage("---------------------------SCHEMA CARD---------------------------");
             stringBuilder.append(schemaCard.toString()).append("\n");
+        }
+        return this;
+    }
+
+    public BuildGraphic buildGraphicDraftPool(DraftPoolWrapper draftPoolWrapper) {
+        if (draftPoolWrapper != null) {
+            buildMessage("---------------------------DRAFT POOL---------------------------");
+            buildGraphicDices(draftPoolWrapper.getDices());
         }
         return this;
     }

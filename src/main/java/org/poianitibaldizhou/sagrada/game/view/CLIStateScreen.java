@@ -34,7 +34,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
         this.myUser = myUser;
         this.gameName = gameName;
 
-        this.cliGameView = new CLIGameView(connectionManager, token, gameName);
+        this.cliGameView = new CLIGameView(this, connectionManager);
     }
 
     @Override
@@ -58,6 +58,12 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
                     this,
                     new CLIDraftPoolView(this),
                     new CLIDiceBagView(this)
+            );
+
+            connectionManager.getGameController().bindPlayer(
+                    clientCreateMessage.createTokenMessage(token).buildMessage(),
+                    new CLIPlayerObserverView(this),
+                    new CLISchemaCardView(this)
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
@@ -98,7 +104,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
         UserWrapper roundUser = clientGetMessage.getTurnUserWrapper(jString);
         PrinterManager.consolePrint("The round " + round + " is started with player " +
                         roundUser.getUsername() + "\n", Level.STANDARD);
-        screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, gameName, myUser, token));
+        screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager,this));
     }
 
     /**
@@ -112,7 +118,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
         if(turnUser.equals(myUser)){
             PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
                     Level.STANDARD);
-            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,gameName,myUser, token));
+            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,this));
         } else
             PrinterManager.consolePrint("Is the round " + round + "," +
                             turnUser.getUsername() + " is playing\n",
@@ -217,6 +223,22 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     public int hashCode() {
 
         return Objects.hash(super.hashCode(), myUser, gameName, clientGetMessage);
+    }
+
+    public UserWrapper getMyUser() {
+        return myUser;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public ClientCreateMessage getClientCreateMessage() {
+        return clientCreateMessage;
     }
 }
 
