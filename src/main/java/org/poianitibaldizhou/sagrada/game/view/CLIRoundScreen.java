@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
@@ -14,7 +13,8 @@ import java.rmi.RemoteException;
 public class CLIRoundScreen extends CLIBasicScreen {
 
     protected final String gameName;
-    protected final UserWrapper myUser;
+    protected final transient UserWrapper myUser;
+    protected final String token;
 
     private static final String QUIT = "Quit game";
     private static final String VIEW_DRAFT_POOL = "View the Draft Pool";
@@ -33,8 +33,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     public CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, String gameName,
-                          UserWrapper myUser) throws RemoteException {
+                          UserWrapper myUser, String token) throws RemoteException {
         super(networkManager, screenManager);
+        this.token = token;
         this.myUser = myUser;
         this.gameName = gameName;
 
@@ -90,7 +91,6 @@ public class CLIRoundScreen extends CLIBasicScreen {
     }
     private void viewPrivateObjectiveCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        //TODO
     }
 
     private void viewMySchemaCard() {

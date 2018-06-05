@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.rmi.RemoteException;
 
@@ -20,7 +21,7 @@ public class CLITurnScreen extends CLIRoundScreen {
      * @param myUser
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager, String gameName, User myUser)
+    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager, String gameName, UserWrapper myUser)
             throws RemoteException {
         super(networkManager, screenManager, gameName, myUser);
 

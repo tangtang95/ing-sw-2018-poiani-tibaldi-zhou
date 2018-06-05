@@ -1,13 +1,13 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.apache.velocity.runtime.directive.Parse;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClientGetMessage {
     private JSONClientProtocol jsonClientProtocol;
@@ -29,15 +29,33 @@ public class ClientGetMessage {
         try {
             userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER);
         } catch (ParseException | ClassCastException e) {
-            e.printStackTrace();
             throw new IOException();
         }
         return userWrapper;
     }
 
+    public UserWrapper getTurnUserWrapper(String message) throws IOException {
+        UserWrapper userWrapper;
+        try {
+            userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.TURN_USER);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return userWrapper;
+    }
+
+    public Map<UserWrapper, Integer> getVictoryPoint(String message) throws IOException {
+        Map<UserWrapper, Integer> victoryPoint;
+        try {
+            victoryPoint = (Map<UserWrapper, Integer>) jsonClientProtocol.getResponseByKey(message, SharedConstants.VICTORY_POINT_MAP);
+        } catch (ParseException e) {
+            throw new IOException();
+        }
+        return victoryPoint;
+    }
+
     public List<UserWrapper> getListOfUserWrapper(String message) throws IOException {
         List<UserWrapper> userWrappers;
-
         try {
             userWrappers = (List<UserWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER_LIST_KEY);
         } catch (ParseException | ClassCastException e) {

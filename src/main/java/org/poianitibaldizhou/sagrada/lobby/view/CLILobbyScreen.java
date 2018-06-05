@@ -2,10 +2,9 @@ package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
-import org.poianitibaldizhou.sagrada.game.view.CLIRoundScreen;
+import org.poianitibaldizhou.sagrada.game.view.CLIStateScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -225,8 +224,8 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
 
         PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
         try {
-            screenManager.replaceScreen(new CLIRoundScreen(connectionManager,screenManager,
-                    gameName,new User(username,token)));
+            screenManager.replaceScreen(new CLIStateScreen(connectionManager,screenManager,
+                    gameName,new UserWrapper(username),token));
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
