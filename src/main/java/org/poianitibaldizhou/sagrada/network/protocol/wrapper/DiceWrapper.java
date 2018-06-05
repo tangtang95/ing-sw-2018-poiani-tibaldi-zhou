@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
 @Immutable
 public class DiceWrapper implements JSONable{
 
@@ -59,12 +61,17 @@ public class DiceWrapper implements JSONable{
     /**
      * Convert a json string in a diceWrapper object.
      *
-     * @param jsonObject a JSONObject that contains a diceWrapper.
+     * @param jsonObject a JSONObject that contains a dice.
      * @return a DiceWrapper object.
      */
     @Override
     public Object toObject(JSONObject jsonObject) {
         return new DiceWrapper(ColorWrapper.valueOf((String) jsonObject.get(JSON_COLOR)),
                 Integer.parseInt(jsonObject.get(JSON_VALUE).toString()));
+    }
+
+    @Override
+    public String toString() {
+        return "" + number + "/" + Objects.requireNonNull(color).name();
     }
 }

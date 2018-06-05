@@ -17,7 +17,6 @@ import java.util.Map;
 
 public class RoundTrack implements Serializable, JSONable {
 
-
     private final List<List<Dice>> listOfDices;
     private final transient Map<String, IRoundTrackFakeObserver> observerMap;
     private int numberOfDices;

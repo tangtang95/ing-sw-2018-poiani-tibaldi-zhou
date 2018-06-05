@@ -11,7 +11,7 @@ public class ConnectionManager implements StrategyController{
     private ConnectionType networkType;
     private StrategyController strategyController;
     private final String ipAddress;
-    private final int port;
+    private int port;
 
     /**
      * Constructor.
@@ -52,6 +52,7 @@ public class ConnectionManager implements StrategyController{
         if(networkType == this.networkType)
             return;
         this.networkType = networkType;
+        this.port = networkType.getPort();
         if(strategyController != null)
             strategyController.close();
         switch (networkType){

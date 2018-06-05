@@ -424,20 +424,6 @@ public class SchemaCard implements Serializable, JSONable {
         return Objects.hash(SchemaCard.class, name, tiles, difficulty);
     }
 
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("  -----   -----   -----   -----   -----  \n");
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                stringBuilder.append("|  ").append(tileMatrix[i][j].toString()).append("  ");
-            }
-            stringBuilder.append("|\n");
-            stringBuilder.append("  -----   -----   -----   -----   -----  \n");
-        }
-        return stringBuilder.toString();
-    }
-
     /**
      * Given row and column, return whether or not the position is out of bounds according
      * to the matrix tile

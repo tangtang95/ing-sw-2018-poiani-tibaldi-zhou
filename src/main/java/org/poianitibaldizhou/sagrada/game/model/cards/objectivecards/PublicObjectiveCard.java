@@ -19,6 +19,11 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
     private final int cardPoints;
 
     /**
+     * PublicObjectiveCard param for network protocol.
+     */
+    private static final String JSON_CARD_POINT = "cardPoint";
+
+    /**
      * Constructor.
      * Creates a PublicObjectiveCard with a certain name, description and points.
      *
@@ -104,7 +109,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
         JSONObject cardJSON = new JSONObject();
         cardJSON.put(JSON_NAME, this.getName());
         cardJSON.put(JSON_DESCRIPTION, this.getDescription());
-        cardJSON.put("cardPoint", this.getCardPoints());
+        cardJSON.put(JSON_CARD_POINT, this.getCardPoints());
         main.put(SharedConstants.TYPE, SharedConstants.PUBLIC_OBJECTIVE_CARD);
         main.put(SharedConstants.BODY,cardJSON);
         return main;

@@ -117,7 +117,6 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.ERROR_READING, Level.ERROR);
         }
-
     }
 
     /**
@@ -136,6 +135,8 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                     String message = controller.login(clientCreateMessage.createUsernameMessage(username).buildMessage(),
                             this);
                     token = clientGetMessage.getToken(message);
+                    if (token.isEmpty())
+                        throw new IllegalArgumentException();
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +

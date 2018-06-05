@@ -33,8 +33,7 @@ public class JSONClientProtocol extends JSONProtocol {
         classMap.put(SharedConstants.STRING, String.class);
         classMap.put(SharedConstants.TOOL_CARD, ToolCardWrapper.class);
         classMap.put(SharedConstants.USER, UserWrapper.class);
-        //classMap.put(SharedConstants.SCHEMA_CARD, SchemaCard.class);
+        classMap.put(SharedConstants.SCHEMA_CARD, SchemaCardWrapper.class);
         classMap.put(SharedConstants.COLOR, ColorWrapper.class);
-        //classMap.put(SharedConstants.COMMAND_FLOW, CommandFlow.class);
     }
 }

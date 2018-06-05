@@ -9,7 +9,6 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 @Immutable
 public final class DraftPoolWrapper implements JSONable{
@@ -42,15 +41,27 @@ public final class DraftPoolWrapper implements JSONable{
 
     }
 
+    /**
+     * Convert a json string in a draftPoolWrapper object.
+     *
+     * @param jsonObject a JSONObject that contains a draftPool.
+     * @return a draftPoolWrapper object.
+     */
     @Override
     public Object toObject(JSONObject jsonObject) {
         JSONClientProtocol jsonClientProtocol = new JSONClientProtocol();
-        JSONArray jsonArray = (JSONArray) jsonObject.get(JSON_DICE_LIST);
-        List<DiceWrapper> diceWrapperList = new ArrayList<>();
+        JSONObject diceList = (JSONObject) jsonObject.get(JSON_DICE_LIST);
+        JSONArray jsonArray = (JSONArray) diceList.get(SharedConstants.BODY);
+        Collection<DiceWrapper> diceWrapperList = new ArrayList<>();
         for (Object o : jsonArray) {
             JSONObject dice = (JSONObject) o;
             diceWrapperList.add((DiceWrapper) jsonClientProtocol.convertToObject(dice));
         }
-        return null;
+        return new DraftPoolWrapper(diceWrapperList);
+    }
+
+    @Override
+    public String toString() {
+        return dices.toString();
     }
 }
