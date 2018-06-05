@@ -127,6 +127,16 @@ public class LobbyManager {
         }
     }
 
+    public synchronized void userDisconnects(String token) {
+        if(!lobby.getUserList().contains(getUserByToken(token)))
+            throw new IllegalArgumentException("Can't leave because user is not in the lobby");
+        if(lobby.isGameStarted())
+            throw new IllegalStateException("The lobby is started");
+        lobby.detachObserver(token);
+        lobby.leave(getUserByToken(token));
+        logout(token);
+    }
+
     /**
      * Implements user login on server.
      * Before trying to logging in the user, the clients are pinged to detect disconnections in
@@ -231,5 +241,11 @@ public class LobbyManager {
 
     public long getDelayTime() {
         return DELAY_TIME;
+    }
+
+    public synchronized void ping() {
+        if(isLobbyActive()) {
+            lobby.getLobbyObserverMap().forEach((k,v) -> v.onPing());
+        }
     }
 }

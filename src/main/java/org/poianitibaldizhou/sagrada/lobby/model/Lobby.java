@@ -61,6 +61,10 @@ public class Lobby implements Serializable {
         lobbyObserverMap.remove(token);
     }
 
+    public Map<String, ILobbyFakeObserver> getLobbyObserverMap() {
+        return new HashMap<>(lobbyObserverMap);
+    }
+
     /**
      * Notify that an user joined the lobby.
      * If the number of users in the lobby is equals to MAX_PLAYER, return true

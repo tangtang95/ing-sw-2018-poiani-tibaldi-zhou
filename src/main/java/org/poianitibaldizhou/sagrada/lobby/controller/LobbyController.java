@@ -42,14 +42,15 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     public synchronized String login(String message, IView view) throws IOException {
         String username = networkGetItem.getUserName(message);
         String token;
+
+        clearObserver();
+
         try {
             token = lobbyManager.login(username);
         } catch(IllegalArgumentException e) {
             view.err("An user with this username already exists");
             return serverCreateMessage.createTokenMessage("").buildMessage();
         }
-
-        clearObserver();
 
         viewMap.put(token, view);
 
@@ -127,12 +128,13 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
 
     private void clearObserver() {
         if(lobbyManager.isLobbyActive()) {
+            lobbyManager.ping();
             LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
             lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
-                lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
-                lobbyObserverManager.disconnectionNotified(token);
+                lobbyManager.userDisconnects(token);
                 viewMap.remove(token);
             });
+            lobbyObserverManager.getDisconnectedUserNotNotified().forEach(lobbyObserverManager::disconnectionNotified);
         }
     }
 
