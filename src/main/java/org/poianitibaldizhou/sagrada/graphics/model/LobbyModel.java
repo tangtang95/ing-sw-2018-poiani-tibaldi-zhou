@@ -3,8 +3,12 @@ package org.poianitibaldizhou.sagrada.graphics.model;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
+import java.util.List;
 
 public class LobbyModel {
 
@@ -18,8 +22,15 @@ public class LobbyModel {
     }
 
     public void login(IView view, ILobbyObserver observer) throws IOException {
-        token = connectionManager.getLobbyController().login(username, view);
-        connectionManager.getLobbyController().join(/*TO FIX, need json message*/token, observer);
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+
+        String request = builder.createUsernameMessage(username).buildMessage();
+        String response = connectionManager.getLobbyController().login(request, view);
+        token = parser.getToken(response);
+
+        request = builder.createTokenMessage(token).createUsernameMessage(username).buildMessage();
+        connectionManager.getLobbyController().join(request, observer);
     }
 
     public String getUsername() {
@@ -30,13 +41,21 @@ public class LobbyModel {
         return token;
     }
 
-    public void requestGetUsers() throws IOException {
-        //TODO IMPLEMENT
-        connectionManager.getLobbyController().getUsersInLobby();
+    public List<UserWrapper> requestGetUsers() throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+
+        String response = connectionManager.getLobbyController().getUsersInLobby();
+        return parser.getListOfUserWrapper(response);
     }
 
     public void leave() throws IOException {
-        connectionManager.getLobbyController().leave(/*TO FIX, need json message*/token);
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createUsernameMessage(username).buildMessage();
+        connectionManager.getLobbyController().leave(request);
         connectionManager.close();
+    }
+
+    public ConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 }

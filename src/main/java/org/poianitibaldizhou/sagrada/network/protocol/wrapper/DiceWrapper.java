@@ -8,7 +8,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.util.Objects;
 
 @Immutable
-public class DiceWrapper implements JSONable{
+public final class DiceWrapper implements JSONable{
 
     /**
      * DiceWrapper param for network protocol.
