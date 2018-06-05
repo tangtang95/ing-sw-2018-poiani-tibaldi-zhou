@@ -20,7 +20,7 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
      * @param currentRound       the current round of the game
      * @param currentRoundPlayer the player who is the first player of the round
      */
-    RoundStartState(Game game, int currentRound, Player currentRoundPlayer) {
+    public RoundStartState(Game game, int currentRound, Player currentRoundPlayer) {
         super(game);
         this.currentRoundPlayer = currentRoundPlayer;
         this.currentRound = currentRound;

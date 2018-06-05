@@ -40,7 +40,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
 
-    private final ServerGetMessage networkGetItem;
+    private final transient ServerGetMessage networkGetItem;
 
     public GameController(GameManager gameManager) throws RemoteException {
         super();
@@ -169,11 +169,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 }
             }
 
-            for(Player p : game.getPlayers())
-                if(p.getUser().equals(user))
+            for (Player p : game.getPlayers())
+                if (p.getUser().equals(user))
                     player = p;
 
-            if(player == null)
+            if (player == null)
                 throw new IOException();
 
             if (!game.getPlayers().contains(player)) {
@@ -557,8 +557,24 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                           Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                           IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                                   diceBagObserver) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
+        final String userName = networkGetItem.getUserName(message);
+        String token = null;
+        String gameName = null;
+
+
+        List<IGame> games = gameManager.getGameList();
+
+        for (IGame game : games) {
+            for (Player player : game.getPlayers())
+                if (player.getUser().getName().equals(userName)) {
+                    token = player.getUser().getToken();
+                    gameName = game.getName();
+                }
+        }
+
+        if (token == null || gameName == null) {
+            gameView.err("Not user with such token exists");
+        }
 
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
@@ -593,10 +609,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 viewMap.replace(token, gameView);
             }
 
-            game.getPlayers().forEach(player -> game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, observerManager, playerObserver.get(player.getToken()))));
-            game.getPlayers().forEach(player -> game.attachSchemaCardObserver(token, player.getSchemaCard(),
-                    new SchemaCardFakeObserver(token, observerManager, schemaCardObserver.get(player.getToken()))));
-            game.getToolCards().forEach(toolCard -> game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, observerManager, toolCardObserver.get(toolCard.getName()))));
+            final String finalToken = token;
+            game.getPlayers().forEach(player -> game.attachPlayerObserver(finalToken, player, new PlayerFakeObserver(finalToken, observerManager, playerObserver.get(player.getToken()))));
+            game.getPlayers().forEach(player -> game.attachSchemaCardObserver(finalToken, player.getSchemaCard(),
+                    new SchemaCardFakeObserver(finalToken, observerManager, schemaCardObserver.get(player.getToken()))));
+            game.getToolCards().forEach(toolCard -> game.attachToolCardObserver(finalToken, toolCard, new ToolCardFakeObserver(finalToken, observerManager, toolCardObserver.get(toolCard.getName()))));
             game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
             game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
             game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
@@ -748,6 +765,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     /**
      * It cleans the observer of a certain game, with the notify disconnections.
      * It also signals the disconnections of the various player.
+     * It also handles the game termination when there aren't enough user to continue the game
      *
      * @param gameName game's name
      */
@@ -776,6 +794,33 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 observerManager.notifyDisconnection(disconnectedToken);
                 viewMap.remove(disconnectedToken);
             });
+
+            handleEndGame(gameManager.getGameByName(gameName), observerManager);
+        }
+    }
+
+    /**
+     * Force the termination of the game.
+     * When the game is single player, if the only player present disconnects the game terminates.
+     * When the game is multi player, and there is only one player connected, it handles its victory.
+     *
+     * @param game handle the termination of this game
+     * @param observerManager game observer manager of game
+     */
+    private void handleEndGame(IGame game, GameObserverManager observerManager) {
+        if (!game.isSinglePlayer()) {
+            if (observerManager.getDisconnectedPlayer().size() == game.getPlayers().size() - 1) {
+                // search for the player that it's not disconnected
+                for (Player player : game.getPlayers())
+                    if (!observerManager.getDisconnectedPlayer().contains(player.getToken())) {
+                        game.forceGameTermination(player);
+                    }
+                gameManager.terminateGame(game.getName());
+            } else if(observerManager.getDisconnectedPlayer().size() == game.getPlayers().size()) {
+                gameManager.terminateGame(game.getName());
+            }
+        } else {
+            gameManager.terminateGame(game.getName());
         }
     }
 

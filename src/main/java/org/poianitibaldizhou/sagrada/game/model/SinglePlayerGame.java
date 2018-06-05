@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -103,6 +104,11 @@ public class SinglePlayerGame extends Game{
     }
 
     @Override
+    public void forceGameTermination(Player winner) {
+        throw new IllegalStateException();
+    }
+
+    @Override
     public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         setPlayer(user, schemaCard, privateObjectiveCards);
     }
@@ -125,5 +131,4 @@ public class SinglePlayerGame extends Game{
         destroyToolCard.setLeftChild(clearAll);
         return useDiceCommand;
     }
-
 }
