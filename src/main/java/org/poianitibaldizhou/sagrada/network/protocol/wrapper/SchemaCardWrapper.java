@@ -11,7 +11,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.util.Objects;
 
 @Immutable
-public class SchemaCardWrapper implements JSONable{
+public final class SchemaCardWrapper implements JSONable{
 
     private final String name;
     private final int difficulty;

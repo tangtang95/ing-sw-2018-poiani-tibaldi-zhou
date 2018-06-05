@@ -750,6 +750,15 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getListOfUser(String message) throws IOException {
+        // TODO RICCARDO
+        return null;
+    }
+
+    /**
      * Handles network error in server controller
      *
      * @param token    player's token that generated the request that creates the exception handled

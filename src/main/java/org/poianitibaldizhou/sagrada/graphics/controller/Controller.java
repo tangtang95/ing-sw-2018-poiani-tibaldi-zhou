@@ -33,10 +33,5 @@ public abstract class Controller {
         transition.setOnFinished(eventHandler);
     }
 
-    protected void switchScene(Parent rootPane) {
-        Scene scene = new Scene(rootPane, stage.getWidth(), stage.getHeight());
-        stage.setScene(scene);
-    }
-
 }
 

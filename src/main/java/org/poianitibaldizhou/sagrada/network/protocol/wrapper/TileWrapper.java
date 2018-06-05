@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.JSONClientProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 @Immutable
-public class TileWrapper implements JSONable{
+public final class TileWrapper implements JSONable{
 
     private final String constraint;
     private DiceWrapper dice;

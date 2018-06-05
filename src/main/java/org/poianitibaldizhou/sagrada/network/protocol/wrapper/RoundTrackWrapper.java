@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Immutable
 public final class RoundTrackWrapper implements JSONable{
@@ -26,8 +27,23 @@ public final class RoundTrackWrapper implements JSONable{
         this.dicesPerRound = new ArrayList<>(dicesPerRound);
     }
 
+    /**
+     *
+     * @param round the round of the roundTrack to get dices
+     * @return the collection of diceWrapper of the round given (empty list if the size of dicesPerRound < round)
+     */
     public Collection<DiceWrapper> getDicesPerRound(int round){
+        if(round >= dicesPerRound.size())
+            throw new IllegalArgumentException(round + "has to be from 0 to " + size());
         return new ArrayList<>(dicesPerRound.get(round));
+    }
+
+    public int size() {
+        return dicesPerRound.size();
+    }
+
+    public Stream<Collection<DiceWrapper>> stream(){
+        return dicesPerRound.stream();
     }
 
     /**
@@ -64,4 +80,6 @@ public final class RoundTrackWrapper implements JSONable{
         }
         return new RoundTrackWrapper(rounds);
     }
+
+
 }

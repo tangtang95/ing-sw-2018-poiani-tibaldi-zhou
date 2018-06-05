@@ -5,16 +5,21 @@ import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.graphics.model.ConnectionModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.IPAddressValidator;
 import org.poianitibaldizhou.sagrada.graphics.utils.UsernameValidator;
@@ -147,6 +152,7 @@ public class StartMenuController extends Controller implements Initializable {
     @FXML
     public void startMultiPlayerGame(ActionEvent actionEvent) {
         closeEveryPane();
+        playOpenMenuPaneTransition(multiPlayerPane);
         multiPlayerPane.setVisible(true);
         multiPlayerPane.toFront();
     }
@@ -154,6 +160,7 @@ public class StartMenuController extends Controller implements Initializable {
     @FXML
     public void startSinglePlayerGame(ActionEvent actionEvent) {
         closeEveryPane();
+        playOpenMenuPaneTransition(singlePlayerPane);
         singlePlayerPane.setVisible(true);
         singlePlayerPane.toFront();
     }
@@ -162,8 +169,21 @@ public class StartMenuController extends Controller implements Initializable {
     public void changeConnectionMode(ActionEvent actionEvent) {
         updateConnectionPaneView();
         closeEveryPane();
+        playOpenMenuPaneTransition(connectionPane);
         connectionPane.setVisible(true);
         connectionPane.toFront();
+    }
+
+    private void playOpenMenuPaneTransition(Node node){
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(500), node);
+        translateTransition.setFromX(node.getTranslateX() - 150);
+        translateTransition.setToX(node.getTranslateX());
+        translateTransition.play();
+
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), node);
+        fadeTransition.setFromValue(0);
+        fadeTransition.setToValue(1);
+        fadeTransition.play();
     }
 
     @FXML
@@ -187,13 +207,15 @@ public class StartMenuController extends Controller implements Initializable {
                 Parent root = loader.load();
                 LobbyController controller = loader.getController();
                 controller.setStage(stage);
+                controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
                 controller.setConnectionManager(usernameTextField.getText(), connectionManager);
-                switchScene(root);
+                playSceneTransition(rootPane, (event) -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             }
+            onMultiPlayerCloseButton(actionEvent);
         }
     }
 

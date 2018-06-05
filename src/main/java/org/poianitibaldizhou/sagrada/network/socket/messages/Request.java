@@ -39,7 +39,8 @@ public class Request implements Serializable {
 
     public List<Object> getMethodParameters() {
         List<Object> parameters = new ArrayList<>();
-        parameters.addAll(Arrays.asList(methodParameters));
+        if(methodParameters != null)
+            parameters.addAll(Arrays.asList(methodParameters));
         return parameters;
     }
 
