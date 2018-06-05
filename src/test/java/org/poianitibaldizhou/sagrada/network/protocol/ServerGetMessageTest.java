@@ -83,7 +83,6 @@ public class ServerGetMessageTest {
     public void testMixedMessage() {
         String message = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
                 "\"3\":{\"type\":\"integer\",\"body\":\"45\"},\"4\":{\"type\":\"integer\",\"body\":\"78\"}}";
-        serverNetworkProtocol.appendMessage("1", "2", "3", "4", "ciao", "antonio", 45, 78);
         assertEquals(message, serverNetworkProtocol.buildMessage());
     }
 
@@ -101,27 +100,4 @@ public class ServerGetMessageTest {
         assertEquals(message2, serverNetworkProtocol.buildMessage());
     }
 
-    @Test
-    public void testP() {
-        JSONClientProtocol jsonClientProtocol = new JSONClientProtocol();
-        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
-        ServerGetMessage serverGetMessage = new ServerGetMessage();
-        ClientGetMessage clientGetMessage = new ClientGetMessage();
-        UserWrapper user = new UserWrapper("riccardo");
-
-        jsonClientProtocol.appendMessage("user", user);
-        String message = jsonClientProtocol.buildMessage();
-        try {
-            User response = serverGetMessage.getUser(message);
-            String send = serverCreateMessage.createUserMessage(response).buildMessage();
-
-            assertEquals(user,jsonClientProtocol.getResponseByKey(send,"user"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
-    }
 }

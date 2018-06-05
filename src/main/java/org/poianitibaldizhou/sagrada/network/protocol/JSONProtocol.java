@@ -25,42 +25,30 @@ public class JSONProtocol {
      * Require a list of key string and then a list of object to send, the method
      * associated tha first key with the first object to send.
      *
-     * @param args list of object to send.
+     * @param key the key of object.
+     * @param t the generic object.
      * @param <T>  generic object to send.
      */
     @SuppressWarnings("unchecked")
-    @SafeVarargs
-    public final <T> void appendMessage(T... args) {
-        List<String> key = new ArrayList<>();
-        int pos = 0;
-        int keyPos = 0;
+    public final <T> void appendMessage(String key, T t) {
         try {
-            for (T t : args) {
-                if (pos < args.length / 2) {
-                    key.add((String) t);
-                    pos++;
-                }
-                else {
-                    if (t instanceof Collection<?>) {
-                        JSONObject jsonObject = new JSONObject();
-                        JSONArray list = new JSONArray();
-                        ((Collection) t).forEach(elem -> list.add(convertToJSON(elem)));
-                        jsonObject.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
-                        jsonObject.put(SharedConstants.BODY, list);
-                        packet.put(key.get(keyPos),jsonObject);
-                    } else if (t instanceof Map<?, ?>) {
-                        JSONObject main = new JSONObject();
-                        JSONObject jsonObject = new JSONObject();
-                        ((Map) t).forEach((k, v) -> jsonObject.put(convertToJSON(k).toJSONString(),
-                                convertToJSON(v).toJSONString()));
-                        main.put(SharedConstants.TYPE, SharedConstants.MAP);
-                        main.put(SharedConstants.BODY, jsonObject);
-                        packet.put(key.get(keyPos),main);
-                    } else {
-                        packet.put(key.get(keyPos), convertToJSON(t));
-                    }
-                    keyPos++;
-                }
+            if (t instanceof Collection<?>) {
+                JSONObject jsonObject = new JSONObject();
+                JSONArray list = new JSONArray();
+                ((Collection) t).forEach(elem -> list.add(convertToJSON(elem)));
+                jsonObject.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
+                jsonObject.put(SharedConstants.BODY, list);
+                packet.put(key, jsonObject);
+            } else if (t instanceof Map<?, ?>) {
+                JSONObject main = new JSONObject();
+                JSONObject jsonObject = new JSONObject();
+                ((Map) t).forEach((k, v) -> jsonObject.put(convertToJSON(k).toJSONString(),
+                        convertToJSON(v).toJSONString()));
+                main.put(SharedConstants.TYPE, SharedConstants.MAP);
+                main.put(SharedConstants.BODY, jsonObject);
+                packet.put(key, main);
+            } else {
+                packet.put(key, convertToJSON(t));
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
             throw new IllegalArgumentException();
@@ -71,14 +59,14 @@ public class JSONProtocol {
      * @return the packet to string
      */
     public String buildMessage() {
-        return  packet.toJSONString();
+        return packet.toJSONString();
     }
 
     /**
      * parse a string message for communication from client to server.
      *
      * @param response response from client.
-     * @param key for accessing to the correct elem in the body message.
+     * @param key      for accessing to the correct elem in the body message.
      * @return a correct object (parameter to read).
      * @throws ParseException launch when the message format is wrong.
      */
@@ -109,7 +97,6 @@ public class JSONProtocol {
             }
             return convertToObject(elem);
         } catch (IllegalArgumentException | ParseException e) {
-            e.printStackTrace();
             throw new ParseException(0);
         }
     }
@@ -166,7 +153,7 @@ public class JSONProtocol {
         Boolean isConvertible = false;
 
         for (Class c : interfaces) {
-            if (JSONable.class.isAssignableFrom(c)){
+            if (JSONable.class.isAssignableFrom(c)) {
                 isConvertible = true;
                 break;
             }

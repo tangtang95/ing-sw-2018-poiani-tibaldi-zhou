@@ -42,7 +42,6 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     public synchronized String login(String message, IView view) throws IOException {
         String username = networkGetItem.getUserName(message);
         String token;
-
         try {
             token = lobbyManager.login(username);
         } catch(IllegalArgumentException e) {
@@ -59,7 +58,6 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         } catch(IOException e) {
             handleIOException(token);
         }
-
         return serverCreateMessage.createTokenMessage(token).buildMessage();
     }
 
