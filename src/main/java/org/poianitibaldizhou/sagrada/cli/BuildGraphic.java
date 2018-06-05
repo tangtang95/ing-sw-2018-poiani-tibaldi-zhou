@@ -287,8 +287,8 @@ public class BuildGraphic {
         if (roundTrack != null) {
             buildMessage("----------------------------ROUND TRACK---------------------------");
             for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-                //TODO
-                stringBuilder.append(buildMessage("Round " + "[" + (i + 1) + "]"));
+                buildMessage("Round " + "[" + (i + 1) + "]");
+                buildGraphicDices(roundTrack.getDicesPerRound(i));
             }
         }
         return this;

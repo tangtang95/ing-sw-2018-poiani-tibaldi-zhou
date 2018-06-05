@@ -98,7 +98,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         showUserCommand.setCommandAction(() -> {
             try {
                 String message = connectionManager.getLobbyController().getUsersInLobby();
-                PrinterManager.consolePrint(clientGetMessage.getListOfUserWrapper(message).toString(), Level.STANDARD);
+                PrinterManager.consolePrint(clientGetMessage.getListOfUserWrapper(message).toString() + "\n", Level.STANDARD);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -114,10 +114,10 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         try {
             controller.leave(clientCreateMessage.createTokenMessage(token).createUsernameMessage(username).buildMessage());
         } catch (RemoteException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR , Level.ERROR);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.ERROR_READING, Level.ERROR);
+                    BuildGraphic.ERROR_READING , Level.ERROR);
         }
     }
 
