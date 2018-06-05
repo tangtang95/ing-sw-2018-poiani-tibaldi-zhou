@@ -284,6 +284,13 @@ public class BuildGraphic {
         return this;
     }
 
+    public BuildGraphic buildGraphicSchemaCard(SchemaCardWrapper schemaCard) {
+        if (schemaCard != null) {
+            stringBuilder.append(schemaCard.toString()).append("\n");
+        }
+        return this;
+    }
+
     /**
      * @return the stringBuilder to string.
      */

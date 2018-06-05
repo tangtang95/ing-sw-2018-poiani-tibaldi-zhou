@@ -1,45 +1,49 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
+import org.poianitibaldizhou.sagrada.cli.Level;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCardObserver {
 
-    private transient CLIGameView cliGameView;
-    private transient Map<String, SchemaCard> schemaCards;
+    private final transient CLIStateScreen cliStateScreen;
+    private final transient ClientGetMessage clientGetMessage;
 
-    public CLISchemaCardView(CLIGameView cliGameView) throws RemoteException {
+    public CLISchemaCardView(CLIStateScreen cliStateScreen) throws RemoteException {
         super();
-        this.cliGameView = cliGameView;
-        schemaCards = new HashMap<>();
+        this.cliStateScreen = cliStateScreen;
+        this.clientGetMessage = cliStateScreen.getClientGetMessage();
     }
 
-    /**
-     * Add a schema card of a certain player playing in the game.
-     *
-     * @param userName user's name
-     * @param schemaCard user's schemacard
-     */
-    public void addSchemaCard(String userName, SchemaCard schemaCard) {
-        schemaCards.putIfAbsent(userName, schemaCard);
+    @Override
+    public void onPlaceDice(String message) throws IOException {
+        PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
+        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
+        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " has placed a dice in position " +
+                positionWrapper.toString();
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
+                Level.STANDARD);
     }
 
-    public SchemaCard getSchemaCard(String userName) {
-        synchronized (schemaCards.get(userName)) {
-            return schemaCards.get(userName);
-        }
-    }
-
-
-    public Map<String, SchemaCard> getSchemaCards() {
-        return schemaCards;
+    @Override
+    public void onDiceRemove(String message) throws IOException {
+        PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
+        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
+        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " has removed a dice in position " +
+                positionWrapper.toString();
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
+                Level.STANDARD);
     }
 
     @Override
@@ -48,23 +52,13 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         if (!(o instanceof CLISchemaCardView)) return false;
         if (!super.equals(o)) return false;
         CLISchemaCardView that = (CLISchemaCardView) o;
-        return Objects.equals(cliGameView, that.cliGameView) &&
-                Objects.equals(getSchemaCards(), that.getSchemaCards());
+        return Objects.equals(cliStateScreen, that.cliStateScreen) &&
+                Objects.equals(clientGetMessage, that.clientGetMessage);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), cliGameView, getSchemaCards());
-    }
-
-    @Override
-    public void onPlaceDice(String message) throws IOException {
-
-    }
-
-    @Override
-    public void onDiceRemove(String message) throws IOException {
-
+        return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage);
     }
 }

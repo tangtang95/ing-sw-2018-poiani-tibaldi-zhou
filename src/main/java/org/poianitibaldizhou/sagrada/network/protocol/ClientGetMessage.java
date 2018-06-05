@@ -1,11 +1,10 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -141,5 +140,84 @@ public class ClientGetMessage {
         }
 
         return diceWrapper;
+    }
+
+    public PositionWrapper getPosition(String message) throws IOException {
+        PositionWrapper positionWrapper;
+
+        try {
+            positionWrapper = (PositionWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.POSITION);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return positionWrapper;
+    }
+
+    public List<ColorWrapper> getColorList(String message) throws IOException {
+        List<ColorWrapper> colorWrappers;
+
+        try {
+            colorWrappers = (List<ColorWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return colorWrappers;
+    }
+
+    public Integer getDiceValue(String message) throws IOException {
+        Integer value;
+
+        try {
+            value = (Integer) jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE_VALUE);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return value;
+    }
+
+    public List<PublicObjectiveCardWrapper> getPublicObjectiveCards(String message) throws IOException {
+        List<PublicObjectiveCardWrapper> poc;
+        try {
+            poc = (List<PublicObjectiveCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.PUBLIC_OBJECTIVE_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return poc;
+    }
+
+    public List<ToolCardWrapper> getToolCards(String message) throws IOException {
+        List<ToolCardWrapper> toolCardWrappers;
+        try {
+            toolCardWrappers = (List<ToolCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.TOOL_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return toolCardWrappers;
+    }
+
+    public List<PrivateObjectiveCardWrapper> getPrivateObjectiveCards(String message) throws IOException {
+        List<PrivateObjectiveCardWrapper> poc;
+        try {
+            poc = (List<PrivateObjectiveCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.PRIVATE_OBJECTIVE_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return poc;
+    }
+
+    public List<FrontBackSchemaCardWrapper> getFrontBackSchemaCards(String message) throws IOException {
+        List<FrontBackSchemaCardWrapper> fbsc;
+        try {
+            fbsc = (List<FrontBackSchemaCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.FRONT_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return fbsc;
     }
 }

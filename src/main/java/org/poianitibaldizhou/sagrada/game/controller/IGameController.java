@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -57,7 +58,7 @@ public interface IGameController extends Remote {
      * Binds the tool card observer of a certain player to the specified tool card.
      * Player must be part of the specified game.
      *
-     * @param message          message containing player's token, game's name and toolcard that need to be binded
+     * @param message          message containing player's token, game's name and toolCard that need to be binded
      * @param toolCardObserver player's tool card observer
      * @throws IOException network communication error
      */
@@ -194,4 +195,14 @@ public interface IGameController extends Remote {
      * @throws IOException network communication error
      */
     String getCurrentPlayer(String message) throws IOException;
+
+
+    /**
+     * Get the list of user (username) of a certain game
+     *
+     * @param message a protocol message containing player's token and game name
+     * @return a protocol message containing the list of user of the game by its name
+     * @throws IOException network communication error
+     */
+    String getListOfUser(String message) throws IOException;
 }

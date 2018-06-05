@@ -16,11 +16,14 @@ import java.util.Objects;
 public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
 
     private final transient UserWrapper myUser;
+    private transient UserWrapper currentUser;
     private final String gameName;
     private final String token;
 
     private final transient ClientGetMessage clientGetMessage = new ClientGetMessage();
     private final transient ClientCreateMessage clientCreateMessage = new ClientCreateMessage();
+
+    private final transient CLIGameView cliGameView;
 
     public CLIStateScreen(ConnectionManager connectionManager, ScreenManager screenManager,
                           String gameName, UserWrapper myUser, String token
@@ -30,6 +33,8 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
         this.token = token;
         this.myUser = myUser;
         this.gameName = gameName;
+
+        this.cliGameView = new CLIGameView(connectionManager, token, gameName);
     }
 
     @Override
@@ -43,6 +48,29 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     public void startCLI() {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         consoleListener.setCommandMap(commandMap);
+        try {
+            connectionManager.getGameController().joinGame(
+                    clientCreateMessage.createUsernameMessage(myUser.getUsername()).createTokenMessage(token).
+                            buildMessage(),
+                    cliGameView,
+                    cliGameView,
+                    new CLIRoundTrackView(this),
+                    this,
+                    new CLIDraftPoolView(this),
+                    new CLIDiceBagView(this)
+            );
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
+    }
+
+    public UserWrapper getCurrentUser() {
+        return currentUser;
+    }
+
+    public ClientGetMessage getClientGetMessage() {
+        return clientGetMessage;
     }
 
     /**
@@ -80,10 +108,11 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     public void onTurnState(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
+        currentUser = turnUser;
         if(turnUser.equals(myUser)){
             PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
                     Level.STANDARD);
-            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,gameName,myUser));
+            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,gameName,myUser, token));
         } else
             PrinterManager.consolePrint("Is the round " + round + "," +
                             turnUser.getUsername() + " is playing\n",
@@ -123,7 +152,8 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     @Override
     public void onPlaceDiceState(String jString) throws IOException {
         UserWrapper user = clientGetMessage.getUserWrapper(jString);
-        PrinterManager.consolePrint("The player " + user.getUsername() + " place a dice\n",
+        if (!user.equals(myUser))
+            PrinterManager.consolePrint("The player " + user.getUsername() + " place a dice\n",
                 Level.STANDARD);
     }
 
@@ -133,7 +163,8 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     @Override
     public void onUseCardState(String jString) throws IOException {
         UserWrapper user = clientGetMessage.getUserWrapper(jString);
-        PrinterManager.consolePrint("The player " + user.getUsername() + " use a ToolCard\n",
+        if (!user.equals(myUser))
+            PrinterManager.consolePrint("The player " + user.getUsername() + " use a ToolCard\n",
                 Level.STANDARD);
     }
 

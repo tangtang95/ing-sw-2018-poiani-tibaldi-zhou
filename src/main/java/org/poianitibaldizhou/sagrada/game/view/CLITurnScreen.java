@@ -21,9 +21,10 @@ public class CLITurnScreen extends CLIRoundScreen {
      * @param myUser
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager, String gameName, UserWrapper myUser)
+    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager,
+                         String gameName, UserWrapper myUser, String token)
             throws RemoteException {
-        super(networkManager, screenManager, gameName, myUser);
+        super(networkManager, screenManager, gameName, myUser, token);
 
         initializeCommands();
     }

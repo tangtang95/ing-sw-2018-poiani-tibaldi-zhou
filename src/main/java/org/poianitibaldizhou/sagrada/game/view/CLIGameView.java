@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.BufferedReader;
@@ -15,6 +16,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
@@ -22,14 +26,23 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     private final transient ClientGetMessage clientGetMessage;
     private final transient ClientCreateMessage clientCreateMessage;
+    private final transient String token;
+    private final transient String gameName;
 
-    private transient UserWrapper currentUser;
-
-    public CLIGameView(ConnectionManager connectionManager) throws RemoteException {
+    public CLIGameView(ConnectionManager connectionManager, String token, String gameName) throws RemoteException {
         this.connectionManager = connectionManager;
-        this.currentUser = null;
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();
+        this.gameName = gameName;
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getGameName() {
+        return gameName;
     }
 
     public ClientGetMessage getClientGetMessage() {
@@ -38,14 +51,6 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     public ClientCreateMessage getClientCreateMessage() {
         return clientCreateMessage;
-    }
-
-    public UserWrapper getCurrentUser() {
-        return currentUser;
-    }
-
-    public void setCurrentUser(UserWrapper currentUser) {
-        this.currentUser = currentUser;
     }
 
     private int readNumber(int maxInt) {
@@ -83,43 +88,53 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     }
 
     @Override
-    public void onPublicObjectiveCardsDraw(String publicObjectiveCards) {
+    public void onPublicObjectiveCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
                 buildMessage("Public objective cards valid for this game: ").
-                buildGraphicPublicObjectiveCards(publicObjectiveCards).toString(),
+                buildGraphicPublicObjectiveCards(clientGetMessage.getPublicObjectiveCards(jString)).toString(),
                 Level.STANDARD);
     }
 
     @Override
-    public void onToolCardsDraw(String toolCards) {
+    public void onToolCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
                         buildMessage("Tool cards valid for this game: ").
-                        buildGraphicToolCards(toolCards).toString(),
+                        buildGraphicToolCards(clientGetMessage.getToolCards(jString)).toString(),
                 Level.STANDARD);
     }
 
     @Override
     public void onChoosePrivateObjectiveCards(String privateObjectiveCards) {
+        /*SINGLE PLAYER*/
+    }
+
+    @Override
+    public void onPrivateObjectiveCardDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
                         buildMessage("Private objective cards valid for this game: ").
-                        buildGraphicPrivateObjectiveCards(privateObjectiveCards).toString(),
+                        buildGraphicPrivateObjectiveCards(clientGetMessage.getPrivateObjectiveCards(jString)).toString(),
                 Level.STANDARD);
     }
 
     @Override
-    public void onPrivateObjectiveCardDraw(String privateObjectiveCards) {
-        //TODO
-    }
+    public void onSchemaCardsDraw(String jString) throws IOException {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        List<SchemaCardWrapper> schemaCards = new ArrayList<>();
+        clientGetMessage.getFrontBackSchemaCards(jString).forEach(c -> schemaCards.addAll(c.getSchemaCards()));
 
-    @Override
-    public void onSchemaCardsDraw(String schemaCards) {
-        Runnable reader = () -> {
+        buildGraphic.buildMessage("Choose a schema card:");
+        for (int i = 0; i < schemaCards.size(); i++)
+            buildGraphic.buildMessage("" + i).buildGraphicSchemaCard(schemaCards.get(i));
+        PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 
-        };
-        new Thread(reader).start();
+        connectionManager.getGameController().chosenSchemaCard(
+                clientCreateMessage.createSchemaCardMessage(
+                        schemaCards.get(readNumber(schemaCards.size()))).
+                        createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+        );
     }
 
     /**
@@ -136,5 +151,24 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     @Override
     public void err(String err) {
         PrinterManager.consolePrint("ERROR: " + err + "\n", Level.INFORMATION);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLIGameView)) return false;
+        if (!super.equals(o)) return false;
+        CLIGameView that = (CLIGameView) o;
+        return Objects.equals(getConnectionManager(), that.getConnectionManager()) &&
+                Objects.equals(getClientGetMessage(), that.getClientGetMessage()) &&
+                Objects.equals(getClientCreateMessage(), that.getClientCreateMessage()) &&
+                Objects.equals(getToken(), that.getToken()) &&
+                Objects.equals(getGameName(), that.getGameName());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), getConnectionManager(), getClientGetMessage(), getClientCreateMessage(), getToken(), getGameName());
     }
 }
