@@ -1,12 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -14,7 +13,7 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
 
     private CLIGameView cliGameView;
 
-    CLIPlayerObserverView(CLIGameView cliGameView) throws RemoteException {
+    public CLIPlayerObserverView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
     }
@@ -23,15 +22,16 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
      * {@inheritDoc}
      */
     @Override
-    public void onFavorTokenChange(String value) {
-        //User user = cliGameView.getCurrentUser();
-        //String message = user.getName() + " has spent " + value + "token";
+    public void onFavorTokenChange(String value) throws IOException {
+        String message = cliGameView.getCurrentUser().getUsername() + " has spent " + cliGameView.getClientGetMessage().getValue(value) + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
-        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
     @Override
-    public void onSetOutcome(String outcome){
-
+    public void onSetOutcome(String outcome) throws IOException {
+        String message = "Your outcome is: " + cliGameView.getClientGetMessage().getOutcome(outcome);
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 }
