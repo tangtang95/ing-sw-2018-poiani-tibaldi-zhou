@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.apache.velocity.runtime.directive.Parse;
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
@@ -74,5 +75,53 @@ public class ClientGetMessage {
             throw new IOException();
         }
         return timeout;
+    }
+
+    public Integer getValue(String message) throws IOException {
+        Integer value;
+
+        try {
+            value = (Integer) jsonClientProtocol.getResponseByKey(message, SharedConstants.INTEGER);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return value;
+    }
+
+    public String getOutcome(String message) throws IOException {
+        String outcome;
+
+        try {
+            outcome = (String) jsonClientProtocol.getResponseByKey(message, SharedConstants.OUTCOME);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return outcome;
+    }
+
+    public DiceWrapper getOldDice(String message) throws IOException {
+        DiceWrapper diceWrapper;
+
+        try {
+            diceWrapper = (DiceWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.OLD_DICE);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return diceWrapper;
+    }
+
+    public DiceWrapper getNewDice (String message) throws IOException {
+        DiceWrapper diceWrapper;
+
+        try {
+            diceWrapper = (DiceWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.NEW_DICE);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return diceWrapper;
     }
 }

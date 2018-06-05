@@ -1,14 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
+import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
@@ -17,57 +17,46 @@ import java.util.Objects;
 public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrackObserver {
 
     private final transient CLIGameView cliGameView;
-    private final transient RoundTrack roundTrack;
-
-    CLIRoundTrackView(CLIGameView cliGameView) throws RemoteException {
+    public CLIRoundTrackView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
-        roundTrack = new RoundTrack();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAddToRound(String jString){
-        String diceList;
-        String round;
-        //User user = cliGameView.getCurrentUser();
-        //String message = user.getName() + " added a list of dices to the round track at round " + round + ".";
+    public void onDicesAddToRound(String message) throws IOException {
+
+        Integer round = cliGameView.getClientGetMessage().getValue(message);
+        List<DiceWrapper> diceWrapperList = cliGameView.getClientGetMessage().getDiceList(message);
+        String printMessage = cliGameView.getCurrentUser().getUsername() + " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceList).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDices(diceWrapperList).toString(), Level.STANDARD);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAddToRound(String jString){
-        String dice;
-        String round;
-       // User user = cliGameView.getCurrentUser();
-        synchronized (roundTrack) {
-
-        }
-        //String message = user.getName() + " added a dice to the round track at round " + round + ".";
+    public void onDiceAddToRound(String message) throws IOException {
+        Integer round = cliGameView.getClientGetMessage().getValue(message);
+        DiceWrapper diceWrapper = cliGameView.getClientGetMessage().getDice(message);
+        String printMessage = cliGameView.getCurrentUser().getUsername() + " added a dice to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemoveFromRound(String jString){
-        String diceList;
-        String round;
-        //User user = cliGameView.getCurrentUser();
-        synchronized (roundTrack) {
-
-        }
-        //String message = user.getName() + " removed a dice from the round track at round " + round + ".";
+    public void onDiceRemoveFromRound(String message) throws IOException {
+        Integer round  = cliGameView.getClientGetMessage().getValue(message);
+        DiceWrapper diceWrapper = cliGameView.getClientGetMessage().getDice(message);
+        String printMessage = cliGameView.getCurrentUser().getUsername() + " removed a dice from the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
-        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(dice).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
 
     }
 
@@ -75,23 +64,20 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * {@inheritDoc}
      */
     @Override
-    public void onDiceSwap(String jString){
-        String oldDice;
-        String newDice;
-        String round;
-        //User user = cliGameView.getCurrentUser();
-       // String message = user.getName() + " swap a with the round track at round " + round + ".";
+    public void onDiceSwap(String message) throws IOException {
+        DiceWrapper oldDice = cliGameView.getClientGetMessage().getOldDice(message);
+        DiceWrapper newDice = cliGameView.getClientGetMessage().getNewDice(message);
+        Integer round = cliGameView.getClientGetMessage().getValue(message);
+
+        String printMessage = cliGameView.getCurrentUser().getUsername() + " swap a with the round track at round " + round + ".";
         String message2 = "Old dice (no more present in round track) : ";
         String message3 = "New dice (added to the round track) : ";
         BuildGraphic buildGraphic = new BuildGraphic();
-        //PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildMessage(message2).
-            //    buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildMessage(message2).
+                buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
     }
 
-    public RoundTrack getRoundTrack() {
-        return roundTrack;
-    }
-
+    /*
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -104,7 +90,6 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), cliGameView, getRoundTrack());
-    }
+    }*/
 }

@@ -1,14 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.cli.PrinterManager;
-import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
-import org.poianitibaldizhou.sagrada.cli.Level;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -22,7 +15,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
     private transient CLIGameView cliGameView;
     private transient Map<String, SchemaCard> schemaCards;
 
-    CLISchemaCardView(CLIGameView cliGameView) throws RemoteException {
+    public CLISchemaCardView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
         schemaCards = new HashMap<>();
