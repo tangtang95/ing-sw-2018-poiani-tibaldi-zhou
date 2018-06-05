@@ -1,12 +1,9 @@
 package org.poianitibaldizhou.sagrada.cli;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,9 +13,6 @@ import java.util.Map;
  * All remote object is passed with a json file (string).
  */
 public class BuildGraphic {
-
-    private JSONParser jsonParser;
-    private JSONArray jsonArray;
 
     /**
      * the unique stringBuilder whom append any graphic object.
@@ -38,16 +32,12 @@ public class BuildGraphic {
      */
     private static final String NAME = "Card Name: ";
     private static final String DESCRIPTION = "Description:\n";
-    private static final String JSON_CARD_NAME = "name";
-    private static final String JSON_CARD_DESCRIPTION = "description";
 
     /**
      * constructor.
      */
     public BuildGraphic() {
         stringBuilder = new StringBuilder();
-        jsonParser = new JSONParser();
-        jsonArray = null;
     }
 
     /**
@@ -55,8 +45,8 @@ public class BuildGraphic {
      * finishing in the end point whit UTF-8 code.
      *
      * @param diceWrappers array of dices whom create the graphics.
-     * @param start the start point.
-     * @param end the end point.
+     * @param start        the start point.
+     * @param end          the end point.
      */
     private void buildListDices(List<DiceWrapper> diceWrappers, int start, int end) {
         for (int i = start; i < end; i++)
@@ -104,7 +94,7 @@ public class BuildGraphic {
                 buildListDices(diceListWrapper, 0, diceListWrapper.size());
             else {
                 buildListDices(diceListWrapper, 0, 5);
-                buildListDices(diceListWrapper, 5, jsonArray.size());
+                buildListDices(diceListWrapper, 5, diceListWrapper.size());
             }
         }
         return this;
@@ -116,15 +106,11 @@ public class BuildGraphic {
      * @param dice dice whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicDice(String dice) {
+    public BuildGraphic buildGraphicDice(DiceWrapper dice) {
         if (dice != null) {
-            jsonArray = null;
-            try {
-                jsonArray = (JSONArray) jsonParser.parse(dice);
-                buildListDices(jsonArray, 0, 1);
-            } catch (ParseException e) {
-                PrinterManager.consolePrint("Parse exception in buildGraphicDice.\n", Level.ERROR);
-            }
+            List<DiceWrapper> diceWrappers = new ArrayList<>();
+            diceWrappers.add(dice);
+            buildListDices(diceWrappers, 0, 1);
         }
         return this;
     }
@@ -136,7 +122,7 @@ public class BuildGraphic {
      * @param message to append.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildMessage(String message){
+    public BuildGraphic buildMessage(String message) {
         if (message != null)
             stringBuilder.append(message).append("\n");
         return this;
@@ -148,22 +134,16 @@ public class BuildGraphic {
      * @param toolCards list of toolCards whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicToolCards(String toolCards) {
+    public BuildGraphic buildGraphicToolCards(List<ToolCardWrapper> toolCards) {
         if (toolCards != null) {
-            jsonArray = null;
-            try {
-                jsonArray = (JSONArray) jsonParser.parse(toolCards);
-                buildMessage("----------------------------TOOL CARDS---------------------------");
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JSONObject toolCard = (JSONObject) jsonArray.get(i);
-                    stringBuilder.append("[").append(i).append("]\n");
-                    stringBuilder.append(NAME).append((String) toolCard.get(JSON_CARD_NAME)).append("\n");
-                    stringBuilder.append("ColorWrapper:     ").append((String) toolCard.get("color")).append("\n");
-                    stringBuilder.append(DESCRIPTION);
-                    stringBuilder.append((String) toolCard.get(JSON_CARD_DESCRIPTION)).append("\n\n");
-                }
-            } catch (ParseException e) {
-                PrinterManager.consolePrint("Parse exception in buildGraphicToolCards.\n", Level.ERROR);
+            buildMessage("----------------------------TOOL CARDS---------------------------");
+            for (int i = 0; i < toolCards.size(); i++) {
+                ToolCardWrapper toolCard = toolCards.get(i);
+                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append(NAME).append(toolCard.getName()).append("\n");
+                stringBuilder.append("Color:     ").append(toolCard.getColor()).append("\n");
+                stringBuilder.append(DESCRIPTION);
+                stringBuilder.append(toolCard.getDescription()).append("\n\n");
             }
         }
         return this;
@@ -175,22 +155,17 @@ public class BuildGraphic {
      * @param publicObjectiveCards list of publicObjectiveCards whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicPublicObjectiveCards(String publicObjectiveCards) {
+    public BuildGraphic buildGraphicPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCards) {
         if (publicObjectiveCards != null) {
-            jsonArray = null;
-            try {
-                jsonArray = (JSONArray) jsonParser.parse(publicObjectiveCards);
-                buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JSONObject poc = (JSONObject) jsonArray.get(i);
-                    stringBuilder.append("[").append(i).append("]\n");
-                    stringBuilder.append(NAME).append((String) poc.get(JSON_CARD_NAME)).append("\n");
-                    stringBuilder.append("Point:     ").append((String) poc.get("point")).append("\n");
-                    stringBuilder.append(DESCRIPTION);
-                    stringBuilder.append((String) poc.get(JSON_CARD_DESCRIPTION)).append("\n\n");
-                }
-            } catch (ParseException e) {
-                PrinterManager.consolePrint("Parse exception in buildGraphicPublicObjectiveCards.\n", Level.ERROR);
+
+            buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
+            for (int i = 0; i < publicObjectiveCards.size(); i++) {
+                PublicObjectiveCardWrapper poc = publicObjectiveCards.get(i);
+                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append(NAME).append(poc.getName()).append("\n");
+                stringBuilder.append("Point:     ").append(poc.getCardPoint()).append("\n");
+                stringBuilder.append(DESCRIPTION);
+                stringBuilder.append(poc.getDescription()).append("\n\n");
             }
         }
         return this;
@@ -202,21 +177,15 @@ public class BuildGraphic {
      * @param privateObjectiveCards list of privateObjectiveCards whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicPrivateObjectiveCards(String privateObjectiveCards) {
+    public BuildGraphic buildGraphicPrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
         if (privateObjectiveCards != null) {
-            jsonArray = null;
-            try {
-                jsonArray = (JSONArray) jsonParser.parse(privateObjectiveCards);
-                buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
-                for (int i = 0; i < jsonArray.size(); i++) {
-                    JSONObject poc = (JSONObject) jsonArray.get(i);
-                    stringBuilder.append("[").append(i).append("]\n");
-                    stringBuilder.append(NAME).append((String) poc.get(JSON_CARD_NAME)).append("\n");
-                    stringBuilder.append(DESCRIPTION);
-                    stringBuilder.append((String) poc.get(JSON_CARD_DESCRIPTION)).append("\n\n");
-                }
-            } catch (ParseException e) {
-                PrinterManager.consolePrint("Parse exception in buildGraphicPrivateObjectiveCards.\n", Level.ERROR);
+            buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
+            for (int i = 0; i < privateObjectiveCards.size(); i++) {
+                PrivateObjectiveCardWrapper poc = privateObjectiveCards.get(i);
+                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append(NAME).append(poc.getName()).append("\n");
+                stringBuilder.append(DESCRIPTION);
+                stringBuilder.append(poc.getDescription()).append("\n\n");
             }
         }
         return this;
@@ -228,8 +197,8 @@ public class BuildGraphic {
      * @param table to build.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicTable(Map<String, String> table){
-        if(table != null) {
+    public BuildGraphic buildGraphicTable(Map<String, String> table) {
+        if (table != null) {
             table.forEach((key, value) -> {
                 stringBuilder.append(String.format("%10s %3s", key, value));
                 stringBuilder.append("\n");
@@ -304,7 +273,7 @@ public class BuildGraphic {
      * @param roundTrack to build graphic.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicRoundTrack(RoundTrack roundTrack) {
+    public BuildGraphic buildGraphicRoundTrack(RoundTrackWrapper roundTrack) {
         if (roundTrack != null) {
             buildMessage("----------------------------ROUND TRACK---------------------------");
             for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
