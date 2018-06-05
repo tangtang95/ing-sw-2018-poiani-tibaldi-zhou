@@ -6,6 +6,9 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,8 +20,32 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     private final transient ConnectionManager connectionManager;
 
+    private final transient ClientGetMessage clientGetMessage;
+    private final transient ClientCreateMessage clientCreateMessage;
+
+    private transient UserWrapper currentUser;
+
     public CLIGameView(ConnectionManager connectionManager) throws RemoteException {
         this.connectionManager = connectionManager;
+        this.currentUser = null;
+        this.clientCreateMessage = new ClientCreateMessage();
+        this.clientGetMessage = new ClientGetMessage();
+    }
+
+    public ClientGetMessage getClientGetMessage() {
+        return clientGetMessage;
+    }
+
+    public ClientCreateMessage getClientCreateMessage() {
+        return clientCreateMessage;
+    }
+
+    public UserWrapper getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(UserWrapper currentUser) {
+        this.currentUser = currentUser;
     }
 
     private int readNumber(int maxInt) {
@@ -44,6 +71,10 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         } while (key < 1);
         consoleListener.wakeUpCommandConsole();
         return key - 1;
+    }
+
+    public ConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 
     @Override
