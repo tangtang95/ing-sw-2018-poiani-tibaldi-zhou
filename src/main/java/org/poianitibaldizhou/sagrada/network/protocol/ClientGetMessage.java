@@ -1,10 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -159,5 +156,41 @@ public class ClientGetMessage {
         }
 
         return value;
+    }
+
+    public SchemaCardWrapper getSchemaCard(String message) throws IOException {
+        SchemaCardWrapper schemaCardWrapper;
+
+        try {
+            schemaCardWrapper = (SchemaCardWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.SCHEMA_CARD);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return schemaCardWrapper;
+    }
+
+    public ColorWrapper getColor(String message) throws IOException{
+        ColorWrapper colorWrapper;
+
+        try {
+            colorWrapper = (ColorWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return colorWrapper;
+    }
+
+    public RoundTrackWrapper getRoundTrack(String message) throws IOException {
+        RoundTrackWrapper roundTrack;
+
+        try {
+            roundTrack = (RoundTrackWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.ROUND_TRACK);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return roundTrack;
     }
 }

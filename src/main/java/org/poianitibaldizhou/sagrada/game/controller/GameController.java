@@ -12,10 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ColorExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.DiceExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.PositionExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ValueExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
@@ -23,6 +20,7 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 
 import java.io.IOException;
@@ -40,12 +38,14 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
 
-    private final transient ServerGetMessage networkGetItem;
+    private final transient ServerGetMessage serverGetMessage;
+    private final transient ServerCreateMessage serverCreateMessage;
 
     public GameController(GameManager gameManager) throws RemoteException {
         super();
         this.gameManager = gameManager;
-        this.networkGetItem = new ServerGetMessage();
+        this.serverGetMessage = new ServerGetMessage();
+        this.serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -55,8 +55,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void joinGame(final String message, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
                          IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
 
         if (!gameManager.containsGame(gameName)) {
             try {
@@ -102,9 +102,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void chosenSchemaCard(String message) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        SchemaCard schemaCard = networkGetItem.getSchemaCard(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        SchemaCard schemaCard = serverGetMessage.getSchemaCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -148,9 +148,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void bindPlayer(String message, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        User user = networkGetItem.getUser(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        User user = serverGetMessage.getUser(message);
         Player player = null;
 
         if (initialCheck(token, gameName))
@@ -202,9 +202,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void bindToolCard(String message, IToolCardObserver toolCardObserver) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        ToolCard toolCard = networkGetItem.getToolCard(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        ToolCard toolCard = serverGetMessage.getToolCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -246,9 +246,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void chooseAction(String message) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
-        IActionCommand actionCommand = networkGetItem.getActionCommand(message);
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
+        IActionCommand actionCommand = serverGetMessage.getActionCommand(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -289,10 +289,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void placeDice(String message) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        Dice dice = networkGetItem.getDice(message);
-        Position position = networkGetItem.getPosition(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        Dice dice = serverGetMessage.getDice(message);
+        Position position = serverGetMessage.getPosition(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -330,9 +330,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void useToolCard(String message, IToolCardExecutorObserver executorObserver) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        ToolCard toolCard = networkGetItem.getToolCard(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        ToolCard toolCard = serverGetMessage.getToolCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -367,9 +367,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void choosePrivateObjectiveCard(String message) throws IOException {
-        final String token = networkGetItem.getToken(message);
-        final String gameName = networkGetItem.getGameName(message);
-        final PrivateObjectiveCard privateObjectiveCard = networkGetItem.getPrivateObjectiveCard(message);
+        final String token = serverGetMessage.getToken(message);
+        final String gameName = serverGetMessage.getGameName(message);
+        final PrivateObjectiveCard privateObjectiveCard = serverGetMessage.getPrivateObjectiveCard(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -406,9 +406,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setDice(String message) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
-        Dice dice = networkGetItem.getDice(message);
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
+        Dice dice = serverGetMessage.getDice(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -443,9 +443,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setNewValue(String message) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        Integer value = networkGetItem.getInteger(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        Integer value = serverGetMessage.getInteger(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -480,9 +480,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setColor(String message) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        Color color = networkGetItem.getColor(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        Color color = serverGetMessage.getColor(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -517,9 +517,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setPosition(String message) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
-        Position position = networkGetItem.getPosition(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        Position position = serverGetMessage.getPosition(message);
 
         if (initialCheck(token, gameName))
             return;
@@ -553,11 +553,48 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
+    public void setContinueAction(String message) throws IOException {
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
+        boolean answer = serverGetMessage.getBoolean(message);
+
+        if (initialCheck(token, gameName))
+            return;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            cleanObservers(gameName);
+
+            IGame game = gameManager.getGameByName(gameName);
+
+            if (wasUserDisconnected(token, gameName)) {
+                try {
+                    viewMap.get(token).err(NOT_SYNCH);
+                } catch (IOException ignored) {
+                    // Ignored exception: can't do anything about this
+                }
+            }
+
+            try {
+                game.userFireExecutorEvent(token, new AnswerExecutorEvent(answer));
+            } catch (InvalidActionException e) {
+                try {
+                    viewMap.get(token).err(FIRE_EVENT_ERROR);
+                } catch (IOException e1) {
+                    handleIOException(token, gameName);
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                           Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                           IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                                   diceBagObserver) throws IOException {
-        final String userName = networkGetItem.getUserName(message);
+        final String userName = serverGetMessage.getUserName(message);
         String token = null;
         String gameName = null;
 
@@ -634,11 +671,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getToolCards(String message) throws IOException {
-        String token = networkGetItem.getToken(message);
-        String gameName = networkGetItem.getGameName(message);
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            return networkGetItem.getErrorMessage();
+            return serverGetMessage.getErrorMessage();
         }
 
         List<ToolCard> toolCards;
@@ -647,9 +684,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             toolCards = gameManager.getGameByName(gameName).getToolCards();
         }
 
-        StringBuilder toolCardsJSONString = new StringBuilder();
-        toolCards.forEach(toolCard -> toolCardsJSONString.append(toolCard.toJSON().toJSONString()));
-        return toolCardsJSONString.toString();
+        return serverCreateMessage.createToolCardList(toolCards).buildMessage();
     }
 
     /**
@@ -657,11 +692,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getDraftPool(String message) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            return networkGetItem.getErrorMessage();
+            return serverGetMessage.getErrorMessage();
         }
 
 
@@ -671,8 +706,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             draftPool = gameManager.getGameByName(gameName).getDraftPool();
         }
 
-        // BUILD JSON and RETURN IT
-        return draftPool.toJSON().toJSONString();
+        return serverCreateMessage.createDiceList(draftPool.getDices()).buildMessage();
     }
 
     /**
@@ -680,11 +714,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getRoundTrack(String message) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            return networkGetItem.getErrorMessage();
+            return serverGetMessage.getErrorMessage();
         }
 
         RoundTrack roundTrack;
@@ -693,7 +727,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             roundTrack = gameManager.getGameByName(gameName).getRoundTrack();
         }
 
-        return roundTrack.toJSON().toJSONString();
+        return serverCreateMessage.createRoundTrackMessage(roundTrack).buildMessage();
     }
 
     /**
@@ -701,12 +735,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getToolCardByName(String message) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
-        String toolCardName = networkGetItem.getToolCard(message).getName();
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
+        String toolCardName = serverGetMessage.getToolCard(message).getName();
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            return networkGetItem.getErrorMessage();
+            return serverGetMessage.getErrorMessage();
         }
 
         List<ToolCard> toolCards;
@@ -718,10 +752,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Optional<ToolCard> toolCard = toolCards.stream().filter(card -> card.getName().equals(toolCardName)).findFirst();
         if (!toolCard.isPresent()) {
-            return networkGetItem.getErrorMessage();
+            return serverGetMessage.getErrorMessage();
         }
 
-        return toolCard.get().toJSON().toJSONString();
+        return serverCreateMessage.createToolCardMessage(toolCard.get()).buildMessage();
     }
 
     /**
@@ -729,11 +763,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getCurrentPlayer(String message) throws IOException {
-        String gameName = networkGetItem.getGameName(message);
-        String token = networkGetItem.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+        String token = serverGetMessage.getToken(message);
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            return networkGetItem.getErrorMessage();
+            return serverGetMessage.getErrorMessage();
         }
 
         Player player;
@@ -742,11 +776,38 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             try {
                 player = gameManager.getGameByName(gameName).getCurrentPlayer();
             } catch (InvalidActionException e) {
-                return networkGetItem.getErrorMessage();
+                return serverGetMessage.getErrorMessage();
             }
         }
 
-        return player.toJSON().toJSONString();
+        return serverCreateMessage.createUserMessage(player.getUser()).buildMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getSchemaCardByToken(String message) throws IOException {
+        final String token = serverGetMessage.getToken(message);
+        final String gameName = serverGetMessage.getGameName(message);
+        SchemaCard schemaCard = null;
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            IGame game = gameManager.getGameByName(gameName);
+            for(Player p : game.getPlayers()) {
+                if(p.getToken().equals(token))
+                    schemaCard = p.getSchemaCard();
+            }
+        }
+
+        if(schemaCard == null)
+            return serverGetMessage.getErrorMessage();
+
+        return serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage();
     }
 
     /**

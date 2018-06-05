@@ -107,6 +107,7 @@ public interface IGameController extends Remote {
      * This method assumes that game's toolcards contains the specified toolcard.
      *
      * @param message message containing player's token, game's name and dice to set
+     * @throws IOException network communication error
      */
     void setDice(String message) throws IOException;
 
@@ -123,6 +124,7 @@ public interface IGameController extends Remote {
      * This method assumes that game's toolcards contains the specified toolcard.
      *
      * @param message message containing game played, player's token and color to set
+     * @throws IOException network communication error
      */
     void setColor(String message) throws IOException;
 
@@ -131,9 +133,17 @@ public interface IGameController extends Remote {
      * This method assumes that game's toolcards contains the specified toolcard.
      *
      * @param message message containing game's name, player's token and position to set
-     * @throws IOException
+     * @throws IOException network communication error
      */
     void setPosition(String message) throws IOException;
+
+    /**
+     * Set the player action to continue or not the action.
+     *
+     * @param message message containing game's name, player's token and player choice
+     * @throws IOException network communication error
+     */
+    void setContinueAction(String message) throws IOException;
 
     /**
      * Re-connects a player to a certain game.
@@ -196,6 +206,15 @@ public interface IGameController extends Remote {
      */
     String getCurrentPlayer(String message) throws IOException;
 
+
+    /**
+     * Get the schema card of a certain player
+     *
+     * @param message message containing player's token and game name
+     * @return a message containing the schema card
+     * @throws IOException network communication error
+     */
+    String getSchemaCardByToken(String message) throws IOException;
 
     /**
      * Get the list of user (username) of a certain game

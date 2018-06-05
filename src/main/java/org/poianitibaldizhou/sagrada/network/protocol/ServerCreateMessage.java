@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
@@ -161,9 +162,20 @@ public class ServerCreateMessage {
         return this;
     }
 
+    public ServerCreateMessage createToolCardMessage(ToolCard toolcard) {
+        jsonServerProtocol.appendMessage(SharedConstants.TOOL_CARD, toolcard);
+        return this;
+    }
+
+    public ServerCreateMessage createSchemaCardMessage(SchemaCard schemaCard) {
+        jsonServerProtocol.appendMessage(SharedConstants.SCHEMA_CARD, schemaCard);
+        return this;
+    }
+
     public String buildMessage() {
         String temp = jsonServerProtocol.buildMessage();
         jsonServerProtocol = new JSONServerProtocol();
         return temp;
     }
 }
+

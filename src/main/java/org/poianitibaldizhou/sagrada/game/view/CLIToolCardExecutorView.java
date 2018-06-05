@@ -4,10 +4,9 @@ import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,13 +15,13 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 
-public class CLIToolCardExecutorObserver extends UnicastRemoteObject implements IToolCardExecutorObserver {
+public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToolCardExecutorObserver {
 
     private final transient CLIGameView cliGameView;
     private final transient ConsoleListener consoleListener;
     private final transient String toolCardName;
 
-    public CLIToolCardExecutorObserver(CLIGameView cliGameView, String toolCardName) throws RemoteException {
+    public CLIToolCardExecutorView(CLIGameView cliGameView, String toolCardName) throws RemoteException {
         super();
         this.consoleListener = ConsoleListener.getInstance();
         this.cliGameView = cliGameView;
@@ -172,26 +171,110 @@ public class CLIToolCardExecutorObserver extends UnicastRemoteObject implements 
      */
     @Override
     public void notifyNeedDiceFromRoundTrack(String roundTrack) throws IOException {
+        BuildGraphic buildGraphic = new BuildGraphic();
 
+        RoundTrackWrapper roundTrackWrapper = cliGameView.getClientGetMessage().getRoundTrack(roundTrack);
+
+        PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrackWrapper).toString(), Level.STANDARD);
+
+        readRoundTrackParameters(roundTrackWrapper);
     }
-
 
     /**
      * {@inheritDoc}
      */
-    public void notifyNeedPosition() throws IOException {}
-    /*
     @Override
     public void notifyNeedPosition() throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         BuildGraphic buildGraphic = new BuildGraphic();
-        String response;
-        int row;
-        int column;
 
+        String sendingParam = cliGameView.getClientCreateMessage().createTokenMessage(cliGameView.getToken()).
+                createGameNameMessage(cliGameView.getGameName()).buildMessage();
+        String serverMessage = cliGameView.getConnectionManager().getGameController().getSchemaCardByToken(sendingParam);
+
+        SchemaCardWrapper schemaCard = cliGameView.getClientGetMessage().getSchemaCard(serverMessage);
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card").
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
+        schemaCardCLI(r);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyNeedDicePositionOfCertainColor(String message) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        BuildGraphic buildGraphic = new BuildGraphic();
+
+        ColorWrapper color = cliGameView.getClientGetMessage().getColor(message);
+
+        String sendMessage = cliGameView.getClientCreateMessage().createGameNameMessage(cliGameView.getGameName()).
+                createTokenMessage(cliGameView.getToken()).buildMessage();
+        String serverResponse = cliGameView.getConnectionManager().getGameController().getSchemaCardByToken(sendMessage);
+        SchemaCardWrapper schemaCard = cliGameView.getClientGetMessage().getSchemaCard(serverResponse);
+
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
+                + color.name()).
+                buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
+        schemaCardCLI(r);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyRepeatAction() throws IOException {
+        PrinterManager.consolePrint("WARNING: There was an error with the last command\n " +
+                "which will be repeated.", Level.INFORMATION);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyCommandInterrupted(String error) throws IOException {
+        PrinterManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
+                toolCardName + ", so you will not be able to use it this turn.", Level.INFORMATION);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyNeedContinueAnswer() throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        String response;
+        boolean doAgain = false;
+        boolean answer = false;
+
+        do {
+            PrinterManager.consolePrint("Do you want to continue? (y/n)", Level.STANDARD);
+            response = r.readLine();
+            if(response.equals("y") || response.equals("Y")) {
+                answer = true;
+                doAgain = false;
+            } else if(response.equals("n") || response.equals("N")) {
+                answer = false;
+                doAgain = false;
+            } else {
+                PrinterManager.consolePrint("Incorrect input", Level.STANDARD);
+                doAgain = true;
+            }
+        } while(doAgain);
+
+        String setMessage = cliGameView.getClientCreateMessage().createGameNameMessage(cliGameView.getGameName()).
+                createTokenMessage(cliGameView.getToken()).createAnswerMessage(answer).buildMessage();
+
+        cliGameView.getConnectionManager().getGameController().setContinueAction(setMessage);
+
+    }
+
+
+    private void schemaCardCLI(BufferedReader r) throws IOException {
+        String response;
+        int row;
+        int column;
         do {
             PrinterManager.consolePrint("Insert a row: ", Level.STANDARD);
             response = r.readLine();
@@ -208,38 +291,57 @@ public class CLIToolCardExecutorObserver extends UnicastRemoteObject implements 
                 } catch (NumberFormatException e) {
                     column = 0;
                 }
-                if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    connectionManager.getGameController().setPosition( currentUser.getToken(), gameName,
-                            new Position(row,column),
-                            toolCard.getName());
+                if (column > 0 && column <= SchemaCardWrapper.NUMBER_OF_COLUMNS) {
+                    String setMessage = cliGameView.getClientCreateMessage().createTokenMessage(cliGameView.getToken()).
+                            createGameNameMessage(cliGameView.getGameName()).createPositionMessage(new PositionWrapper(row, column)).buildMessage();
+                    cliGameView.getConnectionManager().getGameController().setPosition(setMessage);
                 } else {
-                    PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                    PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
                     row = -1;
                 }
             } else {
-                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
+                PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
                 row = -1;
             }
         } while (row < 0);
-    }*/
-
-    @Override
-    public void notifyNeedDicePositionOfCertainColor(String color) throws IOException {
-
     }
 
-    @Override
-    public void notifyRepeatAction() throws IOException {
 
-    }
+    private void readRoundTrackParameters(RoundTrackWrapper roundTrack) throws IOException {
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        String response;
+        int roundNumber;
+        int diceNumber;
 
-    @Override
-    public void notifyCommandInterrupted(String error) throws IOException {
-
-    }
-
-    @Override
-    public void notifyNeedContinueAnswer() throws IOException {
-
+        do {
+            PrinterManager.consolePrint("Choose a round: ", Level.STANDARD);
+            response = r.readLine();
+            try {
+                roundNumber = Integer.parseInt(response);
+            } catch (NumberFormatException e) {
+                roundNumber = -1;
+            }
+            if (roundNumber > 0 && roundNumber < RoundTrack.NUMBER_OF_TRACK) {
+                PrinterManager.consolePrint("Choose a dice: ", Level.STANDARD);
+                response = r.readLine();
+                try {
+                    diceNumber = Integer.parseInt(response);
+                } catch (NumberFormatException e) {
+                    diceNumber = 0;
+                }
+                if (diceNumber > 0 && diceNumber < roundTrack.getDicesPerRound(roundNumber - 1).size()) {
+                    String setMessage = cliGameView.getClientCreateMessage().createTokenMessage(cliGameView.getToken()).
+                            createGameNameMessage(cliGameView.getGameName()).
+                            createDiceMessage(roundTrack.getDicesPerRound(roundNumber - 1).get(diceNumber-1)).buildMessage();
+                    cliGameView.getConnectionManager().getGameController().setDice(setMessage);
+                } else {
+                    PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
+                    roundNumber = -1;
+                }
+            } else {
+                PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
+                roundNumber = -1;
+            }
+        } while (roundNumber < 0);
     }
 }

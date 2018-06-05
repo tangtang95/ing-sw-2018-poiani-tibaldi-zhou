@@ -32,7 +32,7 @@ public final class RoundTrackWrapper implements JSONable{
      * @param round the round of the roundTrack to get dices
      * @return the collection of diceWrapper of the round given (empty list if the size of dicesPerRound < round)
      */
-    public Collection<DiceWrapper> getDicesPerRound(int round){
+    public List<DiceWrapper> getDicesPerRound(int round){
         if(round >= dicesPerRound.size())
             throw new IllegalArgumentException(round + "has to be from 0 to " + size());
         return new ArrayList<>(dicesPerRound.get(round));
