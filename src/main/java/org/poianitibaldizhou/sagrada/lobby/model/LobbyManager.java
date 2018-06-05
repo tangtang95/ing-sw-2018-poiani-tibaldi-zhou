@@ -20,7 +20,7 @@ public class LobbyManager {
     private LobbyObserverManager lobbyObserverManager;
 
     // TODO read timeout DELAY_TIME from file (better check sagrada instruction), for now DELAY_TIME=30s
-    private static final long DELAY_TIME = 6000;
+    private static final long DELAY_TIME = 600000;
 
     /**
      * Constructor.
@@ -118,12 +118,23 @@ public class LobbyManager {
             throw new IllegalStateException("The lobby is started");
         lobby.leave(user);
         lobbyObserverManager.removeToken(user.getToken());
+        lobby.detachObserver(user.getToken());
         logout(user.getToken());
         if (lobby.getNumberOfPlayer() == 0) {
             lobby = null;
             timeoutThread = null;
             lobbyObserverManager = null;
         }
+    }
+
+    public synchronized void userDisconnects(String token) {
+        if(!lobby.getUserList().contains(getUserByToken(token)))
+            throw new IllegalArgumentException("Can't leave because user is not in the lobby");
+        if(lobby.isGameStarted())
+            throw new IllegalStateException("The lobby is started");
+        lobby.detachObserver(token);
+        lobby.leave(getUserByToken(token));
+        logout(token);
     }
 
     /**
@@ -230,5 +241,11 @@ public class LobbyManager {
 
     public long getDelayTime() {
         return DELAY_TIME;
+    }
+
+    public synchronized void ping() {
+        if(isLobbyActive()) {
+            lobby.getLobbyObserverMap().forEach((k,v) -> v.onPing());
+        }
     }
 }

@@ -5,7 +5,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,11 +54,11 @@ public class BuildGraphic {
      * build the graphic of a list of dices starting from the point start and
      * finishing in the end point whit UTF-8 code.
      *
-     * @param arrayOfDice array of dices whom create the graphics.
+     * @param diceWrappers array of dices whom create the graphics.
      * @param start the start point.
      * @param end the end point.
      */
-    private void buildListDices(JSONArray arrayOfDice, int start, int end) {
+    private void buildListDices(List<DiceWrapper> diceWrappers, int start, int end) {
         for (int i = start; i < end; i++)
             stringBuilder.append("  [").append(i + 1).append("]   ");
         stringBuilder.append("\n");
@@ -73,9 +75,7 @@ public class BuildGraphic {
         stringBuilder.append("\n");
         for (int i = start; i < end; i++) {
             stringBuilder.append((char) 9553 + " ");
-            JSONObject dice = (JSONObject) arrayOfDice.get(i);
-            String formatDice = dice.get("value") + "/" + dice.get("color");
-            stringBuilder.append(formatDice);
+            stringBuilder.append(diceWrappers.get(i).toString());
             stringBuilder.append(" " + (char) 9553 + " ");
         }
         stringBuilder.append("\n");
@@ -95,22 +95,16 @@ public class BuildGraphic {
     /**
      * Build the graphic of a list of dices, putting five dices on the same line.
      *
-     * @param jsonDiceList list of dices whom create the graphics.
+     * @param diceListWrapper list of dices whom create the graphics.
      * @return the BuildGraphic with the stringBuilder changed.
      */
-    public BuildGraphic buildGraphicDices(String jsonDiceList) {
-        if (jsonDiceList != null) {
-            jsonArray = null;
-            try {
-                jsonArray = (JSONArray) jsonParser.parse(jsonDiceList);
-                if (jsonArray.size() <= 5) {
-                    buildListDices(jsonArray, 0, jsonArray.size());
-                } else {
-                    buildListDices(jsonArray, 0, 5);
-                    buildListDices(jsonArray, 5, jsonArray.size());
-                }
-            } catch (ParseException e) {
-                PrinterManager.consolePrint("Parse exception in buildGraphicDices.\n", Level.ERROR);
+    public BuildGraphic buildGraphicDices(List<DiceWrapper> diceListWrapper) {
+        if (diceListWrapper != null) {
+            if (diceListWrapper.size() <= 5)
+                buildListDices(diceListWrapper, 0, diceListWrapper.size());
+            else {
+                buildListDices(diceListWrapper, 0, 5);
+                buildListDices(diceListWrapper, 5, jsonArray.size());
             }
         }
         return this;

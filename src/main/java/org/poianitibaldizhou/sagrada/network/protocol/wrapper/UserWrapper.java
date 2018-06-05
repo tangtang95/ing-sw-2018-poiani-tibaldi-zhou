@@ -71,7 +71,11 @@ public final class UserWrapper implements JSONable{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(getUsername());
+    }
+
+    @Override
+    public String toString() {
+        return username;
     }
 }

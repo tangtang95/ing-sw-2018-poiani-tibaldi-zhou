@@ -17,20 +17,21 @@ public class LobbyObserverManager {
         disconnectedUserNotNotified = new HashSet<>();
     }
 
-    public Set<String> getDisconnectedUserNotNotified() {
+    public synchronized Set<String> getDisconnectedUserNotNotified() {
         return disconnectedUserNotNotified;
     }
 
-    public void disconnectionNotified(String token) {
+    public synchronized void disconnectionNotified(String token) {
         disconnectedUserNotNotified.remove(token);
+        scheduledExecutorServiceMap.remove(token);
     }
 
-    public void addToken(String token) {
+    public synchronized void addToken(String token) {
         scheduledExecutorServiceMap.putIfAbsent(token, Executors.newScheduledThreadPool(1));
     }
 
-    public void removeToken(String token) {
-        scheduledExecutorServiceMap.get(token).shutdownNow();
+    public synchronized void removeToken(String token) {
+        scheduledExecutorServiceMap.get(token).shutdown();
         scheduledExecutorServiceMap.remove(token);
     }
 
@@ -40,15 +41,13 @@ public class LobbyObserverManager {
      *
      * @param token token of the disconnected user
      */
-    public void signalDisconnection(String token) {
+    public synchronized void signalDisconnection(String token) {
         disconnectedUserNotNotified.add(token);
         scheduledExecutorServiceMap.get(token).shutdownNow();
-        scheduledExecutorServiceMap.remove(token);
     }
 
-    public void pushThreadInQueue(String token, Runnable notify) {
-        System.out.println(token);
-        System.out.println(scheduledExecutorServiceMap.get(token) == null);
-        scheduledExecutorServiceMap.get(token).submit(notify);
+    public synchronized void pushThreadInQueue(String token, Runnable notify) {
+        if(!getDisconnectedUserNotNotified().contains(token))
+            scheduledExecutorServiceMap.get(token).submit(notify);
     }
 }

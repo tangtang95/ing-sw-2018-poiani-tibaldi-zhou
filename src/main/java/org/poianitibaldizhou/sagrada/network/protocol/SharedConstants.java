@@ -57,6 +57,7 @@ public class SharedConstants {
     public static final String PRIVATE_OBJECTIVE_CARD_LIST_KEY = "privateObjectiveCardListKey";
     public static final String FRONT_CARD_LIST_KEY = "frontBackSchemaCardListKey";
     public static final String USER_NAME_STRING = "usernameKey";
+    public static final String TIMEOUT = "timeout";
 
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";

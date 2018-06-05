@@ -47,6 +47,11 @@ public class ServerCreateMessage {
         return this;
     }
 
+    public ServerCreateMessage createTimeoutMessage(String timeout) {
+        jsonServerProtocol.appendMessage(SharedConstants.TIMEOUT, timeout);
+        return this;
+    }
+
     public <T> ServerCreateMessage createElem(T elem) {
         jsonServerProtocol.appendMessage(SharedConstants.ELEM, elem);
         return this;
