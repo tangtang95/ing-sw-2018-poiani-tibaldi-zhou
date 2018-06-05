@@ -22,7 +22,9 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
         this.toolCardName = toolCardName;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onTokenChange(String tokens) throws IOException {
         Integer value = clientGetMessage.getValue(tokens);
@@ -31,6 +33,9 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardDestroy() {
         String message = "Tool card " + toolCardName + "has been utilized and destroyed";
@@ -52,5 +57,7 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
     public int hashCode() {
 
         return Objects.hash(super.hashCode(), clientGetMessage, toolCardName);
+
     }
+
 }

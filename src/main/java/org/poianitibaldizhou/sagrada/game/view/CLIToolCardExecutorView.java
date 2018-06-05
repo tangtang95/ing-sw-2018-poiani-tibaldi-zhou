@@ -281,7 +281,12 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
     }
 
-
+    /**
+     * Make the user input a row and a column (position) and sends it to the server
+     *
+     * @param r buffer reader for reading from console
+     * @throws IOException
+     */
     private void schemaCardCLI(BufferedReader r) throws IOException {
         String response;
         int row;
@@ -317,7 +322,12 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         } while (row < 0);
     }
 
-
+    /**
+     * Parse a round track, making the user choose a dice in it. It sends it to the server
+     *
+     * @param roundTrack round track that need to be parsed
+     * @throws IOException error reading or network communication errors
+     */
     private void readRoundTrackParameters(RoundTrackWrapper roundTrack) throws IOException {
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;

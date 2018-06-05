@@ -91,7 +91,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
 
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage);
+
     }
 }

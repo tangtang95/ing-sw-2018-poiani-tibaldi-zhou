@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyScreen;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -41,7 +42,8 @@ public class CLISelectGameModeScreen extends CLIBasicScreen {
     protected void initializeCommands() {
         Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
         singlePlayerCommand.setCommandAction(() ->
-                new CLIStateScreen(connectionManager, screenManager, "Empire", new User("Tang", "master")));
+                new CLIStateScreen(connectionManager, screenManager, "Empire",
+                        new UserWrapper("Tang"),"123456789"));
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
         Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");

@@ -11,12 +11,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Objects;
 
-public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlayerObserver {
+public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserver {
 
     private final transient CLIStateScreen cliStateScreen;
     private final transient ClientGetMessage clientGetMessage;
 
-    public CLIPlayerObserverView(CLIStateScreen cliStateScreen) throws RemoteException {
+    public CLIPlayerView(CLIStateScreen cliStateScreen) throws RemoteException {
         super();
         this.cliStateScreen = cliStateScreen;
         this.clientGetMessage = cliStateScreen.getClientGetMessage();
@@ -33,6 +33,9 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSetOutcome(String outcome) throws IOException {
         String message = "Your outcome is: " + clientGetMessage.getOutcome(outcome);
@@ -43,9 +46,9 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIPlayerObserverView)) return false;
+        if (!(o instanceof CLIPlayerView)) return false;
         if (!super.equals(o)) return false;
-        CLIPlayerObserverView that = (CLIPlayerObserverView) o;
+        CLIPlayerView that = (CLIPlayerView) o;
         return Objects.equals(cliStateScreen, that.cliStateScreen) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage);
     }
@@ -55,4 +58,5 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
 
         return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage);
     }
+
 }

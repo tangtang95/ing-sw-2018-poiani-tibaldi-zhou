@@ -29,6 +29,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     protected final transient ClientGetMessage clientGetMessage;
     protected final transient ClientCreateMessage clientCreateMessage;
 
+
     private static final String QUIT = "Quit game";
     private static final String VIEW_DRAFT_POOL = "View the Draft Pool";
     private static final String VIEW_ROUND_TRACK = "View the Round Track";
@@ -232,5 +233,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
     public int hashCode() {
 
         return Objects.hash(super.hashCode(), gameName, myUser, token, clientGetMessage, clientCreateMessage);
+    }
+
+    public static CLIRoundScreen reconnect() throws RemoteException{
+        // TODO handle reconnection; not sure if here
+        return null;
     }
 }

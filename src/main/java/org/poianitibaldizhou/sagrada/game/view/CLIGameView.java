@@ -15,6 +15,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
+
 import java.util.Objects;
 
 public class CLIGameView extends UnicastRemoteObject implements IGameView {
@@ -102,7 +103,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     }
 
     /**
-     * {{@inheritDoc}}
+     * {@inheritDoc}
      */
     @Override
     public void ack(String ack) {
@@ -136,6 +137,9 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), connectionManager, cliStateScreen, clientGetMessage, clientCreateMessage, token, gameName);
+        return Objects.hash(super.hashCode(), connectionManager, cliStateScreen, clientGetMessage,
+                clientCreateMessage, token, gameName);
     }
+
+
 }

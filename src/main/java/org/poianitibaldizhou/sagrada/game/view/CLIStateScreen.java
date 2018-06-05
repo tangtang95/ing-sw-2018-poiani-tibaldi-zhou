@@ -62,7 +62,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
 
             connectionManager.getGameController().bindPlayer(
                     clientCreateMessage.createTokenMessage(token).buildMessage(),
-                    new CLIPlayerObserverView(this),
+                    new CLIPlayerView(this),
                     new CLISchemaCardView(this)
             );
         } catch (IOException e) {

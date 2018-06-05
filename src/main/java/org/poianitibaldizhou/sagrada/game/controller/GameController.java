@@ -666,6 +666,29 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String attemptReconnect(String message) throws IOException {
+        final String username = serverGetMessage.getUserName(message);
+        final String token = String.valueOf(username.hashCode());
+        final Optional<String> gameName;
+        List<IGame> gameList = gameManager.getGameList();
+
+        gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(game -> game.getName()).findFirst();
+
+        if(!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
+            return serverGetMessage.reconnectErrorMessage();
+
+        ArrayList<User> users = new ArrayList<>();
+
+        gameManager.getGameByName(gameName.get()).getPlayers().forEach(player -> users.add(player.getUser()));
+
+        return serverCreateMessage.createGamenNameMessage(gameName.get()).createUserList(users).createTokenMessage(token).buildMessage();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -833,8 +856,23 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getListOfUser(String message) throws IOException {
-        // TODO RICCARDO
-        return null;
+        final String token = serverGetMessage.getToken(message);
+        final String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        List<Player> players;
+        List<User> users = new ArrayList<>();
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            players = gameManager.getGameByName(gameName).getPlayers();
+        }
+
+        players.forEach(player -> users.add(player.getUser()));
+
+        return serverCreateMessage.createUserList(users).buildMessage();
     }
 
     /**

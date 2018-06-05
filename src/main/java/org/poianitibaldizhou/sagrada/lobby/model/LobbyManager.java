@@ -155,7 +155,7 @@ public class LobbyManager {
         }
         if(managerMediator.isAlreadyLogged(username))
             throw new IllegalArgumentException("User already logged: " + username);
-        String token = UUID.randomUUID().toString();
+        String token = String.valueOf(username.hashCode());
         User user = new User(username, token);
         users.add(user);
         return token;
