@@ -34,6 +34,18 @@ public class ClientGetMessage {
         return userWrapper;
     }
 
+    public List<UserWrapper> getListOfUserWrapper(String message) throws IOException {
+        List<UserWrapper> userWrappers;
+
+        try {
+            userWrappers = (List<UserWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return userWrappers;
+    }
+
     public String getGameName(String message) throws IOException {
         String gameName;
         try {
@@ -52,5 +64,15 @@ public class ClientGetMessage {
             throw new IOException();
         }
         return token;
+    }
+
+    public String getTimeout(String message) throws IOException {
+        String timeout;
+        try {
+            timeout = (String) jsonClientProtocol.getResponseByKey(message, SharedConstants.TIMEOUT);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return timeout;
     }
 }

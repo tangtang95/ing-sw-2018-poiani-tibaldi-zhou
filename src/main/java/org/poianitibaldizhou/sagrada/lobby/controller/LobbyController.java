@@ -47,7 +47,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
             token = lobbyManager.login(username);
         } catch(IllegalArgumentException e) {
             view.err("An user with this username already exists");
-            return "";
+            return serverCreateMessage.createTokenMessage("").buildMessage();
         }
 
         clearObserver();
@@ -109,9 +109,8 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public String getUsersInLobby() throws IOException {
-        // TODO make this return with network protocol
         clearObserver();
-        return lobbyManager.getLobbyUsers().toString();
+        return serverCreateMessage.createUserList(lobbyManager.getLobbyUsers()).buildMessage();
     }
 
     /**
@@ -119,9 +118,8 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public String getTimeout() throws IOException {
-        // TODO make this return with network protocol
         clearObserver();
-        return (formatTimeout(lobbyManager.getTimeToTimeout()));
+        return serverCreateMessage.createTimeoutMessage(formatTimeout(lobbyManager.getTimeToTimeout())).buildMessage();
     }
 
     private void handleIOException(String token) {

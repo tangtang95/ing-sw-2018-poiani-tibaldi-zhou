@@ -36,6 +36,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
             }
         };
 
+        System.out.println("Notify user join to " + user.getToken());
         observerManager.pushThreadInQueue(token, runnable);
     }
 

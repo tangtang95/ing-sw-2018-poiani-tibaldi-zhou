@@ -30,8 +30,10 @@ public class LobbyObserverManager {
     }
 
     public void removeToken(String token) {
-        scheduledExecutorServiceMap.get(token).shutdownNow();
+        System.out.println("Before remove: " + scheduledExecutorServiceMap.keySet());
+        scheduledExecutorServiceMap.get(token).shutdown();
         scheduledExecutorServiceMap.remove(token);
+        System.out.println("After remove: " + scheduledExecutorServiceMap.keySet());
     }
 
     /**
@@ -47,8 +49,7 @@ public class LobbyObserverManager {
     }
 
     public void pushThreadInQueue(String token, Runnable notify) {
-        System.out.println(token);
-        System.out.println(scheduledExecutorServiceMap.get(token) == null);
+        System.out.println("Push" + scheduledExecutorServiceMap.keySet());
         scheduledExecutorServiceMap.get(token).submit(notify);
     }
 }
