@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
 
@@ -140,5 +141,14 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
         //PrinterManager.consolePrint("The winner is " + winner.getName(), Level.STANDARD);
     }
 
+    @Override
+    public int hashCode() {
+        // TODO
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // TODO
+    }
 }
 

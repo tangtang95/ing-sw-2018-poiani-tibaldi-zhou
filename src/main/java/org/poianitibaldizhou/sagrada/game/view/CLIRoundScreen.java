@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 /**
@@ -13,6 +14,8 @@ import java.rmi.RemoteException;
 public class CLIRoundScreen extends CLIBasicScreen {
 
     protected final String gameName;
+
+    // TODO REFACTOR: user should not be here
     protected final User myUser;
 
     private static final String QUIT = "Quit game";
@@ -122,4 +125,8 @@ public class CLIRoundScreen extends CLIBasicScreen {
         //TODO
     }
 
+    public static CLIRoundScreen reconnect() throws RemoteException{
+        // TODO handle reconnection; not sure if here
+        return null;
+    }
 }

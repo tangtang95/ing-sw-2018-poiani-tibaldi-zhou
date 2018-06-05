@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Objects;
 
 public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableCollectionObserver {
 
@@ -52,5 +53,19 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
         String message = cliGameView.getCurrentUser().getUsername() + " a dice has been drawn from the dice bag";
         DiceWrapper diceWrapper = cliGameView.getClientGetMessage().getDice(elem);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), cliGameView);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLIDiceBagView)) return false;
+        if (!super.equals(o)) return false;
+        CLIDiceBagView that = (CLIDiceBagView ) o;
+        return Objects.equals(cliGameView, that.cliGameView);
     }
 }

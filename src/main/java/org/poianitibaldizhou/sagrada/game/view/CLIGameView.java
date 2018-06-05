@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
 
 public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
@@ -135,7 +136,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     }
 
     /**
-     * {{@inheritDoc}}
+     * {@inheritDoc}
      */
     @Override
     public void ack(String ack) {
@@ -148,5 +149,19 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     @Override
     public void err(String err) {
         PrinterManager.consolePrint("ERROR: " + err + "\n", Level.INFORMATION);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), token, gameName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLIDraftPoolView)) return false;
+        if (!super.equals(o)) return false;
+        CLIGameView that = (CLIGameView) o;
+        return token.equals(that.token) && gameName.equals(that.gameName);
     }
 }

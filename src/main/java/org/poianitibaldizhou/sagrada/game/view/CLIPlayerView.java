@@ -8,12 +8,13 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerO
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
 
-public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlayerObserver {
+public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserver {
 
     private CLIGameView cliGameView;
 
-    public CLIPlayerObserverView(CLIGameView cliGameView) throws RemoteException {
+    public CLIPlayerView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;
     }
@@ -28,10 +29,27 @@ public class CLIPlayerObserverView extends UnicastRemoteObject implements IPlaye
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSetOutcome(String outcome) throws IOException {
         String message = "Your outcome is: " + cliGameView.getClientGetMessage().getOutcome(outcome);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), cliGameView);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLIDraftPoolView)) return false;
+        if (!super.equals(o)) return false;
+        CLIPlayerView that = (CLIPlayerView) o;
+        return Objects.equals(cliGameView, that.cliGameView);
     }
 }

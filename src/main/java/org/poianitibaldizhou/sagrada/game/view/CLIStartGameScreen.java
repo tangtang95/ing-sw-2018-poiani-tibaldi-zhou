@@ -18,12 +18,13 @@ public class CLIStartGameScreen extends CLIBasicScreen {
     private static final String CHANGE_CONNECTION_MODE = "Change connection mode";
     private static final String START_GAME = "Start game";
     private static final String QUIT = "Quit";
+    private static final String RECONNECT = "Reconnect";
 
     /**
      * constructor.
      *
      * @param networkManager the network manager for connecting with the server.
-     * @param screenManager manager for handler the changed of the screen.
+     * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     public CLIStartGameScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
@@ -39,7 +40,7 @@ public class CLIStartGameScreen extends CLIBasicScreen {
     protected void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLIChangeConnectionScreen(connectionManager, screenManager)));
+                screenManager.pushScreen(new CLIReconnectToGameScreen(connectionManager, screenManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
@@ -50,6 +51,10 @@ public class CLIStartGameScreen extends CLIBasicScreen {
         Command quitCommand = new Command(QUIT, "Quit game");
         quitCommand.setCommandAction(this::quit);
         commandMap.put(quitCommand.getCommandText(), quitCommand);
+
+        Command reconnectCommand = new Command(RECONNECT, "Reconnect to an on-going game");
+        reconnectCommand.setCommandAction(() -> screenManager.pushScreen(new CLIReconnectToGameScreen(connectionManager, screenManager)));
+        commandMap.putIfAbsent(reconnectCommand.getCommandText(), reconnectCommand);
     }
 
     /**

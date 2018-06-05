@@ -17,6 +17,7 @@ import java.util.Objects;
 public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrackObserver {
 
     private final transient CLIGameView cliGameView;
+
     public CLIRoundTrackView(CLIGameView cliGameView) throws RemoteException {
         super();
         this.cliGameView = cliGameView;

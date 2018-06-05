@@ -35,6 +35,9 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         return Objects.hash(super.hashCode(), cliGameView);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPlaceDice(String message) throws IOException {
         PositionWrapper positionWrapper = cliGameView.getClientGetMessage().getPosition(message);
@@ -44,6 +47,9 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDiceRemove(String message) throws IOException {
         PositionWrapper positionWrapper = cliGameView.getClientGetMessage().getPosition(message);

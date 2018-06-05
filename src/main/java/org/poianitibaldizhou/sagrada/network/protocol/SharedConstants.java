@@ -5,6 +5,8 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
+    public static final String RECONNECT_ERROR = "Error reconnecting";
+
     private SharedConstants() { }
 
     /**
@@ -43,6 +45,7 @@ public class SharedConstants {
     public static final String COLOR_LIST_KEY = "colorListKey";
     public static final String DICE_VALUE = "diceValue";
     public static final String FRONT_BACK_SCHEMA_CARD = "frontBackSchemaCard";
+    public static final String ACTION_COMMAND = "actionCommand";
 
     /**
      * Key protocol communication

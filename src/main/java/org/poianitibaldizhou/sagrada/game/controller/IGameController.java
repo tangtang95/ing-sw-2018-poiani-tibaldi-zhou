@@ -149,7 +149,7 @@ public interface IGameController extends Remote {
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
-     * @param message            message containing player's token
+     * @param message            message containing player's username
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)
@@ -159,12 +159,23 @@ public interface IGameController extends Remote {
      * @param draftPoolObserver  player's draft pool observer
      * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
+     * @return player's token
      * @throws IOException network communication error
      */
     void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                    Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                    IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
                            diceBagObserver) throws IOException;
+
+    /**
+     * Check if a player can reconnect
+     *
+     * @param message message containing player's username
+     * @return an error message if the reconnection is not possible for the specified username; otherwise the player list,
+     * the game name and the player token
+     * @throws IOException network communication error
+     */
+    String attemptReconnect(String message) throws IOException;
 
     /**
      * Get all the tool cards of a certain game
