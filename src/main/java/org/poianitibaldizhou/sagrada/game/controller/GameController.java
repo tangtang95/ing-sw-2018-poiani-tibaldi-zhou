@@ -689,16 +689,19 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
     @Override
     public String getPublicObjectiveCards(String message) throws IOException {
+        //TODO
         return null;
     }
 
     @Override
     public String getPrivateObjectiveCardByToken(String message) throws IOException {
+        //TODO
         return null;
     }
 
     @Override
     public String getSchemaCards(String message) throws IOException {
+        //TODO
         return null;
     }
 
