@@ -54,7 +54,9 @@ public final class TileWrapper implements JSONable{
     public Object toObject(JSONObject jsonObject) {
         TileWrapper tile;
 
-        tile = new TileWrapper((String) jsonObject.get(JSON_CONSTRAINT));
+        Object object = jsonObject.get(JSON_CONSTRAINT);
+        String constraintValue = ((object instanceof Integer) ? String.valueOf((int) object) : (String) object);
+        tile = new TileWrapper(constraintValue);
 
         if (jsonObject.containsKey(SharedConstants.DICE)) {
             DiceWrapper readDice = (DiceWrapper) protocol.convertToObject(
@@ -62,6 +64,13 @@ public final class TileWrapper implements JSONable{
             tile.setDice(readDice);
         }
         return tile;
+    }
+
+    /**
+     * fake-constructor
+     */
+    private TileWrapper(){
+        constraint = null;
     }
 
     public String getConstraint() {

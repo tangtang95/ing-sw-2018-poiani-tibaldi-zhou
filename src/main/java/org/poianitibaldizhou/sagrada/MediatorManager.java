@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada;
 
+import org.jetbrains.annotations.TestOnly;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
@@ -30,6 +31,14 @@ public class MediatorManager {
 
     public String createMultiPlayerGame(List<User> users)  {
         String gameName = UUID.randomUUID().toString();
+        IGame game = new MultiPlayerGame(gameName, users);
+        gameManager.addGame(game, gameName);
+        return gameName;
+    }
+
+    @TestOnly
+    public String createMultiPlayerGameTest(List<User> users) {
+        String gameName = "corderoGame";
         IGame game = new MultiPlayerGame(gameName, users);
         gameManager.addGame(game, gameName);
         return gameName;

@@ -96,29 +96,30 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     @Override
     public void onPublicObjectiveCardsDraw(String publicObjectiveCards) {
+        /*
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
                 buildMessage("Public objective cards valid for this game: ").
                 buildGraphicPublicObjectiveCards(publicObjectiveCards).toString(),
-                Level.STANDARD);
+                Level.STANDARD);*/
     }
 
     @Override
     public void onToolCardsDraw(String toolCards) {
-        BuildGraphic buildGraphic = new BuildGraphic();
+        /*BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
                         buildMessage("Tool cards valid for this game: ").
                         buildGraphicToolCards(toolCards).toString(),
-                Level.STANDARD);
+                Level.STANDARD);*/
     }
 
     @Override
     public void onChoosePrivateObjectiveCards(String privateObjectiveCards) {
-        BuildGraphic buildGraphic = new BuildGraphic();
+        /*BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
                         buildMessage("Private objective cards valid for this game: ").
                         buildGraphicPrivateObjectiveCards(privateObjectiveCards).toString(),
-                Level.STANDARD);
+                Level.STANDARD);*/
     }
 
     @Override

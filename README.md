@@ -36,7 +36,7 @@ It's also possible to launch the server from Intellij IDEA:
 #pwd=ing-sw-2018-poiani-tibaldi-zhou/target/classes/
 
 #Unix
-java -Djava.rmi.server.useCodebaOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.network.Client
+java -Djava.rmi.server.useCodebaOnly=false -Djava.rmi.server.logCalls=true -Djava.rmi.server.codebase=http://localhost:8080/ -cp . org.poianitibaldizhou.sagrada.ClientApp
 ```
 It's also possible to launch the client from Intellij IDEA:
 - goto Run -> Edit Configurations... 
