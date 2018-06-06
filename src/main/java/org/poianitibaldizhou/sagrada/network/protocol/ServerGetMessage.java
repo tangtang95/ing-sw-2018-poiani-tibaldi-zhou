@@ -176,12 +176,12 @@ public class ServerGetMessage {
     public String getErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
-        return JSONObject.toJSONString(error).toString();
+        return JSONObject.toJSONString(error);
     }
 
     public String reconnectErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.RECONNECT_ERROR);
-        return JSONObject.toJSONString(error).toString();
+        return JSONObject.toJSONString(error);
     }
 }

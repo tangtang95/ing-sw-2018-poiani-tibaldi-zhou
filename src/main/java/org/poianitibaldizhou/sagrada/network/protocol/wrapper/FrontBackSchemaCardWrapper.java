@@ -26,7 +26,6 @@ public class FrontBackSchemaCardWrapper implements JSONable{
     }
 
 
-
     /**
      * Convert a FrontBackSchemaCardWrapper in a JSONObject.
      *
@@ -50,11 +49,12 @@ public class FrontBackSchemaCardWrapper implements JSONable{
     public Object toObject(JSONObject jsonObject) {
         JSONClientProtocol clientProtocol = new JSONClientProtocol();
         JSONArray jsonArray = (JSONArray) jsonObject.get(SharedConstants.BODY);
+        FrontBackSchemaCardWrapper frontBackSchemaCardWrapper = new FrontBackSchemaCardWrapper();
         for (Object o:jsonArray) {
             JSONObject schemaCard = (JSONObject) o;
-            schemaCards.add((SchemaCardWrapper) clientProtocol.convertToObject(schemaCard));
+            frontBackSchemaCardWrapper.schemaCards.add((SchemaCardWrapper) clientProtocol.convertToObject(schemaCard));
         }
-        return new FrontBackSchemaCardWrapper();
+        return frontBackSchemaCardWrapper;
     }
 
     public List<SchemaCardWrapper> getSchemaCards() {
