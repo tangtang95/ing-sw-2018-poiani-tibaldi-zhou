@@ -141,7 +141,7 @@ public class BuildGraphic {
             buildMessage("----------------------------TOOL CARDS---------------------------");
             for (int i = 0; i < toolCards.size(); i++) {
                 ToolCardWrapper toolCard = toolCards.get(i);
-                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append("[").append(i + 1).append("]\n");
                 stringBuilder.append(NAME).append(toolCard.getName()).append("\n");
                 stringBuilder.append("Color:     ").append(toolCard.getColor()).append("\n");
                 stringBuilder.append(DESCRIPTION);

@@ -21,6 +21,8 @@ public final class RoundTrackWrapper implements JSONable{
     private static final String JSON_DICE_LIST = "diceList";
     private static final String JSON_ROUND_LIST = "roundList";
 
+    public static final int NUMBER_OF_TRACK = 10;
+
     private List<Collection<DiceWrapper>> dicesPerRound;
 
     public RoundTrackWrapper(List<Collection<DiceWrapper>> dicesPerRound) {
