@@ -30,7 +30,9 @@ public class MediatorManager {
     }
 
     public String createMultiPlayerGame(List<User> users)  {
+        System.out.println("Users: " + users);
         String gameName = UUID.randomUUID().toString();
+        System.out.println("Game name in server: " + gameName);
         IGame game = new MultiPlayerGame(gameName, users);
         gameManager.addGame(game, gameName);
         return gameName;

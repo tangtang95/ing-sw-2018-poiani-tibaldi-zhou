@@ -139,6 +139,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                     token = clientGetMessage.getToken(message);
                     if (token.isEmpty())
                         throw new IllegalArgumentException();
+                    System.out.println("TOKEN: " + token);
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +

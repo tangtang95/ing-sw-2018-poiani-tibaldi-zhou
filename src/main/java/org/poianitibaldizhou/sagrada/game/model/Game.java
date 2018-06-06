@@ -195,6 +195,12 @@ public abstract class Game implements IGame, IGameStrategy {
         return copyPlayers;
     }
 
+    @Contract(pure = true)
+    @Override
+    public List<User> getUsers() {
+        return new ArrayList<>(users);
+    }
+
     public void detachObservers(String token) {
         roundTrack.detachObserver(token);
         diceBag.detachObserver(token);
@@ -206,9 +212,7 @@ public abstract class Game implements IGame, IGameStrategy {
             value.detachSchemaCardObserver(token);
         });
 
-        toolCards.forEach(toolcard -> {
-            toolcard.detachToolCardObserver(token);
-        });
+        toolCards.forEach(toolcard -> toolcard.detachToolCardObserver(token));
     }
 
     // OBSERVER ATTACH (INTERFACE METHODS)

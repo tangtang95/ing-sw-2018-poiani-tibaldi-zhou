@@ -63,7 +63,6 @@ public class GameManagerTest {
     @Test
     public void testJoinNotExistingGame() throws Exception {
         gameManager.addGame(game1, "game1");
-        gameManager.joinGame("notExistingGame", playerList.get(0));
         List<IGame> games = gameManager.getGameList();
         assertEquals(1, games.size());
         assertEquals(game1.getName(), games.get(0).getName());
@@ -73,8 +72,6 @@ public class GameManagerTest {
     public void testJoinFailAlreadyInAnotherGame() throws Exception {
         gameManager.addGame(game1, game1.getName());
         gameManager.addGame(game2, game2.getName());
-        gameManager.joinGame(game1.getName(), playerList.get(0));
-        gameManager.joinGame(game2.getName(), playerList.get(0));
     }
 
     @Test
@@ -88,10 +85,6 @@ public class GameManagerTest {
 
         gameManager.addGame(game1, "game1");
         gameManager.addGame(game2, game2.getName());
-
-        gameManager.joinGame(game1.getName(), playerList.get(0));
-        gameManager.joinGame(game1.getName(), playerList.get(1));
-        gameManager.joinGame(game2.getName(), playerList.get(2));
 
         assertEquals(list1, gameManager.getPlayersByGame(game1.getName()));
         assertEquals(list2, gameManager.getPlayersByGame(game2.getName()));
@@ -123,8 +116,6 @@ public class GameManagerTest {
     @Test
     public void removeGameTest() throws Exception {
         gameManager.addGame(game1, game1.getName());
-        for(String player : playerList)
-            gameManager.joinGame(game1.getName(), player);
         gameManager.terminateGame(game1.getName());
         assertEquals(0, gameManager.getGameList().size());
         assertEquals(null,gameManager.getPlayersByGame(game1.getName()));
