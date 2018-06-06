@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
@@ -95,7 +96,7 @@ public class ClientGetMessage {
         return victoryPoint;
     }
 
-    public List<UserWrapper> getListOfUserWrapper(String message) throws IOException {
+    public List<UserWrapper> getListOfUserWrapper(@NotNull String message) throws IOException {
         List<UserWrapper> userWrappers;
         try {
             userWrappers = (List<UserWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER_LIST_KEY);

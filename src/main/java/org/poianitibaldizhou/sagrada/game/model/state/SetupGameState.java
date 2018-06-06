@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
@@ -9,7 +8,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjec
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,11 +39,7 @@ public class SetupGameState extends IStateGame {
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
 
         GameInjector.injectToolCards(toolCards);
-        try {
-            GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
-        } catch (WrongCardInJsonFileException e) {
-            LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards", e);
-        }
+        GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
 
         game.initDiceBag();
         this.injectToolCards(toolCards);

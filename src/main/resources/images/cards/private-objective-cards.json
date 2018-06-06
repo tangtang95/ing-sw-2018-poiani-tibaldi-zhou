@@ -9,7 +9,7 @@
 	"sourceSize": {"w":358,"h":500},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"sfumatureBlu.png":
+"sfumatureBluPrivata.png":
 {
 	"frame": {"x":1,"y":503,"w":358,"h":500},
 	"rotated": false,
@@ -18,7 +18,7 @@
 	"sourceSize": {"w":358,"h":500},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"sfumatureGialle.png":
+"sfumatureGiallePrivata.png":
 {
 	"frame": {"x":361,"y":1,"w":358,"h":500},
 	"rotated": false,
@@ -27,7 +27,7 @@
 	"sourceSize": {"w":358,"h":500},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"sfumatureRosse.png":
+"sfumatureRossePrivata.png":
 {
 	"frame": {"x":361,"y":503,"w":358,"h":500},
 	"rotated": false,
@@ -36,7 +36,7 @@
 	"sourceSize": {"w":358,"h":500},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"sfumatureVerdi.png":
+"sfumatureVerdiPrivata.png":
 {
 	"frame": {"x":721,"y":1,"w":358,"h":500},
 	"rotated": false,
@@ -45,7 +45,7 @@
 	"sourceSize": {"w":358,"h":500},
 	"pivot": {"x":0.5,"y":0.5}
 },
-"sfumatureViola.png":
+"sfumatureViolaPrivata.png":
 {
 	"frame": {"x":721,"y":503,"w":358,"h":500},
 	"rotated": false,

@@ -75,4 +75,7 @@ public class ConnectionManager implements StrategyController{
         return ipAddress;
     }
 
+    public int getPort() {
+        return port;
+    }
 }

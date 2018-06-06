@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
+import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -25,16 +27,21 @@ public class MultiPlayerModel {
         this.connectionManager = connectionManager;
     }
 
-    public List<UserWrapper> joinGame() throws IOException {
+    public List<UserWrapper> joinGame(IGameView view, IGameObserver gameObserver, IStateObserver stateObserver,
+                                      IRoundTrackObserver roundTrackObserver, IDraftPoolObserver draftPoolObserver,
+                                      IDrawableCollectionObserver diceBagObserver) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
-        //connectionManager.getGameController().joinGame(request);
+
+        connectionManager.getGameController().joinGame(request, view, gameObserver,
+                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver);
 
         request = builder.createTokenMessage(token)
                 .createGameNameMessage(gameModel.getGameName()).buildMessage();
-        String response = null;
+        String response;
         try {
             response = connectionManager.getGameController().getListOfUser(request);
+            System.out.println(response);
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
             throw e;
@@ -44,4 +51,7 @@ public class MultiPlayerModel {
     }
 
 
+    public String getUsername() {
+        return username;
+    }
 }

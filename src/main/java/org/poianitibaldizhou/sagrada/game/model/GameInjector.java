@@ -6,7 +6,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.exception.WrongCardInJsonFileException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.*;
@@ -89,11 +88,9 @@ public class GameInjector {
      * cards from a json file resources/publicObjectiveCards.json
      *
      * @param publicObjectiveCardDrawableCollection DrawableCollection of PublicObjectiveCard
-     * @throws WrongCardInJsonFileException if the cardType in json file is wrong
      */
     public static void injectPublicObjectiveCards(
-            @NotNull DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection)
-            throws WrongCardInJsonFileException {
+            @NotNull DrawableCollection<PublicObjectiveCard> publicObjectiveCardDrawableCollection) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         jsonArray = null;
@@ -153,7 +150,7 @@ public class GameInjector {
                     ));
                     break;
                 default:
-                    throw new WrongCardInJsonFileException("Wrong cardType in publicObjectiveCard.json");
+                    throw new IllegalArgumentException("Wrong cardType in publicObjectiveCard.json");
             }
         }
     }
@@ -199,7 +196,6 @@ public class GameInjector {
 
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/schemaCards.json"));
-            System.out.println(jsonArray.size());
             for (int i = 0; i < jsonArray.size()/2; i++) {
                 frontBackSchemaCards.add(i, new FrontBackSchemaCard());
             }

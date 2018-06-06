@@ -1,9 +1,7 @@
-package org.poianitibaldizhou.sagrada.graphics.objects;
+package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
