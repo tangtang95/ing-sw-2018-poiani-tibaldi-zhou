@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.game.model.TerminationGameManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
 
 import java.util.HashMap;
@@ -95,5 +96,18 @@ public class GameObserverManager {
         executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
         disconnectedPlayer.remove(token);
         disconnectedPlayerNotNotified.remove(token);
+    }
+
+    /**
+     * Add the last notification thread for a certain token. Needed when the game ends
+     *
+     * @param token player's token
+     * @param notify runnable interface that needs to be scheduled
+     */
+    public void pushLastThreadInQueue(String token, Runnable notify) {
+        if (!disconnectedPlayer.contains(token)) {
+            executorHashMap.get(token).submit(notify);
+            executorHashMap.get(token).shutdown();
+        }
     }
 }

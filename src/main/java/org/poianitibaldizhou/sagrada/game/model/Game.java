@@ -41,7 +41,9 @@ public abstract class Game implements IGame, IGameStrategy {
     private final Map<String, IGameFakeObserver> gameObservers;
     private final Map<String, IStateFakeObserver> stateObservers;
 
-    protected Game(String name) {
+    private final TerminationGameManager terminationGameManager;
+
+    protected Game(String name, TerminationGameManager terminationGameManager) {
         this.name = name;
 
         this.users = new ArrayList<>();
@@ -54,6 +56,8 @@ public abstract class Game implements IGame, IGameStrategy {
 
         this.gameObservers = new HashMap<>();
         this.stateObservers = new HashMap<>();
+
+        this.terminationGameManager = terminationGameManager;
     }
 
     //GETTER
@@ -338,6 +342,10 @@ public abstract class Game implements IGame, IGameStrategy {
     public void setState(IStateGame state) {
         this.state = state;
         this.state.init();
+    }
+
+    public void terminateGame() {
+        terminationGameManager.terminateGame();
     }
 
     public void setPlayerOutcome(Player player, Outcome outcome) {

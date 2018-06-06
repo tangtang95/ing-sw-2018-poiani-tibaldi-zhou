@@ -97,6 +97,7 @@ public class JSONProtocol {
             }
             return convertToObject(elem);
         } catch (IllegalArgumentException | ParseException e) {
+            e.printStackTrace();
             throw new ParseException(0);
         }
     }
@@ -150,6 +151,7 @@ public class JSONProtocol {
             return Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
 
         Class[] interfaces = classMap.get(className).getInterfaces();
+
         Boolean isConvertible = false;
 
         for (Class c : interfaces) {

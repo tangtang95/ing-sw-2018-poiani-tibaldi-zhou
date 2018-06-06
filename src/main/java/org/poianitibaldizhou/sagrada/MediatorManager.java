@@ -4,6 +4,7 @@ import org.jetbrains.annotations.TestOnly;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
+import org.poianitibaldizhou.sagrada.game.model.TerminationGameManager;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -30,10 +31,8 @@ public class MediatorManager {
     }
 
     public String createMultiPlayerGame(List<User> users)  {
-        System.out.println("Users: " + users);
         String gameName = UUID.randomUUID().toString();
-        System.out.println("Game name in server: " + gameName);
-        IGame game = new MultiPlayerGame(gameName, users);
+        IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
         gameManager.addGame(game, gameName);
         return gameName;
     }
@@ -41,7 +40,7 @@ public class MediatorManager {
     @TestOnly
     public String createMultiPlayerGameTest(List<User> users) {
         String gameName = "corderoGame";
-        IGame game = new MultiPlayerGame(gameName, users);
+        IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
         gameManager.addGame(game, gameName);
         return gameName;
     }

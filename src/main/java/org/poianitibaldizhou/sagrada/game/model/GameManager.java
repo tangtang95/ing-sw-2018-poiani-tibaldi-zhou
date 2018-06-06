@@ -5,21 +5,18 @@ import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * OVERVIEW: This not contains duplicate
  */
 public class GameManager {
-    private Map<String, IGame> gameMap;
-    private Map<String, GameObserverManager> observerManagerMap;
+    private final Map<String, IGame> gameMap;
+    private final Map<String, GameObserverManager> gameObserverManagerMap;
 
-    private Map<String, List<String>> playersByGame;
-    private List<String> players;
+    private final Map<String, List<String>> playersByGame;
+    private final List<String> players;
     private final MediatorManager managerMediator;
 
     public GameManager(MediatorManager managerMediator) {
@@ -27,7 +24,33 @@ public class GameManager {
         gameMap = new HashMap<>();
         playersByGame = new HashMap<>();
         players = new ArrayList<>();
-        observerManagerMap = new HashMap<>();
+        gameObserverManagerMap = new HashMap<>();
+    }
+
+    /**
+     * Creates a new single player game.
+     *
+     * @param token single player's token
+     * @param userName single player's difficulty
+     * @param difficulty difficulty of the game
+     * @return name of the single player name
+     * @throws IOException network communication error
+     */
+    public synchronized String createSinglePlayerGame(String token, String userName, int difficulty) throws IOException {
+        String gameName;
+
+        do {
+            gameName = UUID.randomUUID().toString();
+        } while(gameMap.containsKey(gameMap));
+
+        SinglePlayerGame singlePlayer = new SinglePlayerGame(gameName, new User(userName, token), difficulty, new TerminationGameManager(gameName, this));
+
+        gameMap.putIfAbsent(gameName, singlePlayer);
+        playersByGame.putIfAbsent(gameName, Collections.singletonList(token));
+        players.add(token);
+        gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
+
+        return gameName;
     }
 
     /**
@@ -39,13 +62,14 @@ public class GameManager {
      * @param gameName game's name
      */
     public synchronized void addGame(IGame game, String gameName) {
+        System.out.println("GAME ADDED: " + gameName);
         if(gameMap.putIfAbsent(gameName, game) == null){
             playersByGame.put(gameName, new ArrayList<>());
             game.getUsers().forEach(user -> {
                 playersByGame.get(gameName).add(user.getToken());
                 players.add(user.getToken());
             });
-            observerManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
+            gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
         }
     }
 
@@ -57,11 +81,12 @@ public class GameManager {
      * @param gameName game to terminate
      */
     public synchronized void terminateGame(String gameName) {
+        System.out.println("TERMINATE GAME " + gameName);
         if(gameMap.remove(gameName) != null) {
             List<String> playersPlaying = playersByGame.get(gameName);
             players.removeAll(playersPlaying);
             playersByGame.remove(gameName);
-            observerManagerMap.remove(gameName);
+            gameObserverManagerMap.remove(gameName);
         }
     }
 
@@ -91,7 +116,7 @@ public class GameManager {
     }
 
     public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
-        return observerManagerMap.get(gameName);
+        return gameObserverManagerMap.get(gameName);
     }
 
     @Contract(pure = true)
