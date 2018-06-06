@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * OVERVIEW: A round track contains a list of dices for each single round that it contains.
+ * Order in the dice list does not matter.
+ */
 public class RoundTrack implements Serializable, JSONable {
 
     private final List<List<Dice>> listOfDices;

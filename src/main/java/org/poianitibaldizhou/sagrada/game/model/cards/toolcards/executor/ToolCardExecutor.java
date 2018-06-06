@@ -105,7 +105,7 @@ public class ToolCardExecutor extends Thread{
     }
 
     /**
-     * Set all the temporary objects
+     * Set all the temporary view
      */
     private void setTemporaryObjects() {
         this.temporaryDraftPool = game.getDraftPool();
@@ -116,7 +116,7 @@ public class ToolCardExecutor extends Thread{
     }
 
     /**
-     * Set the modified objects saved before
+     * Set the modified view saved before
      */
     private void updateObjects() {
         game.setDraftPool(temporaryDraftPool);

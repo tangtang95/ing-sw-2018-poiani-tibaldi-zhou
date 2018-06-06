@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -106,6 +107,7 @@ public class ClientGetMessage {
         }
         return victoryPoint;
     }
+
 
     public List<UserWrapper> getListOfUserWrapper(String message) throws IOException {
         List<UserWrapper> userWrappers = new ArrayList<>();

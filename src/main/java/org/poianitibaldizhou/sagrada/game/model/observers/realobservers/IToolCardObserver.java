@@ -7,10 +7,10 @@ public interface IToolCardObserver extends Remote {
     /**
      * Notify the change of the tokens
      *
-     * @param tokens the new number of tokens
+     * @param message the protocol message containing the new number of tokens
      * @throws IOException network error
      */
-    void onTokenChange(String tokens) throws IOException;
+    void onTokenChange(String message) throws IOException;
 
     /**
      * Notify the destruction of the toolCard

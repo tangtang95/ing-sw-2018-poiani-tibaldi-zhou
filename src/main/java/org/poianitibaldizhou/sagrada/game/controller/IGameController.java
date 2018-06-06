@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.util.Map;
 
+/**
+ * OVERVIEW: Game controller: it handles that client requests and gives input to the model. The model will update, manipulates
+ * and retrieves its data in order to follow the client inputs.
+ */
 public interface IGameController extends Remote {
     /**
      * Notifies that a player has joined the game.
@@ -20,11 +24,12 @@ public interface IGameController extends Remote {
      * @param stateObserver      player's state observer
      * @param draftPoolObserver  player's draft pool observer
      * @param diceBagObserver    player's dice bag observer
+     * @param timeOutObserver    player's time out observer
      * @throws IOException network communication error
      */
     void joinGame(String message, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                  IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException;
+                  IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException;
 
     /**
      * Notifies the schema card chosen by a certain player.
@@ -143,11 +148,7 @@ public interface IGameController extends Remote {
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
-<<<<<<< Updated upstream
      * @param message            message containing player's username
-=======
-     * @param message            message containing player's token
->>>>>>> Stashed changes
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)
@@ -157,13 +158,14 @@ public interface IGameController extends Remote {
      * @param draftPoolObserver  player's draft pool observer
      * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
+     * @param timeOutObserver    player's time out observer
      * @return player's token
      * @throws IOException network communication error
      */
     void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                    Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                    IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
-                           diceBagObserver) throws IOException;
+                           diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException;
 
     /**
      * Check if a player can reconnect

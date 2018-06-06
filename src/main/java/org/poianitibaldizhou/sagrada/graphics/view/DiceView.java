@@ -1,21 +1,12 @@
-package org.poianitibaldizhou.sagrada.graphics.objects;
+package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.event.Event;
 import javafx.geometry.Point2D;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.effect.Glow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureJSONParser;
+import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DiceView extends Pane {
 
@@ -26,25 +17,13 @@ public class DiceView extends Pane {
     private Point2D initialTranslate;
     private Point2D mousePosition;
 
-    public DiceView(DiceWrapper dice, double scale) {
-        Image diceImage = new Image(getClass().getClassLoader().getResourceAsStream("images/board/dices.png"));
-        diceView = new ImageView(diceImage);
-        diceView.setPreserveRatio(true);
-        JSONParser parser = new JSONParser();
-        try {
-            String value = String.valueOf(dice.getNumber());
-            String color = dice.getColor().name().toLowerCase();
-            TextureJSONParser textureParser = new TextureJSONParser("images/board/dices.json");
-            Rectangle2D rectangle2D = textureParser.getRectangleView(String.format("dice-%s-%s.png", color, value));
-            diceView.setViewport(rectangle2D);
-            diceView.setFitWidth(rectangle2D.getWidth()*scale);
-            diceView.setFitHeight(rectangle2D.getHeight()*scale);
-        } catch (ParseException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot parse Dice jsonString");
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot find files");
-        }
+    private static final String DICE_IMAGE_PATH = "images/board/dices.png";
+    private static final String DICE_JSON_PATH = "images/board/dices.json";
 
+    public DiceView(DiceWrapper dice, double scale) {
+        String imageKey = String.format("dice-%s-%s.png", dice.getColor().name().toLowerCase(),
+                String.valueOf(dice.getNumber()));
+        diceView = TextureUtils.getImageView(imageKey, DICE_IMAGE_PATH, DICE_JSON_PATH, scale);
 
         this.getChildren().add(diceView);
         this.setOnMouseEntered(event -> {

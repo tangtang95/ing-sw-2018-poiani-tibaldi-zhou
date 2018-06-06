@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
 import org.poianitibaldizhou.sagrada.MediatorManager;
-import org.poianitibaldizhou.sagrada.Settings;
+import org.poianitibaldizhou.sagrada.ServerSettings;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.LobbyFakeObserver;
 
@@ -20,7 +20,7 @@ public class LobbyManager {
     private MediatorManager managerMediator;
     private LobbyObserverManager lobbyObserverManager;
 
-    private static final long DELAY_TIME = Settings.getLobbyTimeout();
+    private static final long DELAY_TIME = ServerSettings.getLobbyTimeout();
 
     /**
      * Constructor.
@@ -74,7 +74,7 @@ public class LobbyManager {
      * @return user matching with token
      * @throws IllegalArgumentException if none user with token exists
      */
-    public synchronized User getUserByToken(String token)  {
+    public synchronized User getUserByToken(String token) {
         for (User u : users)
             if (u.getToken().equals(token))
                 return u;
@@ -89,13 +89,15 @@ public class LobbyManager {
      * @param user          user joining
      * @throws IllegalArgumentException if user has already joined the lobby
      */
-    public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user)  {
+    public synchronized void userJoinLobby(ILobbyObserver lobbyObserver, User user) {
         if (lobby == null)
             createLobby();
         if (lobby.getUserList().contains(user))
             throw new IllegalArgumentException("User has already joined the lobby.");
         if (lobby.isGameStarted())
             createLobby();
+        if (!users.contains(user))
+            throw new IllegalArgumentException("Need to login");
 
         lobbyObserverManager.addToken(user.getToken());
         lobby.attachObserver(user.getToken(), new LobbyFakeObserver(user.getToken(), lobbyObserver, lobbyObserverManager));
@@ -113,7 +115,7 @@ public class LobbyManager {
      * @throws IllegalArgumentException if the user is not present in the lobby or if the lobby is started
      */
     public synchronized void userLeaveLobby(User user) {
-        if (!lobby.getUserList().contains(user))
+        if (lobby == null || !lobby.getUserList().contains(user))
             throw new IllegalArgumentException("Can't leave because user is not in the lobby");
         if (lobby.isGameStarted())
             throw new IllegalStateException("The lobby is started");
@@ -121,7 +123,7 @@ public class LobbyManager {
         lobbyObserverManager.removeToken(user.getToken());
         lobby.detachObserver(user.getToken());
         logout(user.getToken());
-        if (lobby.getNumberOfPlayer() == 0) {
+        if (lobby.getUserList().isEmpty()) {
             lobby = null;
             timeoutThread = null;
             lobbyObserverManager = null;
@@ -129,9 +131,9 @@ public class LobbyManager {
     }
 
     public synchronized void userDisconnects(String token) {
-        if(!lobby.getUserList().contains(getUserByToken(token)))
+        if (lobby == null || !lobby.getUserList().contains(getUserByToken(token)))
             throw new IllegalArgumentException("Can't leave because user is not in the lobby");
-        if(lobby.isGameStarted())
+        if (lobby.isGameStarted())
             throw new IllegalStateException("The lobby is started");
         lobby.detachObserver(token);
         lobby.leave(getUserByToken(token));
@@ -154,7 +156,7 @@ public class LobbyManager {
                 throw new IllegalArgumentException("User already logged: " + username);
             }
         }
-        if(managerMediator.isAlreadyPlayingAGame(username))
+        if (managerMediator.isAlreadyPlayingAGame(username))
             throw new IllegalArgumentException("User already logged: " + username);
         String token = String.valueOf(username.hashCode());
         User user = new User(username, token);
@@ -184,29 +186,19 @@ public class LobbyManager {
         throw new IllegalArgumentException("No user with this token exists. Impossible to logout");
     }
 
-    /**
-     * Returns the number of logged users.
-     *
-     * @return number of logged user
-     */
-    public int usersSize() {
-        return users.size();
-    }
-
-    public List<User> getLobbyUsers()  {
+    public List<User> getLobbyUsers() {
         if (lobby == null)
             throw new IllegalStateException("No lobby active");
         return lobby.getUserList();
     }
 
-    public List<User> getUsers() {
+    public List<User> getLoggedUser() {
         return new ArrayList<>(users);
     }
 
     /**
      * Returns true if there is an istance of a lobby active.
      * The lobby is active if there at least one player.
-     *
      *
      * @return true if there a lobby active, false otherwise.
      */
@@ -219,7 +211,7 @@ public class LobbyManager {
      * are greater or equal then 2, the game starts, otherwise timeout gets restarted.
      */
     public synchronized void handleTimeout() {
-        if (lobby != null && lobby.getPlayerNum() >= 2) {
+        if (lobby != null && lobby.getUserList().size() >= 2) {
             createGame();
             createLobby();
         } else {
@@ -236,7 +228,7 @@ public class LobbyManager {
      *
      * @return time in millis
      */
-    public synchronized long getTimeToTimeout()  {
+    public synchronized long getTimeToTimeout() {
         if (lobby == null)
             throw new IllegalStateException("No lobby Active");
         long currTime = System.currentTimeMillis();
@@ -248,8 +240,8 @@ public class LobbyManager {
     }
 
     public synchronized void ping() {
-        if(isLobbyActive()) {
-            lobby.getLobbyObserverMap().forEach((k,v) -> v.onPing());
+        if (isLobbyActive()) {
+            lobby.getLobbyObserverMap().forEach((k, v) -> v.onPing());
         }
     }
 }

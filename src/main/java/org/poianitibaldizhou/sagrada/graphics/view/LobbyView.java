@@ -1,20 +1,15 @@
-package org.poianitibaldizhou.sagrada.graphics.objects;
+package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
-import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
@@ -26,7 +21,6 @@ import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
-import java.awt.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -54,7 +48,6 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
             this.usersPane.add(container, i%COLUMNS, i/COLUMNS);
             this.usersPane.getColumnConstraints().forEach(columnConstraints -> columnConstraints.setHalignment(HPos.CENTER));
             this.usersPane.getRowConstraints().forEach(rowConstraints -> rowConstraints.setValignment(VPos.CENTER));
-            System.out.println(usersPane.getColumnConstraints().get(0).getPercentWidth());
         }
 
         this.numberOfUsers = 0;
@@ -107,6 +100,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private Canvas getUserContainer(int numberOfUser){
         Image retroImage = new Image(getClass().getClassLoader().getResourceAsStream("images/userRetro.png"));
+        // TODO FIX 0.7
         double width = retroImage.getWidth()*0.7;
         double height = retroImage.getHeight()*0.7;
 

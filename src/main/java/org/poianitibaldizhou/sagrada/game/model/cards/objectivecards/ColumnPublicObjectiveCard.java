@@ -11,6 +11,10 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * OVERVIEW: It calculates the point of a schema card following the rules that there will need to be a column
+ * with different constraint of ColorConstraint or NumberConstraint.
+ */
 @Immutable
 public class ColumnPublicObjectiveCard extends PublicObjectiveCard{
 

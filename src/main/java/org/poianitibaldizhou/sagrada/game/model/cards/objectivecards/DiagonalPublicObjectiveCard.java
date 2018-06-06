@@ -5,6 +5,10 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 
+/**
+ * OVERVIEW: It calculates the point of a schema card following the rules that the more diagonal adjacent dices
+ * are present, the higher is the score
+ */
 @Immutable
 public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
 
@@ -24,7 +28,7 @@ public class DiagonalPublicObjectiveCard extends PublicObjectiveCard {
 
     /**
      * Returns the score obtained by a SchemaCard following the rule implied by DiagonalPublicObjectiveCard.
-     * Basically, for each dice inside the schemaCard which has at least one diagonal adjacent dice with the same
+     * For each dice inside the schemaCard which has at least one diagonal adjacent dice with the same
      * color (if ObjectiveCardType is ColorWrapper type) the score increase by cardPoints
      *
      * @param schema SchemaCard on which DiagonalPublicObjectiveCard rules needs to be applied

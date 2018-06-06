@@ -11,6 +11,10 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.*;
 
+/**
+ * OVERVIEW: represents a public objective card for the game. The objective can regard colors or numbers.
+ * It calculates the point basing it self on this and on a certain level of card point, which are given to the card.
+ */
 @Immutable
 public abstract class PublicObjectiveCard extends Card implements IScore, JSONable {
 
@@ -31,7 +35,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
      * @param description card's description
      * @param cardPoints  card's point
      */
-    PublicObjectiveCard(final String name, final String description, final int cardPoints, final ObjectiveCardType type) {
+    public PublicObjectiveCard(final String name, final String description, final int cardPoints, final ObjectiveCardType type) {
         super(name, description);
 
         this.type = type;
@@ -50,7 +54,7 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
      * @param constraints set of constraint to apply
      * @param type        type of tile constraint on which the card operates
      */
-    PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, ObjectiveCardType type) {
+    public PublicObjectiveCard(String name, String description, int cardPoints, Collection<IConstraint> constraints, ObjectiveCardType type) {
         this(name, description, cardPoints, type);
 
         for (IConstraint constraint : constraints) {

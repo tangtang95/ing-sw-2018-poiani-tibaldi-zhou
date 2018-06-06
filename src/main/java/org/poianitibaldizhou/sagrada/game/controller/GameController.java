@@ -29,6 +29,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * @see IGameController
+ */
 public class GameController extends UnicastRemoteObject implements IGameController {
 
     private static final transient String INITIAL_CHECK_ERROR = "You're not playing the selected game or the game does not exist";
@@ -42,6 +45,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private final transient ServerGetMessage serverGetMessage;
     private final transient ServerCreateMessage serverCreateMessage;
 
+    /**
+     * Creates a new game controller with a game manager.
+     *
+     * @param gameManager game manager for the server side of the application
+     * @throws RemoteException exception due to the fact that this is an unicast remote object
+     */
     public GameController(GameManager gameManager) throws RemoteException {
         super();
         this.gameManager = gameManager;
@@ -55,7 +64,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     @Override
     public void joinGame(final String message, IGameView view, IGameObserver gameObserver,
                          IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
-                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver) throws IOException {
+                         IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException {
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
@@ -71,13 +80,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         synchronized (gameManager.getGameByName(gameName)) {
             IGame game = gameManager.getGameByName(gameName);
 
-
             GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
             game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
             game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
             game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
             game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
             game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
+            observerManager.attachTimeoutObserver(token, timeOutObserver);
 
             try {
                 game.userJoin(token);
@@ -599,7 +608,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                           Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
                           IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
-                                  diceBagObserver) throws IOException {
+                                  diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException {
         final String userName = serverGetMessage.getUserName(message);
         String token = null;
         String gameName = null;
@@ -662,6 +671,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
             game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
             game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
+            observerManager.attachTimeoutObserver(token, timeOutObserver);
 
             observerManager.signalReconnect(token);
             try {
@@ -915,14 +925,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return serverGetMessage.getErrorMessage();
         }
 
-        List<Player> players;
-        List<User> users = new ArrayList<>();
+        List<User> users;
 
         synchronized (gameManager.getGameByName(gameName)) {
-            players = gameManager.getGameByName(gameName).getPlayers();
+            users = gameManager.getGameByName(gameName).getUsers();
         }
-
-        players.forEach(player -> users.add(player.getUser()));
 
         return serverCreateMessage.createUserList(users).buildMessage();
     }
