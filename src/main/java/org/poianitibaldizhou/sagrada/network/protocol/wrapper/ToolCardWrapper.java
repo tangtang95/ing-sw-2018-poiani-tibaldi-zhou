@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 @Immutable
-public final class ToolCardWrapper  extends CardWrapper{
+public final class ToolCardWrapper  extends CardWrapper implements JSONable{
 
     /**
      * ToolCard param for network protocol.

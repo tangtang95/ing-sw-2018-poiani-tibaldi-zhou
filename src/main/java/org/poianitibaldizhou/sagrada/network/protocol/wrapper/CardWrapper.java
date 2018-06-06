@@ -1,10 +1,9 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 @Immutable
-public abstract class CardWrapper implements JSONable{
+public abstract class CardWrapper{
 
     /**
      * Card param for network protocol.
