@@ -1,13 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.game.model.TerminationGameManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -16,6 +13,7 @@ public class GameObserverManager {
     private Set<String> disconnectedPlayer;
     private Set<String> disconnectedPlayerNotNotified;
     private HashMap<String, ScheduledExecutorService> executorHashMap;
+    private HashMap<String, ITimeOutObserver> observerTimeoutHashMap;
 
     /**
      * Creates an observer manager for a certain game, starting from the the list of the player of that game.
@@ -27,6 +25,7 @@ public class GameObserverManager {
         disconnectedPlayer = new HashSet<>();
         disconnectedPlayerNotNotified = new HashSet<>();
         executorHashMap = new HashMap<>();
+        observerTimeoutHashMap = new HashMap<>();
 
         tokenList.forEach(token -> {
             ScheduledExecutorService scheduledTask = Executors.newScheduledThreadPool(1);
@@ -39,6 +38,11 @@ public class GameObserverManager {
     // GETTER
 
     @Contract(pure = true)
+    public Map<String, ITimeOutObserver> getObserverTimeoutHashMap() {
+        return new HashMap<>(observerTimeoutHashMap);
+    }
+
+    @Contract(pure = true)
     public Set<String> getDisconnectedPlayer() {
         return new HashSet<>(disconnectedPlayer);
     }
@@ -49,6 +53,14 @@ public class GameObserverManager {
     }
 
     // MODIFIER
+
+    public void attachTimeoutObserver(String token, ITimeOutObserver timeOutObserver) {
+        observerTimeoutHashMap.replace(token, timeOutObserver);
+    }
+
+    public void detachTimeoutObserver(String token) {
+        observerTimeoutHashMap.remove(token);
+    }
 
     /**
      * Adds a thread in the queue regarding a certain player, only if it is signaled as non-disconnected.
@@ -83,6 +95,7 @@ public class GameObserverManager {
         executorHashMap.get(token).shutdownNow();
         disconnectedPlayerNotNotified.add(token);
         disconnectedPlayer.add(token);
+        detachTimeoutObserver(token);
     }
 
     /**

@@ -21,7 +21,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
     private static final long TIME = Settings.getPlayerTimeout();
 
-    private Map<String, ITimeOutObserver> realObserver;
     private GameObserverManager observerManager;
     private final IGame game;
 
@@ -33,12 +32,10 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     /**
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
      *
-     * @param realObserver map of the real observers that needs to be notified
      * @param observerManager observer manager for the specifid game
      * @param game game in which the timeout happens
      */
-    public TimeOutFakeObserver(Map<String, ITimeOutObserver> realObserver, GameObserverManager observerManager, IGame game) {
-        this.realObserver = realObserver;
+    public TimeOutFakeObserver(GameObserverManager observerManager, IGame game) {
         this.observerManager = observerManager;
         this.game = game;
 
@@ -69,9 +66,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         try {
             synchronized (game) {
                 if(timeOutThreadTurnState != null) {
-                    game.forceStateChange();
-
-                    Runnable notify = () -> realObserver.forEach((token, obs) -> {
+                    Runnable notify = () -> observerManager.getObserverTimeoutHashMap().forEach((token, obs) -> {
                         try {
                             obs.onTimeOut(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
                         } catch (IOException e) {
@@ -80,6 +75,8 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                     });
 
                     observerManager.pushThreadInQueue(TIME_OUT, notify);
+
+                    game.forceStateChange();
                 }
             }
         } catch (InvalidActionException e) {
