@@ -80,6 +80,7 @@ public class CLIStartGameScreen extends CLIBasicScreen {
      */
     private void quit() {
         screenManager.popScreen();
+        System.exit(0);
     }
 
     /**

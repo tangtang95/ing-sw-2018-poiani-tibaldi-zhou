@@ -8,6 +8,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
@@ -98,6 +99,13 @@ public class ServerGetMessageTest {
                 "\\\"value\\\":1}}\"}}}";
 
         assertEquals(message2, serverNetworkProtocol.buildMessage());
+    }
+
+    @Test
+    public void test(){
+        FrontBackSchemaCard frontBackSchemaCard = new FrontBackSchemaCard();
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
+        System.out.println();
     }
 
 }
