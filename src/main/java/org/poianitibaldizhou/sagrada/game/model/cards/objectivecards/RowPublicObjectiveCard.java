@@ -11,6 +11,10 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * OVERVIEW: Calculates a score due to the fact that there will need to be a row
+ * with different constraint of ColorConstraint or NumberConstraint
+ */
 @Immutable
 public class RowPublicObjectiveCard extends PublicObjectiveCard{
 
@@ -35,7 +39,7 @@ public class RowPublicObjectiveCard extends PublicObjectiveCard{
 
     /**
      * Returns the score obtained by a SchemaCard following the rule implied by RowPublicObjectiveCard.
-     * Basically, in order to get some points (cardsPoint for each row) there will need to be a row
+     * In order to get some points (cardsPoint for each row) there will need to be a row
      * with different constraint of ColorConstraint or NumberConstraint, depending on this.type.
      *
      * @param schema SchemaCard on which RowPublicObjectiveCard rules needs to be applied

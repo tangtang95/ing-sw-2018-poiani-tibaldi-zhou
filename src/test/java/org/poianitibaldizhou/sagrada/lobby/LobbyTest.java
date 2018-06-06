@@ -3,108 +3,169 @@ package org.poianitibaldizhou.sagrada.lobby;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
+import org.mockito.MockitoAnnotations;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 public class LobbyTest {
     @Mock
-    public static ILobbyObserver lobbyObserver1;
-
-    @Mock
-    public static ILobbyObserver lobbyObserver2;
-
-    @Mock
-    public static ILobbyObserver lobbyObserver3;
-
-    @Mock
-    public static ILobbyObserver lobbyObserver4;
-
-    @Mock
-    public static ILobbyObserver lobbyObserver5;
-
-    @Mock
-    public static ILobbyObserver lobbyObserver6;
+    public ILobbyFakeObserver lobbyObserver1, lobbyObserver2, lobbyObserver3, lobbyObserver4, lobbyObserver5, lobbyObserver6;
 
     @DataPoint
-    public static ArrayList<ILobbyObserver> observers;
+    public ArrayList<ILobbyFakeObserver> observers;
 
     @DataPoint
-    public static Lobby lobby;
+    public Lobby lobby;
 
     @DataPoint
-    public static ArrayList<User> users;
+    public ArrayList<User> users;
 
-    @BeforeClass
-    public static void setUpClass() {
-        observers = new ArrayList<>();
 
-        users = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            users.add(new User("user"+i, UUID.randomUUID().toString()));
-        }
-    }
-/*
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         lobby = new Lobby("Lobby test");
+
+        observers = new ArrayList<>();
+
+        users = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            users.add(new User("user" + i, UUID.randomUUID().toString()));
+        }
+
         observers.add(lobbyObserver1);
         observers.add(lobbyObserver2);
         observers.add(lobbyObserver3);
         observers.add(lobbyObserver4);
         observers.add(lobbyObserver5);
         observers.add(lobbyObserver6);
-
     }
 
-    @After
-    public void tearDown() {
-        lobby = null;
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-        observers = null;
-        users = null;
-    }
-
+    /**
+     * Tests the call on the fake observers when an user join the lobby
+     */
     @Test
-    public void testUserJoinGamestartLeave() throws RemoteException {
-        for (int i = 0; i < Lobby.MAX_PLAYER; i++) {
-            lobby.attachObserver(observers.get(i));
+    public void testJoinObserverCall() {
+        lobby.attachObserver(users.get(0).getToken(), observers.get(0));
+        lobby.join(users.get(0));
+
+        lobby.attachObserver(users.get(1).getToken(), observers.get(1));
+        lobby.join(users.get(1));
+
+        verify(observers.get(0), times(1)).onUserJoin(users.get(0));
+        verify(observers.get(0), times(1)).onUserJoin(users.get(1));
+        verify(observers.get(1), times(1)).onUserJoin(users.get(1));
+    }
+
+    /**
+     * Test user join
+     */
+    @Test
+    public void testJoin() {
+        List<User> testUsers = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            testUsers.add(users.get(i));
         }
 
-        boolean flag;
+        lobby.join(users.get(0));
+        lobby.join(users.get(1));
+        lobby.join(users.get(2));
 
-        for (int i = 0; i < Lobby.MAX_PLAYER; i++) {
-            System.out.println(users.get(i));
-            flag = lobby.join(users.get(i));
-            for(int j = 0; j <= i; j++)
-                verify(observers.get(j), times(1)).onUserJoin(users.get(i));
-            if(i < Lobby.MAX_PLAYER-1) {
-                assertEquals(false, flag);
-            } else {
-                assertEquals(true, flag);
-            }
-        }
+        assertEquals(testUsers, lobby.getUserList());
+    }
 
+    /**
+     * Tests the call on the fake observers when an user leave the lobby
+     */
+    @Test
+    public void testExitObserverCall() {
+        lobby.attachObserver(users.get(0).getToken(), observers.get(0));
+        lobby.join(users.get(0));
 
-        lobby.gameStart();
-        for (int i = 0; i < Lobby.MAX_PLAYER; i++) {
-            verify(observers.get(i), times(1)).onGameStart();
-        }
+        lobby.attachObserver(users.get(1).getToken(), observers.get(1));
+        lobby.join(users.get(1));
 
+        lobby.leave(users.get(1));
+
+        lobby.getLobbyObserverMap().forEach((key, value) -> {
+            verify(value, times(1)).onUserExit(users.get(1));
+        });
+    }
+
+    /**
+     * Test user exit
+     */
+    @Test
+    public void testUserExit() {
+        lobby.join(users.get(0));
         lobby.leave(users.get(0));
-        for(int i = 0; i < Lobby.MAX_PLAYER; i++) {
-            verify(observers.get(i), times(1)).onUserExit(users.get(0));
+
+        assertTrue(lobby.getUserList().isEmpty());
+    }
+
+    /**
+     * Test user join: lobby full
+     */
+    @Test
+    public void testUserJoinFull() {
+        for (int i = 0; i < Lobby.MAX_PLAYER; i++) {
+            if (i < Lobby.MAX_PLAYER - 1)
+                assertEquals(false, lobby.join(new User("name" + i, "token" + i)));
+            else
+                assertEquals(true, lobby.join(new User("name" + i, "token" + i)));
         }
-    }*/
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testUserJoinWithException() {
+        for (int i = 0; i < Lobby.MAX_PLAYER + 1; i++) {
+            lobby.join(new User("" + i, "" + i));
+        }
+    }
+
+    /**
+     * Test game start
+     */
+    @Test
+    public void testGameStartObserverCall() {
+        for (int i = 0; i < 2; i++) {
+            lobby.attachObserver("token" + i, observers.get(i));
+            lobby.join(new User("name" + i, "token" + i));
+        }
+
+        assertFalse(lobby.isGameStarted());
+
+        lobby.gameStart("game name");
+
+        for (int i = 0; i < 2; i++) {
+            verify(observers.get(i), times(1)).onGameStart("game name");
+        }
+        assertTrue(lobby.isGameStarted());
+    }
+
+
+    /**
+     * Test observer detach
+     */
+    @Test
+    public void testObserverDetach() {
+        lobby.attachObserver("0", observers.get(0));
+        lobby.attachObserver("1", observers.get(1));
+        lobby.detachObserver("0");
+        lobby.join(users.get(1));
+
+        verify(observers.get(0), times(0)).onUserJoin(users.get(1));
+        verify(observers.get(1), times(1)).onUserJoin(users.get(1));
+    }
 }

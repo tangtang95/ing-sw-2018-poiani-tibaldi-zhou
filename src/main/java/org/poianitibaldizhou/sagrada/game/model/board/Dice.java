@@ -13,6 +13,10 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Dice: represents a dice with a certain number and a certain color.
+ * Numbers are integer in the interval [MIN_VALUE, MAX_VALUE].
+ */
 @Immutable
 public class Dice implements Serializable, JSONable{
 

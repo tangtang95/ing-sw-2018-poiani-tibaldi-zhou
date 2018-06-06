@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.rmi.Remote;
 import java.util.Map;
 
+/**
+ * OVERVIEW: Game controller: it handles that client requests and gives input to the model. The model will update, manipulates
+ * and retrieves its data in order to follow the client inputs.
+ */
 public interface IGameController extends Remote {
     /**
      * Notifies that a player has joined the game.

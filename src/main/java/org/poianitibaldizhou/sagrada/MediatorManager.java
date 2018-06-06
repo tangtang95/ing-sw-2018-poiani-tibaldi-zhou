@@ -69,7 +69,7 @@ public class MediatorManager {
      * @return true if the player is present, false otherwise
      */
     public boolean isAlreadyWaitingInALobby(String username) {
-        Optional<User> result = lobbyManager.getUsers().stream().filter(user -> user.getName().equals(username)).findAny();
+        Optional<User> result = lobbyManager.getLoggedUser().stream().filter(user -> user.getName().equals(username)).findAny();
         return result.isPresent();
     }
 }

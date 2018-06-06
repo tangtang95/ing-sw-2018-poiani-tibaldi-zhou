@@ -20,6 +20,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents a private objective for a certain player.
+ */
 @Immutable
 public class PrivateObjectiveCard extends Card implements IScore, JSONable {
 

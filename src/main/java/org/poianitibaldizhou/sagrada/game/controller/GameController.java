@@ -29,6 +29,9 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 
+/**
+ * @see IGameController
+ */
 public class GameController extends UnicastRemoteObject implements IGameController {
 
     private static final transient String INITIAL_CHECK_ERROR = "You're not playing the selected game or the game does not exist";
@@ -42,6 +45,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private final transient ServerGetMessage serverGetMessage;
     private final transient ServerCreateMessage serverCreateMessage;
 
+    /**
+     * Creates a new game controller with a game manager.
+     *
+     * @param gameManager game manager for the server side of the application
+     * @throws RemoteException exception due to the fact that this is an unicast remote object
+     */
     public GameController(GameManager gameManager) throws RemoteException {
         super();
         this.gameManager = gameManager;

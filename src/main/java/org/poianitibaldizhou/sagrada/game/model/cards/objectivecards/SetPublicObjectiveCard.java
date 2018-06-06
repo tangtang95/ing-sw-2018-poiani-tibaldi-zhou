@@ -10,6 +10,10 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * OVERVIEW: It calculates the point of a schema card following the rules that there will need to be tuple
+ * of dices with matching constraint of ColorConstraint or NumberConstraint.
+ */
 @Immutable
 public class SetPublicObjectiveCard extends PublicObjectiveCard {
 
@@ -32,7 +36,7 @@ public class SetPublicObjectiveCard extends PublicObjectiveCard {
 
     /**
      * Returns the score obtained by a SchemaCard following the rule implied by SetPublicObjectiveCard.
-     * Basically, in order to get some points (cardsPoint for each occurrence) there will need to be tuple
+     * In order to get some points (cardsPoint for each occurrence) there will need to be tuple
      * of dices with matching constraint of ColorConstraint or NumberConstraint, depending on this.type and
      * this.constraints. Every constraint presents in this.constraint needs to be matched once in the tuple.
      *

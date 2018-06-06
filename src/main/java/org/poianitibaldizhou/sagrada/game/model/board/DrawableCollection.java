@@ -9,6 +9,13 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import java.io.Serializable;
 import java.util.*;
 
+/**
+ * OVERVIEW represents a collection of elements where order does not matter and that
+ * allows the drawing of element from it. Drawing an element also removes it from the
+ * collection.
+ *
+ * @param <T> type of elements of the collection
+ */
 public class DrawableCollection<T extends JSONable> implements Serializable{
     private final transient List<T> collection;
     private final transient Map<String, IDrawableCollectionFakeObserver<T>> observerMap;
@@ -185,11 +192,7 @@ public class DrawableCollection<T extends JSONable> implements Serializable{
     private void fillPositionAndCounterArray(List param, int[] counter, int[] positions) {
         for (int i = 0; i < param.size(); i++) {
             for (int j = 0; j < param.size(); j++) {
-                if (param.get(i).equals(param.get(j))) {
-                    counter[j]++;
-                    positions[i] = j;
-                    break;
-                } else if (counter[j] == 0) {
+                if (param.get(i).equals(param.get(j)) || counter[j] == 0) {
                     counter[j]++;
                     positions[i] = j;
                     break;

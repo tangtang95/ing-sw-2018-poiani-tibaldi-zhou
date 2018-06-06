@@ -7,7 +7,7 @@ import org.json.simple.parser.ParseException;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class Settings {
+public class ServerSettings {
 
     private static final String SETTINGS_FILE_PATH = "resources/settings.json";
     private static final String LOBBY_TIMEOUT_KEY = "lobbyTimeout";

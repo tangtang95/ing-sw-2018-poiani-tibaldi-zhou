@@ -1,11 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.poianitibaldizhou.sagrada.Settings;
+import org.poianitibaldizhou.sagrada.ServerSettings;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
@@ -19,7 +18,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
     public static final String TIME_OUT = "TIMEOUT";
 
-    private static final long TIME = Settings.getPlayerTimeout();
+    private static final long TIME = ServerSettings.getPlayerTimeout();
 
     private GameObserverManager observerManager;
     private final IGame game;
