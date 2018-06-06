@@ -682,7 +682,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final Optional<String> gameName;
         List<IGame> gameList = gameManager.getGameList();
 
-        gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(game -> game.getName()).findFirst();
+        gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(IGame::getName).findFirst();
 
         if (!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
             return serverGetMessage.reconnectErrorMessage();
@@ -954,7 +954,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     private void handleEndGame(IGame game, GameObserverManager observerManager) {
         if (!game.isSinglePlayer()) {
-            if (observerManager.getDisconnectedPlayer().size() == game.getPlayers().size() - 1) {
+            if (observerManager.getDisconnectedPlayer().size() == game.getUsers().size() - 1) {
                 // search for the player that it's not disconnected
                 for (Player player : game.getPlayers())
                     if (!observerManager.getDisconnectedPlayer().contains(player.getToken())) {

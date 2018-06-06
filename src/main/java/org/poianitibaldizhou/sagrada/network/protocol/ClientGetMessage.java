@@ -16,11 +16,27 @@ public class ClientGetMessage {
     }
 
     public DiceWrapper getDice(String message) throws IOException {
-        return null;
+        DiceWrapper diceWrapper;
+
+        try {
+            diceWrapper = (DiceWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return diceWrapper;
     }
 
     public List<DiceWrapper> getDiceList(String message) throws IOException {
-        return null;
+        List<DiceWrapper> diceWrapper;
+
+        try {
+            diceWrapper = (List<DiceWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return diceWrapper;
     }
 
     public UserWrapper getUserWrapper(String message) throws IOException {

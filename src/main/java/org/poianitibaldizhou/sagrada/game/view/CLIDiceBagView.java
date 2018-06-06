@@ -30,10 +30,11 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     @Override
     public void onElementAdd(String elem) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
-
-        String message = cliStateScreen.getCurrentUser().getUsername() + " has put a dice in the dice bag.";
-        DiceWrapper diceWrapper = clientGetMessage.getDice(elem);
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+        if(cliStateScreen.getCurrentUser() != null) {
+            String message = cliStateScreen.getCurrentUser().getUsername() + " has put a dice in the dice bag.";
+            DiceWrapper diceWrapper = clientGetMessage.getDice(elem);
+            PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+        }
     }
 
     /**
