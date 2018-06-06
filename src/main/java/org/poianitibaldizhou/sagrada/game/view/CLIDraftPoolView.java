@@ -31,7 +31,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
     public void onDiceAdd(String dice) throws IOException {
         String message = cliStateScreen.getCurrentUser().getUsername() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
-        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
+        DiceWrapper diceWrapper = clientGetMessage.getDice(dice);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
@@ -42,7 +42,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
     public void onDiceRemove(String dice) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = cliStateScreen.getCurrentUser().getUsername() + " has removed a dice from the draft pool.";
-        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
+        DiceWrapper diceWrapper = clientGetMessage.getDice(dice);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 

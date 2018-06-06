@@ -46,6 +46,7 @@ public class ClientGetMessage {
         try {
             diceWrapper = (DiceWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE);
         } catch (ParseException | ClassCastException e) {
+            e.printStackTrace();
             throw new IOException();
         }
 
