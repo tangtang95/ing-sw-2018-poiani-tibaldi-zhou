@@ -121,21 +121,11 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
      * @param jsonObject a JSONObject that contains a name of the publicObjectiveCard.
      * @return a publicObjectiveCard object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static PublicObjectiveCard toObject(JSONObject jsonObject) {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private PublicObjectiveCard(){
-        super(null,null);
-        this.type = null;
-        this.cardPoints = 0;
-    }
 
     @Override
     public boolean equals(Object o) {

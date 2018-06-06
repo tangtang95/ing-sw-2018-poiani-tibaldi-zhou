@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaC
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -32,7 +33,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
                 positionWrapper.toString();
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
-                Level.STANDARD);
+                Level.INFORMATION);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
                 positionWrapper.toString();
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
-                Level.STANDARD);
+                Level.INFORMATION);
     }
 
     @Override

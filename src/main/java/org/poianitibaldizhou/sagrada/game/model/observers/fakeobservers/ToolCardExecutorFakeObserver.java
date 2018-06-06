@@ -7,9 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
-import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;

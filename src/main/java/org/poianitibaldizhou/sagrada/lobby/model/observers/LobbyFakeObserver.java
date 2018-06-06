@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.lobby.model.observers;
 
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;

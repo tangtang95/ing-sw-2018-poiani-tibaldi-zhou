@@ -6,19 +6,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.*;
 
 public class JSONProtocol {
 
-    private final Map<String, Class> classMap;
     private final JSONObject packet = new JSONObject();
-
-    JSONProtocol(Map<String, Class> classMap) {
-        this.classMap = classMap;
-    }
 
     /**
      * Build a formatted message for communication from server to client.
@@ -71,36 +63,11 @@ public class JSONProtocol {
      * @throws ParseException launch when the message format is wrong.
      */
     @SuppressWarnings("unchecked")
-    public Object getResponseByKey(String response, String key) throws ParseException {
+    public JSONObject getResponseByKey(String response, String key) throws ParseException {
         JSONParser jsonParser = new JSONParser();
 
         JSONObject body = (JSONObject) jsonParser.parse(response);
-        JSONObject elem = (JSONObject) body.get(key);
-        try {
-            if (elem.get(SharedConstants.TYPE).equals(SharedConstants.COLLECTION)) {
-                JSONArray list = (JSONArray) elem.get(SharedConstants.BODY);
-                List<Object> genericList = new ArrayList<>();
-                for (Object obj : Objects.requireNonNull(list))
-                    genericList.add(convertToObject((JSONObject) obj));
-                return genericList;
-            }
-            if (elem.get(SharedConstants.TYPE).equals(SharedConstants.MAP)) {
-                JSONObject map = (JSONObject) elem.get(SharedConstants.BODY);
-                Map<Object, Object> genericMap = new HashMap<>();
-                for (Object obj : map.entrySet()) {
-                    Map.Entry<Object, Object> entry = (Map.Entry<Object, Object>) obj;
-                    genericMap.put(convertToObject(
-                            (JSONObject) jsonParser.parse(entry.getKey().toString())),
-                            convertToObject(
-                                    (JSONObject) jsonParser.parse(entry.getValue().toString())));
-                }
-                return genericMap;
-            }
-            return convertToObject(elem);
-        } catch (IllegalArgumentException | ParseException e) {
-            e.printStackTrace();
-            throw new ParseException(0);
-        }
+        return (JSONObject) body.get(key);
     }
 
     /**
@@ -128,55 +95,6 @@ public class JSONProtocol {
             jsonObject.put(SharedConstants.TYPE, SharedConstants.INTEGER);
             jsonObject.put(SharedConstants.BODY, t.toString());
             return jsonObject;
-        }
-        throw new IllegalArgumentException();
-    }
-
-    /**
-     * Convert a JSONObject to a correct game object.
-     * The method control that to the JSONObject passed corresponds a class
-     * JSONable in game and with java reflection it calls the toObject method.
-     * <p>
-     * The method use a fake constructor for get a object upon which call the invoke.
-     *
-     * @param jsonObject JSONObject to convert.
-     * @return a correct object converted.
-     */
-    @SuppressWarnings("unchecked")
-    public Object convertToObject(JSONObject jsonObject) {
-        String className = (String) jsonObject.get(SharedConstants.TYPE);
-
-        if (className.equals(SharedConstants.STRING))
-            return jsonObject.get(SharedConstants.BODY).toString();
-        if (className.equals(SharedConstants.INTEGER))
-            return Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
-
-        Class[] interfaces = classMap.get(className).getInterfaces();
-
-        Boolean isConvertible = false;
-
-        for (Class c : interfaces) {
-            if (JSONable.class.isAssignableFrom(c)) {
-                isConvertible = true;
-                break;
-            }
-        }
-        if (isConvertible) {
-            try {
-                Method method = classMap.get(className).getDeclaredMethod("toObject", JSONObject.class);
-                Constructor fakeConstructor = null;
-                for (Constructor constructor : classMap.get(className).getDeclaredConstructors())
-                    if (constructor.getParameterCount() == 0) {
-                        constructor.setAccessible(true);
-                        fakeConstructor = constructor;
-                    }
-                if (fakeConstructor != null)
-                    return method.invoke(fakeConstructor.newInstance(),
-                            (JSONObject) jsonObject.get(SharedConstants.BODY));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException
-                    | InstantiationException e) {
-                e.printStackTrace();
-            }
         }
         throw new IllegalArgumentException();
     }

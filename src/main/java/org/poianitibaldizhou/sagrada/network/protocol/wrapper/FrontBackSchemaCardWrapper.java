@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONClientProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
@@ -45,14 +44,12 @@ public class FrontBackSchemaCardWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a FrontBackSchemaCard.
      * @return a FrontBackSchemaCardWrapper object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
-        JSONClientProtocol clientProtocol = new JSONClientProtocol();
+    public static FrontBackSchemaCardWrapper toObject(JSONObject jsonObject) {
         JSONArray jsonArray = (JSONArray) jsonObject.get(SharedConstants.BODY);
         FrontBackSchemaCardWrapper frontBackSchemaCardWrapper = new FrontBackSchemaCardWrapper();
         for (Object o:jsonArray) {
-            JSONObject schemaCard = (JSONObject) o;
-            frontBackSchemaCardWrapper.schemaCards.add((SchemaCardWrapper) clientProtocol.convertToObject(schemaCard));
+            JSONObject schemaCard = (JSONObject) ((JSONObject) o).get(SharedConstants.BODY);
+            frontBackSchemaCardWrapper.schemaCards.add(SchemaCardWrapper.toObject(schemaCard));
         }
         return frontBackSchemaCardWrapper;
     }

@@ -21,13 +21,13 @@ public class CLIRoundScreen extends CLIBasicScreen {
 
     protected final String gameName;
     protected final String token;
-    protected final transient UserWrapper myUser;
-    protected transient List<ToolCardWrapper> toolCardList;
+    private final transient UserWrapper myUser;
+    transient List<ToolCardWrapper> toolCardList;
     protected transient DraftPoolWrapper draftPool;
     protected final transient CLIStateView cliStateView;
 
     protected final transient ClientGetMessage clientGetMessage;
-    protected final transient ClientCreateMessage clientCreateMessage;
+    final transient ClientCreateMessage clientCreateMessage;
 
 
     private static final String QUIT = "Quit game";
@@ -98,7 +98,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     }
 
     @Override
-    public void startCLI() {
+    public synchronized void startCLI() {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         BuildGraphic buildGraphic = new BuildGraphic();
 
@@ -110,9 +110,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
     }
     private void viewPrivateObjectiveCards(){
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrivateObjectiveCardWrapper poc = null;
+        List<PrivateObjectiveCardWrapper> poc = new ArrayList<>();
         try {
-            poc = clientGetMessage.getPrivateObjectiveCard(
+            poc = clientGetMessage.getPrivateObjectiveCards(
                     connectionManager.getGameController().getPrivateObjectiveCardByToken(
                     clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
             ));
@@ -120,10 +120,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
-        PrinterManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCard(poc).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCards(poc).toString(),Level.STANDARD);
     }
 
-    protected void viewMySchemaCard() {
+    void viewMySchemaCard() {
         BuildGraphic buildGraphic = new BuildGraphic();
         SchemaCardWrapper schemaCard = null;
         try {
@@ -141,19 +141,19 @@ public class CLIRoundScreen extends CLIBasicScreen {
 
     private void viewSchemaCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        Map<UserWrapper,SchemaCardWrapper> schemaCards = null;
+        Map<UserWrapper,SchemaCardWrapper> schemaCards;
         try {
             schemaCards = clientGetMessage.getSchemaCards(
                     connectionManager.getGameController().getSchemaCards(
                             clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
                     ));
+            Objects.requireNonNull(schemaCards).forEach((k, v) -> buildGraphic.buildMessage("Schema of Player:" + k).
+                    buildGraphicSchemaCard(v));
+            PrinterManager.consolePrint(buildGraphic.toString(),Level.STANDARD);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
-        Objects.requireNonNull(schemaCards).forEach((k, v) -> buildGraphic.buildMessage("Schema of Player:" + k).
-                buildGraphicSchemaCard(v));
-        PrinterManager.consolePrint(buildGraphic.toString(),Level.STANDARD);
     }
 
     private void viewPublicObjectiveCards() {
@@ -171,7 +171,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicPublicObjectiveCards(pocList).toString(),Level.STANDARD);
     }
 
-    protected void viewToolCards() {
+    void viewToolCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<ToolCardWrapper> toolCardWrapperList = null;
         try {
@@ -202,7 +202,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrackWrapper).toString(),Level.STANDARD);
     }
 
-    protected void viewDraftPool() {
+    void viewDraftPool() {
         BuildGraphic buildGraphic = new BuildGraphic();
         DraftPoolWrapper draftPoolWrapper = null;
         try {

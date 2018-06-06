@@ -18,8 +18,7 @@ public class PlaceDiceStateWrapper implements IActionWrapper {
         return main;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static PlaceDiceStateWrapper toObject(JSONObject jsonObject) {
         return null;
     }
 }

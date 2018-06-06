@@ -3,10 +3,10 @@ package org.poianitibaldizhou.sagrada.network.protocol;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 public class ClientCreateMessage {
-    private JSONClientProtocol jsonClientProtocol;
+    private JSONProtocol jsonClientProtocol;
 
     public ClientCreateMessage() {
-        jsonClientProtocol = new JSONClientProtocol();
+        jsonClientProtocol = new JSONProtocol();
     }
 
     public ClientCreateMessage createGameNameMessage(String gameName) {
@@ -32,7 +32,7 @@ public class ClientCreateMessage {
 
     public String buildMessage() {
         String temp = jsonClientProtocol.buildMessage();
-        jsonClientProtocol = new JSONClientProtocol();
+        jsonClientProtocol = new JSONProtocol();
         return temp;
     }
 

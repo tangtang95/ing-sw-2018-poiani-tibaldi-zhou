@@ -12,6 +12,7 @@ public class CLITurnScreen extends CLIRoundScreen {
     private static final String PLACE_DICE = "Place dice";
     private static final String PLAY_TOOL_CARD = "Play Tool Card";
     private static final String END_TURN = "End Turn";
+    private static final String QUIT = "Quit game";
 
     /**
      * constructor.
@@ -42,18 +43,26 @@ public class CLITurnScreen extends CLIRoundScreen {
         Command endTurn = new Command(END_TURN, "End the turn");
         endTurn.setCommandAction(this::endTurn);
         commandMap.put(endTurn.getCommandText(), endTurn);
-    }
 
+        Command quit = new Command(QUIT, "Quit from current game");
+        quit.setCommandAction(() -> {
+            screenManager.popScreen();
+            screenManager.popScreen();
+        });
+        commandMap.put(quit.getCommandText(), quit);
+    }
 
     private PositionWrapper selectPosition() {
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").toString(),
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
+                        buildMessage("Choose a row:").toString(),
                 Level.STANDARD);
-        viewMySchemaCard();
-        return new PositionWrapper(consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS),
-                consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS));
+        int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS + 1);
+        PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
+        int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS + 1);
+        return new PositionWrapper(row, column);
     }
 
     private void endTurn() {
@@ -74,6 +83,7 @@ public class CLITurnScreen extends CLIRoundScreen {
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a dice to place in your schema card:").toString(),
                 Level.STANDARD);
         viewDraftPool();
+        viewMySchemaCard();
         int diceNumber = consoleListener.readNumber(draftPool.size());
         PositionWrapper position = selectPosition();
         try {
@@ -96,6 +106,7 @@ public class CLITurnScreen extends CLIRoundScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
+        viewToolCards();
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a Tool Card:").
                 buildGraphicToolCards(toolCardList).toString(), Level.STANDARD);
         ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readNumber(toolCardList.size()));

@@ -799,7 +799,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             draftPool = gameManager.getGameByName(gameName).getDraftPool();
         }
 
-        return serverCreateMessage.createDiceList(draftPool.getDices()).buildMessage();
+        return serverCreateMessage.createDraftPoolMessage(draftPool).buildMessage();
     }
 
     /**

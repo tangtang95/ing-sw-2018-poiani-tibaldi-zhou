@@ -10,7 +10,6 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -282,8 +281,6 @@ public class TileTest {
         when(noc.matches(nc2)).thenReturn(true);
         assertTrue(noConstraintTile.isDicePositionable(dice3blue));
 
-        JSONServerProtocol protocol = mock(JSONServerProtocol.class);
-        when(protocol.convertToObject(test)).thenReturn(dice3blue);
 
         try {
             tileDice.setDice(dice3blue);

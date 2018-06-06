@@ -225,8 +225,7 @@ public class DraftPool implements Serializable, JSONable {
      * @param jsonObject a JSONObject that contains a draftPool.
      * @return a draftPool object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static DraftPool toObject(JSONObject jsonObject) {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

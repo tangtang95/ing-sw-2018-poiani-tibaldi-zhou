@@ -13,10 +13,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
-import java.io.Serializable;
 import java.util.*;
 
 public class SchemaCard implements JSONable {
@@ -24,8 +22,6 @@ public class SchemaCard implements JSONable {
     private final int difficulty;
     private final Tile[][] tileMatrix;
     private final transient Map<String, ISchemaCardFakeObserver> observerMap;
-
-    private final transient JSONServerProtocol protocol = new JSONServerProtocol();
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
@@ -537,14 +533,13 @@ public class SchemaCard implements JSONable {
      * @param jsonObject a JSONObject that contains a schema card.
      * @return a SchemaCard object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static SchemaCard toObject(JSONObject jsonObject) {
         Tile[][] tiles = new Tile[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
         JSONArray matrix = (JSONArray) jsonObject.get(JSON_MATRIX);
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             JSONArray row = (JSONArray) matrix.get(i);
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                tiles[i][j] = (Tile) protocol.convertToObject((JSONObject) row.get(j));
+                tiles[i][j] = Tile.toObject((JSONObject) ((JSONObject) row.get(j)).get(SharedConstants.BODY));
             }
         }
         return new SchemaCard(
@@ -554,14 +549,4 @@ public class SchemaCard implements JSONable {
         );
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private SchemaCard() {
-        this.tileMatrix = null;
-        this.difficulty = 0;
-        this.name = null;
-        this.observerMap =null;
-    }
 }

@@ -38,8 +38,7 @@ public class EndTurnAction implements IActionCommand {
         return null;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static EndTurnAction toObject(JSONObject jsonObject) {
         return new EndTurnAction();
     }
 }

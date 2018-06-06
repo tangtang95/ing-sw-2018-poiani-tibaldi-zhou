@@ -247,8 +247,7 @@ public class RoundTrack implements Serializable, JSONable {
      * @param jsonObject a JSONObject that contains a roundTrack.
      * @return a roundTrack object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static RoundTrack toObject(JSONObject jsonObject) {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

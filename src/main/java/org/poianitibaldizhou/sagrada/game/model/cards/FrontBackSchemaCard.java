@@ -74,8 +74,7 @@ public class FrontBackSchemaCard implements JSONable{
      * @param jsonObject a JSONObject that contains a FrontBackSchemaCard.
      * @return a FrontBackSchemaCard object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static FrontBackSchemaCard toObject(JSONObject jsonObject) {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

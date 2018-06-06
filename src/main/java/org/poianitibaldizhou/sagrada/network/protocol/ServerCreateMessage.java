@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
@@ -18,10 +19,10 @@ import java.util.Map;
 
 public class ServerCreateMessage {
 
-    private JSONServerProtocol jsonServerProtocol;
+    private JSONProtocol jsonServerProtocol;
 
     public ServerCreateMessage() {
-        jsonServerProtocol = new JSONServerProtocol();
+        jsonServerProtocol = new JSONProtocol();
     }
 
     public ServerCreateMessage createDiceMessage(Dice dice){
@@ -77,7 +78,7 @@ public class ServerCreateMessage {
     }
 
     public void clear() {
-        jsonServerProtocol = new JSONServerProtocol();
+        jsonServerProtocol = new JSONProtocol();
     }
 
     public ServerCreateMessage createPrivateObjectiveCardList(List<PrivateObjectiveCard> privateObjectiveCards) {
@@ -181,9 +182,14 @@ public class ServerCreateMessage {
         return this;
     }
 
+    public ServerCreateMessage createDraftPoolMessage(DraftPool draftPool) {
+        jsonServerProtocol.appendMessage(SharedConstants.DRAFT_POOL, draftPool);
+        return this;
+    }
+
     public String buildMessage() {
         String temp = jsonServerProtocol.buildMessage();
-        jsonServerProtocol = new JSONServerProtocol();
+        jsonServerProtocol = new JSONProtocol();
         return temp;
     }
 }

@@ -18,8 +18,7 @@ public class EndTurnStateWrapper implements IActionWrapper {
         return main;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static EndTurnStateWrapper toObject(JSONObject jsonObject) {
         return null;
     }
 }

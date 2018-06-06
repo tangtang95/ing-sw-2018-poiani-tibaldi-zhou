@@ -5,12 +5,12 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Immutable
 public final class RoundTrackWrapper implements JSONable{
@@ -60,19 +60,19 @@ public final class RoundTrackWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a roundTrack.
      * @return a roundTrackWrapper object or null.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
-        ClientGetMessage parser = new ClientGetMessage();
+    public static RoundTrackWrapper toObject(JSONObject jsonObject) {
         List<Collection<DiceWrapper>> rounds = new ArrayList<>();
         JSONArray roundTrack = (JSONArray) jsonObject.get(JSON_ROUND_LIST);
 
         for (Object o: roundTrack) {
-            JSONObject diceList = (JSONObject) o;
-            try {
-                rounds.add(parser.getDiceList((String) diceList.get(JSON_DICE_LIST)));
-            } catch (IOException e) {
-                return null;
+            JSONObject diceList = (JSONObject)((JSONObject) o).get(JSON_DICE_LIST);
+            JSONArray diceInRound = (JSONArray) diceList.get(SharedConstants.BODY);
+            Collection<DiceWrapper> diceWrappers = new ArrayList<>();
+            for (Object d : diceInRound) {
+                JSONObject dice = (JSONObject) ((JSONObject) d).get(SharedConstants.BODY);
+                diceWrappers.add(DiceWrapper.toObject(dice));
             }
+            rounds.add(diceWrappers);
         }
         return new RoundTrackWrapper(rounds);
     }

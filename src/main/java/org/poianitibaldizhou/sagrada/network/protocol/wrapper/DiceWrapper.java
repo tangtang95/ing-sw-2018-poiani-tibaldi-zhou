@@ -27,14 +27,6 @@ public final class DiceWrapper implements JSONable{
         this.number = number;
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    public DiceWrapper() {
-        this.number = 0;
-        this.color = null;
-    }
 
     public int getNumber() {
         return number;
@@ -67,8 +59,7 @@ public final class DiceWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a dice.
      * @return a DiceWrapper object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static DiceWrapper toObject(JSONObject jsonObject) {
         return new DiceWrapper(ColorWrapper.valueOf((String) jsonObject.get(JSON_COLOR)),
                 Integer.parseInt(jsonObject.get(JSON_VALUE).toString()));
     }

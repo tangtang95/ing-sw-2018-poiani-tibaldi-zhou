@@ -73,8 +73,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         int round = clientGetMessage.getValue(jString);
         UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
         currentUser = roundUser;
-        PrinterManager.consolePrint("The round " + round + " is started with player " +
-                        roundUser.getUsername() + "\n", Level.STANDARD);
+        PrinterManager.consolePrint("The round " + (round  + 1) + " is started with player " +
+                        roundUser.getUsername() + "\n", Level.INFORMATION);
         screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager,this));
     }
 
@@ -83,14 +83,13 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onTurnState(String jString) throws IOException {
-        System.out.println("ON TURN STATE CALLED");
         int round = clientGetMessage.getValue(jString);
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
         currentUser = turnUser;
         if(turnUser.equals(myUser)){
+            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,this));
             PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
                     Level.STANDARD);
-            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,this));
         } else
             PrinterManager.consolePrint("Is the round " + round + "," +
                             turnUser.getUsername() + " is playing\n",

@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
-import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
@@ -18,14 +17,13 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.*;
 
 public abstract class Player implements IVictoryPoints, Serializable, JSONable {
 
     protected final ICoin coin;
     private final User user;
-    protected SchemaCard schemaCard;
+    protected transient SchemaCard schemaCard;
     protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
     private Outcome outcome;
@@ -36,9 +34,9 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
      * Constructor.
      * Create a new player based on user, strategy coin, his schemaCard and his privataObjectiveCards
      *
-     * @param user the user of the player
-     * @param coin the strategy coin for the player
-     * @param schemaCard the schemaCard of the player
+     * @param user                  the user of the player
+     * @param coin                  the strategy coin for the player
+     * @param schemaCard            the schemaCard of the player
      * @param privateObjectiveCards the list of privateObjectiveCards of the player
      */
     public Player(User user, ICoin coin, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
@@ -64,7 +62,9 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
         return new ArrayList<>(privateObjectiveCards);
     }
 
-    public PrivateObjectiveCard getPrivateObjectiveCard() { return privateObjectiveCards.get(indexOfPrivateObjectiveCard); }
+    public PrivateObjectiveCard getPrivateObjectiveCard() {
+        return privateObjectiveCards.get(indexOfPrivateObjectiveCard);
+    }
 
     public Outcome getOutcome() {
         return outcome;
@@ -88,7 +88,9 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
         return new HashMap<>(observerMap);
     }
 
-    public Map<String, ISchemaCardFakeObserver> getSchemaCardObserverMap() { return schemaCard.getObserverMap(); }
+    public Map<String, ISchemaCardFakeObserver> getSchemaCardObserverMap() {
+        return schemaCard.getObserverMap();
+    }
 
     /**
      * Return the score of the player based on the PrivateObjectiveCard
@@ -104,7 +106,6 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
      *
      * @param toolCard the toolCard to check if usable
      * @return true if the toolCard is usable, otherwise false
-     * @throws RemoteException network error
      */
     public boolean isCardUsable(ToolCard toolCard) {
         return coin.isCardUsable(toolCard);
@@ -231,18 +232,4 @@ public abstract class Player implements IVictoryPoints, Serializable, JSONable {
         return false;
     }
 
-    public JSONObject toJSON() {
-        JSONObject playerJSON = new JSONObject();
-
-        playerJSON.put("token", this.getToken());
-        playerJSON.put("username", this.getUser().getName());
-        playerJSON.put("coins", this.getCoins());
-
-        return playerJSON;
-    }
-
-    @Override
-    public Object toObject(JSONObject jsonObject) {
-        return null;
-    }
 }

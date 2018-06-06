@@ -53,8 +53,7 @@ public final class PositionWrapper implements JSONable {
      * @param jsonObject a JSONObject that contains a PositionWrapper.
      * @return a PositionWrapper object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static PositionWrapper toObject(JSONObject jsonObject) {
         return new PositionWrapper(
                 Integer.parseInt(jsonObject.get(JSON_ROW).toString()),
                 Integer.parseInt(jsonObject.get(JSON_COLUMN).toString()));
@@ -62,15 +61,7 @@ public final class PositionWrapper implements JSONable {
 
     @Override
     public String toString() {
-        return "(" + getRow() + ", " + getColumn() + ")";
+        return "(" + (getRow() + 1) + ", " + (getColumn() + 1) + ")";
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private PositionWrapper() {
-        this.column = 0;
-        this.row = 0;
-    }
 }

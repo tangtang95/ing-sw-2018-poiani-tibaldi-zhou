@@ -124,15 +124,15 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
      * @param jsonObject a JSONObject that contains a name of the privateObjectiveCard.
      * @return a privateObjectiveCard object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static PrivateObjectiveCard toObject(JSONObject jsonObject) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/privateObjectiveCards.json"));
             for (Object object : Objects.requireNonNull(jsonArray)) {
                 JSONObject privateObjectiveCard = (JSONObject) object;
-                if (privateObjectiveCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString()))
+                if (privateObjectiveCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject
+                        .get(JSON_NAME).toString()))
                     return new PrivateObjectiveCard(
                             (String) privateObjectiveCard.get(GameInjector.CARD_NAME),
                             (String) privateObjectiveCard.get(GameInjector.CARD_DESCRIPTION),
@@ -144,11 +144,4 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
         return null;
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private PrivateObjectiveCard() {
-        super(null,null);
-    }
 }

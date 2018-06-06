@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
@@ -37,5 +38,10 @@ public class SinglePlayer extends Player {
                 new ArrayList<>(player.privateObjectiveCards));
         player.getObserverMap().forEach(newPlayer::attachObserver);
         return newPlayer;
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return null;
     }
 }

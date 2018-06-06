@@ -39,22 +39,12 @@ public final class PrivateObjectiveCardWrapper extends CardWrapper implements JS
      * @param jsonObject a JSONObject that contains a name of the privateObjectiveCardWrapper.
      * @return a privateObjectiveCardWrapper object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static PrivateObjectiveCardWrapper toObject(JSONObject jsonObject) {
         return new PrivateObjectiveCardWrapper(
                 (String) jsonObject.get(JSON_NAME),
                 (String) jsonObject.get(JSON_DESCRIPTION),
                 ColorWrapper.valueOf((String) jsonObject.get(JSON_COLOR))
         );
-    }
-
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private PrivateObjectiveCardWrapper() {
-        super(null,null);
-        this.color = null;
     }
 
     public ColorWrapper getColor() {

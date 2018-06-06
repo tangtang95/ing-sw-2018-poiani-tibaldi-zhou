@@ -11,10 +11,6 @@ public enum Color implements JSONable{
     YELLOW,
     PURPLE;
 
-    /**
-     * fake constructor.
-     */
-    Color(){}
 
     @Override
     @SuppressWarnings("unchecked")
@@ -25,8 +21,7 @@ public enum Color implements JSONable{
         return main;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static Color toObject(JSONObject jsonObject) {
         return Color.valueOf(jsonObject.get(SharedConstants.BODY).toString());
     }
 }

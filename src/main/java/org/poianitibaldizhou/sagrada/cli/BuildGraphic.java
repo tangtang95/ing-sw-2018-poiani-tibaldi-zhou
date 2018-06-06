@@ -49,35 +49,37 @@ public class BuildGraphic {
      * @param end          the end point.
      */
     private void buildListDices(List<DiceWrapper> diceWrappers, int start, int end) {
-        for (int i = start; i < end; i++)
-            stringBuilder.append("  [").append(i + 1).append("]   ");
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9556);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9559 + " ");
-        }
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9553 + " ");
-            stringBuilder.append(diceWrappers.get(i).toString());
-            stringBuilder.append(" " + (char) 9553 + " ");
-        }
-        stringBuilder.append("\n");
-        for (int i = start; i < end; i++) {
-            stringBuilder.append((char) 9562);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9552);
-            stringBuilder.append((char) 9565 + " ");
+        if (start != 0 || end != 0) {
+            for (int i = start; i < end; i++)
+                stringBuilder.append("  [").append(i + 1).append("]   ");
+            stringBuilder.append("\n");
+            for (int i = start; i < end; i++) {
+                stringBuilder.append((char) 9556);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9559 + " ");
+            }
+            stringBuilder.append("\n");
+            for (int i = start; i < end; i++) {
+                stringBuilder.append((char) 9553 + " ");
+                stringBuilder.append(diceWrappers.get(i).toString());
+                stringBuilder.append(" " + (char) 9553 + " ");
+            }
+            stringBuilder.append("\n");
+            for (int i = start; i < end; i++) {
+                stringBuilder.append((char) 9562);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9552);
+                stringBuilder.append((char) 9565 + " ");
+            }
         }
         stringBuilder.append("\n");
     }
@@ -296,7 +298,9 @@ public class BuildGraphic {
 
     public BuildGraphic buildGraphicSchemaCard(SchemaCardWrapper schemaCard) {
         if (schemaCard != null) {
-            stringBuilder.append(schemaCard.toString()).append("\n");
+            buildMessage("Card name: " + schemaCard.getName());
+            stringBuilder.append(schemaCard.toString());
+            buildMessage("Card difficulty: " + schemaCard.getDifficulty());
         }
         return this;
     }
@@ -314,7 +318,9 @@ public class BuildGraphic {
      */
     @Override
     public String toString() {
-        return stringBuilder.toString();
+        StringBuilder temp = stringBuilder;
+        stringBuilder = new StringBuilder();
+        return temp.toString();
     }
 
     /**

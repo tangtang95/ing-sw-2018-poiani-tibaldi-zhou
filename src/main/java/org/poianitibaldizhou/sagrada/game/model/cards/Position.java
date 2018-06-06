@@ -102,16 +102,10 @@ public class Position implements Serializable, JSONable {
      * @param jsonObject a JSONObject that contains a Position.
      * @return a Position object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static Position toObject(JSONObject jsonObject) {
         return new Position(
                 Integer.parseInt(jsonObject.get(JSON_ROW).toString()),
                 Integer.parseInt(jsonObject.get(JSON_COLUMN).toString()));
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private Position(){ }
 }

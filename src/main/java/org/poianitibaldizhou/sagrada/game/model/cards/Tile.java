@@ -13,7 +13,6 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
@@ -29,7 +28,6 @@ public class Tile implements Serializable, JSONable{
 
     private final IConstraint constraint;
     private Dice dice;
-    private final transient JSONServerProtocol protocol = new JSONServerProtocol();
 
     /**
      * Tile param for network protocol.
@@ -208,8 +206,7 @@ public class Tile implements Serializable, JSONable{
      * @param jsonObject a JSONObject that contains a Tile.
      * @return a tile object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static Tile toObject(JSONObject jsonObject) {
         Tile tile;
         try {
             if (jsonObject.get(JSON_CONSTRAINT) != null)
@@ -221,7 +218,7 @@ public class Tile implements Serializable, JSONable{
         }
         try {
             if (jsonObject.containsKey(SharedConstants.DICE)) {
-                Dice readDice = (Dice) protocol.convertToObject(
+                Dice readDice = Dice.toObject(
                         (JSONObject) jsonObject.get(SharedConstants.DICE));
                 tile.setDice(readDice);
             }

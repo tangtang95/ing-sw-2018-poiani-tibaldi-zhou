@@ -50,25 +50,15 @@ public final class ToolCardWrapper  extends CardWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a name of the toolCardWrapper.
      * @return a ToolCardWrapper object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static ToolCardWrapper toObject(JSONObject jsonObject) {
         return new ToolCardWrapper(
-                (String) jsonObject.get(JSON_NAME),
+                (String)jsonObject.get(JSON_NAME),
                 (String) jsonObject.get(JSON_DESCRIPTION),
                 ColorWrapper.valueOf(jsonObject.get(JSON_COLOR).toString()),
                 Integer.parseInt(jsonObject.get(JSON_TOKENS).toString())
         );
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private ToolCardWrapper(){
-        super(null,null);
-        this.color = null;
-        this.token = 0;
-    }
 
     public ColorWrapper getColor() {
         return color;

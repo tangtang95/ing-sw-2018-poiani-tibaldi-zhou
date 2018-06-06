@@ -4,7 +4,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONClientProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
@@ -54,15 +53,13 @@ public final class DraftPoolWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a draftPool.
      * @return a draftPoolWrapper object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
-        JSONClientProtocol jsonClientProtocol = new JSONClientProtocol();
+    public static DraftPoolWrapper toObject(JSONObject jsonObject) {
         JSONObject diceList = (JSONObject) jsonObject.get(JSON_DICE_LIST);
         JSONArray jsonArray = (JSONArray) diceList.get(SharedConstants.BODY);
         Collection<DiceWrapper> diceWrapperList = new ArrayList<>();
         for (Object o : jsonArray) {
-            JSONObject dice = (JSONObject) o;
-            diceWrapperList.add((DiceWrapper) jsonClientProtocol.convertToObject(dice));
+            JSONObject dice = (JSONObject) ((JSONObject) o).get(SharedConstants.BODY);
+            diceWrapperList.add(DiceWrapper.toObject(dice));
         }
         return new DraftPoolWrapper(diceWrapperList);
     }

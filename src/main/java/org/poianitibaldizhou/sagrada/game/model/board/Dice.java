@@ -148,18 +148,9 @@ public class Dice implements Serializable, JSONable{
      * @param jsonObject a JSONObject that contains a dice.
      * @return a Dice object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static Dice toObject(JSONObject jsonObject) {
         return new Dice(Integer.parseInt(jsonObject.get(JSON_VALUE).toString()),
                 Color.valueOf((String) jsonObject.get(JSON_COLOR)));
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private Dice(){
-        this.numberConstraint = null;
-        this.colorConstraint = null;
-    }
 }

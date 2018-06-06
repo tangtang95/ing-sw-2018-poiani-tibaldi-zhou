@@ -91,14 +91,8 @@ public class User implements Serializable, JSONable {
      * @param jsonObject a JSONObject that contains a User.
      * @return a User object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static User toObject(JSONObject jsonObject) {
         return new User(jsonObject.get(JSON_USER_NAME).toString());
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private User(){}
 }

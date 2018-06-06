@@ -67,8 +67,6 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
         try {
             Thread.sleep(TIME_SLEEP);
         } catch (InterruptedException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + ": Error while pausing.\n",
-                    Level.ERROR);
             Thread.currentThread().interrupt();
         }
     }

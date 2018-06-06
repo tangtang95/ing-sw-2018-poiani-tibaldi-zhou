@@ -34,8 +34,7 @@ public class UseCardAction implements IActionCommand {
         return null;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static UseCardAction toObject(JSONObject jsonObject) {
         return new UseCardAction();
     }
 }

@@ -3,18 +3,14 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONClientProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
-import java.util.Objects;
 
 @Immutable
 public final class TileWrapper implements JSONable{
 
     private final String constraint;
     private DiceWrapper dice;
-
-    private final JSONClientProtocol protocol = new JSONClientProtocol();
 
     /**
      * TileWrapper param for network protocol.
@@ -61,10 +57,8 @@ public final class TileWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a TileWrapper.
      * @return a tile object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static TileWrapper toObject(JSONObject jsonObject) {
         TileWrapper tile;
-
         Object object = jsonObject.get(JSON_CONSTRAINT);
         String constraintValue;
         if (object == null)
@@ -76,19 +70,11 @@ public final class TileWrapper implements JSONable{
         tile = new TileWrapper(constraintValue);
 
         if (jsonObject.containsKey(SharedConstants.DICE)) {
-            DiceWrapper readDice = (DiceWrapper) protocol.convertToObject(
-                    (JSONObject) jsonObject.get(SharedConstants.DICE));
+            DiceWrapper readDice = DiceWrapper.toObject(
+                    (JSONObject) ((JSONObject) jsonObject.get(SharedConstants.DICE)).get(SharedConstants.BODY));
             tile.setDice(readDice);
         }
         return tile;
-    }
-
-    /**
-     * fake-constructor
-     */
-    @SuppressWarnings("unused")
-    private TileWrapper(){
-        constraint = null;
     }
 
     public String getConstraint() {

@@ -19,11 +19,6 @@ public enum ColorWrapper implements JSONable{
         return index;
     }
 
-    /**
-     * fake constructor.
-     */
-    @SuppressWarnings("unused")
-    ColorWrapper(){}
 
     @Override
     @SuppressWarnings("unchecked")
@@ -34,8 +29,7 @@ public enum ColorWrapper implements JSONable{
         return main;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static ColorWrapper toObject(JSONObject jsonObject) {
         return ColorWrapper.valueOf(jsonObject.get(SharedConstants.BODY).toString());
     }
 }

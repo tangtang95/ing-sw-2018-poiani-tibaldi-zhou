@@ -29,7 +29,7 @@ public class ServerGetMessageTest {
     public static List<Dice> diceList;
 
     @DataPoint
-    public static JSONServerProtocol serverNetworkProtocol;
+    public static JSONProtocol serverNetworkProtocol;
 
     @DataPoint
     public static Map<String, Dice> diceMap;
@@ -45,7 +45,7 @@ public class ServerGetMessageTest {
 
     @Before
     public void setUp() {
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverNetworkProtocol = new JSONProtocol();
 
         diceList.add(new Dice(1, Color.BLUE));
         diceList.add(new Dice(2, Color.GREEN));
@@ -99,13 +99,6 @@ public class ServerGetMessageTest {
                 "\\\"value\\\":1}}\"}}}";
 
         assertEquals(message2, serverNetworkProtocol.buildMessage());
-    }
-
-    @Test
-    public void test(){
-        FrontBackSchemaCard frontBackSchemaCard = new FrontBackSchemaCard();
-        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
-        System.out.println();
     }
 
 }

@@ -34,8 +34,7 @@ public class PlaceDiceAction implements IActionCommand{
         return null;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static PlaceDiceAction toObject(JSONObject jsonObject) {
         return new PlaceDiceAction();
     }
 }

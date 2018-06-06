@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -9,7 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
@@ -17,28 +19,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ServerGetMessage {
-    private JSONServerProtocol serverNetworkProtocol;
+    private JSONProtocol serverNetworkProtocol;
 
     public ServerGetMessage() {
-        serverNetworkProtocol = new JSONServerProtocol();
+        serverNetworkProtocol = new JSONProtocol();
     }
 
     public String getToken(String message) throws IOException {
         String token;
-
         try {
-            token = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOKEN_KEY);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOKEN_KEY);
+            token = jsonObject.get(SharedConstants.BODY).toString();
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return token;
     }
 
     public String getGameName(String message) throws IOException {
         String gameName;
         try {
-            gameName = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.GAME_NAME_KEY);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.GAME_NAME_KEY);
+            gameName = jsonObject.get(SharedConstants.BODY).toString();
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -48,23 +50,22 @@ public class ServerGetMessage {
     public SchemaCard getSchemaCard(String message) throws IOException {
         SchemaCard schemaCard;
         try {
-            schemaCard = (SchemaCard) serverNetworkProtocol.getResponseByKey(message, SharedConstants.SCHEMA_CARD);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.SCHEMA_CARD);
+            schemaCard = SchemaCard.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return schemaCard;
     }
 
     public User getUser(String message) throws IOException {
         User user;
-
         try {
-            user = (User) serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER);
+            user = User.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return user;
     }
 
@@ -72,7 +73,8 @@ public class ServerGetMessage {
         Position position;
 
         try {
-            position = (Position) serverNetworkProtocol.getResponseByKey(message, SharedConstants.POSITION);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.POSITION);
+            position = Position.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -84,7 +86,8 @@ public class ServerGetMessage {
         Dice dice;
 
         try {
-            dice = (Dice) serverNetworkProtocol.getResponseByKey(message, SharedConstants.DICE);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.DICE);
+            dice = Dice.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -96,7 +99,8 @@ public class ServerGetMessage {
         ToolCard toolCard;
 
         try {
-            toolCard = (ToolCard) serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOOL_CARD);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOOL_CARD);
+            toolCard = ToolCard.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -107,7 +111,17 @@ public class ServerGetMessage {
     public IActionCommand getActionCommand(String message) throws IOException {
         IActionCommand actionCommand;
         try {
-            actionCommand = (IActionCommand) serverNetworkProtocol.getResponseByKey(message, SharedConstants.ACTION_KEY);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.ACTION_KEY);
+            switch (jsonObject.get(SharedConstants.TYPE).toString()){
+                case SharedConstants.USE_TOOL_CARD_ACTION :
+                    actionCommand = new UseCardAction();
+                    break;
+                case SharedConstants.PLACE_DICE_ACTION:
+                    actionCommand = new PlaceDiceAction();
+                    break;
+                default:
+                    actionCommand = new EndTurnAction();
+            }
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -119,7 +133,9 @@ public class ServerGetMessage {
         PrivateObjectiveCard privateObjectiveCard;
 
         try {
-            privateObjectiveCard = (PrivateObjectiveCard) serverNetworkProtocol.getResponseByKey(message, SharedConstants.PRIVATE_OBJECTIVE_CARD);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message,
+                    SharedConstants.PRIVATE_OBJECTIVE_CARD);
+            privateObjectiveCard = PrivateObjectiveCard.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -131,7 +147,8 @@ public class ServerGetMessage {
         Integer value;
 
         try {
-            value = (Integer) serverNetworkProtocol.getResponseByKey(message, SharedConstants.INTEGER);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.INTEGER);
+            value = Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -143,7 +160,8 @@ public class ServerGetMessage {
         Color color;
 
         try {
-            color = (Color) serverNetworkProtocol.getResponseByKey(message, SharedConstants.COLOR);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.COLOR);
+            color = Color.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch(ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -154,23 +172,12 @@ public class ServerGetMessage {
     public String getUserName(String message) throws IOException {
         String username;
         try {
-            username = (String) serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+            username = (String) jsonObject.get(SharedConstants.BODY);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
         return username;
-    }
-
-    public Boolean getBoolean(String message) throws IOException {
-        Boolean bool;
-
-        try {
-            bool = (Boolean) serverNetworkProtocol.getResponseByKey(message, SharedConstants.BOOLEAN);
-        } catch(ParseException | ClassCastException e) {
-            throw new IOException();
-        }
-
-        return bool;
     }
 
     public String getErrorMessage() {
@@ -183,5 +190,16 @@ public class ServerGetMessage {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.RECONNECT_ERROR);
         return JSONObject.toJSONString(error);
+    }
+
+    public boolean getBoolean(String message) throws IOException {
+        Boolean b;
+        try {
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+            b = Boolean.valueOf(jsonObject.get(SharedConstants.BODY).toString());
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return b;
     }
 }

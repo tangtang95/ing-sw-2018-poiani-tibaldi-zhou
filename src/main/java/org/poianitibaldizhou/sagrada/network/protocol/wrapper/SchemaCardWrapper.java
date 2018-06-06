@@ -5,7 +5,6 @@ import org.jetbrains.annotations.Contract;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONClientProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.Objects;
@@ -84,15 +83,13 @@ public final class SchemaCardWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a schema card.
      * @return a SchemaCardWWrapper object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
-        JSONClientProtocol protocol = new JSONClientProtocol();
+    public static SchemaCardWrapper toObject(JSONObject jsonObject) {
         TileWrapper[][] tiles = new TileWrapper[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
         JSONArray matrix = (JSONArray) jsonObject.get(JSON_MATRIX);
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             JSONArray row = (JSONArray) matrix.get(i);
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                tiles[i][j] = (TileWrapper) protocol.convertToObject((JSONObject) row.get(j));
+                tiles[i][j] = TileWrapper.toObject((JSONObject) ((JSONObject) row.get(j)).get(SharedConstants.BODY));
             }
         }
         return new SchemaCardWrapper(
@@ -100,16 +97,6 @@ public final class SchemaCardWrapper implements JSONable{
                 Integer.parseInt(jsonObject.get(JSON_DIFFICULTY).toString()),
                 tiles
         );
-    }
-
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private SchemaCardWrapper() {
-        this.tileMatrix = null;
-        this.difficulty = 0;
-        this.name = null;
     }
 
     @Override

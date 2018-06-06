@@ -19,8 +19,7 @@ public class UseToolCardStateWrapper implements IActionWrapper{
         return main;
     }
 
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static UseToolCardStateWrapper toObject(JSONObject jsonObject) {
         return null;
     }
 }

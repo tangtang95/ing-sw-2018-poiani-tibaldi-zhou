@@ -168,8 +168,7 @@ public class ToolCard extends Card implements JSONable{
      * @param jsonObject a JSONObject that contains a name of the toolCard.
      * @return a ToolCard object or null if the jsonObject is wrong.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static ToolCard toObject(JSONObject jsonObject) {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         ToolCard card = null;
@@ -193,14 +192,4 @@ public class ToolCard extends Card implements JSONable{
         return card;
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private ToolCard(){
-        super(null, null);
-        this.color = null;
-        this.commands = null;
-        this.observerMap = null;
-    }
 }

@@ -4,7 +4,6 @@ import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;

@@ -48,18 +48,10 @@ public final class UserWrapper implements JSONable{
      * @param jsonObject a JSONObject that contains a UserWrapper.
      * @return a UserWrapper object.
      */
-    @Override
-    public Object toObject(JSONObject jsonObject) {
+    public static UserWrapper toObject(JSONObject jsonObject) {
         return new UserWrapper(jsonObject.get(JSON_USER_NAME).toString());
     }
 
-    /**
-     * Fake constructor.
-     */
-    @SuppressWarnings("unused")
-    private UserWrapper(){
-        this.username = null;
-    }
 
     @Override
     public boolean equals(Object o) {
