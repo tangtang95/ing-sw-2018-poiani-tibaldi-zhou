@@ -175,6 +175,12 @@ public class ServerCreateMessage {
         return this;
     }
 
+
+    public ServerCreateMessage createSchemaCardMapMessage(Map<User, SchemaCard> stringSchemaCardMap) {
+        jsonServerProtocol.appendMessage(SharedConstants.MAP_SCHEMA_CARD_KEY, stringSchemaCardMap);
+        return this;
+    }
+
     public String buildMessage() {
         String temp = jsonServerProtocol.buildMessage();
         jsonServerProtocol = new JSONServerProtocol();

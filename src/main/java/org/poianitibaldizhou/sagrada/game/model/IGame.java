@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
@@ -71,4 +72,8 @@ public interface IGame {
     void forceGameTermination(Player winner);
 
     List<User> getUsers();
+
+    List<PublicObjectiveCard> getPublicObjectiveCards();
+
+    List<PrivateObjectiveCard> getPrivateObjectiveCardsByToken(String token);
 }

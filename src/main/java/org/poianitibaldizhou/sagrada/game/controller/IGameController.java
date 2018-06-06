@@ -183,10 +183,31 @@ public interface IGameController extends Remote {
      */
     String getToolCards(String message) throws IOException;
 
+    /**
+     * Get all the public objective cards of a certain game
+     *
+     * @param message message containing the token of the player requesting the public cards and the game's name
+     * @return protocol message containing the public cards
+     * @throws IOException network communication error
+     */
     String getPublicObjectiveCards(String message) throws IOException;
 
+    /**
+     * Get all the private objective cards of a certain player
+     *
+     * @param message message containing the token of the player requesting his private cards and the game's name
+     * @return protocol message containing the private cards
+     * @throws IOException network communication error
+     */
     String getPrivateObjectiveCardByToken(String message) throws IOException;
 
+    /**
+     * Get all the schema cards of a certain game
+     *
+     * @param message message containing the token of the player requesting the schema cards and the game's name
+     * @return protocol message containing the schema cards associated with that player
+     * @throws IOException network communication error
+     */
     String getSchemaCards(String message) throws IOException;
 
     /**
