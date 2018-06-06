@@ -1,12 +1,8 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
-import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
@@ -14,17 +10,20 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
-import org.poianitibaldizhou.sagrada.graphics.objects.*;
+import org.poianitibaldizhou.sagrada.graphics.view.*;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
+import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.util.*;
 
 public class MultiPlayerController extends Controller implements Initializable {
@@ -32,25 +31,134 @@ public class MultiPlayerController extends Controller implements Initializable {
     @FXML
     public Pane canvasPane;
 
-    private GraphicsContext graphicsContext;
+    private DraftPoolListener draftPoolView;
+    private RoundTrackListener roundTrackView;
+    private StateListener stateView;
+    private GameListener gameView;
+    private DiceBagListener diceBagView;
 
     private MultiPlayerModel multiPlayerModel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        testFrontBackSchemaCardView();
+        try {
+            draftPoolView = new DraftPoolListener(new DraftPoolView());
+            roundTrackView = new RoundTrackListener(new RoundTrackView());
+            stateView = new StateListener(new StateView());
+            gameView = new GameListener(new GameView());
+            diceBagView = new DiceBagListener();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        /*testFrontBackSchemaCardView();
         testSchemaCardView();
         testDiceView();
         testRoundTrackView();
         testToolCardView();
+        testPublicObjectiveCardView();
+        testPrivateObjectiveCardView();*/
     }
 
     public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
         try {
-            multiPlayerModel.joinGame();
+            List<UserWrapper> users = multiPlayerModel.joinGame(gameView, gameView, stateView,
+                    roundTrackView, draftPoolView, diceBagView);
+            List<UserWrapper> usersOrdered = getUsersOrdered(users);
+            System.out.println(users);
+            System.out.println(usersOrdered.toString());
+            drawUsers(usersOrdered);
         } catch (IOException e) {
-            AlertBox.displayBox("Errore di rete", "Sagrada è crashato");
+            e.printStackTrace();
+            AlertBox.displayBox("Errore di rete", "Sagrada è crashato: " + e.toString());
+        }
+
+    }
+
+    private List<UserWrapper> getUsersOrdered(final List<UserWrapper> users){
+        List<UserWrapper> usersOrdered = new ArrayList<>();
+        boolean userFounded = false;
+        for (UserWrapper user: users) {
+            if(user.getUsername().equals(multiPlayerModel.getUsername())) {
+                userFounded = true;
+            }
+            if(userFounded){
+                usersOrdered.add(user);
+            }
+        }
+        for (UserWrapper user: users) {
+            if(user.getUsername().equals(multiPlayerModel.getUsername())) {
+                break;
+            }
+            usersOrdered.add(user);
+        }
+        return usersOrdered;
+    }
+
+    private void drawUsers(List<UserWrapper> users){
+        double distance = canvasPane.getHeight()/3;
+        double centerX = canvasPane.getWidth()/2;
+        double centerY = canvasPane.getHeight()/2;
+
+        for (int i = 0; i < users.size(); i++) {
+            Pane pane = new Pane();
+            pane.setPrefWidth(100);
+            pane.setPrefHeight(100);
+            pane.setStyle("-fx-border-color: black; -fx-border-width: 2em");
+
+            double angle = 2*Math.PI*i / users.size();
+            double offsetX = distance * Math.cos(angle);
+            double offsetY = distance * Math.sin(angle);
+
+            double x = centerX + offsetX;
+            double y = centerY + offsetY;
+
+            this.canvasPane.getChildren().add(pane);
+            pane.setTranslateX(x - pane.getPrefWidth()/2);
+            pane.setTranslateY(y - pane.getPrefHeight()/2);
+        }
+
+    }
+
+    private void testPrivateObjectiveCardView(){
+        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
+
+        try {
+            JSONObject object = (JSONObject) privateObjectiveCards.draw().toJSON().get("body");
+            PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
+                    new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
+            PrivateObjectiveCardView privateObjectiveCardView = new PrivateObjectiveCardView(
+                    (PrivateObjectiveCardWrapper) privateObjectiveCardWrapper.toObject(object), 0.3
+            );
+
+            this.canvasPane.getChildren().add(privateObjectiveCardView);
+            privateObjectiveCardView.setTranslateX(100);
+            privateObjectiveCardView.setTranslateY(400);
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
+
+        PrivateObjectiveCardView retroView = new PrivateObjectiveCardView(0.3);
+        this.canvasPane.getChildren().add(retroView);
+
+    }
+
+    private void testPublicObjectiveCardView(){
+        DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
+        GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
+
+        try {
+            JSONObject object = (JSONObject) publicObjectiveCards.draw().toJSON().get("body");
+            PublicObjectiveCardWrapper publicObjectiveCardWrapper =
+                    new PublicObjectiveCardWrapper("Varietà di Colore", "dsad", 1);
+            PublicObjectiveCardView publicObjectiveCardView = new PublicObjectiveCardView(
+                    publicObjectiveCardWrapper, 0.5);
+            this.canvasPane.getChildren().add(publicObjectiveCardView);
+            publicObjectiveCardView.setTranslateX(600);
+            publicObjectiveCardView.setTranslateY(300);
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
         }
     }
 

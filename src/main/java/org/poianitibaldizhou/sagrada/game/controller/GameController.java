@@ -925,14 +925,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return serverGetMessage.getErrorMessage();
         }
 
-        List<Player> players;
-        List<User> users = new ArrayList<>();
+        List<User> users;
 
         synchronized (gameManager.getGameByName(gameName)) {
-            players = gameManager.getGameByName(gameName).getPlayers();
+            users = gameManager.getGameByName(gameName).getUsers();
         }
-
-        players.forEach(player -> users.add(player.getUser()));
 
         return serverCreateMessage.createUserList(users).buildMessage();
     }

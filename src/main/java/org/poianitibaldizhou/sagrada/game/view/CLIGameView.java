@@ -135,7 +135,6 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     @Override
     public boolean equals(Object o) {
-
         if (this == o) return true;
         if (!(o instanceof CLIGameView)) return false;
         if (!super.equals(o)) return false;

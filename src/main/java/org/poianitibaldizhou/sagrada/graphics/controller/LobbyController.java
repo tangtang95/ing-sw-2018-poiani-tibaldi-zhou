@@ -6,13 +6,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.layout.GridPane;
-import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.LobbyModel;
-import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
-import org.poianitibaldizhou.sagrada.graphics.objects.LobbyView;
+import org.poianitibaldizhou.sagrada.graphics.view.LobbyView;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
-import org.poianitibaldizhou.sagrada.network.ConnectionType;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;

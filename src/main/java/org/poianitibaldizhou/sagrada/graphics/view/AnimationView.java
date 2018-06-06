@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.graphics.objects;
+package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.animation.Interpolator;
 import javafx.animation.Transition;
