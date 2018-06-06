@@ -1,13 +1,13 @@
 package org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
 
-import java.rmi.RemoteException;
+
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class EndTurnAction implements IActionCommand {
 
@@ -31,5 +31,15 @@ public class EndTurnAction implements IActionCommand {
     @Override
     public int hashCode() {
         return Objects.hash(EndTurnAction.class);
+    }
+
+    @Override
+    public JSONObject toJSON() {
+        return null;
+    }
+
+    @Override
+    public Object toObject(JSONObject jsonObject) {
+        return new EndTurnAction();
     }
 }

@@ -4,7 +4,9 @@ import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ClientGetMessage {
     private JSONClientProtocol jsonClientProtocol;
@@ -26,15 +28,33 @@ public class ClientGetMessage {
         try {
             userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER);
         } catch (ParseException | ClassCastException e) {
-            e.printStackTrace();
             throw new IOException();
         }
         return userWrapper;
     }
 
+    public UserWrapper getTurnUserWrapper(String message) throws IOException {
+        UserWrapper userWrapper;
+        try {
+            userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.TURN_USER);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return userWrapper;
+    }
+
+    public Map<UserWrapper, Integer> getVictoryPoint(String message) throws IOException {
+        Map<UserWrapper, Integer> victoryPoint;
+        try {
+            victoryPoint = (Map<UserWrapper, Integer>) jsonClientProtocol.getResponseByKey(message, SharedConstants.VICTORY_POINT_MAP);
+        } catch (ParseException e) {
+            throw new IOException();
+        }
+        return victoryPoint;
+    }
+
     public List<UserWrapper> getListOfUserWrapper(String message) throws IOException {
         List<UserWrapper> userWrappers;
-
         try {
             userWrappers = (List<UserWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.USER_LIST_KEY);
         } catch (ParseException | ClassCastException e) {
@@ -136,13 +156,11 @@ public class ClientGetMessage {
 
     public List<ColorWrapper> getColorList(String message) throws IOException {
         List<ColorWrapper> colorWrappers;
-
         try {
             colorWrappers = (List<ColorWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR_LIST_KEY);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return colorWrappers;
     }
 
@@ -154,43 +172,113 @@ public class ClientGetMessage {
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return value;
+    }
+
+    public List<PublicObjectiveCardWrapper> getPublicObjectiveCards(String message) throws IOException {
+        List<PublicObjectiveCardWrapper> poc;
+        try {
+            poc = (List<PublicObjectiveCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.PUBLIC_OBJECTIVE_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return poc;
+    }
+
+    public List<ToolCardWrapper> getToolCards(String message) throws IOException {
+        List<ToolCardWrapper> toolCardWrappers;
+        try {
+            toolCardWrappers = (List<ToolCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.TOOL_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return toolCardWrappers;
+    }
+
+    public List<PrivateObjectiveCardWrapper> getPrivateObjectiveCards(String message) throws IOException {
+        List<PrivateObjectiveCardWrapper> poc;
+        try {
+            poc = (List<PrivateObjectiveCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.PRIVATE_OBJECTIVE_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return poc;
+    }
+
+    public List<FrontBackSchemaCardWrapper> getFrontBackSchemaCards(String message) throws IOException {
+        List<FrontBackSchemaCardWrapper> fbsc;
+        try {
+            fbsc = (List<FrontBackSchemaCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.FRONT_CARD_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return fbsc;
     }
 
     public SchemaCardWrapper getSchemaCard(String message) throws IOException {
         SchemaCardWrapper schemaCardWrapper;
-
         try {
             schemaCardWrapper = (SchemaCardWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.SCHEMA_CARD);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return schemaCardWrapper;
     }
 
     public ColorWrapper getColor(String message) throws IOException{
         ColorWrapper colorWrapper;
-
         try {
             colorWrapper = (ColorWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return colorWrapper;
     }
 
     public RoundTrackWrapper getRoundTrack(String message) throws IOException {
         RoundTrackWrapper roundTrack;
-
         try {
             roundTrack = (RoundTrackWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.ROUND_TRACK);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return roundTrack;
+    }
+
+    public PrivateObjectiveCardWrapper getPrivateObjectiveCard(String message) throws IOException {
+        PrivateObjectiveCardWrapper poc;
+        try {
+            poc = (PrivateObjectiveCardWrapper) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.PRIVATE_OBJECTIVE_CARD);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return poc;
+    }
+
+    public Map<UserWrapper,SchemaCardWrapper> getSchemaCards(String message) throws IOException {
+        Map<UserWrapper,SchemaCardWrapper> schemaCardWrappers;
+        try {
+            schemaCardWrappers = (Map<UserWrapper, SchemaCardWrapper>) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.MAP_SCHEMA_CARD_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return schemaCardWrappers;
+    }
+
+    public DraftPoolWrapper getDraftPool(String message) throws IOException {
+        DraftPoolWrapper draftPoolWrapper;
+        try {
+            draftPoolWrapper = (DraftPoolWrapper) jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.DRAFT_POOL);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return draftPoolWrapper;
     }
 }

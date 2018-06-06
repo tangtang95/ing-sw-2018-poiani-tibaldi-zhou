@@ -77,6 +77,36 @@ public class ConsoleListener {
         this.commandMap = commandMap;
     }
 
+    /**
+     * Read a number from keyboard stream.
+     *
+     * @param maxInt max number that is could to insert.
+     * @return a number read.
+     */
+    public int readNumber(int maxInt) {
+        stopCommandConsole();
+        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        int key = 0;
+        do {
+            try {
+                String read = r.readLine();
+                key = Integer.parseInt(read);
+                if (!(key > 0 && key <= maxInt))
+                    throw new CommandNotFoundException();
+            } catch (IOException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                        BuildGraphic.ERROR_READING, Level.ERROR);
+                break;
+            } catch (NumberFormatException e) {
+                PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.ERROR);
+            } catch (CommandNotFoundException e) {
+                PrinterManager.consolePrint(BuildGraphic.COMMAND_NOT_FOUND, Level.ERROR);
+            }
+        } while (key < 1);
+        wakeUpCommandConsole();
+        return key - 1;
+    }
+
 
     /**
      * Thread for reading the command from CLI.

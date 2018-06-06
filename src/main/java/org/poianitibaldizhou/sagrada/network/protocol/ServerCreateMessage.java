@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.omg.PortableInterceptor.INACTIVE;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
@@ -13,7 +12,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import sun.security.provider.SHA;
 
 import java.util.List;
 import java.util.Map;

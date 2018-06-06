@@ -35,6 +35,8 @@ public class GameInjector {
     public static final String CARD_POINTS = "cardPoints";
     public static final String CONSTRAINT_TYPE = "constraintType";
 
+    private static final String FILE_PATH = "resources/toolCards.json";
+
 
     @Contract(" -> fail")
     private GameInjector(){
@@ -53,7 +55,7 @@ public class GameInjector {
         jsonArray = null;
 
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/toolCards.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH));
         } catch (IOException | ParseException e) {
             LOGGER.log(Level.FINE, "Parse exception in injectToolCards", e);
         }

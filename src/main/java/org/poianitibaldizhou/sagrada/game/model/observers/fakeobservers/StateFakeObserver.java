@@ -1,15 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.apache.maven.settings.Server;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
-import javax.print.attribute.IntegerSyntax;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,16 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.Position;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
+
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -43,10 +36,10 @@ public interface IGameController extends Remote {
     void chosenSchemaCard(String message) throws IOException;
 
     /**
-     * Binds the player  and che schema card observers of a certain player to the specified player and its schema card.
+     * Binds the player  and the schema card observers of a certain player to the specified player and its schema card.
      * The player identified by token must be part of the specified game.
      *
-     * @param message            message containing player's token, player that needs to be bind and
+     * @param message            message containing player's token, user on which the bind acts and the game name
      * @param playerObserver     player's observer
      * @param schemaCardObserver schema card observer of the schema card of player
      * @throws IOException network communication error
@@ -58,7 +51,7 @@ public interface IGameController extends Remote {
      * Binds the tool card observer of a certain player to the specified tool card.
      * Player must be part of the specified game.
      *
-     * @param message          message containing player's token, game's name and toolcard that need to be binded
+     * @param message          message containing player's token, game's name and toolCard that need to be binded
      * @param toolCardObserver player's tool card observer
      * @throws IOException network communication error
      */
@@ -149,7 +142,7 @@ public interface IGameController extends Remote {
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
-     * @param message            message containing player's token
+     * @param message            message containing player's username
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)
@@ -159,6 +152,7 @@ public interface IGameController extends Remote {
      * @param draftPoolObserver  player's draft pool observer
      * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
+     * @return player's token
      * @throws IOException network communication error
      */
     void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
@@ -167,12 +161,28 @@ public interface IGameController extends Remote {
                            diceBagObserver) throws IOException;
 
     /**
+     * Check if a player can reconnect
+     *
+     * @param message message containing player's username
+     * @return an error message if the reconnection is not possible for the specified username; otherwise the player list,
+     * the game name and the player token
+     * @throws IOException network communication error
+     */
+    String attemptReconnect(String message) throws IOException;
+
+    /**
      * Get all the tool cards of a certain game
      *
      * @param message message containing the token of the player requesting the tool cards and the game's name
      * @throws IOException network communication error
      */
     String getToolCards(String message) throws IOException;
+
+    String getPublicObjectiveCards(String message) throws IOException;
+
+    String getPrivateObjectiveCardByToken(String message) throws IOException;
+
+    String getSchemaCards(String message) throws IOException;
 
     /**
      * Get the draft pool of a certain game

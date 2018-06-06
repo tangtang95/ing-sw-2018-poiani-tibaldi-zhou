@@ -105,9 +105,12 @@ public class ServerGetMessage {
     }
 
     public IActionCommand getActionCommand(String message) throws IOException {
-        IActionCommand actionCommand = null;
-
-        // TODO mattia??
+        IActionCommand actionCommand;
+        try {
+            actionCommand = (IActionCommand) serverNetworkProtocol.getResponseByKey(message, SharedConstants.ACTION_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
 
         return actionCommand;
     }
@@ -173,7 +176,12 @@ public class ServerGetMessage {
     public String getErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
-        //TODO RICCARDO
-        return null;
+        return JSONObject.toJSONString(error).toString();
+    }
+
+    public String reconnectErrorMessage() {
+        Map<String, String> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.RECONNECT_ERROR);
+        return JSONObject.toJSONString(error).toString();
     }
 }

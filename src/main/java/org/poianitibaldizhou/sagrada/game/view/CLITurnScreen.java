@@ -1,9 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 
 public class CLITurnScreen extends CLIRoundScreen {
@@ -16,13 +17,11 @@ public class CLITurnScreen extends CLIRoundScreen {
      *
      * @param networkManager the network manager for connecting with the server.
      * @param screenManager  manager for handler the changed of the screen.
-     * @param gameName
-     * @param myUser
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager, String gameName, User myUser)
+    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager,CLIStateScreen cliStateScreen)
             throws RemoteException {
-        super(networkManager, screenManager, gameName, myUser);
+        super(networkManager, screenManager, cliStateScreen);
 
         initializeCommands();
     }
@@ -40,123 +39,62 @@ public class CLITurnScreen extends CLIRoundScreen {
         commandMap.put(playToolCard.getCommandText(), playToolCard);
     }
 
-    @Override
-    public void startCLI() {
-        super.startCLI();
-    }
 
-    /*
-    private Position selectPosition() {
-
+    private PositionWrapper selectPosition() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String response;
-        Position position = null;
-
-        int row;
-        int column;
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").toString(),
                 Level.STANDARD);
-        do {
-            response = getAnswer("Insert a row: ");
-            try {
-                row = Integer.parseInt(response);
-            } catch (NumberFormatException e) {
-                row = -1;
-            }
-            if (row > 0 && row <= SchemaCard.NUMBER_OF_ROWS) {
-                response = getAnswer("Insert a column: ");
-                try {
-                    column = Integer.parseInt(response);
-                } catch (NumberFormatException e) {
-                    column = 0;
-                }
-                if (column > 0 && column <= SchemaCard.NUMBER_OF_COLUMNS) {
-                    position = new Position(row, column);
-                } else {
-                    PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
-                    row = -1;
-                }
-            } else {
-                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
-                row = -1;
-            }
-        } while (row < 0);
-        return position;
+        viewMySchemaCard();
+        return new PositionWrapper(consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS),
+                consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS));
     }
-    */
 
-    private void placeDice() {/*
+
+    private void placeDice() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String response;
-        int diceNumber;
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
 
-        PrinterManager.consolePrint(buildGraphic.
-                buildMessage("---------------------------DRAFT POOL---------------------------").
-                buildGraphicDices(cliDraftPoolView.getDraftPool().getDices()).
-                buildMessage("\n---------------------------SCHEMA CARD---------------------------").
-                buildMessage(cliSchemaCardView.getSchemaCard(currentUser.getName()).toString()).
-                toString(), Level.STANDARD);
-        do {
-            response = getAnswer("Choose a dice to place in your schema card: ");
-            try {
-                diceNumber = Integer.parseInt(response);
-            } catch (NumberFormatException e) {
-                diceNumber = -1;
-            }
-            if (diceNumber > 0 && diceNumber < cliDraftPoolView.getDraftPool().getDices().size()) {
-                try {
-                    connectionManager.getGameController().placeDice(currentUser.getToken(),
-                            gameName, cliDraftPoolView.getDraftPool().getDices().get(diceNumber - 1),
-                            selectPosition());
-                } catch (RemoteException e) {
-                    PrinterManager.consolePrint("NETWORK ERROR", Level.INFORMATION);
-                } catch (IOException e) {
-                    PrinterManager.consolePrint("NETWORK ERROR", Level.ERROR);
-                }
-            } else {
-                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
-                diceNumber = -1;
-            }
-        } while (diceNumber < 0);
-        */
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a dice to place in your schema card:").toString(),
+                Level.STANDARD);
+        viewDraftPool();
+        int diceNumber = consoleListener.readNumber(draftPool.size());
+        PositionWrapper position = selectPosition();
+        try {
+            connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
+                    createTokenMessage(token).createActionMessage(new PlaceDiceStateWrapper()).buildMessage()
+            );
+            connectionManager.getGameController().placeDice( clientCreateMessage.createGameNameMessage(gameName).
+                    createTokenMessage(token).createDiceMessage(draftPool.getDice(diceNumber)).
+                    createPositionMessage(position).buildMessage()
+            );
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
 
     }
 
-    private void playToolCard() throws RemoteException {/*
+    private void playToolCard(){
         BuildGraphic buildGraphic = new BuildGraphic();
-        String response;
-        int number;
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
 
-        PrinterManager.consolePrint(buildGraphic.buildGraphicToolCards(toolCards).toString(), Level.STANDARD);
-        do {
-            response = getAnswer("Choose a Tool Card:");
-            try {
-                number = Integer.parseInt(response);
-            } catch (NumberFormatException e) {
-                number = -1;
-            }
-            if (number > 0 && number <= toolCards.size()) {
-                try {
-                    connectionManager.getGameController().useToolCard(currentUser.getToken(),
-                            gameName, toolCards.get(number - 1),
-                            new CLIToolCardView(this, toolCards.get(number - 1)));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    connectionManager.getGameController().useToolCard(currentUser.getToken(),
-                            gameName, toolCards.get(number - 1),
-                            new CLIToolCardView(this,toolCards.get(number - 1)));
-                } catch (IOException e) {
-                    // TODO handle exception
-                }
-            } else {
-                PrinterManager.consolePrint(NUMBER_WARNING, Level.STANDARD);
-                number = -1;
-            }
-        } while (number < 0);
-        */
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a Tool Card:").
+                buildGraphicToolCards(toolCardList).toString(), Level.STANDARD);
+        ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readNumber(toolCardList.size()));
+        try {
+            connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
+                    createTokenMessage(token).createActionMessage(new UseToolCardStateWrapper()).buildMessage()
+            );
+            connectionManager.getGameController().useToolCard( clientCreateMessage.createGameNameMessage(gameName).
+                    createTokenMessage(token).createToolCardMessage(toolCardWrapper).buildMessage(),
+                    new CLIToolCardExecutorView(cliStateScreen, toolCardWrapper.getName())
+            );
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
     }
 
 }

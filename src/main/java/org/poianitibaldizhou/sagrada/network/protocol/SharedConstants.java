@@ -5,6 +5,8 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
+    public static final String RECONNECT_ERROR = "Error reconnecting";
+
     private SharedConstants() { }
 
     /**
@@ -43,6 +45,10 @@ public class SharedConstants {
     public static final String COLOR_LIST_KEY = "colorListKey";
     public static final String DICE_VALUE = "diceValue";
     public static final String FRONT_BACK_SCHEMA_CARD = "frontBackSchemaCard";
+    public static final String END_TURN_ACTION = "endTurnAction";
+    public static final String PLACE_DICE_ACTION = "placeDiceAction";
+    public static final String USE_TOOL_CARD_ACTION = "useToolCardAction";
+
 
     /**
      * Key protocol communication
@@ -58,6 +64,8 @@ public class SharedConstants {
     public static final String FRONT_CARD_LIST_KEY = "frontBackSchemaCardListKey";
     public static final String USER_NAME_STRING = "usernameKey";
     public static final String TIMEOUT = "timeout";
+    public static final String MAP_SCHEMA_CARD_KEY = "mapSchemaCardKey";
+    public static final String ACTION_KEY = "action";
 
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";

@@ -2,10 +2,9 @@ package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
-import org.poianitibaldizhou.sagrada.game.view.CLIRoundScreen;
+import org.poianitibaldizhou.sagrada.game.view.CLIStateScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -99,7 +98,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         showUserCommand.setCommandAction(() -> {
             try {
                 String message = connectionManager.getLobbyController().getUsersInLobby();
-                PrinterManager.consolePrint(clientGetMessage.getListOfUserWrapper(message).toString(), Level.STANDARD);
+                PrinterManager.consolePrint(clientGetMessage.getListOfUserWrapper(message).toString() + "\n", Level.STANDARD);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -115,10 +114,10 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         try {
             controller.leave(clientCreateMessage.createTokenMessage(token).createUsernameMessage(username).buildMessage());
         } catch (RemoteException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR , Level.ERROR);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.ERROR_READING, Level.ERROR);
+                    BuildGraphic.ERROR_READING , Level.ERROR);
         }
     }
 
@@ -225,8 +224,8 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
 
         PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
         try {
-            screenManager.replaceScreen(new CLIRoundScreen(connectionManager,screenManager,
-                    gameName,new User(username,token)));
+            screenManager.replaceScreen(new CLIStateScreen(connectionManager,screenManager,
+                    gameName,new UserWrapper(username),token));
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
