@@ -75,6 +75,6 @@ public final class DiceWrapper implements JSONable{
 
     @Override
     public String toString() {
-        return "" + number + "/" + Objects.requireNonNull(color).name();
+        return "" + number + "/" + Objects.requireNonNull(color).name().substring(0,1);
     }
 }

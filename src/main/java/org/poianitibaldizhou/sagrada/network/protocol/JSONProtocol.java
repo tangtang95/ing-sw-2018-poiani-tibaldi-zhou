@@ -73,6 +73,7 @@ public class JSONProtocol {
     @SuppressWarnings("unchecked")
     public Object getResponseByKey(String response, String key) throws ParseException {
         JSONParser jsonParser = new JSONParser();
+
         JSONObject body = (JSONObject) jsonParser.parse(response);
         JSONObject elem = (JSONObject) body.get(key);
         try {
