@@ -30,7 +30,12 @@ public final class TileWrapper implements JSONable{
     }
 
     public String toString(){
-        return " " + Objects.requireNonNull(constraint).substring(0,1) + " ";
+        String val;
+        if (constraint == null)
+            val = " ";
+        else
+            val = constraint.substring(0,1);
+        return " " + val + " ";
     }
 
     /**

@@ -296,7 +296,6 @@ public class BuildGraphic {
 
     public BuildGraphic buildGraphicSchemaCard(SchemaCardWrapper schemaCard) {
         if (schemaCard != null) {
-            buildMessage("---------------------------SCHEMA CARD---------------------------");
             stringBuilder.append(schemaCard.toString()).append("\n");
         }
         return this;
