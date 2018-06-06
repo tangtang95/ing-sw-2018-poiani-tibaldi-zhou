@@ -42,6 +42,4 @@ public class ResetState extends IStateGame {
         if (playersReady.size() == game.getNumberOfPlayers())
             game.setState(new SetupPlayerState(game));
     }
-
-
 }

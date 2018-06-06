@@ -62,8 +62,9 @@ public class LobbyManager {
     }
 
     private synchronized void createGame() {
-        String gameName = managerMediator.createMultiPlayerGame(users);
+        String gameName = managerMediator.createMultiPlayerGame(lobby.getUserList());
         lobby.gameStart(gameName);
+        lobby.getUserList().forEach(users::remove);
     }
 
     /**
