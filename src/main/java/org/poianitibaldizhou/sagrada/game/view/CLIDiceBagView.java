@@ -30,9 +30,9 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     @Override
     public void onElementAdd(String elem) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
-        if(cliStateScreen.getCurrentUser() != null) {
+        if (cliStateScreen.getCurrentUser() != null) {
             String message = cliStateScreen.getCurrentUser().getUsername() + " has put a dice in the dice bag.";
-            DiceWrapper diceWrapper = clientGetMessage.getDice(elem);
+            DiceWrapper diceWrapper = clientGetMessage.getDiceElem(elem);
             PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
         }
     }
@@ -44,7 +44,7 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     public void onElementsAdd(String elemList) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = cliStateScreen.getCurrentUser().getUsername() + " a list of dice has been inserted in the dice bag";
-        List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(elemList);
+        List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceElemList(elemList);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(), Level.STANDARD);
     }
 
@@ -54,8 +54,13 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
     @Override
     public void onElementDraw(String elem) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliStateScreen.getCurrentUser().getUsername() + " a dice has been drawn from the dice bag";
-        DiceWrapper diceWrapper = clientGetMessage.getDice(elem);
+        String message;
+        if (cliStateScreen.getCurrentUser() != null) {
+            message = cliStateScreen.getCurrentUser().getUsername() + " a dice has been drawn from the dice bag";
+        } else {
+            message = "A dice has been drawn from the dice bag";
+        }
+        DiceWrapper diceWrapper = clientGetMessage.getDiceElem(elem);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 

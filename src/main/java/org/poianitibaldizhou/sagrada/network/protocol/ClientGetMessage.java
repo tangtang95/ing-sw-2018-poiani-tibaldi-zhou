@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
@@ -13,6 +14,30 @@ public class ClientGetMessage {
 
     public ClientGetMessage() {
         jsonClientProtocol = new JSONClientProtocol();
+    }
+
+    public DiceWrapper getDiceElem(String message) throws IOException {
+        DiceWrapper diceWrapper;
+
+        try {
+            diceWrapper = (DiceWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.ELEM);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return diceWrapper;
+    }
+
+    public List<DiceWrapper> getDiceElemList(String message) throws IOException {
+        List<DiceWrapper> diceWrapperList;
+
+        try {
+            diceWrapperList = (List<DiceWrapper>) jsonClientProtocol.getResponseByKey(message, SharedConstants.ELEM_LIST_KEY);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return diceWrapperList;
     }
 
     public DiceWrapper getDice(String message) throws IOException {
@@ -297,5 +322,17 @@ public class ClientGetMessage {
             throw new IOException();
         }
         return draftPoolWrapper;
+    }
+
+    public UserWrapper getRoundUser(String message) throws IOException {
+        UserWrapper userWrapper;
+
+        try {
+            userWrapper = (UserWrapper) jsonClientProtocol.getResponseByKey(message, SharedConstants.ROUND_USER);
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+
+        return userWrapper;
     }
 }

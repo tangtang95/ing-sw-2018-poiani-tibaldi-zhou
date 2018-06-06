@@ -95,7 +95,8 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     @Override
     public void onRoundStart(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
-        UserWrapper roundUser = clientGetMessage.getTurnUserWrapper(jString);
+        UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
+        currentUser = roundUser;
         PrinterManager.consolePrint("The round " + round + " is started with player " +
                         roundUser.getUsername() + "\n", Level.STANDARD);
         screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager,this));

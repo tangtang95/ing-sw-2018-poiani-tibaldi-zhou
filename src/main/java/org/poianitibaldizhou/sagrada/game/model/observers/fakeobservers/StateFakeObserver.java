@@ -74,7 +74,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onRoundStart(int round, User roundUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onRoundStart(serverCreateMessage.createUserMessage(roundUser).createMessageValue(round).buildMessage());
+                realObserver.onRoundStart(serverCreateMessage.createRoundUserMessage(roundUser).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
