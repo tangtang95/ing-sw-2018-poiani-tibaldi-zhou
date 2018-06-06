@@ -22,6 +22,10 @@ public final class ToolCardWrapper  extends CardWrapper implements JSONable{
         this.token = token;
     }
 
+    public int getTokens() {
+        return token;
+    }
+
 
     /**
      * Convert a toolCardWrapper in a JSONObject.
@@ -34,6 +38,7 @@ public final class ToolCardWrapper  extends CardWrapper implements JSONable{
         JSONObject main = new JSONObject();
         JSONObject toolCardJSON = new JSONObject();
         toolCardJSON.put(JSON_NAME, this.getName());
+        toolCardJSON.put(JSON_TOKENS, this.getTokens());
         main.put(SharedConstants.TYPE, SharedConstants.TOOL_CARD);
         main.put(SharedConstants.BODY,toolCardJSON);
         return main;

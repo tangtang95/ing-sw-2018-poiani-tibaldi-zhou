@@ -223,7 +223,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     public void onGameStart(String message) throws IOException {
         String gameName = clientGetMessage.getGameName(message);
 
-        PrinterManager.consolePrint("GAME STARTED\n", Level.STANDARD);
+        PrinterManager.consolePrint("\"----------------------------GAME STARTED---------------------------\n", Level.STANDARD);
         try {
             screenManager.replaceScreen(new CLIStateScreen(connectionManager,screenManager,
                     gameName,new UserWrapper(username),token));

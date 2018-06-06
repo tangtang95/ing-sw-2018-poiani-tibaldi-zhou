@@ -161,7 +161,7 @@ public class BuildGraphic {
             buildMessage("------------------------PUBLIC OBJECTIVE CARDS-----------------------");
             for (int i = 0; i < publicObjectiveCards.size(); i++) {
                 PublicObjectiveCardWrapper poc = publicObjectiveCards.get(i);
-                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append("[").append(i + 1).append("]\n");
                 stringBuilder.append(NAME).append(poc.getName()).append("\n");
                 stringBuilder.append("Point:     ").append(poc.getCardPoint()).append("\n");
                 stringBuilder.append(DESCRIPTION);
@@ -182,7 +182,7 @@ public class BuildGraphic {
             buildMessage("------------------------PRIVATE OBJECTIVE CARDS-----------------------");
             for (int i = 0; i < privateObjectiveCards.size(); i++) {
                 PrivateObjectiveCardWrapper poc = privateObjectiveCards.get(i);
-                stringBuilder.append("[").append(i).append("]\n");
+                stringBuilder.append("[").append(i + 1).append("]\n");
                 stringBuilder.append(NAME).append(poc.getName()).append("\n");
                 stringBuilder.append(DESCRIPTION);
                 stringBuilder.append(poc.getDescription()).append("\n");
