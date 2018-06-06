@@ -11,6 +11,7 @@ public class CLITurnScreen extends CLIRoundScreen {
 
     private static final String PLACE_DICE = "Place dice";
     private static final String PLAY_TOOL_CARD = "Play Tool Card";
+    private static final String END_TURN = "End Turn";
 
     /**
      * constructor.
@@ -37,6 +38,10 @@ public class CLITurnScreen extends CLIRoundScreen {
         Command playToolCard = new Command(PLAY_TOOL_CARD, "Play a Tool Card");
         playToolCard.setCommandAction(this::playToolCard);
         commandMap.put(playToolCard.getCommandText(), playToolCard);
+
+        Command endTurn = new Command(END_TURN, "End the turn");
+        endTurn.setCommandAction(this::endTurn);
+        commandMap.put(endTurn.getCommandText(), endTurn);
     }
 
 
@@ -51,6 +56,16 @@ public class CLITurnScreen extends CLIRoundScreen {
                 consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS));
     }
 
+    private void endTurn() {
+        try {
+            connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
+                    createTokenMessage(token).createActionMessage(new EndTurnStateWrapper()).buildMessage()
+            );
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
+    }
 
     private void placeDice() {
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -69,6 +84,7 @@ public class CLITurnScreen extends CLIRoundScreen {
                     createTokenMessage(token).createDiceMessage(draftPool.getDice(diceNumber)).
                     createPositionMessage(position).buildMessage()
             );
+            endTurn();
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
@@ -91,6 +107,7 @@ public class CLITurnScreen extends CLIRoundScreen {
                     createTokenMessage(token).createToolCardMessage(toolCardWrapper).buildMessage(),
                     new CLIToolCardExecutorView(cliStateScreen, toolCardWrapper.getName())
             );
+            endTurn();
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);

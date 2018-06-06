@@ -42,8 +42,17 @@ public final class PublicObjectiveCardWrapper extends CardWrapper implements JSO
         return new PublicObjectiveCardWrapper(
                 (String) jsonObject.get(JSON_NAME),
                 (String) jsonObject.get(JSON_DESCRIPTION),
-                Integer.parseInt((String) jsonObject.get(JSON_CARD_POINT))
+                Integer.parseInt(jsonObject.get(JSON_CARD_POINT).toString())
         );
+    }
+
+    /**
+     * Fake constructor.
+     */
+    @SuppressWarnings("unused")
+    private PublicObjectiveCardWrapper(){
+        super(null, null);
+        point = 0;
     }
 
     public int getCardPoint() {
