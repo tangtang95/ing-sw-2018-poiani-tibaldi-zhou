@@ -14,5 +14,4 @@ public interface ITimeOutObserver extends Remote {
      * @throws IOException network communication error
      */
     void onTimeOut(String message) throws IOException;
-
 }

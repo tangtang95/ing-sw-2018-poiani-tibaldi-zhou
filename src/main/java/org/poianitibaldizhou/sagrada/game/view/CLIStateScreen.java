@@ -107,6 +107,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      */
     @Override
     public void onTurnState(String jString) throws IOException {
+        System.out.println("ON TURN STATE CALLED");
         int round = clientGetMessage.getValue(jString);
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
         currentUser = turnUser;

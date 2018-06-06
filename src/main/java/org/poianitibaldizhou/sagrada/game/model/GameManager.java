@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
@@ -69,7 +70,6 @@ public class GameManager {
      * @param gameName game's name
      */
     public synchronized void addGame(IGame game, String gameName) {
-        System.out.println("GAME ADDED: " + gameName);
         if(gameMap.putIfAbsent(gameName, game) == null){
             playersByGame.put(gameName, new ArrayList<>());
             game.getUsers().forEach(user -> {
@@ -88,7 +88,6 @@ public class GameManager {
      * @param gameName game to terminate
      */
     public synchronized void terminateGame(String gameName) {
-        System.out.println("TERMINATE GAME " + gameName);
         if(gameMap.remove(gameName) != null) {
             List<String> playersPlaying = playersByGame.get(gameName);
             players.removeAll(playersPlaying);

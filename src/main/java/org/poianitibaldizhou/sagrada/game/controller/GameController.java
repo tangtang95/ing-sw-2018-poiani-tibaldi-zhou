@@ -1058,8 +1058,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * @return true if synchronized, false otherwise
      */
     private boolean wasUserDisconnected(String token, String gameName) {
-        System.out.println("WUD obs " + (gameManager.getObserverManagerByGame(gameName) == null));
-        System.out.println("WUD obslist" + (gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer() == null));
         return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
     }
 

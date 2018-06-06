@@ -88,6 +88,7 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
+        System.out.println("On turn state notify is about to being pushed in queue");
         Runnable runnable = () -> {
             try {
                 realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createBooleanMessage(isFirstTurn).

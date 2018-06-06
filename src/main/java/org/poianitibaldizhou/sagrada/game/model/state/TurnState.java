@@ -91,6 +91,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
+        System.out.println("TURN STATE INIT CALLED");
         if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
                 && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN)) {
             game.getStateObservers().forEach((key, value) ->
