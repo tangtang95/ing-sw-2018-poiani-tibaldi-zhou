@@ -2,9 +2,10 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 
 @Immutable
-public final class PublicObjectiveCardWrapper extends CardWrapper{
+public final class PublicObjectiveCardWrapper extends CardWrapper implements JSONable{
 
     private final int point;
 

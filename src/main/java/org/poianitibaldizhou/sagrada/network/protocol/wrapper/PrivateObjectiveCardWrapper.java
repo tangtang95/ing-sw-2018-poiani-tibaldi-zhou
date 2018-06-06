@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 @Immutable
-public final class PrivateObjectiveCardWrapper extends CardWrapper {
+public final class PrivateObjectiveCardWrapper extends CardWrapper implements JSONable {
 
     private final ColorWrapper color;
 

@@ -143,7 +143,7 @@ public class BuildGraphic {
                 stringBuilder.append(NAME).append(toolCard.getName()).append("\n");
                 stringBuilder.append("Color:     ").append(toolCard.getColor()).append("\n");
                 stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(toolCard.getDescription()).append("\n\n");
+                stringBuilder.append(toolCard.getDescription()).append("\n");
             }
         }
         return this;
@@ -165,7 +165,7 @@ public class BuildGraphic {
                 stringBuilder.append(NAME).append(poc.getName()).append("\n");
                 stringBuilder.append("Point:     ").append(poc.getCardPoint()).append("\n");
                 stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(poc.getDescription()).append("\n\n");
+                stringBuilder.append(poc.getDescription()).append("\n");
             }
         }
         return this;
@@ -185,7 +185,7 @@ public class BuildGraphic {
                 stringBuilder.append("[").append(i).append("]\n");
                 stringBuilder.append(NAME).append(poc.getName()).append("\n");
                 stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(poc.getDescription()).append("\n\n");
+                stringBuilder.append(poc.getDescription()).append("\n");
             }
         }
         return this;
@@ -196,7 +196,7 @@ public class BuildGraphic {
             buildMessage("------------------------PRIVATE OBJECTIVE CARD-----------------------");
             stringBuilder.append(NAME).append(privateObjectiveCard.getName()).append("\n");
             stringBuilder.append(DESCRIPTION);
-            stringBuilder.append(privateObjectiveCard.getDescription()).append("\n\n");
+            stringBuilder.append(privateObjectiveCard.getDescription()).append("\n");
         }
         return this;
     }

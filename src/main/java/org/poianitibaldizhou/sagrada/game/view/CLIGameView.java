@@ -106,7 +106,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
 
         for (int i = 0; i < schemaCards.size(); i++)
-            buildGraphic.buildMessage("                   [" + i + "]").buildGraphicSchemaCard(schemaCards.get(i));
+            buildGraphic.buildMessage("                   [" + (i + 1) + "]").buildGraphicSchemaCard(schemaCards.get(i));
         buildGraphic.buildMessage("Choose a schema card:");
         PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 

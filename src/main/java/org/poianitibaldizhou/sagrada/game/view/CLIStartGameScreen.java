@@ -40,7 +40,7 @@ public class CLIStartGameScreen extends CLIBasicScreen {
     protected void initializeCommands() {
         Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
         changeConnectionCommand.setCommandAction(() ->
-                screenManager.pushScreen(new CLIReconnectToGameScreen(connectionManager, screenManager)));
+                screenManager.pushScreen(new CLIChangeConnectionScreen(connectionManager, screenManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
         Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");

@@ -78,7 +78,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      */
     @Override
     public void onSetupGame() {
-        PrinterManager.consolePrint("Game setup...\n", Level.STANDARD);
+        PrinterManager.consolePrint("Game setup.\n", Level.INFORMATION);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
      */
     @Override
     public void onSetupPlayer() {
-        PrinterManager.consolePrint("Players setup...\n", Level.STANDARD);
+        PrinterManager.consolePrint("Players setup.\n", Level.INFORMATION);
     }
 
     /**
