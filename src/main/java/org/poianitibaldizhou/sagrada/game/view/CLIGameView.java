@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -39,8 +40,20 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     }
 
     @Override
-    public void onPlayersCreate(String jString) {
-        /*NOTIFY CREATION*/
+    public void onPlayersCreate(String jString) throws IOException {
+        List<UserWrapper> users = clientGetMessage.getListOfUserWrapper(jString);
+        users.forEach(user -> {
+            try {
+                connectionManager.getGameController().bindPlayer(
+                        clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage(),
+                        new CLIPlayerView(cliStateScreen),
+                        new CLISchemaCardView(cliStateScreen)
+                );
+            } catch (IOException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                        BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            }
+        });
 
     }
 

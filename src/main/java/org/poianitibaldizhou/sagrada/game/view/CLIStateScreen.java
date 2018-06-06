@@ -59,12 +59,6 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
                     new CLIDraftPoolView(this),
                     new CLIDiceBagView(this)
             );
-
-            connectionManager.getGameController().bindPlayer(
-                    clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage(),
-                    new CLIPlayerView(this),
-                    new CLISchemaCardView(this)
-            );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
