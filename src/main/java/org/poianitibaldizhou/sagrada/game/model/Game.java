@@ -71,6 +71,7 @@ public abstract class Game implements IGame, IGameStrategy {
      *
      * @return the shallow-copy of the list of publicObjectiveCards
      */
+    @Override
     @Contract(pure = true)
     public List<PublicObjectiveCard> getPublicObjectiveCards() {
         return new ArrayList<>(publicObjectiveCards);
@@ -302,6 +303,11 @@ public abstract class Game implements IGame, IGameStrategy {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.useCard(players.get(token), toolCard, executorObserver);
+    }
+
+    @Override
+    public List<PrivateObjectiveCard> getPrivateObjectiveCardsByToken(String token) {
+        return new ArrayList<>(players.get(token).getPrivateObjectiveCards());
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
@@ -715,22 +716,68 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         return serverCreateMessage.createToolCardList(toolCards).buildMessage();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPublicObjectiveCards(String message) throws IOException {
-        //TODO
-        return null;
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        List<PublicObjectiveCard> publicObjectiveCardList;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            publicObjectiveCardList = gameManager.getGameByName(gameName).getPublicObjectiveCards();
+        }
+
+        return serverCreateMessage.createPublicObjectiveCardList(publicObjectiveCardList).buildMessage();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPrivateObjectiveCardByToken(String message) throws IOException {
-        //TODO
-        return null;
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        List<PrivateObjectiveCard> privateObjectiveCardList;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            privateObjectiveCardList = gameManager.getGameByName(gameName).getPrivateObjectiveCardsByToken(token);
+        }
+
+        return serverCreateMessage.createPrivateObjectiveCardList(privateObjectiveCardList).buildMessage();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getSchemaCards(String message) throws IOException {
-        //TODO
-        return null;
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        Map<User, SchemaCard> stringSchemaCardMap = new HashMap<>();
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            List<Player> players = gameManager.getGameByName(gameName).getPlayers();
+            players.forEach(player -> stringSchemaCardMap.put(player.getUser(), player.getSchemaCard()));
+        }
+
+        return serverCreateMessage.createSchemaCardMapMessage(stringSchemaCardMap).buildMessage();
     }
 
     /**
