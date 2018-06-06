@@ -243,8 +243,8 @@ public interface IGameController extends Remote {
     /**
      * Creates a single player game.
      *
-     * @param message protocol message containing player's token and player's username
-     * @return message containing game's name or errors
+     * @param message protocol message containing  player's username and game difficulty
+     * @return message containing game's name and player's token or errors
      */
     String createSinglePlayer(String message) throws IOException;
 }

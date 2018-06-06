@@ -885,13 +885,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String createSinglePlayer(String message) throws IOException {
-        String token = serverGetMessage.getToken(message);
         String username = serverGetMessage.getUserName(message);
         int difficulty = serverGetMessage.getInteger(message);
 
-        String gameName = gameManager.createSinglePlayerGame(token, username, difficulty);
+        String gameName = gameManager.createSinglePlayerGame(username, difficulty);
 
-        return serverCreateMessage.createGamenNameMessage(gameName).buildMessage();
+        return serverCreateMessage.createGamenNameMessage(gameName).createTokenMessage(String.valueOf(username.hashCode())).buildMessage();
     }
 
     /**

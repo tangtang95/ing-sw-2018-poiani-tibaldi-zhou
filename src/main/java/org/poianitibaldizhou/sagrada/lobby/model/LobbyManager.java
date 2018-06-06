@@ -154,7 +154,7 @@ public class LobbyManager {
                 throw new IllegalArgumentException("User already logged: " + username);
             }
         }
-        if(managerMediator.isAlreadyLogged(username))
+        if(managerMediator.isAlreadyPlayingAGame(username))
             throw new IllegalArgumentException("User already logged: " + username);
         String token = String.valueOf(username.hashCode());
         User user = new User(username, token);
@@ -199,6 +199,9 @@ public class LobbyManager {
         return lobby.getUserList();
     }
 
+    public List<User> getUsers() {
+        return new ArrayList<>(users);
+    }
 
     /**
      * Returns true if there is an istance of a lobby active.

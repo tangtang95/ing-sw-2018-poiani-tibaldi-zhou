@@ -30,18 +30,25 @@ public class GameManager {
     /**
      * Creates a new single player game.
      *
-     * @param token single player's token
      * @param userName single player's difficulty
      * @param difficulty difficulty of the game
      * @return name of the single player name
      * @throws IOException network communication error
      */
-    public synchronized String createSinglePlayerGame(String token, String userName, int difficulty) throws IOException {
+    public synchronized String createSinglePlayerGame(String userName, int difficulty) throws IOException {
         String gameName;
 
+        // Try login with this username
+        if(managerMediator.isAlreadyWaitingInALobby(userName)) {
+            throw new IOException();
+        }
+
+        // Creates the game
         do {
             gameName = UUID.randomUUID().toString();
         } while(gameMap.containsKey(gameMap));
+
+        String token = String.valueOf(userName.hashCode());
 
         SinglePlayerGame singlePlayer = new SinglePlayerGame(gameName, new User(userName, token), difficulty, new TerminationGameManager(gameName, this));
 

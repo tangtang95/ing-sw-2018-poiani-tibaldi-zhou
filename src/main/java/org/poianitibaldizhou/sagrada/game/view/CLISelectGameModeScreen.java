@@ -100,13 +100,6 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
                 username = r.readLine();
                 if (username.equals(""))
                     throw new IllegalArgumentException();
-                else {
-                    String message = connectionManager.getLobbyController().login(clientCreateMessage.createUsernameMessage(username).buildMessage(),
-                            this);
-                    token = clientGetMessage.getToken(message);
-                    if (token.isEmpty())
-                        throw new IllegalArgumentException();
-                }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
@@ -137,8 +130,9 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
 
         try {
             String message = connectionManager.getGameController().createSinglePlayer(clientCreateMessage.
-                    createUsernameMessage(username).createTokenMessage(token).createValueMessage(difficulty).buildMessage());
+                    createUsernameMessage(username).createValueMessage(difficulty).buildMessage());
             gameName = clientGetMessage.getGameName(message);
+            token = clientGetMessage.getToken(message);
         } catch (IOException e) {
             PrinterManager.consolePrint("Error in creating single player game", Level.STANDARD);
             return;

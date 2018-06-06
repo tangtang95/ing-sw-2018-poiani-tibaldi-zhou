@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class MediatorManager {
@@ -51,7 +52,7 @@ public class MediatorManager {
      * @param username username considered
      * @return true if a player with username is already playing in some game, false otherwise
      */
-    public boolean isAlreadyLogged(String username) {
+    public boolean isAlreadyPlayingAGame(String username) {
         for(IGame game : gameManager.getGameList()) {
             for(Player player : game.getPlayers()) {
                 if(player.getUser().getName().equals(username))
@@ -59,5 +60,16 @@ public class MediatorManager {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns true if a player with that username is already waiting in lobby
+     *
+     * @param username player's username
+     * @return true if the player is present, false otherwise
+     */
+    public boolean isAlreadyWaitingInALobby(String username) {
+        Optional<User> result = lobbyManager.getUsers().stream().filter(user -> user.getName().equals(username)).findAny();
+        return result.isPresent();
     }
 }
