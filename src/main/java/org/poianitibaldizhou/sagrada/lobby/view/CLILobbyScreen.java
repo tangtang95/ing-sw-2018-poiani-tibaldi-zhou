@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.lobby.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
-import org.poianitibaldizhou.sagrada.game.view.CLIStateScreen;
+import org.poianitibaldizhou.sagrada.game.view.CLISetupGameScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
@@ -139,7 +139,6 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                     token = clientGetMessage.getToken(message);
                     if (token.isEmpty())
                         throw new IllegalArgumentException();
-                    System.out.println("TOKEN: " + token);
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
@@ -225,7 +224,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
 
         PrinterManager.consolePrint("\"----------------------------GAME STARTED---------------------------\n", Level.STANDARD);
         try {
-            screenManager.replaceScreen(new CLIStateScreen(connectionManager,screenManager,
+            screenManager.replaceScreen(new CLISetupGameScreen(connectionManager,screenManager,
                     gameName,new UserWrapper(username),token));
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +

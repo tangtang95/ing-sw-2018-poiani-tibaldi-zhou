@@ -13,13 +13,13 @@ import java.util.Objects;
 
 public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserver {
 
-    private final transient CLIStateScreen cliStateScreen;
+    private final transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
 
-    public CLIPlayerView(CLIStateScreen cliStateScreen) throws RemoteException {
+    public CLIPlayerView(CLIStateView cliStateView) throws RemoteException {
         super();
-        this.cliStateScreen = cliStateScreen;
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
+        this.cliStateView = cliStateView;
+        this.clientGetMessage = cliStateView.getClientGetMessage();
     }
 
     /**
@@ -27,7 +27,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      */
     @Override
     public void onFavorTokenChange(String value) throws IOException {
-        String message = cliStateScreen.getCurrentUser().getUsername() + " has spent " +
+        String message = cliStateView.getCurrentUser().getUsername() + " has spent " +
                 clientGetMessage.getValue(value) + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
@@ -49,14 +49,14 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
         if (!(o instanceof CLIPlayerView)) return false;
         if (!super.equals(o)) return false;
         CLIPlayerView that = (CLIPlayerView) o;
-        return Objects.equals(cliStateScreen, that.cliStateScreen) &&
+        return Objects.equals(cliStateView, that.cliStateView) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage);
+        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage);
     }
 
 }

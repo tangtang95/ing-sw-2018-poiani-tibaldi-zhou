@@ -87,10 +87,10 @@ public class StateFakeObserver implements IStateFakeObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
+    public void onTurnState(int round, int turn, User roundUser, User turnUser) {
         Runnable runnable = () -> {
             try {
-                realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createBooleanMessage(isFirstTurn).
+                realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createTurnValueMessage(turn).
                         createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

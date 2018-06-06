@@ -24,7 +24,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     protected final transient UserWrapper myUser;
     protected transient List<ToolCardWrapper> toolCardList;
     protected transient DraftPoolWrapper draftPool;
-    protected final transient CLIStateScreen cliStateScreen;
+    protected final transient CLIStateView cliStateView;
 
     protected final transient ClientGetMessage clientGetMessage;
     protected final transient ClientCreateMessage clientCreateMessage;
@@ -46,15 +46,15 @@ public class CLIRoundScreen extends CLIBasicScreen {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateScreen cliStateScreen)
+    public CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
             throws RemoteException {
         super(networkManager, screenManager);
-        this.token = cliStateScreen.getToken();
-        this.myUser = cliStateScreen.getMyUser();
-        this.gameName = cliStateScreen.getGameName();
-        this.clientCreateMessage = cliStateScreen.getClientCreateMessage();
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
-        this.cliStateScreen = cliStateScreen;
+        this.token = cliStateView.getToken();
+        this.myUser = cliStateView.getMyUser();
+        this.gameName = cliStateView.getGameName();
+        this.clientCreateMessage = cliStateView.getClientCreateMessage();
+        this.clientGetMessage = cliStateView.getClientGetMessage();
+        this.cliStateView = cliStateView;
 
         initializeCommands();
     }
@@ -99,12 +99,14 @@ public class CLIRoundScreen extends CLIBasicScreen {
 
     @Override
     public void startCLI() {
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.
                         buildGraphicHelp(commandMap).
                         buildMessage("Choose the action: ").toString(),
                 Level.STANDARD);
+        consoleListener.setCommandMap(commandMap);
     }
     private void viewPrivateObjectiveCards(){
         BuildGraphic buildGraphic = new BuildGraphic();

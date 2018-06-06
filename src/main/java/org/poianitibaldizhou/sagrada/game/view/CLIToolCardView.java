@@ -16,9 +16,9 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
     private final transient ClientGetMessage clientGetMessage;
     private final transient String toolCardName;
 
-    public CLIToolCardView(CLIStateScreen cliStateScreen, String toolCardName) throws RemoteException {
+    public CLIToolCardView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
+        this.clientGetMessage = cliStateView.getClientGetMessage();
         this.toolCardName = toolCardName;
     }
 

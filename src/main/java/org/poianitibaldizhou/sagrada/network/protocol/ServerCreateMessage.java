@@ -95,6 +95,11 @@ public class ServerCreateMessage {
         return this;
     }
 
+    public ServerCreateMessage createTurnValueMessage(Integer value) {
+        jsonServerProtocol.appendMessage(SharedConstants.TURN_VALUE_KEY, value);
+        return this;
+    }
+
     public ServerCreateMessage createOutcomeMessage(Outcome outcome) {
         jsonServerProtocol.appendMessage(SharedConstants.OUTCOME, outcome);
         return this;

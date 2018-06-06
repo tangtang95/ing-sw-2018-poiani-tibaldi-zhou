@@ -15,13 +15,13 @@ import java.util.Objects;
 
 public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrackObserver {
 
-    private final transient CLIStateScreen cliStateScreen;
+    private final transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
 
-    public CLIRoundTrackView(CLIStateScreen cliStateScreen) throws RemoteException {
+    public CLIRoundTrackView(CLIStateView cliStateView) throws RemoteException {
         super();
-        this.cliStateScreen = cliStateScreen;
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
+        this.cliStateView = cliStateView;
+        this.clientGetMessage = cliStateView.getClientGetMessage();
     }
 
     /**
@@ -31,7 +31,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
     public void onDicesAddToRound(String message) throws IOException {
         Integer round = clientGetMessage.getValue(message);
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(message);
-        String printMessage = cliStateScreen.getCurrentUser().getUsername() +
+        String printMessage = cliStateView.getCurrentUser().getUsername() +
                 " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDices(diceWrapperList).toString(),
@@ -45,7 +45,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
     public void onDiceAddToRound(String message) throws IOException {
         Integer round = clientGetMessage.getValue(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " added a dice to the round track at round "
+        String printMessage = cliStateView.getCurrentUser().getUsername() + " added a dice to the round track at round "
                 + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
@@ -59,7 +59,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
     public void onDiceRemoveFromRound(String message) throws IOException {
         Integer round  = clientGetMessage.getValue(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " removed a dice from the round track at round " + round + ".";
+        String printMessage = cliStateView.getCurrentUser().getUsername() + " removed a dice from the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
                 Level.STANDARD);
@@ -75,7 +75,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         DiceWrapper newDice = clientGetMessage.getNewDice(message);
         Integer round = clientGetMessage.getValue(message);
 
-        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " swap a with the round track at round "
+        String printMessage = cliStateView.getCurrentUser().getUsername() + " swap a with the round track at round "
                 + round + ".";
         String message2 = "Old dice (no more present in round track) : ";
         String message3 = "New dice (added to the round track) : ";
@@ -90,11 +90,11 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         if (!(o instanceof CLIRoundTrackView)) return false;
         if (!super.equals(o)) return false;
         CLIRoundTrackView that = (CLIRoundTrackView) o;
-        return Objects.equals(cliStateScreen, that.cliStateScreen);
+        return Objects.equals(cliStateView, that.cliStateView);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), cliStateScreen);
+        return Objects.hash(super.hashCode(), cliStateView);
     }
 }

@@ -70,6 +70,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      */
     @Override
     public void startCLI() {
+        pauseCLI();
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.
@@ -139,7 +140,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
         }
 
         ConsoleListener.getInstance().wakeUpCommandConsole();
-        screenManager.replaceScreen(new CLIStateScreen(connectionManager, screenManager, gameName, new UserWrapper(username), token));
+        screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName, new UserWrapper(username), token));
     }
 
     /**

@@ -9,11 +9,12 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
+public class CLIStateView extends UnicastRemoteObject implements IStateObserver {
 
     private final transient UserWrapper myUser;
     private transient UserWrapper currentUser;
@@ -22,47 +23,22 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
 
     private final transient ClientGetMessage clientGetMessage = new ClientGetMessage();
     private final transient ClientCreateMessage clientCreateMessage = new ClientCreateMessage();
+    private final transient ConnectionManager connectionManager;
+    private final transient ScreenManager screenManager;
 
-    private final transient CLIGameView cliGameView;
-
-    public CLIStateScreen(ConnectionManager connectionManager, ScreenManager screenManager,
-                          String gameName, UserWrapper myUser, String token
+    public CLIStateView(ConnectionManager connectionManager, ScreenManager screenManager,
+                        String gameName, UserWrapper myUser, String token
     ) throws RemoteException {
-        super(connectionManager, screenManager);
 
         this.token = token;
         this.myUser = myUser;
         this.gameName = gameName;
-
-        this.cliGameView = new CLIGameView(this, connectionManager);
+        this.connectionManager = connectionManager;
+        this.screenManager = screenManager;
     }
 
-    @Override
-    protected void initializeCommands() {
-        /*
-        For this CLI there are not any commands.
-         */
-    }
-
-    @Override
-    public void startCLI() {
-        ConsoleListener consoleListener = ConsoleListener.getInstance();
-        consoleListener.setCommandMap(commandMap);
-        try {
-            connectionManager.getGameController().joinGame(
-                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).
-                            buildMessage(),
-                    cliGameView,
-                    cliGameView,
-                    new CLIRoundTrackView(this),
-                    this,
-                    new CLIDraftPoolView(this),
-                    new CLIDiceBagView(this)
-            );
-        } catch (IOException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
-        }
+    public ConnectionManager getConnectionManager() {
+        return connectionManager;
     }
 
     public UserWrapper getCurrentUser() {
@@ -206,9 +182,9 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIStateScreen)) return false;
+        if (!(o instanceof CLIStateView)) return false;
         if (!super.equals(o)) return false;
-        CLIStateScreen that = (CLIStateScreen) o;
+        CLIStateView that = (CLIStateView) o;
         return Objects.equals(myUser, that.myUser) &&
                 Objects.equals(gameName, that.gameName) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage);

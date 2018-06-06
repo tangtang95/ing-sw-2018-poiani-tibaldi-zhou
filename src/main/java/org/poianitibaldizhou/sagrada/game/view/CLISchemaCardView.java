@@ -15,20 +15,20 @@ import java.util.Objects;
 
 public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCardObserver {
 
-    private final transient CLIStateScreen cliStateScreen;
+    private final transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
 
-    public CLISchemaCardView(CLIStateScreen cliStateScreen) throws RemoteException {
+    public CLISchemaCardView(CLIStateView cliStateView) throws RemoteException {
         super();
-        this.cliStateScreen = cliStateScreen;
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
+        this.cliStateView = cliStateView;
+        this.clientGetMessage = cliStateView.getClientGetMessage();
     }
 
     @Override
     public void onPlaceDice(String message) throws IOException {
         PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " has placed a dice in position " +
+        String printMessage = cliStateView.getCurrentUser().getUsername() + " has placed a dice in position " +
                 positionWrapper.toString();
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
@@ -39,7 +39,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
     public void onDiceRemove(String message) throws IOException {
         PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateScreen.getCurrentUser().getUsername() + " has removed a dice in position " +
+        String printMessage = cliStateView.getCurrentUser().getUsername() + " has removed a dice in position " +
                 positionWrapper.toString();
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
@@ -52,13 +52,13 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         if (!(o instanceof CLISchemaCardView)) return false;
         if (!super.equals(o)) return false;
         CLISchemaCardView that = (CLISchemaCardView) o;
-        return Objects.equals(cliStateScreen, that.cliStateScreen) &&
+        return Objects.equals(cliStateView, that.cliStateView) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage);
+        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage);
     }
 }

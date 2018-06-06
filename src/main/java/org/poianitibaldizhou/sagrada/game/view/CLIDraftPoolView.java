@@ -15,13 +15,13 @@ import java.util.Objects;
 
 public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolObserver {
 
-    private transient CLIStateScreen cliStateScreen;
+    private transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
 
-    public CLIDraftPoolView(CLIStateScreen cliStateScreen) throws RemoteException {
+    public CLIDraftPoolView(CLIStateView cliStateView) throws RemoteException {
         super();
-        this.cliStateScreen = cliStateScreen;
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
+        this.cliStateView = cliStateView;
+        this.clientGetMessage = cliStateView.getClientGetMessage();
     }
 
     /**
@@ -29,10 +29,12 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      */
     @Override
     public void onDiceAdd(String dice) throws IOException {
-        String message = cliStateScreen.getCurrentUser().getUsername() + " has added a dice to the draft pool";
+        /* NOT IMPORTANT FOR THE CLI
+        String message = cliStateView.getCurrentUser().getUsername() + " has added a dice to the draft pool";
         BuildGraphic buildGraphic = new BuildGraphic();
         DiceWrapper diceWrapper = clientGetMessage.getDice(dice);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+        */
     }
 
     /**
@@ -40,10 +42,12 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      */
     @Override
     public void onDiceRemove(String dice) throws IOException {
+        /* NOT IMPORTANT FOR THE CLI
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliStateScreen.getCurrentUser().getUsername() + " has removed a dice from the draft pool.";
+        String message = cliStateView.getCurrentUser().getUsername() + " has removed a dice from the draft pool.";
         DiceWrapper diceWrapper = clientGetMessage.getDice(dice);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+        */
     }
 
 
@@ -52,10 +56,12 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      */
     @Override
     public void onDicesAdd(String dices) throws IOException {
+        /* NOT IMPORTANT FOR THE CLI
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliStateScreen.getCurrentUser().getUsername() + " has added a set of dices to the draft pool.";
+        String message = cliStateView.getCurrentUser().getUsername() + " has added a set of dices to the draft pool.";
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(dices);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(), Level.STANDARD);
+        */
     }
 
     /**
@@ -64,7 +70,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
     @Override
     public void onDraftPoolReroll(String dices) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = (cliStateScreen.getCurrentUser().getUsername() + " has re-rolled the draft pool.");
+        String message = (cliStateView.getCurrentUser().getUsername() + " has re-rolled the draft pool.");
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(dices);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(), Level.STANDARD);
     }
@@ -75,7 +81,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
     @Override
     public void onDraftPoolClear() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = (cliStateScreen.getCurrentUser().getUsername() + " has cleared the draft pool.");
+        String message = (cliStateView.getCurrentUser().getUsername() + " has cleared the draft pool.");
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
 
@@ -85,13 +91,13 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
         if (!(o instanceof CLIDraftPoolView)) return false;
         if (!super.equals(o)) return false;
         CLIDraftPoolView that = (CLIDraftPoolView) o;
-        return Objects.equals(cliStateScreen, that.cliStateScreen) &&
+        return Objects.equals(cliStateView, that.cliStateView) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage);
+        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage);
 
     }
 }

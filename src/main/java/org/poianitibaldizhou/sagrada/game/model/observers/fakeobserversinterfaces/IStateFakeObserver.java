@@ -2,8 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfac
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.io.IOException;
-import java.rmi.Remote;
 import java.util.Map;
 
 public interface IStateFakeObserver {
@@ -28,13 +26,12 @@ public interface IStateFakeObserver {
 
     /**
      * Notify the start of turn state
-     *
-     * @param round       the current round of the turn state
-     * @param isFirstTurn indicates if the turn is the first or the second
+     *  @param round       the current round of the turn state
+     * @param turn indicates if the turn is the first or the second
      * @param roundUser   the user of the current round who has the diceBag
      * @param turnUser    the user of the current turn
      */
-    void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) ;
+    void onTurnState(int round, int turn, User roundUser, User turnUser) ;
 
     /**
      * Notify the end of the round

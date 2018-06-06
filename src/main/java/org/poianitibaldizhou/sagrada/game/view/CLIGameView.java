@@ -23,20 +23,20 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     private final transient ConnectionManager connectionManager;
 
-    private final transient CLIStateScreen cliStateScreen;
+    private final transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
     private final transient ClientCreateMessage clientCreateMessage;
     private final transient String token;
     private final transient String gameName;
 
-    public CLIGameView(CLIStateScreen cliStateScreen, ConnectionManager connectionManager) throws RemoteException {
+    public CLIGameView(CLIStateView cliStateView, ConnectionManager connectionManager) throws RemoteException {
         super();
         this.connectionManager = connectionManager;
-        this.gameName = cliStateScreen.getGameName();
-        this.token = cliStateScreen.getToken();
-        this.clientCreateMessage = cliStateScreen.getClientCreateMessage();
-        this.clientGetMessage = cliStateScreen.getClientGetMessage();
-        this.cliStateScreen = cliStateScreen;
+        this.gameName = cliStateView.getGameName();
+        this.token = cliStateView.getToken();
+        this.clientCreateMessage = cliStateView.getClientCreateMessage();
+        this.clientGetMessage = cliStateView.getClientGetMessage();
+        this.cliStateView = cliStateView;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
             try {
                 connectionManager.getGameController().bindPlayer(
                         clientCreateMessage.createTokenMessage(token).createUsernameMessage(user.getUsername()).createGameNameMessage(gameName).buildMessage(),
-                        new CLIPlayerView(cliStateScreen),
-                        new CLISchemaCardView(cliStateScreen)
+                        new CLIPlayerView(cliStateView),
+                        new CLISchemaCardView(cliStateView)
                 );
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
@@ -77,7 +77,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
             connectionManager.getGameController().bindToolCard(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).
                             createToolCardMessage(t).buildMessage(),
-                    new CLIToolCardView(cliStateScreen, t.getName())
+                    new CLIToolCardView(cliStateView, t.getName())
             );
     }
 
@@ -121,7 +121,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
      */
     @Override
     public void ack(String ack) {
-        PrinterManager.consolePrint(ack + "\n", Level.INFORMATION);
+        /*NOT IMPORTANT FOR THE CLI*/
     }
 
     /**
@@ -141,7 +141,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         if (!super.equals(o)) return false;
         CLIGameView that = (CLIGameView) o;
         return Objects.equals(connectionManager, that.connectionManager) &&
-                Objects.equals(cliStateScreen, that.cliStateScreen) &&
+                Objects.equals(cliStateView, that.cliStateView) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage) &&
                 Objects.equals(clientCreateMessage, that.clientCreateMessage) &&
                 Objects.equals(token, that.token) &&
@@ -151,7 +151,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), connectionManager, cliStateScreen, clientGetMessage,
+        return Objects.hash(super.hashCode(), connectionManager, cliStateView, clientGetMessage,
                 clientCreateMessage, token, gameName);
     }
 

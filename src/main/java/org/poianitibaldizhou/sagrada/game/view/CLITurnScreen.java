@@ -20,9 +20,9 @@ public class CLITurnScreen extends CLIRoundScreen {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager,CLIStateScreen cliStateScreen)
+    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager,CLIStateView cliStateView)
             throws RemoteException {
-        super(networkManager, screenManager, cliStateScreen);
+        super(networkManager, screenManager, cliStateView);
 
         initializeCommands();
     }
@@ -105,7 +105,7 @@ public class CLITurnScreen extends CLIRoundScreen {
             );
             connectionManager.getGameController().useToolCard( clientCreateMessage.createGameNameMessage(gameName).
                     createTokenMessage(token).createToolCardMessage(toolCardWrapper).buildMessage(),
-                    new CLIToolCardExecutorView(cliStateScreen, toolCardWrapper.getName())
+                    new CLIToolCardExecutorView(cliStateView, toolCardWrapper.getName())
             );
             endTurn();
         } catch (IOException e) {

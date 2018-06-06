@@ -35,8 +35,8 @@ public class CLIReconnectToGameScreen implements IScreen {
 
     @Override
     public void startCLI() {
-        getParameter();
 
+        getParameter();
         if(userList != null && token != null && gameName != null) {
             try {
                 screenManager.replaceScreen(CLIRoundScreen.reconnect());

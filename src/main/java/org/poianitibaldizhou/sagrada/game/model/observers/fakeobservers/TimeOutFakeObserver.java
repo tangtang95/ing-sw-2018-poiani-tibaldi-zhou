@@ -8,7 +8,6 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.JSONServerProtocol;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
@@ -128,7 +127,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      * {@inheritDoc}
      */
     @Override
-    public void onTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
+    public void onTurnState(int round, int turn, User roundUser, User turnUser) {
         Runnable timeOut = () -> {
             try {
                 Thread.sleep(TIME);

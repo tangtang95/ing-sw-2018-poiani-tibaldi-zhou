@@ -98,7 +98,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
             nextTurn();
             return;
         }
-        game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+        game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound, (isFirstTurn)?1:2, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
 
     }
 

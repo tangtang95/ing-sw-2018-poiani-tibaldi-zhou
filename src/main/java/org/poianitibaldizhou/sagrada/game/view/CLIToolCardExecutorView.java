@@ -21,21 +21,21 @@ import java.util.Objects;
 
 public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToolCardExecutorObserver {
 
-    private transient CLIStateScreen cliStateScreen;
+    private transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
     private final transient ClientCreateMessage clientCreateMessage;
     private final transient ConsoleListener consoleListener;
     private final transient ConnectionManager connectionManager;
     private final transient String toolCardName;
 
-    public CLIToolCardExecutorView(CLIStateScreen cliStateScreen, String toolCardName) throws RemoteException {
+    public CLIToolCardExecutorView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
         this.consoleListener = ConsoleListener.getInstance();
-        this.cliStateScreen = cliStateScreen;
-        this.clientGetMessage =cliStateScreen.getClientGetMessage();
-        this.clientCreateMessage = cliStateScreen.getClientCreateMessage();
+        this.cliStateView = cliStateView;
+        this.clientGetMessage = cliStateView.getClientGetMessage();
+        this.clientCreateMessage = cliStateView.getClientCreateMessage();
         this.toolCardName = toolCardName;
-        this.connectionManager = cliStateScreen.connectionManager;
+        this.connectionManager = cliStateView.getConnectionManager();
         
     }
 
@@ -62,8 +62,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
             if (number > 0 && number < diceWrapperList.size()) {
-                String message = clientCreateMessage.createTokenMessage(cliStateScreen.getToken()).
-                        createGameNameMessage(cliStateScreen.getGameName()).createDiceMessage(diceWrapperList.get(number-1)).buildMessage();
+                String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                        createGameNameMessage(cliStateView.getGameName()).createDiceMessage(diceWrapperList.get(number-1)).buildMessage();
                 connectionManager.getGameController().setDice(message);
             } else {
                 PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
@@ -92,8 +92,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                String message = clientCreateMessage.createGameNameMessage(cliStateScreen.getGameName()).
-                        createTokenMessage(cliStateScreen.getToken()).createValueMessage(number).toString();
+                String message = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
+                        createTokenMessage(cliStateView.getToken()).createValueMessage(number).toString();
                 connectionManager.getGameController().setNewValue(message);
             } else {
                 PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
@@ -129,8 +129,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
             if (number > 0 && number < 7) {
-                String message = clientCreateMessage.createTokenMessage(cliStateScreen.getToken()).
-                        createGameNameMessage(cliStateScreen.getGameName()).createColorMessage(colorWrapperList.get(number-1)).buildMessage();
+                String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                        createGameNameMessage(cliStateView.getGameName()).createColorMessage(colorWrapperList.get(number-1)).buildMessage();
                 connectionManager.getGameController().setColor(message);
             } else {
                 PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
@@ -174,8 +174,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
             if (number == minNumber || number == maxNumber) {
-                String messageForController  = clientCreateMessage.createTokenMessage(cliStateScreen.getToken()).
-                        createGameNameMessage(cliStateScreen.getGameName()).createValueMessage(number).buildMessage();
+                String messageForController  = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                        createGameNameMessage(cliStateView.getGameName()).createValueMessage(number).buildMessage();
                 connectionManager.getGameController().setNewValue(messageForController);
             } else {
                 PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
@@ -207,8 +207,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        String sendingParam = clientCreateMessage.createTokenMessage(cliStateScreen.getToken()).
-                createGameNameMessage(cliStateScreen.getGameName()).buildMessage();
+        String sendingParam = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                createGameNameMessage(cliStateView.getGameName()).buildMessage();
         String serverMessage = connectionManager.getGameController().getSchemaCardByToken(sendingParam);
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(serverMessage);
@@ -229,8 +229,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         ColorWrapper color = clientGetMessage.getColor(message);
 
-        String sendMessage = clientCreateMessage.createGameNameMessage(cliStateScreen.getGameName()).
-                createTokenMessage(cliStateScreen.getToken()).buildMessage();
+        String sendMessage = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
+                createTokenMessage(cliStateView.getToken()).buildMessage();
         String serverResponse = connectionManager.getGameController().getSchemaCardByToken(sendMessage);
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(serverResponse);
 
@@ -284,8 +284,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             }
         } while(doAgain);
 
-        String setMessage = clientCreateMessage.createGameNameMessage(cliStateScreen.getGameName()).
-                createTokenMessage(cliStateScreen.getToken()).createAnswerMessage(answer).buildMessage();
+        String setMessage = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
+                createTokenMessage(cliStateView.getToken()).createAnswerMessage(answer).buildMessage();
 
         connectionManager.getGameController().setContinueAction(setMessage);
         consoleListener.wakeUpCommandConsole();
@@ -320,8 +320,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     column = 0;
                 }
                 if (column > 0 && column <= SchemaCardWrapper.NUMBER_OF_COLUMNS) {
-                    String setMessage = clientCreateMessage.createTokenMessage(cliStateScreen.getToken()).
-                            createGameNameMessage(cliStateScreen.getGameName()).createPositionMessage(new PositionWrapper(row, column)).buildMessage();
+                    String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                            createGameNameMessage(cliStateView.getGameName()).createPositionMessage(new PositionWrapper(row, column)).buildMessage();
                     connectionManager.getGameController().setPosition(setMessage);
                 } else {
                     PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
@@ -365,8 +365,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     diceNumber = 0;
                 }
                 if (diceNumber > 0 && diceNumber < roundTrack.getDicesPerRound(roundNumber - 1).size()) {
-                    String setMessage = clientCreateMessage.createTokenMessage(cliStateScreen.getToken()).
-                            createGameNameMessage(cliStateScreen.getGameName()).
+                    String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                            createGameNameMessage(cliStateView.getGameName()).
                             createDiceMessage(roundTrack.getDicesPerRound(roundNumber - 1).get(diceNumber-1)).buildMessage();
                     connectionManager.getGameController().setDice(setMessage);
                 } else {
@@ -387,7 +387,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         if (!(o instanceof CLIToolCardExecutorView)) return false;
         if (!super.equals(o)) return false;
         CLIToolCardExecutorView that = (CLIToolCardExecutorView) o;
-        return Objects.equals(cliStateScreen, that.cliStateScreen) &&
+        return Objects.equals(cliStateView, that.cliStateView) &&
                 Objects.equals(clientGetMessage, that.clientGetMessage) &&
                 Objects.equals(clientCreateMessage, that.clientCreateMessage) &&
                 Objects.equals(consoleListener, that.consoleListener) &&
@@ -398,7 +398,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     @Override
     public int hashCode() {
 
-        return Objects.hash(super.hashCode(), cliStateScreen, clientGetMessage,
+        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage,
                 clientCreateMessage, consoleListener, connectionManager, toolCardName);
     }
 }
