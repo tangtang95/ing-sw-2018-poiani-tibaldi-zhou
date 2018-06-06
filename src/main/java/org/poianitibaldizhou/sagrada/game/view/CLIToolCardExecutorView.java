@@ -44,6 +44,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedDice(String diceList) throws IOException {
+        consoleListener.stopCommandConsole();
         BuildGraphic buildGraphic = new BuildGraphic();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;
@@ -69,6 +70,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
         } while (number < 0);
+        consoleListener.wakeUpCommandConsole();
     }
 
     /**
@@ -76,6 +78,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedNewValue() throws IOException {
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;
         int number;
@@ -97,6 +100,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
         } while (number < 0);
+        consoleListener.wakeUpCommandConsole();
     }
 
     /**
@@ -104,6 +108,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedColor(String colors) throws IOException {
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;
         int number;
@@ -132,6 +137,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
         } while (number < 0);
+        consoleListener.wakeUpCommandConsole();
     }
 
     /**
@@ -139,6 +145,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedNewDeltaForDice(String message) throws IOException {
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;
         int number;
@@ -175,6 +182,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
         } while (number < 0);
+        consoleListener.wakeUpCommandConsole();
     }
 
     /**
@@ -215,6 +223,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedDicePositionOfCertainColor(String message) throws IOException {
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         BuildGraphic buildGraphic = new BuildGraphic();
 
@@ -254,6 +263,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedContinueAnswer() throws IOException {
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;
         boolean doAgain;
@@ -278,6 +288,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 createTokenMessage(cliStateScreen.getToken()).createAnswerMessage(answer).buildMessage();
 
         connectionManager.getGameController().setContinueAction(setMessage);
+        consoleListener.wakeUpCommandConsole();
 
     }
 
@@ -288,6 +299,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @throws IOException
      */
     private void schemaCardCLI(BufferedReader r) throws IOException {
+        consoleListener.stopCommandConsole();
         String response;
         int row;
         int column;
@@ -320,6 +332,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 row = -1;
             }
         } while (row < 0);
+        consoleListener.wakeUpCommandConsole();
     }
 
     /**
@@ -329,6 +342,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @throws IOException error reading or network communication errors
      */
     private void readRoundTrackParameters(RoundTrackWrapper roundTrack) throws IOException {
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         String response;
         int roundNumber;
@@ -364,6 +378,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 roundNumber = -1;
             }
         } while (roundNumber < 0);
+        consoleListener.wakeUpCommandConsole();
     }
 
     @Override
