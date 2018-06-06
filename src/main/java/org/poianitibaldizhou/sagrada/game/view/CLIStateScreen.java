@@ -50,7 +50,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
         consoleListener.setCommandMap(commandMap);
         try {
             connectionManager.getGameController().joinGame(
-                    clientCreateMessage.createUsernameMessage(myUser.getUsername()).createTokenMessage(token).
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).
                             buildMessage(),
                     cliGameView,
                     cliGameView,
@@ -61,7 +61,7 @@ public class CLIStateScreen extends CLIBasicScreen implements IStateObserver {
             );
 
             connectionManager.getGameController().bindPlayer(
-                    clientCreateMessage.createTokenMessage(token).buildMessage(),
+                    clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage(),
                     new CLIPlayerView(this),
                     new CLISchemaCardView(this)
             );
