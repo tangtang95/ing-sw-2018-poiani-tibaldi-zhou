@@ -56,6 +56,7 @@ public class GameObserverManager {
      * @param notify runnable interface that needs to be scheduled
      */
     public void pushThreadInQueue(String token, Runnable notify) {
+        System.out.println("Pushing thread in queue");
         if (!disconnectedPlayer.contains(token))
             executorHashMap.get(token).submit(notify);
     }
@@ -66,6 +67,7 @@ public class GameObserverManager {
      * @param token player's token
      */
     public void notifyDisconnection(String token) {
+        System.out.println("Disconnection of a certain user has been notified");
         disconnectedPlayerNotNotified.remove(token);
     }
 
@@ -76,6 +78,7 @@ public class GameObserverManager {
      * @param token player's token
      */
     public void signalDisconnection(String token) {
+        System.out.println("Disconnection signaled");
         executorHashMap.get(token).shutdownNow();
         disconnectedPlayerNotNotified.add(token);
         disconnectedPlayer.add(token);
@@ -88,6 +91,7 @@ public class GameObserverManager {
      * @param token player's token
      */
     public void signalReconnect(String token) {
+        System.out.println("Reconnection signaled");
         executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
         disconnectedPlayer.remove(token);
         disconnectedPlayerNotNotified.remove(token);

@@ -39,7 +39,8 @@ public interface IGameController extends Remote {
      * Binds the player  and the schema card observers of a certain player to the specified player and its schema card.
      * The player identified by token must be part of the specified game.
      *
-     * @param message            message containing player's token, user on which the bind acts and the game name
+     * @param message            message containing player's token, username of the player on which the bind acts and
+     *                           the game name
      * @param playerObserver     player's observer
      * @param schemaCardObserver schema card observer of the schema card of player
      * @throws IOException network communication error
@@ -142,7 +143,11 @@ public interface IGameController extends Remote {
      * Re-connects a player to a certain game.
      * The player must be checked as disconnected and must be part of the specified game
      *
+<<<<<<< Updated upstream
      * @param message            message containing player's username
+=======
+     * @param message            message containing player's token
+>>>>>>> Stashed changes
      * @param gameView           player's game view
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)

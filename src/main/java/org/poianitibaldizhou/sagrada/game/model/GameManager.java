@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -40,25 +41,11 @@ public class GameManager {
     public synchronized void addGame(IGame game, String gameName) {
         if(gameMap.putIfAbsent(gameName, game) == null){
             playersByGame.put(gameName, new ArrayList<>());
-            observerManagerMap.putIfAbsent(gameName, new GameObserverManager(getPlayersByGame(gameName)));
-        }
-    }
-
-    /**
-     * Player joining a certain game.
-     * If the game is not present, does nothing.
-     *
-     * @param gameName game's name
-     * @param token player's token
-     * @throws RemoteException if player is already playing in another game
-     */
-    public synchronized void joinGame(String gameName, String token) throws RemoteException {
-        if(gameMap.containsKey(gameName)) {
-            if(players.contains(token))
-                throw new RemoteException("Already playing in a game");
-
-            players.add(token);
-            playersByGame.get(gameName).add(token);
+            game.getUsers().forEach(user -> {
+                playersByGame.get(gameName).add(user.getToken());
+                players.add(user.getToken());
+            });
+            observerManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
         }
     }
 

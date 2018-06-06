@@ -63,6 +63,11 @@ public class SetupPlayerState extends IStateGame {
                 }
             }
             playerFrontBackSchemaCards.put(token, schemaCardList);
+
+            System.out.println(game.getGameObservers().get(token) == null);
+            System.out.println("Token: " + token);
+            System.out.println(game.getGameObservers().keySet());
+
             game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();

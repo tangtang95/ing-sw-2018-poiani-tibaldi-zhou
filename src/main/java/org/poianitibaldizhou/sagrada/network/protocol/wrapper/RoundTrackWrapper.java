@@ -42,10 +42,6 @@ public final class RoundTrackWrapper implements JSONable{
         return dicesPerRound.size();
     }
 
-    public Stream<Collection<DiceWrapper>> stream(){
-        return dicesPerRound.stream();
-    }
-
     /**
      * Convert a roundTrackWrapper in a JSONObject.
      *

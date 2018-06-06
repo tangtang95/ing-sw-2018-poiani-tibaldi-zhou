@@ -19,7 +19,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.io.Serializable;
 import java.util.*;
 
-public class SchemaCard implements Serializable, JSONable {
+public class SchemaCard implements JSONable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;

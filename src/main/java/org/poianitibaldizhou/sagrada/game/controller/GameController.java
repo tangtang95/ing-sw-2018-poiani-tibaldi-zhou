@@ -58,20 +58,34 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
-        if (!gameManager.containsGame(gameName)) {
+        gameManager.getPlayersByGame(gameName).forEach(System.out::println);
+
+        if (!gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             try {
-                view.err("The game doesn't exist");
+                view.err("The game doesn't exist or you are not signaled as an entering player");
             } catch (IOException ignored) {
                 // Ignored because nothing can be done
             }
+            return;
         }
 
         synchronized (gameManager.getGameByName(gameName)) {
             IGame game = gameManager.getGameByName(gameName);
 
+
+            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+            game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
+            game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
+            game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
+            game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
+            game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
+
             try {
                 game.userJoin(token);
             } catch (InvalidActionException e) {
+
+                game.detachObservers(token);
+
                 try {
                     view.err("You are not playing in this game or it is impossible to join. Try with a reconnect");
                 } catch (IOException ignored) {
@@ -80,12 +94,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 return;
             }
 
-            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
-            game.attachGameObserver(token, new GameFakeObserver(token, gameObserver, observerManager));
-            game.attachRoundTrackObserver(token, new RoundTrackFakeObserver(token, roundTrackObserver, observerManager));
-            game.attachStateObserver(token, new StateFakeObserver(token, observerManager, stateObserver));
-            game.attachDraftPoolObserver(token, new DraftPoolFakeObserver(token, draftPoolObserver, observerManager));
-            game.attachDiceBagObserver(token, new DrawableCollectionFakeObserver<>(token, diceBagObserver, observerManager));
+            if(gameObserver == null)
+                System.out.println("GAME OBSERVER NULL IN CONTROLLER");
 
             viewMap.put(token, view);
         }
@@ -150,7 +160,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public void bindPlayer(String message, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
-        User user = serverGetMessage.getUser(message);
+        String userName = serverGetMessage.getUserName(message);
         Player player = null;
 
         if (initialCheck(token, gameName))
@@ -170,7 +180,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             }
 
             for (Player p : game.getPlayers())
-                if (p.getUser().equals(user))
+                if (p.getUser().getName().equals(userName))
                     player = p;
 
             if (player == null)
@@ -679,7 +689,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(game -> game.getName()).findFirst();
 
-        if(!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
+        if (!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
             return serverGetMessage.reconnectErrorMessage();
 
         ArrayList<User> users = new ArrayList<>();
@@ -839,13 +849,13 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         synchronized (gameManager.getGameByName(gameName)) {
             IGame game = gameManager.getGameByName(gameName);
-            for(Player p : game.getPlayers()) {
-                if(p.getToken().equals(token))
+            for (Player p : game.getPlayers()) {
+                if (p.getToken().equals(token))
                     schemaCard = p.getSchemaCard();
             }
         }
 
-        if(schemaCard == null)
+        if (schemaCard == null)
             return serverGetMessage.getErrorMessage();
 
         return serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage();
@@ -930,7 +940,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * When the game is single player, if the only player present disconnects the game terminates.
      * When the game is multi player, and there is only one player connected, it handles its victory.
      *
+<<<<<<< Updated upstream
+     * @param game            handle the termination of this game
+=======
      * @param game handle the termination of this game
+>>>>>>> Stashed changes
      * @param observerManager game observer manager of game
      */
     private void handleEndGame(IGame game, GameObserverManager observerManager) {

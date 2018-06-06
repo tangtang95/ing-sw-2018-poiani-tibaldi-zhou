@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Class to convert to string the object for communicating with server.
+ * Class to convert to string the object or communicating with server.
  */
 public class JSONClientProtocol extends JSONProtocol {
 
@@ -38,5 +38,6 @@ public class JSONClientProtocol extends JSONProtocol {
         classMap.put(SharedConstants.END_TURN_ACTION, EndTurnStateWrapper.class);
         classMap.put(SharedConstants.PLACE_DICE_ACTION, PlaceDiceStateWrapper.class);
         classMap.put(SharedConstants.USE_TOOL_CARD_ACTION, UseToolCardStateWrapper.class);
+        classMap.put(SharedConstants.FRONT_BACK_SCHEMA_CARD, FrontBackSchemaCardWrapper.class);
     }
 }

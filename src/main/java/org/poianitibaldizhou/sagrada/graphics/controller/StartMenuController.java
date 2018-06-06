@@ -201,7 +201,7 @@ public class StartMenuController extends Controller implements Initializable {
     public void onMultiPlayerPlayButton(ActionEvent actionEvent) {
         if(usernameTextField.validate()){
 
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/lobby.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/new_lobby.fxml"));
 
             try {
                 Parent root = loader.load();
@@ -213,6 +213,7 @@ public class StartMenuController extends Controller implements Initializable {
                 controller.setConnectionManager(usernameTextField.getText(), connectionManager);
                 playSceneTransition(rootPane, (event) -> sceneManager.pushScene(root));
             } catch (IOException e) {
+                e.printStackTrace();
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             }
             onMultiPlayerCloseButton(actionEvent);

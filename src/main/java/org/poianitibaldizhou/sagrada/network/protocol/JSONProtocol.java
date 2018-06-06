@@ -172,7 +172,7 @@ public class JSONProtocol {
                             (JSONObject) jsonObject.get(SharedConstants.BODY));
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException
                     | InstantiationException e) {
-                throw new IllegalArgumentException();
+                e.printStackTrace();
             }
         }
         throw new IllegalArgumentException();

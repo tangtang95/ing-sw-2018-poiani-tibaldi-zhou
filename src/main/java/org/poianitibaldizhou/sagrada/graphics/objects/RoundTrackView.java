@@ -9,14 +9,18 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.RoundTrackWrapper;
 
+import java.io.IOException;
 import java.util.Optional;
 
-public class RoundTrackView extends Pane {
+public class RoundTrackView extends Pane implements IRoundTrackObserver{
 
-    private ImageView roundTrackView;
+    private final ImageView roundTrackView;
+    private final double roundTrackWidth;
+    private final double roundTrackHeight;
 
     //Based on image width
     private static final double FIRST_OFFSET_X_PERCENT = 0.04;
@@ -31,20 +35,31 @@ public class RoundTrackView extends Pane {
 
     private static final double DICE_SCALE = 0.15;
 
-    public RoundTrackView(RoundTrackWrapper roundTrack){
+    public RoundTrackView(){
+        this(1);
+    }
+
+    public RoundTrackView(double scale){
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
         roundTrackView = new ImageView(image);
         roundTrackView.setPreserveRatio(true);
+        roundTrackWidth = image.getWidth()*scale;
+        roundTrackHeight = image.getHeight()*scale;
+        roundTrackView.setFitWidth(roundTrackWidth);
+        roundTrackView.setFitHeight(roundTrackHeight);
         this.getChildren().add(roundTrackView);
+    }
+
+    public void drawDices(RoundTrackWrapper roundTrack){
         for (int i = 0; i < roundTrack.size(); i++) {
             Optional<DiceWrapper> diceOptional =roundTrack.getDicesPerRound(i).stream().findFirst();
             final int round = i;
-            diceOptional.ifPresent((dice) -> drawDices(dice, round, image.getWidth(),
-                    image.getHeight(), roundTrack.getDicesPerRound(round).size()));
+            diceOptional.ifPresent((dice) -> drawDice(dice, round, roundTrackWidth,
+                    roundTrackHeight, roundTrack.getDicesPerRound(round).size()));
         }
     }
 
-    private void drawDices(DiceWrapper dice, int round, double imageWidth, double imageHeight, int numberOfDices){
+    private void drawDice(DiceWrapper dice, int round, double imageWidth, double imageHeight, int numberOfDices){
         long firstOffsetX = Math.round(FIRST_OFFSET_X_PERCENT*imageWidth);
         long offsetX = Math.round(OFFSET_X_PERCENT*imageWidth);
         long offsetY = Math.round(OFFSET_Y_PERCENT*imageHeight);
@@ -78,5 +93,23 @@ public class RoundTrackView extends Pane {
     }
 
 
+    @Override
+    public void onDicesAddToRound(String message) throws IOException {
 
+    }
+
+    @Override
+    public void onDiceAddToRound(String message) throws IOException {
+
+    }
+
+    @Override
+    public void onDiceRemoveFromRound(String message) throws IOException {
+
+    }
+
+    @Override
+    public void onDiceSwap(String message) throws IOException {
+
+    }
 }

@@ -57,7 +57,6 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     }
 
-    @Override
     public void onPublicObjectiveCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.

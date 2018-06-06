@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.Executo
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.List;
 
@@ -68,4 +69,6 @@ public interface IGame {
     boolean isSinglePlayer();
 
     void forceGameTermination(Player winner);
+
+    List<User> getUsers();
 }

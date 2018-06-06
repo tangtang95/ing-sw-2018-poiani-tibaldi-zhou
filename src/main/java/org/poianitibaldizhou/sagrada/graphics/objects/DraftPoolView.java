@@ -1,13 +1,18 @@
 package org.poianitibaldizhou.sagrada.graphics.objects;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 
 import java.io.IOException;
 
-public class DraftPoolView implements IDraftPoolObserver{
+public class DraftPoolView extends Pane implements IDraftPoolObserver{
 
-    private GraphicsContext gc;
+
+
+    public DraftPoolView(){
+
+    }
 
     @Override
     public void onDiceAdd(String dice) throws IOException {

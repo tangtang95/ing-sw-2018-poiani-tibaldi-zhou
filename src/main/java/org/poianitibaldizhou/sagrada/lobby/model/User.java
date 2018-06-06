@@ -66,7 +66,7 @@ public class User implements Serializable, JSONable {
 
     @Override
     public String toString() {
-        return "Username: " + this.name;
+        return "Username: " + this.name + " ;" +this.token;
     }
 
     /**

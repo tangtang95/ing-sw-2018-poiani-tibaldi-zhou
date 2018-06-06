@@ -47,7 +47,7 @@ public final class SchemaCardWrapper implements JSONable{
      * @return the tileWrapper requested by position
      */
     @Contract(pure = true)
-    private TileWrapper getTile(PositionWrapper position) {
+    public TileWrapper getTile(PositionWrapper position) {
         return Objects.requireNonNull(tileMatrix)[position.getRow()][position.getColumn()];
     }
 

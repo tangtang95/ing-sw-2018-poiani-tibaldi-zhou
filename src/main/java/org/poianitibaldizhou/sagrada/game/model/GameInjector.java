@@ -196,8 +196,13 @@ public class GameInjector {
         jsonArray = null;
 
         List<FrontBackSchemaCard> frontBackSchemaCards = new ArrayList<>();
+
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/schemaCards.json"));
+            System.out.println(jsonArray.size());
+            for (int i = 0; i < jsonArray.size()/2; i++) {
+                frontBackSchemaCards.add(i, new FrontBackSchemaCard());
+            }
         } catch (IOException | ParseException e) {
             LOGGER.log(Level.FINE, "Parse exception in injectSchemaCard", e);
         }

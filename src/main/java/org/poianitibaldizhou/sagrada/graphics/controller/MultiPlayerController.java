@@ -8,16 +8,20 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
+import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
+import org.poianitibaldizhou.sagrada.game.model.GameInjector;
+import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
-import org.poianitibaldizhou.sagrada.graphics.objects.DiceView;
-import org.poianitibaldizhou.sagrada.graphics.objects.RoundTrackView;
-import org.poianitibaldizhou.sagrada.graphics.objects.SchemaCardView;
+import org.poianitibaldizhou.sagrada.graphics.objects.*;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.RoundTrackWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.net.URL;
@@ -34,10 +38,11 @@ public class MultiPlayerController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        testFrontBackSchemaCardView();
         testSchemaCardView();
         testDiceView();
         testRoundTrackView();
+        testToolCardView();
     }
 
     public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
@@ -47,6 +52,41 @@ public class MultiPlayerController extends Controller implements Initializable {
         } catch (IOException e) {
             AlertBox.displayBox("Errore di rete", "Sagrada è crashato");
         }
+    }
+
+    private void testToolCardView(){
+        ToolCard toolCard = new ToolCard(Color.PURPLE, "Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1." +
+                        " Non puoi cambiare un 6 in 1 o un 1 in 6",
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][8-CA]"
+        );
+
+        JSONObject object = (JSONObject) toolCard.toJSON().get("body");
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("dasd", "dasd", ColorWrapper.BLUE, 3);
+        ToolCardView toolCardView = new ToolCardView((ToolCardWrapper) toolCardWrapper.toObject(object), 0.6);
+        canvasPane.getChildren().add(toolCardView);
+        toolCardView.setTranslateY(200);
+    }
+
+    private void testFrontBackSchemaCardView(){
+        DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
+        GameInjector.injectSchemaCards(schemaCards);
+        JSONObject frontSchema = null;
+        JSONObject backSchema = null;
+        try {
+            FrontBackSchemaCard frontBackSchemaCard = schemaCards.draw();
+            frontSchema = (JSONObject) frontBackSchemaCard.getFrontSchemaCard().toJSON().get("body");
+            backSchema = (JSONObject) frontBackSchemaCard.getBackSchemaCard().toJSON().get("body");
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
+        SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
+        FrontBackSchemaCardView cardView = new FrontBackSchemaCardView((SchemaCardWrapper) schemaCard.toObject(frontSchema),
+                (SchemaCardWrapper) schemaCard.toObject(backSchema), 0.3);
+        cardView.flipCard(Duration.millis(5000));
+        canvasPane.getChildren().add(cardView);
+        cardView.setTranslateY(400);
+        cardView.setTranslateX(700);
     }
 
     private void testRoundTrackView(){
@@ -60,33 +100,27 @@ public class MultiPlayerController extends Controller implements Initializable {
         }
 
         RoundTrackWrapper roundTrackWrapper = new RoundTrackWrapper(dices);
-        RoundTrackView roundTrackView = new RoundTrackView(roundTrackWrapper);
+        RoundTrackView roundTrackView = new RoundTrackView();
+        roundTrackView.drawDices(roundTrackWrapper);
         canvasPane.getChildren().add(roundTrackView);
         roundTrackView.setTranslateX(400);
     }
 
     private void testSchemaCardView() {
-        SchemaCardView schemaCardView = new SchemaCardView("", 0.3);
-        SchemaCardView schemaCardView1 = new SchemaCardView("", 0.3);
-        RotateTransition rotator = new RotateTransition(Duration.millis(1000), schemaCardView);
-        rotator.setAxis(Rotate.Y_AXIS);
-        rotator.setByAngle(90);
-        rotator.setInterpolator(Interpolator.LINEAR);
-        rotator.setCycleCount(1);
-        rotator.play();
-        rotator.setOnFinished(event -> {
-            schemaCardView.setScaleX(0.7);
-            schemaCardView.setScaleY(0.7);
-            RotateTransition rotator1 = new RotateTransition(Duration.millis(1000), schemaCardView);
-            rotator1.setAxis(Rotate.Y_AXIS);
-            rotator1.setByAngle(90);
-            rotator1.setInterpolator(Interpolator.LINEAR);
-            rotator1.setCycleCount(1);
-            rotator1.play();
-        });
+        DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
+        GameInjector.injectSchemaCards(schemaCards);
+        JSONObject object = null;
+        try {
+             object = (JSONObject) schemaCards.draw().getFrontSchemaCard().toJSON().get("body");
+        } catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
+        SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
+        SchemaCardView schemaCardView1 = new SchemaCardView((SchemaCardWrapper) schemaCard.toObject(object), 0.3);
 
-        canvasPane.getChildren().addAll(schemaCardView, schemaCardView1);
+        canvasPane.getChildren().addAll(schemaCardView1);
         schemaCardView1.setTranslateX(300);
+        schemaCardView1.setTranslateY(300);
     }
 
     private void testDiceView(){
