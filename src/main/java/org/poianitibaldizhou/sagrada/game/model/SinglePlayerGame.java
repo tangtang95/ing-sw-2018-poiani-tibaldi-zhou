@@ -38,8 +38,8 @@ public class SinglePlayerGame extends Game{
      * @param user the single user
      * @param difficulty the difficulty of the game
      */
-    public SinglePlayerGame(String name, User user, int difficulty) throws RemoteException {
-        super(name);
+    public SinglePlayerGame(String name, User user, int difficulty, TerminationGameManager terminationGameManager) throws RemoteException {
+        super(name, terminationGameManager);
         this.users.add(user);
         this.difficulty = difficulty;
 

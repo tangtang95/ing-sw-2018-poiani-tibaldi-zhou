@@ -203,6 +203,7 @@ public class ClientGetMessage {
             poc = (List<PrivateObjectiveCardWrapper>) jsonClientProtocol.getResponseByKey(message,
                     SharedConstants.PRIVATE_OBJECTIVE_CARD_LIST_KEY);
         } catch (ParseException | ClassCastException e) {
+            e.printStackTrace();
             throw new IOException();
         }
         return poc;

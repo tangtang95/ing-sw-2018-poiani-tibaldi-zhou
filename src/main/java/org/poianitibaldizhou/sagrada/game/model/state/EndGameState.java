@@ -1,13 +1,16 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
 
@@ -47,14 +50,21 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         calculateVictoryPoints();
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void calculateVictoryPoints() {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
-        game.setPlayersOutcome(scoreMap, currentRoundPlayer);
         game.getStateObservers().forEach((key, value) -> value.onVictoryPointsCalculated(scoreMap));
+        game.setPlayersOutcome(scoreMap, currentRoundPlayer);
+        Optional<Player> winner = game.getPlayers().stream().filter(player -> player.getOutcome().equals(Outcome.WIN)).findFirst();
+        if(winner.isPresent())
+            game.getStateObservers().forEach((key, value) -> value.onResultGame(winner.get().getUser()));
+        else
+            game.getStateObservers().forEach((key,value) -> value.onResultGame(new User("CPU", "CPUTOKEN")));
+        game.terminateGame();
     }
 
     /**

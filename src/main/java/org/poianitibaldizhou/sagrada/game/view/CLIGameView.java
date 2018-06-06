@@ -111,8 +111,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 
         connectionManager.getGameController().chosenSchemaCard(
-                clientCreateMessage.createSchemaCardMessage(
-                        schemaCards.get(consoleListener.readNumber(schemaCards.size()))).
+                clientCreateMessage.createSchemaCardMessage(schemaCards.get(consoleListener.readNumber(schemaCards.size()))).
                         createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
         );
     }

@@ -58,8 +58,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
-        gameManager.getPlayersByGame(gameName).forEach(System.out::println);
-
         if (!gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             try {
                 view.err("The game doesn't exist or you are not signaled as an entering player");
@@ -93,9 +91,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 }
                 return;
             }
-
-            if(gameObserver == null)
-                System.out.println("GAME OBSERVER NULL IN CONTROLLER");
 
             viewMap.put(token, view);
         }
@@ -886,6 +881,20 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String createSinglePlayer(String message) throws IOException {
+        String token = serverGetMessage.getToken(message);
+        String username = serverGetMessage.getUserName(message);
+        int difficulty = serverGetMessage.getInteger(message);
+
+        String gameName = gameManager.createSinglePlayerGame(token, username, difficulty);
+
+        return serverCreateMessage.createGamenNameMessage(gameName).buildMessage();
+    }
+
+    /**
      * Handles network error in server controller
      *
      * @param token    player's token that generated the request that creates the exception handled
@@ -940,11 +949,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * When the game is single player, if the only player present disconnects the game terminates.
      * When the game is multi player, and there is only one player connected, it handles its victory.
      *
-<<<<<<< Updated upstream
      * @param game            handle the termination of this game
-=======
-     * @param game handle the termination of this game
->>>>>>> Stashed changes
      * @param observerManager game observer manager of game
      */
     private void handleEndGame(IGame game, GameObserverManager observerManager) {
@@ -956,7 +961,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                         game.forceGameTermination(player);
                     }
                 gameManager.terminateGame(game.getName());
-            } else if(observerManager.getDisconnectedPlayer().size() == game.getPlayers().size()) {
+            } else if (observerManager.getDisconnectedPlayer().size() == game.getUsers().size()) {
                 gameManager.terminateGame(game.getName());
             }
         } else {
@@ -1007,6 +1012,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * @return true if synchronized, false otherwise
      */
     private boolean wasUserDisconnected(String token, String gameName) {
+        System.out.println("WUD obs " + (gameManager.getObserverManagerByGame(gameName) == null));
+        System.out.println("WUD obslist" + (gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer() == null));
         return gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token);
     }
 

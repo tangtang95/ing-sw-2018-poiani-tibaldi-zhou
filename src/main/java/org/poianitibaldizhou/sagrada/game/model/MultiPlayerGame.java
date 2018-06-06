@@ -32,8 +32,8 @@ public class MultiPlayerGame extends Game{
      * set the state to SetupPlayerState
      *
      */
-    public MultiPlayerGame(String name, List<User> users)  {
-        super(name);
+    public MultiPlayerGame(String name, List<User> users, TerminationGameManager terminationGameManager)  {
+        super(name, terminationGameManager);
         this.users.addAll(users);
 
         setState(new ResetState(this));
@@ -74,6 +74,7 @@ public class MultiPlayerGame extends Game{
         winners = getWinnersByFavorTokens(winners);
         Player winner = getWinnersByReverseOrder(winners, currentRoundPlayer);
         winner.setOutcome(Outcome.WIN);
+
         for (Player other : listOfPlayer) {
             if (!other.equals(winner))
                 other.setOutcome(Outcome.LOSE);

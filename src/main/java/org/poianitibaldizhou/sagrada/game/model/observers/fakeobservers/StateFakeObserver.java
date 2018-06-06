@@ -228,6 +228,6 @@ public class StateFakeObserver implements IStateFakeObserver {
             }
         };
 
-        observerManager.pushThreadInQueue(token, runnable);
+        observerManager.pushLastThreadInQueue(token, runnable);
     }
 }
