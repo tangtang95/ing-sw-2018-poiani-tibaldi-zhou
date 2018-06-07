@@ -38,6 +38,8 @@ public class CLIRoundScreen extends CLIBasicScreen {
     private static final String VIEW_SCHEMA_CARDS = "View Schema Cards";
     private static final String VIEW_MY_SCHEMA = "View my schema Card";
     private static final String VIEW_PRIVATE_OBJECTIVE_CARD = "View the private objective cards";
+    private static final String VIEW_MY_COINS = "View my coins";
+    private static final String VIEW_PLAYERS_COINS = "View players coins";
 
     /**
      * constructor.
@@ -87,6 +89,14 @@ public class CLIRoundScreen extends CLIBasicScreen {
         viewMySchema.setCommandAction(this::viewMySchemaCard);
         commandMap.put(viewMySchema.getCommandText(), viewMySchema);
 
+        Command viewMyCoins = new Command(VIEW_MY_COINS, "View my expendable coins");
+        viewMyCoins.setCommandAction(this::viewMyCoins);
+        commandMap.put(viewMyCoins.getCommandText(), viewMyCoins);
+
+        Command viewPlayersCoins = new Command(VIEW_PLAYERS_COINS, "View the coins of all players");
+        viewPlayersCoins.setCommandAction(this::viewPlayersCoins);
+        commandMap.put(viewPlayersCoins.getCommandText(), viewPlayersCoins);
+
         Command viewPrivateObjectiveCards = new Command(VIEW_PRIVATE_OBJECTIVE_CARD,
                 "View the Private Objective cards");
         viewPrivateObjectiveCards.setCommandAction(this::viewPrivateObjectiveCards);
@@ -108,6 +118,36 @@ public class CLIRoundScreen extends CLIBasicScreen {
                 Level.STANDARD);
         consoleListener.setCommandMap(commandMap);
     }
+
+    private void viewMyCoins() {
+        Integer coins;
+        try {
+            coins = clientGetMessage.getMyCoins(
+                    connectionManager.getGameController().getMyCoins(
+                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+                    ));
+            PrinterManager.consolePrint("Your coins: " + coins + "\n",Level.STANDARD);
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
+    }
+
+    private void viewPlayersCoins() {
+        Map<UserWrapper, Integer> playersCoins;
+        try {
+            playersCoins = clientGetMessage.getPlayersCoins(
+                    connectionManager.getGameController().getPlayersCoins(
+                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+                    ));
+            playersCoins.forEach((k,v) ->
+                    PrinterManager.consolePrint("Coins of " + k.getUsername() + ": " + v, Level.STANDARD));
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+        }
+    }
+
     private void viewPrivateObjectiveCards(){
         BuildGraphic buildGraphic = new BuildGraphic();
         List<PrivateObjectiveCardWrapper> poc = new ArrayList<>();
