@@ -14,7 +14,7 @@ import java.util.Objects;
 public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObserver {
 
     private final transient ClientGetMessage clientGetMessage;
-    private final transient String toolCardName;
+    private final String toolCardName;
 
     public CLIToolCardView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
@@ -55,8 +55,7 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), clientGetMessage, toolCardName);
+        return this.getClass().getSimpleName().concat(toolCardName).hashCode();
 
     }
 

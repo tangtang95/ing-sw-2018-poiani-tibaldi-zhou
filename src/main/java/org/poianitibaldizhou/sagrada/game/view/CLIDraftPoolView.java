@@ -91,13 +91,11 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
         if (!(o instanceof CLIDraftPoolView)) return false;
         if (!super.equals(o)) return false;
         CLIDraftPoolView that = (CLIDraftPoolView) o;
-        return Objects.equals(cliStateView, that.cliStateView) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage);
+        return Objects.equals(cliStateView, that.cliStateView);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage);
-
+        return this.getClass().getSimpleName().hashCode();
     }
 }

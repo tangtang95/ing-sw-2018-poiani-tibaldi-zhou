@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics.model;
 
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
+import org.poianitibaldizhou.sagrada.graphics.view.listener.TimeOutListener;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -29,13 +30,12 @@ public class MultiPlayerModel {
 
     public List<UserWrapper> joinGame(IGameView view, IGameObserver gameObserver, IStateObserver stateObserver,
                                       IRoundTrackObserver roundTrackObserver, IDraftPoolObserver draftPoolObserver,
-                                      IDrawableCollectionObserver diceBagObserver) throws IOException {
+                                      IDrawableCollectionObserver diceBagObserver, TimeOutListener timeOutListener) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
 
-        // TODO add timeout obs
         connectionManager.getGameController().joinGame(request, view, gameObserver,
-                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver, null);
+                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver, timeOutListener);
 
         request = builder.createTokenMessage(token)
                 .createGameNameMessage(gameModel.getGameName()).buildMessage();

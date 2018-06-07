@@ -45,4 +45,12 @@ public class TextureUtils {
         return imageView;
     }
 
+    public static ImageView getSimpleImageView(String imageResourcePath, double scale){
+        Image image = new Image(TextureUtils.class.getClassLoader().getResourceAsStream(imageResourcePath));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(image.getWidth()*scale);
+        imageView.setFitHeight(image.getHeight()*scale);
+        return imageView;
+    }
+
 }

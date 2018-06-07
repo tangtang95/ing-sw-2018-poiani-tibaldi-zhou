@@ -65,7 +65,7 @@ public final class TileWrapper implements JSONable{
         String constraintValue;
         if (object == null)
             constraintValue = null;
-        else if (object instanceof Long)
+        else if (object instanceof Long || object instanceof Integer)
             constraintValue = String.valueOf(object.toString());
         else
             constraintValue = (String) object;

@@ -51,7 +51,7 @@
     "cardName": "Riga in Sughero",
     "cardColour": "YELLOW",
     "cardDescription": "Dopo aver scelto un dado, piazzalo in una casella che non sia adiacente a un altro dado. Devi rispettare tutte le restrizioni di piazzamento",
-    "action": "[1-Choose dice][2-Place isolated new dice][4-CA]"
+    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Place isolated new dice][8-CA]"
   },
   {
     "cardName": "Tampone Diamantato",

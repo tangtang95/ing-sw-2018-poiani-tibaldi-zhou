@@ -291,17 +291,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         if (!super.equals(o)) return false;
         CLIToolCardExecutorView that = (CLIToolCardExecutorView) o;
         return Objects.equals(cliStateView, that.cliStateView) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage) &&
-                Objects.equals(clientCreateMessage, that.clientCreateMessage) &&
-                Objects.equals(consoleListener, that.consoleListener) &&
-                Objects.equals(connectionManager, that.connectionManager) &&
                 Objects.equals(toolCardName, that.toolCardName);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage,
-                clientCreateMessage, consoleListener, connectionManager, toolCardName);
+        return this.getClass().getSimpleName().hashCode();
     }
 }

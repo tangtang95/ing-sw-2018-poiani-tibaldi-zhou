@@ -186,14 +186,12 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         if (!super.equals(o)) return false;
         CLIStateView that = (CLIStateView) o;
         return Objects.equals(myUser, that.myUser) &&
-                Objects.equals(gameName, that.gameName) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage);
+                Objects.equals(gameName, that.gameName);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), myUser, gameName, clientGetMessage);
+        return this.getClass().getSimpleName().hashCode();
     }
 
     public UserWrapper getMyUser() {
