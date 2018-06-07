@@ -27,6 +27,8 @@ public final class TileWrapper implements JSONable{
 
     public String toString(){
         String val;
+        if (dice != null)
+            return dice.toString();
         if (constraint == null)
             val = " ";
         else
