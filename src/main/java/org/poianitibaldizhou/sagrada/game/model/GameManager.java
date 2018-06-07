@@ -78,8 +78,9 @@ public class GameManager {
             });
             gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
 
-            if(!game.isSinglePlayer())
-                game.attachStateObserver(TimeOutFakeObserver.TIME_OUT, new TimeOutFakeObserver(getObserverManagerByGame(gameName), game));
+            // TODO re-add when wants to test timeout
+            //if(!game.isSinglePlayer())
+            //    game.attachStateObserver(TimeOutFakeObserver.TIME_OUT, new TimeOutFakeObserver(getObserverManagerByGame(gameName), game));
         }
     }
 

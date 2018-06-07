@@ -47,7 +47,6 @@ public class ModifyDiceValueByDelta implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
-        toolCardExecutor.setNeededDice(dice);
 
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         observerList.forEach(obs -> obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue()));
