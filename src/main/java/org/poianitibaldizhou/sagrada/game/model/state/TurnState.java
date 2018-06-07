@@ -15,9 +15,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -91,7 +93,6 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        System.out.println("TURN STATE INIT CALLED");
         if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
                 && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN)) {
             game.getStateObservers().forEach((key, value) ->
@@ -116,7 +117,6 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
             throw new InvalidActionException();
         if (actionsUsed.contains(action))
             throw new InvalidActionException();
-        actionsUsed.add(action);
         playerState.chooseAction(action);
     }
 
@@ -146,6 +146,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         toolCardExecutor.setCoreCommands(toolCard.getCommands());
         toolCardExecutor.addObserver(observer);
         toolCardExecutor.start();
+        actionsUsed.add(new UseCardAction());
     }
 
     /**
@@ -158,11 +159,14 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
+        if(!(playerState instanceof PlaceDiceState))
+            throw new InvalidActionException();
         try {
             playerState.placeDice(player, dice, position);
         } catch (RuleViolationException e) {
             throw new InvalidActionException(e);
         }
+        actionsUsed.add(new PlaceDiceAction());
     }
 
     /**

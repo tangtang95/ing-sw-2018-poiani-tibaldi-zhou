@@ -17,15 +17,15 @@ public class PlaceDiceState extends IPlayerState {
     /**
      * Place the dice on the schemaCard of the player and then return the state to the SelectAction
      *
-     * @param player the player that wants to place a dice on his schemaCard
-     * @param dice the dice to place
+     * @param player   the player that wants to place a dice on his schemaCard
+     * @param dice     the dice to place
      * @param position the position that the dice needs to be placed
      * @throws RuleViolationException if the placement of the dice on the schemaCard of the player is unsuccessful
      */
     @Override
     public void placeDice(Player player, Dice dice, Position position) throws RuleViolationException {
-        player.placeDice(dice, position);
         turnState.setPlayerState(new SelectActionState(turnState));
+        player.placeDice(dice, position);
     }
 
 }

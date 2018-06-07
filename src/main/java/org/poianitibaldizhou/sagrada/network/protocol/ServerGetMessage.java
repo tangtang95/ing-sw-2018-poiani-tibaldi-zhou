@@ -17,6 +17,8 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ServerGetMessage {
     private JSONProtocol serverNetworkProtocol;
@@ -31,6 +33,7 @@ public class ServerGetMessage {
             JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.TOKEN_KEY);
             token = jsonObject.get(SharedConstants.BODY).toString();
         } catch (ParseException | ClassCastException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             throw new IOException();
         }
         return token;

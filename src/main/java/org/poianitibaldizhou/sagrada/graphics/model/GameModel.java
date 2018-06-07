@@ -4,7 +4,6 @@ public class GameModel {
 
     private final String gameName;
 
-
     public GameModel(String gameName) {
         this.gameName = gameName;
     }

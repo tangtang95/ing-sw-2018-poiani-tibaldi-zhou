@@ -32,10 +32,11 @@ public class MultiPlayerModel {
                                       IDrawableCollectionObserver diceBagObserver) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
-        /* TODO fix
+
+        // TODO add timeout obs
         connectionManager.getGameController().joinGame(request, view, gameObserver,
-                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver);
-        */
+                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver, null);
+
         request = builder.createTokenMessage(token)
                 .createGameNameMessage(gameModel.getGameName()).buildMessage();
         String response;

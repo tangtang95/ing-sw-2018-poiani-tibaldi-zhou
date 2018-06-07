@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 public class ClientCreateMessage {
@@ -14,7 +15,7 @@ public class ClientCreateMessage {
         return this;
     }
 
-    public ClientCreateMessage createTokenMessage(String token) {
+    public ClientCreateMessage createTokenMessage(@NotNull String token) {
         jsonClientProtocol.appendMessage(SharedConstants.TOKEN_KEY, token);
         return this;
     }

@@ -52,7 +52,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                 createGameNameMessage(cliStateView.getGameName()).
                 createDiceMessage(diceWrapperList.get(
-                        consoleListener.readNumber(diceWrapperList.size() + 1))).buildMessage();
+                        consoleListener.readPositionNumber(diceWrapperList.size()))).buildMessage();
         connectionManager.getGameController().setDice(message);
     }
 
@@ -65,7 +65,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         String message = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
                 createTokenMessage(cliStateView.getToken())
-                .createValueMessage(consoleListener.readNumber(6)).toString();
+                .createValueMessage(consoleListener.readValue(6)).toString();
         connectionManager.getGameController().setNewValue(message);
     }
 
@@ -85,7 +85,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                 createGameNameMessage(cliStateView.getGameName()).
                 createColorMessage(colorWrapperList.get(
-                        consoleListener.readNumber(colorWrapperList.size() + 1))).buildMessage();
+                        consoleListener.readPositionNumber(colorWrapperList.size()))).buildMessage();
         connectionManager.getGameController().setColor(message);
     }
 
@@ -255,9 +255,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
                         buildMessage("Choose a row:").toString(),
                 Level.STANDARD);
-        int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS + 1);
+        int row = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
         PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
-        int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS + 1);
+        int column = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
 
         String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                 createGameNameMessage(cliStateView.getGameName()).createPositionMessage(
@@ -273,10 +273,10 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     private void readRoundTrackParameters(RoundTrackWrapper roundTrack) throws IOException {
         PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
-        int roundNumber = consoleListener.readNumber(RoundTrackWrapper.NUMBER_OF_TRACK + 1);
+        int roundNumber = consoleListener.readPositionNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
 
         PrinterManager.consolePrint("Choose a dice: \n", Level.STANDARD);
-        int diceNumber = consoleListener.readNumber(roundTrack.getDicesPerRound(roundNumber).size());
+        int diceNumber = consoleListener.readPositionNumber(roundTrack.getDicesPerRound(roundNumber).size());
 
         String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                 createGameNameMessage(cliStateView.getGameName()).
