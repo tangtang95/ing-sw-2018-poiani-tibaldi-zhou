@@ -67,6 +67,8 @@ public class SharedConstants {
     public static final String MAP_SCHEMA_CARD_KEY = "mapSchemaCardKey";
     public static final String ACTION_KEY = "action";
     public static final String TURN_VALUE_KEY = "turnValue";
+    public static final String MAP_PLAYERS_COINS_KEY = "mapPlayersCoinsKey";
+
 
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";

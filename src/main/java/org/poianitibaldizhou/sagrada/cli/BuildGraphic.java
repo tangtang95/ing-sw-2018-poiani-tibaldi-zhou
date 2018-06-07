@@ -51,7 +51,7 @@ public class BuildGraphic {
     private void buildListDices(List<DiceWrapper> diceWrappers, int start, int end) {
         if (start != 0 || end != 0) {
             for (int i = start; i < end; i++)
-                stringBuilder.append("  [").append(i + 1).append("]   ");
+                stringBuilder.append("  [").append(i + 1).append("]  ");
             stringBuilder.append("\n");
             for (int i = start; i < end; i++) {
                 stringBuilder.append((char) 9556);

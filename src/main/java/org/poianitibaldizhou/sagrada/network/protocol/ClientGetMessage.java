@@ -358,14 +358,42 @@ public class ClientGetMessage {
 
     public UserWrapper getRoundUser(String message) throws IOException {
         UserWrapper userWrapper;
-
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.ROUND_USER);
             userWrapper = UserWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
-
         return userWrapper;
+    }
+
+    public Integer getMyCoins(String message) throws IOException {
+        Integer value;
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.INTEGER);
+            value = Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return value;
+    }
+
+    public Map<UserWrapper,Integer> getPlayersCoins(String message) throws IOException {
+        Map<UserWrapper,Integer> playersCoins = new HashMap<>();
+        JSONParser jsonParser = new JSONParser();
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message,
+                    SharedConstants.MAP_PLAYERS_COINS_KEY);
+            JSONObject map = (JSONObject) jsonObject.get(SharedConstants.BODY);
+            for (Object o : map.keySet()) {
+                JSONObject user = (JSONObject) jsonParser.parse(o.toString());
+                Integer value = Integer.parseInt(jsonParser.parse(map.get(o).toString()).toString());
+                playersCoins.put(UserWrapper.toObject((JSONObject) user.get(SharedConstants.BODY)),
+                        value);
+            }
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return playersCoins;
     }
 }

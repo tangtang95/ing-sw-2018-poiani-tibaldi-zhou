@@ -764,6 +764,18 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         return serverCreateMessage.createToolCardList(toolCards).buildMessage();
     }
 
+    @Override
+    public String getMyCoins(String message) throws IOException {
+        //TODO
+        return null;
+    }
+
+    @Override
+    public String getPlayersCoins(String message) throws IOException {
+        //TODO
+        return null;
+    }
+
     /**
      * {@inheritDoc}
      */

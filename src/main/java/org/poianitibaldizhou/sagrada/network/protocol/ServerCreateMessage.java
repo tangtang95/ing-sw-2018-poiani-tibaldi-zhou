@@ -187,10 +187,21 @@ public class ServerCreateMessage {
         return this;
     }
 
+    public ServerCreateMessage createCoinsMessage(Integer coins) {
+        jsonServerProtocol.appendMessage(SharedConstants.INTEGER, coins);
+        return this;
+    }
+
+    public ServerCreateMessage createPlayersCOinsMessage(Map<User, Integer> playersCoins) {
+        jsonServerProtocol.appendMessage(SharedConstants.MAP_PLAYERS_COINS_KEY, playersCoins);
+        return this;
+    }
+
     public String buildMessage() {
         String temp = jsonServerProtocol.buildMessage();
         jsonServerProtocol = new JSONProtocol();
         return temp;
     }
+
 }
 
