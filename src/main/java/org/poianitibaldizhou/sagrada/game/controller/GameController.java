@@ -749,8 +749,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        Logger.getAnonymousLogger().log(Level.FINEST, "User with token: " + token + "accessed: getToolCards");
-
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
         }
@@ -764,16 +762,57 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         return serverCreateMessage.createToolCardList(toolCards).buildMessage();
     }
 
-    @Override
-    public String getMyCoins(String message) throws IOException {
-        //TODO
-        return null;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPlayersCoins(String message) throws IOException {
-        //TODO
-        return null;
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        if(gameManager.getGameByName(gameName).isSinglePlayer()) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        HashMap<User, Integer> coinsMap = new HashMap<>();
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            gameManager.getGameByName(gameName).getPlayers().forEach(player -> coinsMap.putIfAbsent(player.getUser(),
+                    player.getCoins()));
+        }
+
+        return serverCreateMessage.createPlayersCoinsMessage(coinsMap).buildMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMyCoins(String message) throws IOException {
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        if(gameManager.getGameByName(gameName).isSinglePlayer())
+            return serverGetMessage.getErrorMessage();
+
+        Optional<Player> requestingPlayer;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            requestingPlayer = gameManager.getGameByName(gameName).getPlayers().stream().filter(player -> player.getToken().equals(token)).findFirst();
+        }
+
+        if(!requestingPlayer.isPresent())
+            return serverGetMessage.getErrorMessage();
+
+        return serverCreateMessage.createCoinsMessage(requestingPlayer.get().getCoins()).buildMessage();
     }
 
     /**

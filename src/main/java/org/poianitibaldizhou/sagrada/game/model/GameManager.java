@@ -77,6 +77,9 @@ public class GameManager {
                 players.add(user.getToken());
             });
             gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
+
+            if(!game.isSinglePlayer())
+                game.attachStateObserver(TimeOutFakeObserver.TIME_OUT, new TimeOutFakeObserver(getObserverManagerByGame(gameName), game));
         }
     }
 

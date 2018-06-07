@@ -26,7 +26,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * @param toolCardExecutor invoked toolcard
      * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.EMPTY_DRAFTPOOL
-     * if the draftpool is empty, CommandFlow.MAIN otherwise.
+     * if the draftpool is empty, CommandFlow.EMPTY_ROUNDTRACK if the round track is empty, CommandFlow.MAIN otherwise.
      * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
@@ -37,6 +37,9 @@ public class SwapDiceWithRoundTrack implements ICommand {
         int round;
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
+
+        if(roundTrack.isEmpty())
+            return CommandFlow.EMPTY_ROUNDTRACK;
 
         observerList.forEach(observer -> observer.notifyNeedDiceFromRoundTrack(roundTrack));
 

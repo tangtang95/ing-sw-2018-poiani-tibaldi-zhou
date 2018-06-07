@@ -78,7 +78,7 @@ public class Tile implements Serializable, JSONable{
      */
     @Contract(pure = true)
     public boolean isDicePositionable(Dice dice, PlacementRestrictionType type) {
-        return type.getPlacementRestriction().isPositionable(this, dice);
+        return type.getPlacementRestriction().isPositionable(this, dice) && this.getDice() == null;
     }
 
     /**
