@@ -128,7 +128,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onPlaceDiceState(String jString) throws IOException {
-        UserWrapper user = clientGetMessage.getUserWrapper(jString);
+        UserWrapper user = clientGetMessage.getTurnUserWrapper(jString);
         if (!user.equals(myUser))
             PrinterManager.consolePrint("The player " + user.getUsername() + " place a dice\n",
                 Level.STANDARD);
@@ -139,7 +139,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onUseCardState(String jString) throws IOException {
-        UserWrapper user = clientGetMessage.getUserWrapper(jString);
+        UserWrapper user = clientGetMessage.getTurnUserWrapper(jString);
         if (!user.equals(myUser))
             PrinterManager.consolePrint("The player " + user.getUsername() + " use a ToolCard\n",
                 Level.STANDARD);

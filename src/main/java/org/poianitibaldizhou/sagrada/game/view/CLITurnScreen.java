@@ -59,9 +59,9 @@ public class CLITurnScreen extends CLIRoundScreen {
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
                         buildMessage("Choose a row:").toString(),
                 Level.STANDARD);
-        int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS + 1);
+        int row = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_ROWS + 1);
         PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
-        int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS + 1);
+        int column = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS + 1);
         return new PositionWrapper(row, column);
     }
 
@@ -84,7 +84,7 @@ public class CLITurnScreen extends CLIRoundScreen {
                 Level.STANDARD);
         viewDraftPool();
         viewMySchemaCard();
-        int diceNumber = consoleListener.readNumber(draftPool.size());
+        int diceNumber = consoleListener.readPositionNumber(draftPool.size());
         PositionWrapper position = selectPosition();
         try {
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
@@ -108,7 +108,7 @@ public class CLITurnScreen extends CLIRoundScreen {
         viewToolCards();
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a Tool Card:").
                 buildGraphicToolCards(toolCardList).toString(), Level.STANDARD);
-        ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readNumber(toolCardList.size()));
+        ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readPositionNumber(toolCardList.size()));
         try {
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
                     createTokenMessage(token).createActionMessage(new UseToolCardStateWrapper()).buildMessage()

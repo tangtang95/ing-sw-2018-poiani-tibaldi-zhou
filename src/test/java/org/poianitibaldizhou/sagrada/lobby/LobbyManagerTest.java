@@ -99,8 +99,9 @@ public class LobbyManagerTest {
 
         Thread.sleep(lobbyManager.getDelayTime() * 2);
 
-        verify(observers.get(0), times(1)).onGameStart(ArgumentMatchers.any(String.class));
-        verify(observers.get(1), times(1)).onGameStart(ArgumentMatchers.any(String.class));
+        when(managerMediator.createMultiPlayerGame(lobbyManager.getLobbyUsers())).thenReturn("gamename");
+
+        assertTrue(lobbyManager.getLobbyUsers().isEmpty());
     }
 
 
@@ -198,5 +199,14 @@ public class LobbyManagerTest {
     public void testMediatorManagerPlayerAlreadyInGame() {
         when(managerMediator.isAlreadyPlayingAGame("username")).thenReturn(true);
         lobbyManager.login("username");
+    }
+
+    @Test
+    public void testDisconnect() {
+        String token = lobbyManager.login("test");
+        User user = new User("test", token);
+        lobbyManager.userJoinLobby(observers.get(0), user);
+        lobbyManager.userDisconnects(token);
+        assertTrue(lobbyManager.getLobbyUsers().isEmpty());
     }
 }

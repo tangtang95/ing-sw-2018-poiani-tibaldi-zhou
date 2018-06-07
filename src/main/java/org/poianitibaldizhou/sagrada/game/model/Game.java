@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -65,6 +66,12 @@ public abstract class Game implements IGame, IGameStrategy {
     @Contract(pure = true)
     public String getName() {
         return name;
+    }
+
+    public List<Player> getPlayerListReferences() {
+        ArrayList<Player> playerArrayList = new ArrayList<>();
+        players.forEach((key, value) -> playerArrayList.add(value));
+        return playerArrayList;
     }
 
     /**
@@ -281,22 +288,28 @@ public abstract class Game implements IGame, IGameStrategy {
     @Override
     public void userJoin(String token) throws InvalidActionException {
         if (!containsToken(token))
-            throw new IllegalArgumentException();
+            throw new InvalidActionException();
         state.readyGame(token);
     }
 
     @Override
     public void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException {
         if (!containsToken(token))
-            throw new IllegalArgumentException();
+            throw new InvalidActionException();
         state.ready(token, schemaCard);
     }
 
     @Override
     public void userPlaceDice(String token, Dice dice, Position position) throws IllegalArgumentException, InvalidActionException {
-        if (!containsToken(token))
-            throw new IllegalArgumentException();
+        if (!containsToken(token) || !draftPool.getDices().contains(dice))
+            throw new InvalidActionException();
+
         state.placeDice(players.get(token), dice, position);
+        try {
+            draftPool.useDice(dice);
+        } catch (DiceNotFoundException | EmptyCollectionException e) {
+            throw new IllegalStateException();
+        }
     }
 
     @Override

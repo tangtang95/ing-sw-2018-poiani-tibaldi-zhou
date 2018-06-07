@@ -166,6 +166,7 @@ public class ToolCardExecutor extends Thread{
             } else if (commandFlow.getProtocolNumber() == 400) {
                 final CommandFlow finalCommandFlow = commandFlow;
                 observers.forEach(obs -> obs.notifyCommandInterrupted(finalCommandFlow));
+                root = null;
             }
         } while (root != null);
     }

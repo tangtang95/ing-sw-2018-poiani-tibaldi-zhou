@@ -18,6 +18,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -265,6 +266,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         IActionCommand actionCommand = serverGetMessage.getActionCommand(message);
 
+        System.out.println(actionCommand);
+
+        if(actionCommand instanceof EndTurnAction)
+            System.out.println("");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -285,7 +291,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userChooseAction(token, actionCommand);
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err(INVALID_ACTION_ERR);
+                    viewMap.get(token).err(INVALID_ACTION_ERR + " CHOOSE ACTION");
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -332,7 +338,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                     if (e.getException() instanceof RuleViolationException)
                         handleRuleViolationException(viewMap.get(token), (RuleViolationException) e.getException());
                     else
-                        viewMap.get(token).err(INVALID_ACTION_ERR);
+                        viewMap.get(token).err(INVALID_ACTION_ERR + " dice placing");
                 } catch (IOException ioe) {
                     handleIOException(token, gameName);
                 }
@@ -914,8 +920,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         synchronized (gameManager.getGameByName(gameName)) {
             IGame game = gameManager.getGameByName(gameName);
             for (Player p : game.getPlayers()) {
-                if (p.getToken().equals(token))
+                if (p.getToken().equals(token)) {
                     schemaCard = p.getSchemaCard();
+                }
             }
         }
 

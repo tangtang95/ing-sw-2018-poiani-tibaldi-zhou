@@ -50,7 +50,7 @@ public class SetupGameState extends IStateGame {
             value.onPublicObjectiveCardsDraw(game.getPublicObjectiveCards());
         });
 
-        game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayers())));
+        game.setState(new RoundStartState(game, RoundTrack.FIRST_ROUND, getRandomStartPlayer(game.getPlayerListReferences())));
     }
 
     /**

@@ -83,7 +83,7 @@ public class ConsoleListener {
      * @param maxInt max number that is could to insert.
      * @return a number read.
      */
-    public int readNumber(int maxInt) {
+    public int readPositionNumber(int maxInt) {
         stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         int key = 0;
@@ -101,10 +101,15 @@ public class ConsoleListener {
                 PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.ERROR);
             } catch (CommandNotFoundException e) {
                 PrinterManager.consolePrint(BuildGraphic.COMMAND_NOT_FOUND, Level.ERROR);
+                key = 0;
             }
         } while (key < 1);
         wakeUpCommandConsole();
         return key - 1;
+    }
+
+    public int readValue(int maxInt){
+        return readPositionNumber(maxInt) + 1;
     }
 
 
