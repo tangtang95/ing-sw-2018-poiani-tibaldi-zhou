@@ -86,7 +86,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
             try {
                 String message = connectionManager.getLobbyController().getTimeout();
                 String timeout = clientGetMessage.getTimeout(message);
-                PrinterManager.consolePrint(timeout,Level.STANDARD);
+                PrinterManager.consolePrint(timeout + "\n",Level.STANDARD);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);

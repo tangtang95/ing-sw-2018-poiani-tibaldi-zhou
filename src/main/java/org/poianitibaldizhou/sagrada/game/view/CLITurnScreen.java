@@ -94,7 +94,6 @@ public class CLITurnScreen extends CLIRoundScreen {
                     createTokenMessage(token).createDiceMessage(draftPool.getDice(diceNumber)).
                     createPositionMessage(position).buildMessage()
             );
-            endTurn();
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
@@ -118,7 +117,6 @@ public class CLITurnScreen extends CLIRoundScreen {
                     createTokenMessage(token).createToolCardMessage(toolCardWrapper).buildMessage(),
                     new CLIToolCardExecutorView(cliStateView, toolCardWrapper.getName())
             );
-            endTurn();
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
