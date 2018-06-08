@@ -58,7 +58,6 @@ public class RoundStartStateTest {
         when(game.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGame.NUMBER_OF_DICES_TO_DRAW);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         roundStartState.init();
-        roundStartState.throwDices();
         verify(game).addDicesToDraftPoolFromDiceBag();
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }
@@ -69,7 +68,6 @@ public class RoundStartStateTest {
         when(game.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGame.NUMBER_OF_DICES_TO_DRAW);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         roundStartState.init();
-        roundStartState.throwDices();
     }
 
     @Test
@@ -82,7 +80,6 @@ public class RoundStartStateTest {
         when(game.getNumberOfDicesToDraw()).thenReturn(numberOfPlayers*2 + 1);
         roundStartState = new RoundStartState(game, 0, currentPlayer);
         roundStartState.init();
-        roundStartState.throwDices();
         verify(game).addDicesToDraftPoolFromDiceBag();
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }

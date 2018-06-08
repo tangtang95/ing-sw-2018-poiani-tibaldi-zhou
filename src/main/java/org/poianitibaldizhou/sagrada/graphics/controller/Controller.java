@@ -33,5 +33,12 @@ public abstract class Controller {
         transition.setOnFinished(eventHandler);
     }
 
+    public void pushScene(Parent node){
+        sceneManager.pushScene(node);
+    }
+
+    public void popScene() {
+        sceneManager.popScene();
+    }
 }
 

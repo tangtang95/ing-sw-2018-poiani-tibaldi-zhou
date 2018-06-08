@@ -1,19 +1,21 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
-import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
-import org.poianitibaldizhou.sagrada.graphics.view.RoundTrackView;
+import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
+import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class RoundTrackListener extends UnicastRemoteObject implements IRoundTrackObserver {
+public class RoundTrackListener extends AbstractView implements IRoundTrackObserver {
 
-    private final transient RoundTrackView roundTrackView;
+    private transient RoundTrackView roundTrackView;
 
-    public RoundTrackListener(RoundTrackView roundTrackView) throws RemoteException {
-        this.roundTrackView = roundTrackView;
+    public RoundTrackListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+        super(controller, corePane, notifyPane);
     }
 
     public RoundTrackView getRoundTrackView() {

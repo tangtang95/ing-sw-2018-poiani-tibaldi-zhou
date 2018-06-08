@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
@@ -179,7 +180,7 @@ public class ToolCardTest {
                 "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
                 "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][8-CA]");
         String message = "{\"name\":\"Pinza Sgrossatrice\",\"token\":0}";
-        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        JSONParser jsonParser = new JSONParser();
         try {
             assertTrue((trueToolCard.toObject((JSONObject) jsonParser.parse(message))).equals(trueToolCard));
         } catch (ParseException e) {

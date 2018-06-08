@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.graphics.view;
+package org.poianitibaldizhou.sagrada.graphics.view.component;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -14,9 +14,9 @@ public class PrivateObjectiveCardView extends Pane {
 
     /**
      * Constructor.
-     * Create a pane with the image of the retro card
+     * Create a pane with the component of the retro card
      *
-     * @param scale the number to scale the image
+     * @param scale the number to scale the component
      */
     public PrivateObjectiveCardView(double scale){
         cardView = TextureUtils.getImageView( "retro.png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);

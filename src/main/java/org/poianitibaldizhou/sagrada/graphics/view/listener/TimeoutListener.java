@@ -1,15 +1,18 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
+import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
+import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class TimeoutListener extends UnicastRemoteObject implements ITimeOutObserver {
+public class TimeoutListener extends AbstractView implements ITimeOutObserver {
 
-    public TimeoutListener() throws RemoteException {
-
+    public TimeoutListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+        super(controller, corePane, notifyPane);
     }
 
     @Override

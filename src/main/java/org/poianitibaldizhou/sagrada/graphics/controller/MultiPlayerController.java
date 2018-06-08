@@ -19,7 +19,7 @@ import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
-import org.poianitibaldizhou.sagrada.graphics.view.*;
+import org.poianitibaldizhou.sagrada.graphics.view.component.*;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
@@ -50,14 +50,13 @@ public class MultiPlayerController extends Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initNotifyPane();
-        GameView gameView = new GameView(this, corePane, notifyPane);
         try {
-            draftPoolView = new DraftPoolListener(new DraftPoolView());
-            roundTrackView = new RoundTrackListener(new RoundTrackView());
-            stateView = new StateListener(new StateView());
-            gameListener = new GameListener(gameView);
-            diceBagView = new DiceBagListener();
-            timeoutListener = new TimeoutListener();
+            draftPoolView = new DraftPoolListener(this, corePane, notifyPane);
+            roundTrackView = new RoundTrackListener(this, corePane, notifyPane);
+            stateView = new StateListener(this, corePane, notifyPane);
+            gameListener = new GameListener(this, corePane, notifyPane);
+            diceBagView = new DiceBagListener(this, corePane, notifyPane);
+            timeoutListener = new TimeoutListener(this, corePane, notifyPane);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -244,13 +243,6 @@ public class MultiPlayerController extends Controller implements Initializable {
         }catch (EmptyCollectionException e) {
             e.printStackTrace();
         }
-
-        GameView gameView = gameListener.getGameView();
-
-        gameView.activateNotifyPane();
-        gameView.clearNotifyPane();
-        gameView.showPrivateObjectiveCards(privateObjectiveCardList);
-        gameView.showFrontBackSchemaCards(frontBackSchemaCardWrappers);
     }
 
     private void testRoundTrackView(){
