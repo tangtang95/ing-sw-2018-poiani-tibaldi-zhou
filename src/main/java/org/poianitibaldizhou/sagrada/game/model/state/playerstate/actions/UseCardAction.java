@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.UseCardState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class UseCardAction implements IActionCommand {
@@ -34,7 +33,7 @@ public class UseCardAction implements IActionCommand {
         return null;
     }
 
-    public static UseCardAction toObject(JSONObject jsonObject) {
+    public static UseCardAction toObject() {
         return new UseCardAction();
     }
 }

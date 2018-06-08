@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -146,7 +147,7 @@ public class ClientGetMessage {
     public String getTimeout(String message) throws IOException {
         String timeout;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TIMEOUT);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TIMEOUT_KEY);
             timeout = jsonObject.get(SharedConstants.BODY).toString();
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -395,5 +396,16 @@ public class ClientGetMessage {
             throw new IOException();
         }
         return playersCoins;
+    }
+
+    public String getCommandFlow(String message) throws IOException {
+        String command;
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.COMMAND_FLOW);
+            command = jsonObject.get(SharedConstants.BODY).toString();
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return command;
     }
 }

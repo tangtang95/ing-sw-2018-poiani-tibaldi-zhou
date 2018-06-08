@@ -50,14 +50,14 @@ public class SharedConstants {
     public static final String ELEM_LIST_KEY = "elemListKey";
     public static final String USER_LIST_KEY = "userListKey";
     public static final String PUBLIC_OBJECTIVE_CARD_LIST_KEY = "publicObjectiveCardListKey";
-    public static final String TOOL_CARD_LIST_KEY = "toolCardList";
+    public static final String TOOL_CARD_LIST_KEY = "toolCardListKey";
     public static final String PRIVATE_OBJECTIVE_CARD_LIST_KEY = "privateObjectiveCardListKey";
     public static final String FRONT_CARD_LIST_KEY = "frontBackSchemaCardListKey";
-    public static final String USER_NAME_STRING = "usernameKey";
-    public static final String TIMEOUT = "timeout";
+    public static final String USER_NAME_STRING_KEY = "usernameKey";
+    public static final String TIMEOUT_KEY = "timeoutKey";
     public static final String MAP_SCHEMA_CARD_KEY = "mapSchemaCardKey";
-    public static final String ACTION_KEY = "action";
-    public static final String TURN_VALUE_KEY = "turnValue";
+    public static final String ACTION_KEY = "actionKey";
+    public static final String TURN_VALUE_KEY = "turnValueKey";
     public static final String MAP_PLAYERS_COINS_KEY = "mapPlayersCoinsKey";
     public static final String COLOR_LIST_KEY = "colorListKey";
     public static final String DICE_VALUE_KEY = "diceValueKey";
@@ -66,12 +66,12 @@ public class SharedConstants {
     public static final String NEW_DICE_KEY = "newDiceKey";
     public static final String ROUND_USER_KEY = "roundUserKey";
     public static final String TURN_USER_KEY = "turnUserKey";
+    public static final String GET_ERROR_KEY = "errorKey";
 
     /**
      * Error message.
      */
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";
-    public static final String GET_ERROR_KEY = "error";
     public static final String RECONNECT_ERROR = "Error reconnecting";
 }

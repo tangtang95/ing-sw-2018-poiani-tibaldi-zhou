@@ -48,7 +48,7 @@ public class ServerCreateMessage {
     }
 
     public ServerCreateMessage createTimeoutMessage(String timeout) {
-        jsonServerProtocol.appendMessage(SharedConstants.TIMEOUT, timeout);
+        jsonServerProtocol.appendMessage(SharedConstants.TIMEOUT_KEY, timeout);
         return this;
     }
 

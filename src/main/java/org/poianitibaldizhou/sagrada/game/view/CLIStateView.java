@@ -184,7 +184,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             currentUser = roundUser;
             PrinterManager.consolePrint("The round " + (round + 1) + " is started with player " +
                     roundUser.getUsername() + "\n", Level.INFORMATION);
-            screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, this));
+            if (round == 0)
+                screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, this));
         }
     }
 

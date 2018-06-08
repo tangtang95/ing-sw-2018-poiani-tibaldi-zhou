@@ -237,9 +237,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyCommandInterrupted(String error) {
-        PrinterManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
-                toolCardName + ", so you will not be able to use it this turn.\n", Level.INFORMATION);
+    public void notifyCommandInterrupted(String error) throws IOException {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage("ERROR TYPE: " + clientGetMessage.getCommandFlow(error)).
+                buildMessage("You made an unforgivable mistake when using the Tool Card " +
+                        toolCardName + ", so you will not be able to use it this turn.").toString(), Level.INFORMATION);
     }
 
     /**

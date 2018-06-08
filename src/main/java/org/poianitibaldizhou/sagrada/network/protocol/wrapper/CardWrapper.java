@@ -2,6 +2,10 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+/**
+ * Copy class of Card.
+ *
+ */
 @Immutable
 public abstract class CardWrapper{
 
@@ -9,8 +13,8 @@ public abstract class CardWrapper{
      * Card param for network protocol.
      */
     protected static final String JSON_NAME = "name";
-    protected static final String JSON_DESCRIPTION = "description";
-    protected static final String JSON_COLOR = "color";
+    static final String JSON_DESCRIPTION = "description";
+    static final String JSON_COLOR = "color";
 
     protected String name;
     protected String description;

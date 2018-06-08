@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -8,14 +9,10 @@ import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -101,4 +98,16 @@ public class ServerGetMessageTest {
         assertEquals(message2, serverNetworkProtocol.buildMessage());
     }
 
+
+    @Test
+    public void booleanTest() {
+        serverNetworkProtocol.appendMessage("boolean", true);
+        String bool = serverNetworkProtocol.buildMessage();
+        try {
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(bool, "boolean");
+            assertEquals(true, Boolean.valueOf(jsonObject.get(SharedConstants.BODY).toString()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 }
