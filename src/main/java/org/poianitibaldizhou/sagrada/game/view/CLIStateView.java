@@ -26,6 +26,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     private final transient ConnectionManager connectionManager;
     private final transient ScreenManager screenManager;
 
+    private final transient Object lock = new Object();
+    private boolean start;
+
     public CLIStateView(ConnectionManager connectionManager, ScreenManager screenManager,
                         String gameName, UserWrapper myUser, String token
     ) throws RemoteException {
@@ -35,6 +38,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         this.gameName = gameName;
         this.connectionManager = connectionManager;
         this.screenManager = screenManager;
+        this.start = true;
     }
 
     public ConnectionManager getConnectionManager() {
@@ -47,6 +51,30 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
 
     public ClientGetMessage getClientGetMessage() {
         return clientGetMessage;
+    }
+
+    public UserWrapper getMyUser() {
+        return myUser;
+    }
+
+    public String getGameName() {
+        return gameName;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public ClientCreateMessage getClientCreateMessage() {
+        return clientCreateMessage;
+    }
+
+    public Object getLock() {
+        return lock;
+    }
+
+    public void setStart(boolean start) {
+        this.start = start;
     }
 
     /**
@@ -70,12 +98,14 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onRoundStart(String jString) throws IOException {
-        int round = clientGetMessage.getValue(jString);
-        UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
-        currentUser = roundUser;
-        PrinterManager.consolePrint("The round " + (round  + 1) + " is started with player " +
-                        roundUser.getUsername() + "\n", Level.INFORMATION);
-        screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager,this));
+        synchronized (lock) {
+            int round = clientGetMessage.getValue(jString);
+            UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
+            currentUser = roundUser;
+            PrinterManager.consolePrint("The round " + (round + 1) + " is started with player " +
+                    roundUser.getUsername() + "\n", Level.INFORMATION);
+            screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, this));
+        }
     }
 
     /**
@@ -83,21 +113,28 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onTurnState(String jString) throws IOException {
-        int round = clientGetMessage.getValue(jString);
-        UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
-        currentUser = turnUser;
+        synchronized (lock) {
+            while (start) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            int round = clientGetMessage.getValue(jString);
+            UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
+            currentUser = turnUser;
 
-        System.out.println("On turn state: " + turnUser.getUsername());
-        System.out.println("I am "+ myUser.getUsername());
+            if (turnUser.equals(myUser)) {
+                PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
+                        Level.STANDARD);
+                screenManager.pushScreen(new CLITurnScreen(connectionManager, screenManager, this));
 
-        if(turnUser.equals(myUser)){
-            screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,this));
-            PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
-                    Level.STANDARD);
-        } else
-            PrinterManager.consolePrint("Is the round " + round + "," +
-                            turnUser.getUsername() + " is playing\n",
-                Level.STANDARD);
+            } else
+                PrinterManager.consolePrint("Is the round " + (round + 1) + "," +
+                                turnUser.getUsername() + " is playing\n",
+                        Level.INFORMATION);
+        }
     }
 
     /**
@@ -106,7 +143,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onRoundEnd(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
-        PrinterManager.consolePrint("The round " + round + "end\n", Level.STANDARD);
+        PrinterManager.consolePrint("The round " + (round + 1) + "end\n", Level.STANDARD);
     }
 
     /**
@@ -135,7 +172,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         UserWrapper user = clientGetMessage.getTurnUserWrapper(jString);
         if (!user.equals(myUser))
             PrinterManager.consolePrint("The player " + user.getUsername() + " place a dice\n",
-                Level.STANDARD);
+                Level.INFORMATION);
     }
 
     /**
@@ -146,7 +183,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         UserWrapper user = clientGetMessage.getTurnUserWrapper(jString);
         if (!user.equals(myUser))
             PrinterManager.consolePrint("The player " + user.getUsername() + " use a ToolCard\n",
-                Level.STANDARD);
+                Level.INFORMATION);
     }
 
     /**
@@ -155,15 +192,13 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onEndTurnState(String jString) throws IOException {
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
-        System.out.println("On end turn state: " + turnUser.getUsername());
-        System.out.println("I am "+ myUser.getUsername());
         if(turnUser.equals(myUser)){
             PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH------------------------\n",
                     Level.STANDARD);
             screenManager.popScreen();
         } else
             PrinterManager.consolePrint("The turn of " + turnUser.getUsername() + " is ending\n",
-                    Level.STANDARD);
+                    Level.INFORMATION);
 
     }
 
@@ -200,20 +235,5 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         return this.getClass().getSimpleName().hashCode();
     }
 
-    public UserWrapper getMyUser() {
-        return myUser;
-    }
-
-    public String getGameName() {
-        return gameName;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public ClientCreateMessage getClientCreateMessage() {
-        return clientCreateMessage;
-    }
 }
 

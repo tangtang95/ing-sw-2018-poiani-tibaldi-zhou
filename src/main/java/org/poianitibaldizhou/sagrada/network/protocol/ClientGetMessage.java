@@ -387,7 +387,8 @@ public class ClientGetMessage {
             JSONObject map = (JSONObject) jsonObject.get(SharedConstants.BODY);
             for (Object o : map.keySet()) {
                 JSONObject user = (JSONObject) jsonParser.parse(o.toString());
-                Integer value = Integer.parseInt(jsonParser.parse(map.get(o).toString()).toString());
+                Integer value = Integer.parseInt(
+                        ((JSONObject)jsonParser.parse(map.get(o).toString())).get(SharedConstants.BODY).toString());
                 playersCoins.put(UserWrapper.toObject((JSONObject) user.get(SharedConstants.BODY)),
                         value);
             }

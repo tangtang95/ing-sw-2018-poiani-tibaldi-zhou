@@ -81,7 +81,7 @@ public class ConsoleListener {
      * Read a number from keyboard stream.
      *
      * @param maxInt max number that is could to insert.
-     * @return a number read.
+     * @return a number read - 1.
      */
     public int readPositionNumber(int maxInt) {
         stopCommandConsole();
@@ -108,6 +108,12 @@ public class ConsoleListener {
         return key - 1;
     }
 
+    /**
+     * Read a number from keyboard stream.
+     *
+     * @param maxInt max number that is could to insert.
+     * @return a number read.
+     */
     public int readValue(int maxInt){
         return readPositionNumber(maxInt) + 1;
     }

@@ -29,6 +29,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     protected final transient ClientGetMessage clientGetMessage;
     final transient ClientCreateMessage clientCreateMessage;
 
+    private final transient Object lock;
 
     private static final String QUIT = "Quit game";
     private static final String VIEW_DRAFT_POOL = "View the Draft Pool";
@@ -57,6 +58,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
         this.clientCreateMessage = cliStateView.getClientCreateMessage();
         this.clientGetMessage = cliStateView.getClientGetMessage();
         this.cliStateView = cliStateView;
+        this.lock = cliStateView.getLock();
 
         initializeCommands();
     }
@@ -109,14 +111,18 @@ public class CLIRoundScreen extends CLIBasicScreen {
 
     @Override
     public synchronized void startCLI() {
-        ConsoleListener consoleListener = ConsoleListener.getInstance();
-        BuildGraphic buildGraphic = new BuildGraphic();
+        synchronized (lock) {
+            ConsoleListener consoleListener = ConsoleListener.getInstance();
+            BuildGraphic buildGraphic = new BuildGraphic();
 
-        PrinterManager.consolePrint(buildGraphic.
-                        buildGraphicHelp(commandMap).
-                        buildMessage("Choose the action: ").toString(),
-                Level.STANDARD);
-        consoleListener.setCommandMap(commandMap);
+            PrinterManager.consolePrint(buildGraphic.
+                            buildGraphicHelp(commandMap).
+                            buildMessage("Choose the action: ").toString(),
+                    Level.STANDARD);
+            consoleListener.setCommandMap(commandMap);
+            cliStateView.setStart(false);
+            lock.notifyAll();
+        }
     }
 
     private void viewMyCoins() {
@@ -141,7 +147,8 @@ public class CLIRoundScreen extends CLIBasicScreen {
                             clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
                     ));
             playersCoins.forEach((k,v) ->
-                    PrinterManager.consolePrint("Coins of " + k.getUsername() + ": " + v, Level.STANDARD));
+                    PrinterManager.consolePrint("Coins of " + k.getUsername() + ": " + v.toString() + "\n",
+                            Level.STANDARD));
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
