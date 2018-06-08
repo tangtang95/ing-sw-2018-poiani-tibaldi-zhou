@@ -216,7 +216,7 @@ public class ClientGetMessage {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR_LIST_KEY);
             JSONArray jsonArray = (JSONArray) jsonObject.get(SharedConstants.BODY);
             for (Object o : jsonArray)
-                colorWrappers.add(ColorWrapper.toObject((JSONObject)((JSONObject) o).get(SharedConstants.BODY)));
+                colorWrappers.add(ColorWrapper.toObject((JSONObject) o));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
