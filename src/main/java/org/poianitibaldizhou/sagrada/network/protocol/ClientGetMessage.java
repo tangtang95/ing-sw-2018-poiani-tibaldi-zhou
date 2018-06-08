@@ -305,7 +305,7 @@ public class ClientGetMessage {
         ColorWrapper colorWrapper;
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR);
-            colorWrapper = ColorWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
+            colorWrapper = ColorWrapper.toObject(jsonObject);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
