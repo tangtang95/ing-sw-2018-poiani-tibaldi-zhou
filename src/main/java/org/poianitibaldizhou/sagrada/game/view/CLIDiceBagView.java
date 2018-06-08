@@ -6,10 +6,23 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Objects;
 
+/**
+ * This class implement the IDrawableCollectionObserver and it takes care
+ * of printing the notify of diceBag on-screen
+ */
 public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableCollectionObserver {
 
+    /**
+     * Reference to CLIStateView for passing the parameter.
+     */
     private final transient CLIStateView cliStateView;
 
+    /**
+     * Constructor.
+     *
+     * @param cliStateView the CLI that contains all parameter.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+      */
     public CLIDiceBagView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
@@ -39,6 +52,10 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
         /* NOT IMPORTANT FOR THE CLI*/
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIStateView is the same.
+     */
     @Override
     public boolean equals(Object o) {
 
@@ -49,6 +66,9 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
         return Objects.equals(cliStateView, that.cliStateView);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();

@@ -194,6 +194,12 @@ public class BuildGraphic {
         return this;
     }
 
+    /**
+     * Build the graphic of a  privateObjectiveCard.
+     *
+     * @param privateObjectiveCard privateObjectiveCard whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicPrivateObjectiveCard(PrivateObjectiveCardWrapper privateObjectiveCard) {
         if (privateObjectiveCard != null) {
             buildMessage("------------------------PRIVATE OBJECTIVE CARD-----------------------");
@@ -297,6 +303,12 @@ public class BuildGraphic {
         return this;
     }
 
+    /**
+     * Build the graphic of the schema card.
+     *
+     * @param schemaCard schemaCard whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicSchemaCard(SchemaCardWrapper schemaCard) {
         if (schemaCard != null) {
             buildMessage("Card name: " + schemaCard.getName());
@@ -306,6 +318,12 @@ public class BuildGraphic {
         return this;
     }
 
+    /**
+     * Build the graphic of draft pool.
+     *
+     * @param draftPoolWrapper draftPool whom create the graphics.
+     * @return the BuildGraphic with the stringBuilder changed.
+     */
     public BuildGraphic buildGraphicDraftPool(DraftPoolWrapper draftPoolWrapper) {
         if (draftPoolWrapper != null) {
             buildMessage("---------------------------DRAFT POOL---------------------------");

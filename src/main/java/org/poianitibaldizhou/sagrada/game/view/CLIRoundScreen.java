@@ -19,18 +19,54 @@ import java.util.Objects;
  */
 public class CLIRoundScreen extends CLIBasicScreen {
 
+    /**
+     * Reference at the game name of the current game.
+     */
     protected final String gameName;
+
+    /**
+     * Reference at the player's token.
+     */
     protected final String token;
+
+    /**
+     * Reference at my User with my userName.
+     */
     private final transient UserWrapper myUser;
+
+    /**
+     * ToolCard list with the toolCard available in game.
+     */
     transient List<ToolCardWrapper> toolCardList;
+
+    /**
+     *The game's draftPool
+     */
     protected transient DraftPoolWrapper draftPool;
+
+    /**
+     * Reference to CLIStateView for passing the parameter.
+     */
     protected final transient CLIStateView cliStateView;
 
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
     protected final transient ClientGetMessage clientGetMessage;
+
+    /**
+     * Reference to ClientCreateMessage for making the message to send at the server.
+     */
     final transient ClientCreateMessage clientCreateMessage;
 
+    /**
+     * lock object for synchronizing with the turn start.
+     */
     private final transient Object lock;
 
+    /**
+     * The commands that player can use when is not his turn.
+     */
     private static final String QUIT = "Quit game";
     private static final String VIEW_DRAFT_POOL = "View the Draft Pool";
     private static final String VIEW_ROUND_TRACK = "View the Round Track";
@@ -63,7 +99,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
         initializeCommands();
     }
 
-
+    /**
+     * Initialize the ChangeConnection's commands.
+     */
     @Override
     protected void initializeCommands() {
         Command viewDraftPool = new Command(VIEW_DRAFT_POOL, "View the game Draft Pool");
@@ -109,6 +147,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
         commandMap.put(quit.getCommandText(), quit);
     }
 
+    /**
+     * Start the CLI.
+     */
     @Override
     public synchronized void startCLI() {
         synchronized (lock) {
@@ -125,6 +166,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         }
     }
 
+    /**
+     * View my coins command.
+     * Print to screen the number of expendable coin of the player.
+     */
     private void viewMyCoins() {
         Integer coins;
         try {
@@ -139,6 +184,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         }
     }
 
+    /**
+     * View players coins command.
+     * Print to screen the number of expendable coin of all players in game.
+     */
     private void viewPlayersCoins() {
         Map<UserWrapper, Integer> playersCoins;
         try {
@@ -155,6 +204,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         }
     }
 
+    /**
+     * View private objective cards command.
+     * Print to screen the private objective cards of the player.
+     */
     private void viewPrivateObjectiveCards(){
         BuildGraphic buildGraphic = new BuildGraphic();
         List<PrivateObjectiveCardWrapper> poc = new ArrayList<>();
@@ -170,6 +223,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCards(poc).toString(),Level.STANDARD);
     }
 
+    /**
+     * View my schema card command.
+     * Print to screen the schema card of the player.
+     */
     void viewMySchemaCard() {
         BuildGraphic buildGraphic = new BuildGraphic();
         SchemaCardWrapper schemaCard = null;
@@ -186,6 +243,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
 
     }
 
+    /**
+     * View players schema cards command.
+     * Print to screen the schema cards of all players in game.
+     */
     private void viewSchemaCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
         Map<UserWrapper,SchemaCardWrapper> schemaCards;
@@ -203,6 +264,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         }
     }
 
+    /**
+     * View public objective cards command.
+     * Print to screen the public objective cards of the game.
+     */
     private void viewPublicObjectiveCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<PublicObjectiveCardWrapper> pocList = null;
@@ -218,6 +283,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicPublicObjectiveCards(pocList).toString(),Level.STANDARD);
     }
 
+    /**
+     * View toolCards card command.
+     * Print to screen the toolCards available in this game.
+     */
     void viewToolCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<ToolCardWrapper> toolCardWrapperList = null;
@@ -234,6 +303,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicToolCards(toolCardWrapperList).toString(),Level.STANDARD);
     }
 
+    /**
+     * View roundTrack command.
+     * Print to screen the game's roundTrack.
+     */
     private void viewRoundTrack() {
         BuildGraphic buildGraphic = new BuildGraphic();
         RoundTrackWrapper roundTrackWrapper = null;
@@ -249,6 +322,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrackWrapper).toString(),Level.STANDARD);
     }
 
+    /**
+     * View draftPool command.
+     * Print to screen the game's draft pool.
+     */
     void viewDraftPool() {
         BuildGraphic buildGraphic = new BuildGraphic();
         DraftPoolWrapper draftPoolWrapper = null;
@@ -265,6 +342,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         PrinterManager.consolePrint(buildGraphic.buildGraphicDraftPool(draftPoolWrapper).toString(),Level.STANDARD);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIRoundScreen has the same gameName, user, token, clientGetMessage and clientCreateMessage.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -278,13 +359,15 @@ public class CLIRoundScreen extends CLIBasicScreen {
                 Objects.equals(clientCreateMessage, that.clientCreateMessage);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), gameName, myUser, token, clientGetMessage, clientCreateMessage);
     }
 
-    public static CLIRoundScreen reconnect() throws RemoteException{
+    public static CLIRoundScreen reconnect() {
         // TODO handle reconnection; not sure if here
         return null;
     }

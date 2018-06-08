@@ -7,8 +7,15 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 
+/**
+ * The CLI of round, with the commands that the player can use when
+ * he is in his turn of play.
+ */
 public class CLITurnScreen extends CLIRoundScreen {
 
+    /**
+     * The commands that player can use when is his turn.
+     */
     private static final String PLACE_DICE = "Place dice";
     private static final String PLAY_TOOL_CARD = "Play Tool Card";
     private static final String END_TURN = "End Turn";
@@ -28,6 +35,9 @@ public class CLITurnScreen extends CLIRoundScreen {
         initializeCommands();
     }
 
+    /**
+     * Initialize the ChangeConnection's commands.
+     */
     @Override
     protected void initializeCommands() {
         super.initializeCommands();
@@ -52,6 +62,11 @@ public class CLITurnScreen extends CLIRoundScreen {
         commandMap.put(quit.getCommandText(), quit);
     }
 
+    /**
+     * Select a position for placing a dice.
+     *
+     * @return a position choice.
+     */
     private PositionWrapper selectPosition() {
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
@@ -65,6 +80,9 @@ public class CLITurnScreen extends CLIRoundScreen {
         return new PositionWrapper(row, column);
     }
 
+    /**
+     * Finish the turn.
+     */
     private void endTurn() {
         try {
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
@@ -76,6 +94,9 @@ public class CLITurnScreen extends CLIRoundScreen {
         }
     }
 
+    /**
+     * place a dice on schema card.
+     */
     private void placeDice() {
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
@@ -101,6 +122,9 @@ public class CLITurnScreen extends CLIRoundScreen {
 
     }
 
+    /**
+     * play an available tool card.
+     */
     private void playToolCard(){
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();

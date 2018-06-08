@@ -13,11 +13,29 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class implement the IRoundTrackObserver and it takes care
+ * of printing the notify of roundTrack on-screen
+ */
 public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrackObserver {
 
+    /**
+     * Reference to CLIStateView for passing the parameter.
+     */
     private final transient CLIStateView cliStateView;
+
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
     private final transient ClientGetMessage clientGetMessage;
 
+
+    /**
+     * Constructor.
+     *
+     * @param cliStateView the CLI that contains all parameter.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
     public CLIRoundTrackView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
@@ -84,6 +102,10 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
                 buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIRoundTrackView is the same or the CLIStateView is the same.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -93,6 +115,9 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         return Objects.equals(cliStateView, that.cliStateView);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();

@@ -19,16 +19,49 @@ import java.util.List;
 
 import java.util.Objects;
 
+/**
+ * This class implement the IGameView and it takes care
+ * of printing the notify of game on-screen
+ */
 public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
+    /**
+     * Network manager for connecting with the server.
+     */
     private final transient ConnectionManager connectionManager;
 
+    /**
+     * Reference to CLIStateView for passing the parameter.
+     */
     private final transient CLIStateView cliStateView;
+
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
     private final transient ClientGetMessage clientGetMessage;
+
+    /**
+     * Reference to ClientCreateMessage for making the message to send at the server.
+     */
     private final transient ClientCreateMessage clientCreateMessage;
+
+    /**
+     * Reference at the player's token.
+     */
     private final transient String token;
+
+    /**
+     * Reference at the game name of the current game.
+     */
     private final transient String gameName;
 
+    /**
+     * Constructor.
+     *
+     * @param cliStateView the CLI that contains all parameter.
+     * @param connectionManager the network manager for connecting with the server.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
     public CLIGameView(CLIStateView cliStateView, ConnectionManager connectionManager) throws RemoteException {
         super();
         this.connectionManager = connectionManager;
@@ -39,14 +72,18 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         this.cliStateView = cliStateView;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPlayersCreate(String jString) throws IOException {
         List<UserWrapper> users = clientGetMessage.getListOfUserWrapper(jString);
         users.forEach(user -> {
             try {
                 connectionManager.getGameController().bindPlayer(
-                        clientCreateMessage.createTokenMessage(token).createUsernameMessage(user.getUsername()).createGameNameMessage(gameName).buildMessage(),
-                        new CLIPlayerView(cliStateView, user.getUsername()),
+                        clientCreateMessage.createTokenMessage(token).createUsernameMessage(user.getUsername()).
+                                createGameNameMessage(gameName).buildMessage(),
+                        new CLIPlayerView(cliStateView),
                         new CLISchemaCardView(cliStateView, user.getUsername())
                 );
             } catch (IOException e) {
@@ -57,6 +94,10 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onPublicObjectiveCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
@@ -65,6 +106,9 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                 Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onToolCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -81,11 +125,17 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
             );
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onChoosePrivateObjectiveCards(String privateObjectiveCards) {
         /*SINGLE PLAYER*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPrivateObjectiveCardDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -95,6 +145,9 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                 Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSchemaCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
@@ -108,8 +161,6 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
             buildGraphic.buildMessage("                   [" + (i + 1) + "]").buildGraphicSchemaCard(schemaCards.get(i));
         buildGraphic.buildMessage("Choose a schema card:");
         PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
-
-        int number;
 
         connectionManager.getGameController().chosenSchemaCard(
                 clientCreateMessage.createSchemaCardMessage(schemaCards.get(consoleListener.readPositionNumber(schemaCards.size()))).
@@ -133,7 +184,10 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         PrinterManager.consolePrint(err + "\n", Level.ERROR);
     }
 
-
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIStateView is the same or the token is the same and the game name is the same.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -145,6 +199,9 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                 Objects.equals(gameName, that.gameName);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();

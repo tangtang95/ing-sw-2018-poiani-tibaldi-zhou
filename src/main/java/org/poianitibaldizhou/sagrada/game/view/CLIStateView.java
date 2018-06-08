@@ -14,21 +14,72 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * This class implement the IStateObserver and it takes care
+ * of printing the notify of the state on-screen.
+ */
 public class CLIStateView extends UnicastRemoteObject implements IStateObserver {
 
+    /**
+     * Reference to my user.
+     */
     private final transient UserWrapper myUser;
+
+    /**
+     * Reference to the current user.
+     */
     private transient UserWrapper currentUser;
+
+    /**
+     * Reference at the game name of the current game.
+     */
     private final String gameName;
+
+    /**
+     * Reference at the player's token.
+     */
     private final String token;
 
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
     private final transient ClientGetMessage clientGetMessage = new ClientGetMessage();
+
+    /**
+     * Reference to ClientCreateMessage for making the message to send at the server.
+     */
     private final transient ClientCreateMessage clientCreateMessage = new ClientCreateMessage();
+
+    /**
+     * Network manager for connecting with the server.
+     */
     private final transient ConnectionManager connectionManager;
+
+    /**
+     * Manager for handler the changed of the screen.
+     */
     private final transient ScreenManager screenManager;
 
+    /**
+     * lock object for synchronizing with the turn start.
+     */
     private final transient Object lock = new Object();
+
+    /**
+     * Boolean value use to control the wait status.
+     */
     private boolean start;
 
+    /**
+     * Constructor.
+     *
+     * @param connectionManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @param gameName name of the current game.
+     * @param myUser my user in this game.
+     * @param token my token in this game.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
     public CLIStateView(ConnectionManager connectionManager, ScreenManager screenManager,
                         String gameName, UserWrapper myUser, String token
     ) throws RemoteException {
@@ -41,38 +92,67 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         this.start = true;
     }
 
+    /**
+     * @return a reference to connectionManager.
+     */
     public ConnectionManager getConnectionManager() {
         return connectionManager;
     }
 
+    /**
+     * @return a reference to the current user.
+     */
     public UserWrapper getCurrentUser() {
         return currentUser;
     }
 
+    /**
+     * @return a reference to clientGetMessage.
+     */
     public ClientGetMessage getClientGetMessage() {
         return clientGetMessage;
     }
 
+    /**
+     * @return a reference to myUser.
+     */
     public UserWrapper getMyUser() {
         return myUser;
     }
 
+    /**
+     * @return a reference to teh game name.
+     */
     public String getGameName() {
         return gameName;
     }
 
+    /**
+     * @return a reference to my token.
+     */
     public String getToken() {
         return token;
     }
 
+    /**
+     * @return a reference to clientCreateMessage.
+     */
     public ClientCreateMessage getClientCreateMessage() {
         return clientCreateMessage;
     }
 
+    /**
+     * @return a reference to teh lock object.
+     */
     public Object getLock() {
         return lock;
     }
 
+    /**
+     * Set the boolean value of start-
+     *
+     * @param start false for start the turn, true for block the start of turn.
+     */
     public void setStart(boolean start) {
         this.start = start;
     }
@@ -202,6 +282,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onVictoryPointsCalculated(String victoryPoints) throws IOException {
         PrinterManager.consolePrint("Table of the points\n", Level.STANDARD);
@@ -220,6 +303,10 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         PrinterManager.consolePrint("The winner is " + user.getUsername() + "\n", Level.STANDARD);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIStateView is the same or myUser is the same and the game name is the same.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -230,6 +317,9 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
                 Objects.equals(gameName, that.gameName);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();

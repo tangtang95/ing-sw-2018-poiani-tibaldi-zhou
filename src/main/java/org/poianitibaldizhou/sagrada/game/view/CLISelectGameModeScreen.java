@@ -88,8 +88,8 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      */
     private void newSinglePlayerGame() throws RemoteException {
         ConsoleListener.getInstance().stopCommandConsole();
-        String gameName = null;
-        String token = null;
+        String gameName;
+        String token;
         String username = null;
         Integer difficulty = null;
 
@@ -140,7 +140,8 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
         }
 
         ConsoleListener.getInstance().wakeUpCommandConsole();
-        screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName, new UserWrapper(username), token));
+        screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
+                new UserWrapper(username), token));
     }
 
     /**

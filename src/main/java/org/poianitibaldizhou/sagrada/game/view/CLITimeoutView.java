@@ -10,14 +10,25 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Objects;
 
+/**
+ * This class implement the ITimeOutObserver and it takes care
+ * of printing the notify of the timeOut on-screen.
+ */
 public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObserver {
 
-    private transient CLIStateView cliStateView;
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
     private final transient ClientGetMessage clientGetMessage;
 
-    public CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
+
+    /**
+     * Constructor.
+     *
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
+    public CLITimeoutView() throws RemoteException {
         super();
-        this.cliStateView = cliStateView;
         this.clientGetMessage = new ClientGetMessage();
     }
 
@@ -27,15 +38,21 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
     @Override
     public void onTimeOut(String message) throws IOException {
         String username = clientGetMessage.getTurnUserWrapper(message).getUsername();
-
-        PrinterManager.consolePrint("User " + username + " has timed out", Level.STANDARD);
+        PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLITimeoutView is the same.
+     */
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof CLITimeoutView;
+    public boolean equals(Object o) {
+        return o instanceof CLITimeoutView;
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();

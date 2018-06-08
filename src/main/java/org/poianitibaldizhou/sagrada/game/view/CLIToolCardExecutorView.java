@@ -4,7 +4,6 @@ import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
@@ -19,15 +18,49 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class implement the IToolCardExecutorObserver and it takes care
+ * of printing the notify of the toolCardAction on-screen and take the parameter for executing the command.
+ */
 public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToolCardExecutorObserver {
 
+    /**
+     * Reference to CLIStateView for passing the parameter.
+     */
     private transient CLIStateView cliStateView;
+
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
     private final transient ClientGetMessage clientGetMessage;
+
+    /**
+     * Reference to ClientCreateMessage for making the message to send at the server.
+     */
     private final transient ClientCreateMessage clientCreateMessage;
+
+    /**
+     * Reference to the ConsoleListener for reading number from keyword.
+     */
     private final transient ConsoleListener consoleListener;
+
+    /**
+     * Network manager for connecting with the server.
+     */
     private final transient ConnectionManager connectionManager;
+
+    /**
+     * Reference of name of tooCard associated with this class.
+     */
     private final transient String toolCardName;
 
+    /**
+     * Constructor.
+     *
+     * @param cliStateView the CLI that contains all parameter.
+     * @param toolCardName the name of toolCard associated at this class.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
     public CLIToolCardExecutorView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
         this.consoleListener = ConsoleListener.getInstance();
@@ -115,9 +148,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             maxNumber = temp;
         }
 
-        if(!checkDeltaValueValidity(minNumber, diceValue, value)) {
+        if(checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
-        } else if(!checkDeltaValueValidity(maxNumber, diceValue, value)) {
+        } else if(checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
 
@@ -163,7 +196,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedPosition(String message) throws IOException {
-        System.out.println("NOTIFY NEED POSITION");
         BuildGraphic buildGraphic = new BuildGraphic();
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
@@ -296,12 +328,14 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @param delta delta between values
      * @return true if valid, false otherwise
      */
-    private boolean checkDeltaValueValidity(int newValue, int oldValue, int delta) {
-        if (newValue < DiceWrapper.MIN_VALUE || newValue > DiceWrapper.MAX_VALUE)
-            return false;
-        return (newValue == oldValue + delta) || (newValue == oldValue - delta);
+    private boolean checkValidityDeltaValue(int newValue, int oldValue, int delta) {
+        return newValue < DiceWrapper.MIN_VALUE || newValue > DiceWrapper.MAX_VALUE || (newValue != oldValue + delta) && (newValue != oldValue - delta);
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIToolCardExecutorView is the same or it has the same cliStateView and same toolCardName.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -312,6 +346,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 Objects.equals(toolCardName, that.toolCardName);
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();

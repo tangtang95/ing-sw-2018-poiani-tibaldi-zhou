@@ -63,7 +63,7 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
      * This method pose the CLI in pause for TIME_SLEEP millisecond, for
      * attending the notify.
      */
-    protected void pauseCLI() {
+    void pauseCLI() {
         try {
             Thread.sleep(TIME_SLEEP);
         } catch (InterruptedException e) {
