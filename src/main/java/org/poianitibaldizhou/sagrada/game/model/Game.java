@@ -4,6 +4,7 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
@@ -12,6 +13,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
@@ -144,7 +147,7 @@ public abstract class Game implements IGame, IGameStrategy {
 
     // INTERFACE METHODS
     @Override
-    public void forceStateChange() throws InvalidActionException{
+    public void forceStateChange() throws InvalidActionException {
         state.forceStateChange();
     }
 
@@ -317,7 +320,7 @@ public abstract class Game implements IGame, IGameStrategy {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         Optional<ToolCard> toolCardRef = toolCards.stream().filter(card -> card.equals(toolCard)).findFirst();
-        if(!toolCardRef.isPresent())
+        if (!toolCardRef.isPresent())
             throw new InvalidActionException();
         state.useCard(players.get(token), toolCardRef.get(), executorObserver);
     }
@@ -336,9 +339,41 @@ public abstract class Game implements IGame, IGameStrategy {
 
     @Override
     public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws IllegalArgumentException, InvalidActionException {
+    /*
+        try {
+            players.get(token).placeDice(new Dice(1, Color.YELLOW), new Position(0, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(2, Color.BLUE), new Position(1, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(3, Color.YELLOW), new Position(2, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(4, Color.BLUE), new Position(3, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+
+            players.get(token).placeDice(new Dice(2, Color.BLUE), new Position(0, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(3, Color.YELLOW), new Position(1, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(4, Color.BLUE), new Position(2, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(5, Color.YELLOW), new Position(3, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+
+            players.get(token).placeDice(new Dice(3, Color.YELLOW), new Position(0, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(4, Color.BLUE), new Position(1, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(5, Color.YELLOW), new Position(2, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(6, Color.BLUE), new Position(3, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+
+            players.get(token).placeDice(new Dice(1, Color.BLUE), new Position(0, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(2, Color.YELLOW), new Position(1, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(3, Color.BLUE), new Position(2, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(4, Color.YELLOW), new Position(3, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+
+            players.get(token).placeDice(new Dice(2, Color.YELLOW), new Position(0, 4), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(3, Color.BLUE), new Position(1, 4), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+            players.get(token).placeDice(new Dice(4, Color.YELLOW), new Position(2, 4), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
+
+        } catch (RuleViolationException e) {
+            e.printStackTrace();
+        }
+        */
+
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
+
     }
 
     @Override
@@ -348,7 +383,7 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     @Override
-    public Player getCurrentPlayer() throws InvalidActionException{
+    public Player getCurrentPlayer() throws InvalidActionException {
         return state.getCurrentPlayer();
     }
 

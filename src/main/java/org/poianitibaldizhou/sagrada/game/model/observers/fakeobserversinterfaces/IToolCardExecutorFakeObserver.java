@@ -58,7 +58,7 @@ public interface IToolCardExecutorFakeObserver {
      * Notify the requirement of a position of a dice on schemaCard of a certain color
      *
      * @param schemaCard schema card on which to choose the position
-     * @param color the certain color
+     * @param color      the certain color
      */
     void notifyNeedDicePositionOfCertainColor(Color color, SchemaCard schemaCard);
 
@@ -78,4 +78,11 @@ public interface IToolCardExecutorFakeObserver {
      * Notify to the client the requirement of an answer to the continuation of the tool card execution
      */
     void notifyNeedContinueAnswer();
+
+    /**
+     * Notifies that a dice has been re-rolled.
+     *
+     * @param dice the dice after the re-roll
+     */
+    void notifyDiceReroll(Dice dice);
 }

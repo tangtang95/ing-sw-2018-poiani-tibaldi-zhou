@@ -200,4 +200,21 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
 
         observerManager.pushThreadInQueue(token, runnable);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyDiceReroll(Dice dice) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyDiceReroll(serverCreateMessage.createDiceMessage(dice).buildMessage());
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+
+    }
 }

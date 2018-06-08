@@ -12,6 +12,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
+import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.*;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
@@ -278,7 +280,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: choseAction");
 
-        if(actionCommand instanceof EndTurnAction)
+        if (actionCommand instanceof EndTurnAction)
             System.out.println("");
 
         if (initialCheck(token, gameName))
@@ -774,7 +776,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return serverGetMessage.getErrorMessage();
         }
 
-        if(gameManager.getGameByName(gameName).isSinglePlayer()) {
+        if (gameManager.getGameByName(gameName).isSinglePlayer()) {
             return serverGetMessage.getErrorMessage();
         }
 
@@ -800,7 +802,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return serverGetMessage.getErrorMessage();
         }
 
-        if(gameManager.getGameByName(gameName).isSinglePlayer())
+        if (gameManager.getGameByName(gameName).isSinglePlayer())
             return serverGetMessage.getErrorMessage();
 
         Optional<Player> requestingPlayer;
@@ -809,8 +811,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             requestingPlayer = gameManager.getGameByName(gameName).getPlayers().stream().filter(player -> player.getToken().equals(token)).findFirst();
         }
 
-        if(!requestingPlayer.isPresent())
+        if (!requestingPlayer.isPresent())
             return serverGetMessage.getErrorMessage();
+
 
         return serverCreateMessage.createCoinsMessage(requestingPlayer.get().getCoins()).buildMessage();
     }

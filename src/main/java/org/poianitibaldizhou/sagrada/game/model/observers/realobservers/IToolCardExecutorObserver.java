@@ -81,4 +81,12 @@ public interface IToolCardExecutorObserver extends Remote {
      * @throws IOException network error
      */
     void notifyNeedContinueAnswer() throws IOException;
+
+    /**
+     * Notify that a dice has been re-rolled.
+     *
+     * @param message protocol message containing the re-rolled dice
+     * @throws IOException network error
+     */
+    void notifyDiceReroll(String message) throws IOException;
 }
