@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IGameFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IGameObserver;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
@@ -40,13 +40,12 @@ public class GameFakeObserver implements IGameFakeObserver {
 
     /**
      * {@inheritDoc}
+     * @param users
      */
     @Override
-    public void onPlayersCreate(List<Player> players) {
+    public void onPlayersCreate(List<User> users) {
         Runnable runnable = () -> {
             try {
-                ArrayList users = new ArrayList();
-                players.forEach(player -> users.add(player.getUser()));
                 realObserver.onPlayersCreate(serverCreateMessage.createUserList(users).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

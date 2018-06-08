@@ -30,7 +30,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
     @Override
     public void onFavorTokenChange(String value) throws IOException {
         String message = cliStateView.getCurrentUser().getUsername() + " has spent " +
-                clientGetMessage.getValue(value) + "token";
+                clientGetMessage.getValue(value) + " token";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.INFORMATION);
     }

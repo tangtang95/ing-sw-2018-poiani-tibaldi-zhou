@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -73,7 +74,8 @@ public class SinglePlayerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void newInstanceFailed() throws Exception {
-        Player p = SinglePlayer.newInstance(new MultiPlayer(user, schemaCard, privateObjectiveCardList));
+        Player p = SinglePlayer.newInstance(new MultiPlayer(user, new FavorToken(schemaCard.getDifficulty()),
+                schemaCard, privateObjectiveCardList));
     }
 
 }

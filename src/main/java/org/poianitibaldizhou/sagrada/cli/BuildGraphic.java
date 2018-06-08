@@ -145,8 +145,8 @@ public class BuildGraphic {
                 stringBuilder.append("[").append(i + 1).append("]\n");
                 stringBuilder.append(NAME).append(toolCard.getName()).append("\n");
                 stringBuilder.append("Color:     ").append(toolCard.getColor()).append("\n");
-                stringBuilder.append(DESCRIPTION);
-                stringBuilder.append(toolCard.getDescription()).append("\n");
+                stringBuilder.append(DESCRIPTION).append(toolCard.getDescription()).append("\n");
+                stringBuilder.append("Token: ").append(toolCard.getToken()).append("\n");
             }
         }
         return this;

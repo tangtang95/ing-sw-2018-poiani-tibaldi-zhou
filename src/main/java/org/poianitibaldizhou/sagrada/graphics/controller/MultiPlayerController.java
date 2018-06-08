@@ -6,7 +6,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -18,9 +17,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjec
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
+import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.*;
-import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
@@ -63,7 +62,7 @@ public class MultiPlayerController extends Controller implements Initializable {
             e.printStackTrace();
         }
 
-        testFrontBackSchemaCardView();
+        //testFrontBackSchemaCardView();
         /*testSchemaCardView();
         testDiceView();
         testRoundTrackView();
@@ -81,41 +80,18 @@ public class MultiPlayerController extends Controller implements Initializable {
 
     public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
-        /*try {
+        try {
             List<UserWrapper> users = multiPlayerModel.joinGame(gameListener, gameListener, stateView,
                     roundTrackView, draftPoolView, diceBagView, timeoutListener);
-            List<UserWrapper> usersOrdered = getUsersOrdered(users);
-            System.out.println(users);
-            drawUsers(usersOrdered);
         } catch (IOException e) {
             e.printStackTrace();
             AlertBox.displayBox("Errore di rete", "Sagrada è crashato: " + e.toString());
-        }*/
+        }
 
     }
 
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
         multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
-    }
-
-    private List<UserWrapper> getUsersOrdered(final List<UserWrapper> users){
-        List<UserWrapper> usersOrdered = new ArrayList<>();
-        boolean userFounded = false;
-        for (UserWrapper user: users) {
-            if(user.getUsername().equals(multiPlayerModel.getUsername())) {
-                userFounded = true;
-            }
-            if(userFounded){
-                usersOrdered.add(user);
-            }
-        }
-        for (UserWrapper user: users) {
-            if(user.getUsername().equals(multiPlayerModel.getUsername())) {
-                break;
-            }
-            usersOrdered.add(user);
-        }
-        return usersOrdered;
     }
 
     private void drawUsers(List<UserWrapper> users){
@@ -124,7 +100,6 @@ public class MultiPlayerController extends Controller implements Initializable {
         double centerY = rootPane.getPrefHeight()/2;
 
         Map<Integer, Double> angles = new HashMap<>();
-
 
         for (int i = 0; i < users.size(); i++) {
 
@@ -254,10 +229,25 @@ public class MultiPlayerController extends Controller implements Initializable {
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
         }
+
+        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
+        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
+        List<PrivateObjectiveCardWrapper> privateObjectiveCardList = new ArrayList<>();
+
+        try {
+            JSONObject object = (JSONObject) privateObjectiveCards.draw().toJSON().get("body");
+            PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
+                    new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
+            privateObjectiveCardList.add(privateObjectiveCardWrapper);
+        }catch (EmptyCollectionException e) {
+            e.printStackTrace();
+        }
+
         GameView gameView = gameListener.getGameView();
 
         gameView.activateNotifyPane();
         gameView.clearNotifyPane();
+        gameView.showPrivateObjectiveCards(privateObjectiveCardList);
         gameView.showFrontBackSchemaCards(frontBackSchemaCardWrappers);
     }
 
@@ -304,4 +294,15 @@ public class MultiPlayerController extends Controller implements Initializable {
         diceView.setTranslateY(300);
     }
 
+    public Map<UserWrapper, SchemaCardWrapper> getSchemaCardMap() throws IOException {
+        return multiPlayerModel.getSchemaCardMap();
+    }
+
+    public String getUsername() {
+        return multiPlayerModel.getUsername();
+    }
+
+    public List<PrivateObjectiveCardWrapper> getOwnPrivateObjectiveCard() throws IOException {
+        return multiPlayerModel.getOwnPrivateObjectiveCard();
+    }
 }

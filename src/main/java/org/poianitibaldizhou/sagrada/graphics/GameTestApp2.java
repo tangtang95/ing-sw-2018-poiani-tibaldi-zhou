@@ -37,6 +37,9 @@ public class GameTestApp2 extends Application{
 
         Scene scene = new Scene(scenes, size.getWidth(), size.getHeight());
         scene.setCamera(new PerspectiveCamera());
+        String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
+        scene.getStylesheets().add(css);
+
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);

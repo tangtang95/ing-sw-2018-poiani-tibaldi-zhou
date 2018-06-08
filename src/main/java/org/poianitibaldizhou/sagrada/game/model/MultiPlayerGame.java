@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
+import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -96,7 +97,8 @@ public class MultiPlayerGame extends Game{
 
     @Override
     public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.put(user.getToken(), new MultiPlayer(user, schemaCard, privateObjectiveCards));
+        players.put(user.getToken(), new MultiPlayer(user, new FavorToken(schemaCard.getDifficulty()),
+                schemaCard, privateObjectiveCards));
     }
 
     @Override

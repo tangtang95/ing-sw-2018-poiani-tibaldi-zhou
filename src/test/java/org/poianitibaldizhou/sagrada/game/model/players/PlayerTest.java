@@ -14,12 +14,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;
@@ -42,6 +41,7 @@ public class PlayerTest {
 
     private List<PrivateObjectiveCard> privateObjectiveCardList;
     private Player player;
+    private FavorToken favorToken;
 
     @Before
     public void setUp() {
@@ -51,7 +51,8 @@ public class PlayerTest {
         privateObjectiveCardList.add(privateObjectiveCard2);
         schemaCard = spy(new SchemaCard("schemaName", 3,
                 new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS]));
-        player = new MultiPlayer(user, schemaCard, privateObjectiveCardList);
+        favorToken = new FavorToken(schemaCard.getDifficulty());
+        player = new MultiPlayer(user, favorToken, schemaCard, privateObjectiveCardList);
     }
 
     @After
@@ -62,13 +63,14 @@ public class PlayerTest {
         privateObjectiveCardList = null;
         schemaCard = null;
         user = null;
+        favorToken = null;
     }
 
     @Test
     public void getterTest() throws Exception {
         SchemaCard sc = new SchemaCard("schemaName", 3,
                 new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS]);
-        Player p = new MultiPlayer(user, sc, privateObjectiveCardList);
+        Player p = new MultiPlayer(user, favorToken, sc, privateObjectiveCardList);
         assertEquals(user, p.getUser());
         assertEquals(3, p.getCoins());
         assertFalse(sc == p.getSchemaCard());
@@ -161,17 +163,17 @@ public class PlayerTest {
     public void equalsTest() throws Exception {
         //Different user
         User u = mock(User.class);
-        Player p = new MultiPlayer(u, schemaCard, privateObjectiveCardList);
+        Player p = new MultiPlayer(u, favorToken, schemaCard, privateObjectiveCardList);
         assertFalse(player.equals(p));
 
         //Different schemaCard
         SchemaCard sc = new SchemaCard("other", 3
                 , new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS]);
-        p = new MultiPlayer(user, sc, privateObjectiveCardList);
+        p = new MultiPlayer(user, favorToken, sc, privateObjectiveCardList);
         assertFalse(player.equals(p));
 
         //Different token
-        p = new MultiPlayer(user, schemaCard, privateObjectiveCardList);
+        p = new MultiPlayer(user, new FavorToken(3), schemaCard, privateObjectiveCardList);
         p.removeCoins(1);
         assertFalse(player.equals(p));
 
@@ -183,7 +185,7 @@ public class PlayerTest {
         assertFalse(player.equals(p));
 
         //Equals
-        p = new MultiPlayer(user, schemaCard, privateObjectiveCardList);
+        p = new MultiPlayer(user, favorToken, schemaCard, privateObjectiveCardList);
         assertTrue(player.equals(p));
     }
 
@@ -191,17 +193,17 @@ public class PlayerTest {
     public void hashCodeTest() throws Exception {
         //Different user
         User u = mock(User.class);
-        Player p = new MultiPlayer(u, schemaCard, privateObjectiveCardList);
+        Player p = new MultiPlayer(u, favorToken, schemaCard, privateObjectiveCardList);
         assertNotEquals(p.hashCode(), player.hashCode());
 
         //Different schemaCard
         SchemaCard sc = new SchemaCard("other", 3
                 , new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS]);
-        p = new MultiPlayer(user, sc, privateObjectiveCardList);
+        p = new MultiPlayer(user, favorToken, sc, privateObjectiveCardList);
         assertNotEquals(p.hashCode(), player.hashCode());
 
         //Different token
-        p = new MultiPlayer(user, schemaCard, privateObjectiveCardList);
+        p = new MultiPlayer(user, new FavorToken(3), schemaCard, privateObjectiveCardList);
         p.removeCoins(1);
         assertNotEquals(p.hashCode(), player.hashCode());
 
@@ -213,7 +215,7 @@ public class PlayerTest {
         assertNotEquals(user.hashCode(), player.hashCode());
 
         //Equals
-        p = new MultiPlayer(user, schemaCard, privateObjectiveCardList);
+        p = new MultiPlayer(user, favorToken, schemaCard, privateObjectiveCardList);
         assertEquals(p.hashCode(), player.hashCode());
     }
 
