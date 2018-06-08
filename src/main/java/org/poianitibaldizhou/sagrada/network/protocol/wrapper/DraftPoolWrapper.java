@@ -9,7 +9,11 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * Copy of DraftPool class of game model.
+ */
 @Immutable
 public final class DraftPoolWrapper implements JSONable{
 
@@ -18,20 +22,38 @@ public final class DraftPoolWrapper implements JSONable{
      */
     private static final String JSON_DICE_LIST = "diceList";
 
+    /**
+     * list of diceWrapper in the draftPool.
+     */
     private final List<DiceWrapper> dices;
 
-    public DraftPoolWrapper(Collection<DiceWrapper> dices) {
+    /**
+     * Constructor.
+     *
+     * @param dices list of dice in the draftPoolWrapper.
+     */
+    DraftPoolWrapper(Collection<DiceWrapper> dices) {
         this.dices = new ArrayList<>(dices);
     }
 
+    /**
+     * @return the diceWrappers in the draftPoolWrapper
+     */
     public List<DiceWrapper> getDices() {
         return new ArrayList<>(dices);
     }
 
+    /**
+     * @param index number of diceWrapper to get.
+     * @return the diceWrapper required.
+     */
     public DiceWrapper getDice(int index) {
         return dices.get(index);
     }
 
+    /**
+     * @return the size of the draftPoolWrapper.
+     */
     public int size(){return dices.size();}
 
     /**
@@ -64,8 +86,31 @@ public final class DraftPoolWrapper implements JSONable{
         return new DraftPoolWrapper(diceWrapperList);
     }
 
+    /**
+     * @return DraftPoolWrapper to string -> diceList.toString()
+     */
     @Override
     public String toString() {
         return dices.toString();
+    }
+
+    /**
+     * @param o the other object to compare.
+     * @return true if the DraftPoolWrapper is the same object or if it has the same list of DiceWrapper.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DraftPoolWrapper)) return false;
+        DraftPoolWrapper that = (DraftPoolWrapper) o;
+        return Objects.equals(getDices(), that.getDices());
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDices());
     }
 }

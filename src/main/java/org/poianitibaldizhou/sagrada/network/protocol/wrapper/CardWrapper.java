@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
 /**
- * Copy class of Card.
+ * Copy class of model class Card.
  * Abstract class that represents a generic card of game.
  */
 @Immutable

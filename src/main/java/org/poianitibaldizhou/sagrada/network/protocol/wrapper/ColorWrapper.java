@@ -1,25 +1,19 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
-import org.jetbrains.annotations.Contract;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+/**
+ * Enum of colorWrapper, copy of Color class in model.
+ */
 public enum ColorWrapper implements JSONable{
-    GREEN(0), RED(1), YELLOW(2), BLUE(3), PURPLE(4);
+    GREEN, RED, YELLOW, BLUE, PURPLE;
 
-    private int index;
-
-    ColorWrapper(int index) {
-        this.index = index;
-    }
-
-    @Contract(pure = true)
-    public int getIndex(){
-        return index;
-    }
-
-
+    /**
+     * Convert a ColorWrapper in a JSONObject.
+     * @return a JSONObject.
+     */
     @Override
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
@@ -29,6 +23,12 @@ public enum ColorWrapper implements JSONable{
         return main;
     }
 
+    /**
+     * Convert a JSONObject in a ColorWrapper.
+     *
+     * @param jsonObject to convert in a ColorWrapper.
+     * @return a ColorWrapper.
+     */
     public static ColorWrapper toObject(JSONObject jsonObject) {
         return ColorWrapper.valueOf(jsonObject.get(SharedConstants.BODY).toString());
     }

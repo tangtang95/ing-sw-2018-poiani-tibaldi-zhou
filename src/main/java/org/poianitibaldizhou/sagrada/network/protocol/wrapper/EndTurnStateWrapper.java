@@ -4,6 +4,10 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+/**
+ * Copy class of EndTurnState in the game model.
+ * End turn action.
+ */
 @Immutable
 public final class EndTurnStateWrapper implements IActionWrapper {
     /**
@@ -20,7 +24,10 @@ public final class EndTurnStateWrapper implements IActionWrapper {
         return main;
     }
 
-    public static EndTurnStateWrapper toObject(JSONObject jsonObject) {
+    /**
+     * @return null.
+     */
+    public static EndTurnStateWrapper toObject() {
         return null;
     }
 }

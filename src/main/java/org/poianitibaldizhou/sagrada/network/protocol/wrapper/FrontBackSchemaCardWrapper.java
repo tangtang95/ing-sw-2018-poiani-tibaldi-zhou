@@ -8,24 +8,46 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * Copy of FrontBackSchemaCard of the game model.
+ */
 @Immutable
 public final class FrontBackSchemaCardWrapper implements JSONable{
 
+    /**
+     * List of two schemaCardWrapper, represent the two face of schemaCard.
+     */
     private final List<SchemaCardWrapper> schemaCards;
 
-    public FrontBackSchemaCardWrapper() {
+    /**
+     * Constructor.
+     */
+    FrontBackSchemaCardWrapper() {
         this.schemaCards = new ArrayList<>();
     }
 
+    /**
+     * @return the front schemaCardWrapper.
+     */
     public SchemaCardWrapper getFrontSchemaCard() {
         return schemaCards.get(0);
     }
 
+    /**
+     * @return the back of schemaCardWrapper.
+     */
     public SchemaCardWrapper getBackSchemaCard() {
         return schemaCards.get(1);
     }
 
+    /**
+     * @return the frontBack of schemaCardWrapper.
+     */
+    public List<SchemaCardWrapper> getSchemaCards() {
+        return schemaCards;
+    }
 
     /**
      * Convert a FrontBackSchemaCardWrapper in a JSONObject.
@@ -56,7 +78,24 @@ public final class FrontBackSchemaCardWrapper implements JSONable{
         return frontBackSchemaCardWrapper;
     }
 
-    public List<SchemaCardWrapper> getSchemaCards() {
-        return schemaCards;
+    /**
+     * @param o the other object to compare.
+     * @return true if the FrontBackSchemaCardWrapper is the same object or if it has the same
+     * list of SchemaCardWrapper.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FrontBackSchemaCardWrapper)) return false;
+        FrontBackSchemaCardWrapper that = (FrontBackSchemaCardWrapper) o;
+        return Objects.equals(getSchemaCards(), that.getSchemaCards());
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getSchemaCards());
     }
 }

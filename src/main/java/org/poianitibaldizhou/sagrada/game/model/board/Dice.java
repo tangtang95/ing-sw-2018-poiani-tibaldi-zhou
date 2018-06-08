@@ -135,7 +135,7 @@ public class Dice implements Serializable, JSONable{
      * @return a JSONObject.
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
         JSONObject diceJSON = new JSONObject();
