@@ -186,6 +186,10 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
                     roundUser.getUsername() + "\n", Level.INFORMATION);
             if (round == 0)
                 screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, this));
+            else {
+                start = false;
+                lock.notifyAll();
+            }
         }
     }
 
