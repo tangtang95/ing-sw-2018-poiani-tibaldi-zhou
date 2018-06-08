@@ -12,6 +12,8 @@ public class SchemaCardView extends Pane {
 
     private ImageView schemaCardImage;
 
+    private SchemaCardWrapper schemaCardWrapper;
+
     //Based on SchemaCard.png width
     private static final double OFFSET_X_PERCENT = 0.02439;
     private static final double OFFSET_Y_PERCENT = 0.02439;
@@ -35,6 +37,8 @@ public class SchemaCardView extends Pane {
 
     public SchemaCardView(SchemaCardWrapper schemaCard, double scale) {
         super();
+
+        this.schemaCardWrapper = schemaCard;
 
         Image image = new Image(getClass().getClassLoader()
                 .getResourceAsStream("images/schemaCards/SchemaCard.png"));
@@ -83,4 +87,11 @@ public class SchemaCardView extends Pane {
     }
 
 
+    public ImageView getImageView() {
+        return schemaCardImage;
+    }
+
+    public SchemaCardWrapper getSchemaCardWrapper() {
+        return schemaCardWrapper;
+    }
 }

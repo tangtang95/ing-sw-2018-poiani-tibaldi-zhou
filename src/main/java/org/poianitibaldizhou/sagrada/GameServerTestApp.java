@@ -28,7 +28,6 @@ public class GameServerTestApp {
         List<User> users = new ArrayList<>();
         users.add(new User("cordero1", String.valueOf("cordero1".hashCode())));
         users.add(new User("cordero2", String.valueOf("cordero2".hashCode())));
-        users.add(new User("cordero3", String.valueOf("cordero3".hashCode())));
         managerMediator.createMultiPlayerGameTest(users);
         LobbyController lobbyController = new LobbyController(managerMediator.getLobbyManager());
         GameController gameController = new GameController(managerMediator.getGameManager());

@@ -20,11 +20,26 @@
     -fx-background-insets: 2em;
 }
 
+.radio-button-notify-pane{
+    -fx-scale-x: 200%;
+    -fx-scale-y: 200%;
+}
+
 .negative-button{
     -fx-background-color: white;
 }
 
+.negative-button:hover{
+    -fx-scale-x: 110%;
+    -fx-scale-y: 110%;
+}
+
 .positive-button{
-    //TODO fix color
-    -fx-background-color: blue;
+    -fx-text-fill: wheat;
+    -fx-background-color: deepskyblue;
+}
+
+.positive-button:hover{
+    -fx-scale-x: 110%;
+    -fx-scale-y: 110%;
 }

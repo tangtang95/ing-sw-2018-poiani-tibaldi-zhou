@@ -147,6 +147,20 @@ public class TurnStateTest {
     }
 
     @Test
+    public void testNextTurnWhenIsFirstTurnButBeforeLastPlayer() throws Exception {
+        TurnState turnState = new TurnState(game, 0, player3, player1, true);
+        turnState.init();
+        when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
+        when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
+
+        turnState.chooseAction(player1, new EndTurnAction());
+        ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
+        verify(game).setState(argument.capture());
+        assertEquals("player incorrect", player2, argument.getValue().getCurrentTurnPlayer());
+        assertTrue(argument.getValue().isFirstTurn());
+    }
+
+    @Test
     public void testNextTurnWhenIsFirstTurnButLastPlayer() throws Exception {
         TurnState turnState = new TurnState(game, 0, player2, player1, true);
         turnState.init();

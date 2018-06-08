@@ -1,10 +1,15 @@
 package org.poianitibaldizhou.sagrada.graphics.utils;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRadioButton;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.paint.Color;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.text.html.CSS;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +56,23 @@ public class TextureUtils {
         imageView.setFitWidth(image.getWidth()*scale);
         imageView.setFitHeight(image.getHeight()*scale);
         return imageView;
+    }
+
+    public static JFXButton getButton(String text, String ClassCSS){
+        JFXButton button = new JFXButton(text);
+        button.setButtonType(JFXButton.ButtonType.RAISED);
+        button.getStyleClass().add(ClassCSS);
+        return button;
+    }
+
+    public static JFXRadioButton getRadioButton(String text, String ClassCSS, Color unselectedColor, Color selectedColor){
+        JFXRadioButton radioButton = new JFXRadioButton(text);
+        radioButton.setUnSelectedColor(unselectedColor);
+        radioButton.setSelectedColor(selectedColor);
+        radioButton.getStyleClass().add(ClassCSS);
+        radioButton.setAlignment(Pos.CENTER);
+        radioButton.setFocusTraversable(false);
+        return radioButton;
     }
 
 }

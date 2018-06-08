@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.graphics.model;
 
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.graphics.view.listener.TimeOutListener;
+import org.poianitibaldizhou.sagrada.graphics.view.listener.TimeoutListener;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.IOException;
@@ -30,12 +31,12 @@ public class MultiPlayerModel {
 
     public List<UserWrapper> joinGame(IGameView view, IGameObserver gameObserver, IStateObserver stateObserver,
                                       IRoundTrackObserver roundTrackObserver, IDraftPoolObserver draftPoolObserver,
-                                      IDrawableCollectionObserver diceBagObserver, TimeOutListener timeOutListener) throws IOException {
+                                      IDrawableCollectionObserver diceBagObserver, TimeoutListener timeoutListener) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
 
         connectionManager.getGameController().joinGame(request, view, gameObserver,
-                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver, timeOutListener);
+                roundTrackObserver, stateObserver, draftPoolObserver, diceBagObserver, timeoutListener);
 
         request = builder.createTokenMessage(token)
                 .createGameNameMessage(gameModel.getGameName()).buildMessage();
@@ -51,8 +52,16 @@ public class MultiPlayerModel {
         return parser.getListOfUserWrapper(response);
     }
 
+    public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token)
+                .createGameNameMessage(gameModel.getGameName()).createSchemaCardMessage(schemaCardWrapper).buildMessage();
+        connectionManager.getGameController().chosenSchemaCard(request);
+    }
+
 
     public String getUsername() {
         return username;
     }
+
 }

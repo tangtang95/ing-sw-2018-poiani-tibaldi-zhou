@@ -77,7 +77,6 @@ public class RoundEndStateTest {
         int round = 0;
         roundEndState = new RoundEndState(game, round, player1);
         roundEndState.init();
-        roundEndState.nextRound();
         verify(game).addRemainingDiceToRoundTrack(round);
         verify(game).clearDraftPool();
         verify(game).setState(ArgumentMatchers.any(RoundStartState.class));
@@ -88,7 +87,6 @@ public class RoundEndStateTest {
         int round = 9;
         roundEndState = new RoundEndState(game, round, player1);
         roundEndState.init();
-        roundEndState.nextRound();
         verify(game).addRemainingDiceToRoundTrack(round);
         verify(game).clearDraftPool();
         verify(game).setState(ArgumentMatchers.any(EndGameState.class));

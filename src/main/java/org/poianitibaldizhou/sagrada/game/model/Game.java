@@ -316,7 +316,10 @@ public abstract class Game implements IGame, IGameStrategy {
     public void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
             throw new IllegalArgumentException();
-        state.useCard(players.get(token), toolCard, executorObserver);
+        Optional<ToolCard> toolCardRef = toolCards.stream().filter(card -> card.equals(toolCard)).findFirst();
+        if(!toolCardRef.isPresent())
+            throw new InvalidActionException();
+        state.useCard(players.get(token), toolCardRef.get(), executorObserver);
     }
 
     @Override

@@ -25,4 +25,15 @@ public class DiceBagListener extends UnicastRemoteObject implements IDrawableCol
     public void onElementDraw(String elem) throws IOException {
 
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DiceBagListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
 }
