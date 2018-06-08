@@ -78,7 +78,7 @@ public class ServerGetMessage {
         try {
             JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.POSITION);
             position = Position.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
-        } catch (ParseException | ClassCastException e) {
+        } catch (ParseException | ClassCastException | IllegalArgumentException e) {
             throw new IOException();
         }
 

@@ -31,6 +31,7 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public void init() {
         game.getStateObservers().forEach((key, value) -> value.onRoundEnd(currentRound, currentRoundPlayer.getUser()));
+        nextRound();
     }
 
     /**
