@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
-public class UseToolCardStateWrapper implements IActionWrapper{
+@Immutable
+public final class UseToolCardStateWrapper implements IActionWrapper{
 
     /**
      * Convert a action in a JSONObject.

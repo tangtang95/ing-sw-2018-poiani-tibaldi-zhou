@@ -8,10 +8,7 @@ import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.GameView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.FrontBackSchemaCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -49,17 +46,17 @@ public class GameListener extends UnicastRemoteObject implements IGameView, IGam
         ClientGetMessage parser = new ClientGetMessage();
         List<UserWrapper> users = parser.getListOfUserWrapper(message);
 
-        Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap;
-        List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers;
-        try {
-            privateObjectiveCardWrappers = controller.getOwnPrivateObjectiveCard();
-            schemaCardWrapperMap = controller.getSchemaCardMap();
-        } catch (IOException e) {
-            gameView.showSevereErrorMessage("Errore di connessione");
-            return;
-        }
-
         Platform.runLater(()->{
+            Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap;
+            List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers;
+            try {
+                privateObjectiveCardWrappers = controller.getOwnPrivateObjectiveCard();
+                schemaCardWrapperMap = controller.getSchemaCardMap();
+            } catch (IOException e) {
+                gameView.showSevereErrorMessage("Errore di connessione");
+                return;
+            }
+
             gameView.clearNotifyPane();
             gameView.deactivateNotifyPane();
             gameView.drawUsers(users, schemaCardWrapperMap, privateObjectiveCardWrappers);
@@ -67,13 +64,24 @@ public class GameListener extends UnicastRemoteObject implements IGameView, IGam
     }
 
     @Override
-    public void onPublicObjectiveCardsDraw(String publicObjectiveCards) throws IOException {
+    public void onPublicObjectiveCardsDraw(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers = parser.getPublicObjectiveCards(message);
+
+        Platform.runLater(()->{
+            gameView.drawPublicObjectiveCards(publicObjectiveCardWrappers);
+        });
 
     }
 
     @Override
-    public void onToolCardsDraw(String toolCards) throws IOException {
+    public void onToolCardsDraw(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        List<ToolCardWrapper> toolCardWrappers = parser.getToolCards(message);
 
+        Platform.runLater(() -> {
+            gameView.drawToolCards(toolCardWrappers);
+        });
     }
 
     @Override
@@ -92,10 +100,8 @@ public class GameListener extends UnicastRemoteObject implements IGameView, IGam
 
     @Override
     public void onSchemaCardsDraw(String message) throws IOException {
-        System.out.println("scelta dello schemaCard");
         ClientGetMessage parser = new ClientGetMessage();
         List<FrontBackSchemaCardWrapper> frontBackSchemaCards = parser.getFrontBackSchemaCards(message);
-
 
         Platform.runLater(() -> {
             gameView.activateNotifyPane();

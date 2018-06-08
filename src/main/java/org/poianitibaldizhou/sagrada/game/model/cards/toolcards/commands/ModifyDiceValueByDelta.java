@@ -69,7 +69,6 @@ public class ModifyDiceValueByDelta implements ICommand {
      * For being valid, the new number needs to differentiate from oldValue exactly of
      * this.value.
      * Also, new value must be in range [Dice.MAX_VALUE, Dice.MIN_VALUE].
-     * // TODO also is not possibile to turn a 1 in a 6 and viceversa
      *
      * @param newValue new value
      * @param oldValue old value

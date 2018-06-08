@@ -14,7 +14,6 @@ public interface IToolCardExecutorObserver extends Remote {
 
     /**
      * Notify the requirement of a value (from an interval of number)
-     * //TODO pass a interval to the function (?)
      *
      * @throws IOException network error
      */

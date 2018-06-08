@@ -21,7 +21,6 @@ public interface IToolCardExecutorFakeObserver {
 
     /**
      * Notify the requirement of a value (from an interval of number)
-     * //TODO pass a interval to the function (?)
      */
     void notifyNeedNewValue();
 

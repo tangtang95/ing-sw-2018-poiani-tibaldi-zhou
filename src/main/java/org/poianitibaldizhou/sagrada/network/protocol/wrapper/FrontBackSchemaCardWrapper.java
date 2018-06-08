@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
@@ -8,7 +9,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrontBackSchemaCardWrapper implements JSONable{
+@Immutable
+public final class FrontBackSchemaCardWrapper implements JSONable{
 
     private final List<SchemaCardWrapper> schemaCards;
 
