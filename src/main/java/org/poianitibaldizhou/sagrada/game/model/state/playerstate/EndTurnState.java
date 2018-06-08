@@ -10,7 +10,6 @@ public class EndTurnState extends IPlayerState {
 
     public EndTurnState(TurnState turnState) {
         super(turnState);
-        turnState.notifyOnEndTurnState();
     }
 
     /**
@@ -26,6 +25,8 @@ public class EndTurnState extends IPlayerState {
             Logger.getAnonymousLogger().log(Level.INFO, "toolCardExecution ended");
             Thread.currentThread().interrupt();
         }
+
+        turnState.notifyOnEndTurnState();
         turnState.nextTurn();
     }
 }
