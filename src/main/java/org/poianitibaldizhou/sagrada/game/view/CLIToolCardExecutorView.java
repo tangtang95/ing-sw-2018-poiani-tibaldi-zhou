@@ -112,7 +112,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         PrinterManager.consolePrint("Colors: \n", Level.STANDARD);
         for (int i = 0; i < colorWrapperList.size(); i++) {
-            PrinterManager.consolePrint("[" + i + 1 + "] " + colorWrapperList.get(i) + "\n", Level.STANDARD);
+            PrinterManager.consolePrint("[" + (i + 1) + "] " + colorWrapperList.get(i) + "\n", Level.STANDARD);
         }
         PrinterManager.consolePrint("Choose a color: \n", Level.STANDARD);
 
@@ -149,9 +149,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         }
 
 
-        if(!checkValidityDeltaValue(minNumber, diceValue, value)) {
+        if (!checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
-        } else if(!checkValidityDeltaValue(maxNumber, diceValue, value)) {
+        } else if (!checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
 
