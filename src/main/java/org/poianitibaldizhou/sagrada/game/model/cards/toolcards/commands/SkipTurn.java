@@ -9,12 +9,12 @@ import java.util.Objects;
 
 public class SkipTurn implements ICommand {
 
-    private final int value;
+    private final int turnValue;
 
-    public SkipTurn(int i) {
-        if (i != 1 && i != 2)
-            throw new IllegalArgumentException();
-        this.value = i;
+    public SkipTurn(int turn) {
+        if (turn < TurnState.FIRST_TURN || turn > TurnState.SECOND_TURN)
+            throw new IllegalArgumentException("Turn has to be 1 or 2");
+        this.turnValue = turn;
     }
 
     /**
@@ -27,12 +27,12 @@ public class SkipTurn implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
-        turnState.addSkipTurnPlayer(player, value);
+        toolCardExecutor.addSkipTurnPlayer(player, turnValue);
         return CommandFlow.MAIN;
     }
 
-    public int getValue() {
-        return value;
+    public int getTurnValue() {
+        return turnValue;
     }
 
     @Override
@@ -41,11 +41,11 @@ public class SkipTurn implements ICommand {
             return false;
 
         SkipTurn obj = (SkipTurn) object;
-        return obj.getValue() == this.value;
+        return obj.getTurnValue() == this.turnValue;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(SkipTurn.class, getValue());
+        return Objects.hash(SkipTurn.class, getTurnValue());
     }
 }

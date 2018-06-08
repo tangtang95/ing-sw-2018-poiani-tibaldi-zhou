@@ -39,8 +39,8 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     private IPlayerState playerState;
 
-    private static final int FIRST_TURN = 1;
-    private static final int SECOND_TURN = 2;
+    public static final int FIRST_TURN = 1;
+    public static final int SECOND_TURN = 2;
 
 
     /**
@@ -86,9 +86,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.actionsUsed = new HashSet<>();
         this.toolCardExecutor = new ToolCardExecutor(game, currentTurnPlayer, this);
         this.playerState = new SelectActionState(this);
-        this.skipTurnPlayers = new HashMap<>();
-        skipTurnPlayers.keySet().forEach(player -> this.skipTurnPlayers.put(player, skipTurnPlayers.get(player)));
-
+        this.skipTurnPlayers = new HashMap<>(skipTurnPlayers);
     }
 
     @Override
@@ -100,7 +98,8 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
             nextTurn();
             return;
         }
-        game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound, (isFirstTurn)?1:2, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+        game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound,
+                (isFirstTurn) ? FIRST_TURN : SECOND_TURN, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
 
     }
 
@@ -159,7 +158,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
         if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
-        if(!(playerState instanceof PlaceDiceState))
+        if (!(playerState instanceof PlaceDiceState))
             throw new InvalidActionException();
         try {
             playerState.placeDice(player, dice, position);
@@ -188,7 +187,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void interruptToolCardExecution(Player player) throws InvalidActionException {
-        if(!player.equals(currentTurnPlayer))
+        if (!player.equals(currentTurnPlayer))
             throw new InvalidActionException();
         if (toolCardExecutor.isExecutingCommands())
             toolCardExecutor.interruptCommandsInvocation();
@@ -216,7 +215,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public void forceStateChange() {
         toolCardExecutor.interruptCommandsInvocation();
-        if(!(playerState instanceof EndTurnState))
+        if (!(playerState instanceof EndTurnState))
             setPlayerState(new EndTurnState(this));
     }
 
@@ -295,7 +294,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     public void addSkipTurnPlayer(Player player, int turn) {
-        if(turn < FIRST_TURN || turn > SECOND_TURN)
+        if (turn < FIRST_TURN || turn > SECOND_TURN)
             throw new IllegalArgumentException("Turn has to be 1 or 2");
         this.skipTurnPlayers.put(player, turn);
     }

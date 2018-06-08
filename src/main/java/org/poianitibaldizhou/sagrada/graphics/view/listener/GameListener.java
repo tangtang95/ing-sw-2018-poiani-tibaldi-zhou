@@ -70,6 +70,7 @@ public class GameListener extends UnicastRemoteObject implements IGameView, IGam
 
         Platform.runLater(()->{
             gameView.drawPublicObjectiveCards(publicObjectiveCardWrappers);
+            controller.setRoundTrack();
         });
 
     }
