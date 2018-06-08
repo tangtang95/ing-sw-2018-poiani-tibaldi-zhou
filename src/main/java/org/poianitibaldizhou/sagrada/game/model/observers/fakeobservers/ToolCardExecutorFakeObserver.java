@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
@@ -123,10 +124,11 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedPosition() {
+    public void notifyNeedPosition(SchemaCard schemaCard) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedPosition();
+                System.out.println("IN NOTIFY THREAD: " + schemaCard.toString());
+                realObserver.notifyNeedPosition(serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -139,10 +141,10 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedDicePositionOfCertainColor(Color color) {
+    public void notifyNeedDicePositionOfCertainColor(Color color, SchemaCard schemaCard) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedDicePositionOfCertainColor(serverCreateMessage.createColorMessage(color).buildMessage());
+                realObserver.notifyNeedDicePositionOfCertainColor(serverCreateMessage.createSchemaCardMessage(schemaCard).createColorMessage(color).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

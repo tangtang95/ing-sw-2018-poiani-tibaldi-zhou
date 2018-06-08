@@ -125,7 +125,7 @@ public class RemoveDiceTest {
         CommandFlow commandFlow = removeDiceWithColor.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedDicePositionOfCertainColor(Color.BLUE);
+            verify(obs, times(1)).notifyNeedDicePositionOfCertainColor(Color.BLUE, schemaCard);
         }
         verify(executor, times(1)).getNeededColor();
         verify(executor, times(1)).getNeededPosition();
@@ -144,7 +144,7 @@ public class RemoveDiceTest {
         CommandFlow commandFlow = removeDice.executeCommand(invokerPlayer, executor, stateGame);
         assertEquals("Command execution failed", CommandFlow.MAIN, commandFlow);
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPosition();
+            verify(obs, times(1)).notifyNeedPosition(schemaCard);
         }
         verify(executor, times(1)).getNeededPosition();
         verify(executor, times(1)).setNeededDice(dice);

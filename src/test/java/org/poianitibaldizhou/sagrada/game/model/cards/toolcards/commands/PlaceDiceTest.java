@@ -93,7 +93,7 @@ public class PlaceDiceTest {
         verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position,
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPosition();
+            verify(obs, times(1)).notifyNeedPosition(schemaCard);
         }
     }
 
@@ -105,7 +105,7 @@ public class PlaceDiceTest {
                 PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
         assertEquals(CommandFlow.REPEAT, command.executeCommand(invokerPlayer, executor, stateGame));
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPosition();
+            verify(obs, times(1)).notifyNeedPosition(schemaCard);
         }
     }
 

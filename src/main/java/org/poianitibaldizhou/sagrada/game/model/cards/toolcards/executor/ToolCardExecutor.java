@@ -46,10 +46,12 @@ public class ToolCardExecutor extends Thread{
     private Node<ICommand> preCommands;
     private boolean isExecutingCommands;
     private Player player;
+
     private DraftPool temporaryDraftPool;
     private DrawableCollection<Dice> temporaryDicebag;
     private RoundTrack temporaryRoundTrack;
     private SchemaCard temporarySchemaCard;
+
     private Map<Player, Integer> skipTurnPlayers;
     private Game game;
     private TurnState turnState;
@@ -136,9 +138,11 @@ public class ToolCardExecutor extends Thread{
             invokeCommands(coreCommands);
             updateObjects();
         } catch (InterruptedException e) {
+            System.out.println("Interrupted exception");
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
             Thread.currentThread().interrupt();
         } finally {
+            System.out.println("");
             setIsExecutingCommands(false);
             turnState.releaseToolCardExecution();
         }

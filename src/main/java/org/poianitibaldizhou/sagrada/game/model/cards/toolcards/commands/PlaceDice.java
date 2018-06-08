@@ -29,7 +29,7 @@ public class PlaceDice implements ICommand {
      *
      * @param diceConstraint DiceConstraint that need to be checked when placing the dice
      * @param tileConstraint TileConstraint that need to be checked when placing the dice
-     * @param isNewPlacement if it is a new placement on the schemaCard and not a movement
+     * @param isNewPlacement true if it is a new placement on the schemaCard, false if it is a movement
      */
     public PlaceDice(DiceRestrictionType diceConstraint, PlacementRestrictionType tileConstraint, boolean isNewPlacement) {
         this.tileConstraint = tileConstraint;
@@ -75,7 +75,7 @@ public class PlaceDice implements ICommand {
         }
 
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
-        observerList.forEach(IToolCardExecutorFakeObserver::notifyNeedPosition);
+        observerList.forEach(obs -> obs.notifyNeedPosition(toolCardExecutor.getTemporarySchemaCard()));
 
         position = toolCardExecutor.getNeededPosition();
 
