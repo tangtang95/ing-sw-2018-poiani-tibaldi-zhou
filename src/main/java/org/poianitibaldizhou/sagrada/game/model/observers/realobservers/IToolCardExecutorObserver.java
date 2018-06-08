@@ -47,17 +47,18 @@ public interface IToolCardExecutorObserver extends Remote {
     /**
      * Notify the requirement of a position on the schemaCard
      *
+     * @message protocol message containing the schemacard
      * @throws IOException network error
      */
-    void notifyNeedPosition() throws IOException;
+    void notifyNeedPosition(String message) throws IOException;
 
     /**
      * Notify the requirement of a position of a dice on schemaCard of a certain color
      *
-     * @param color the certain color
+     * @param message protocol message containing the color and the schema card
      * @throws IOException network error
      */
-    void notifyNeedDicePositionOfCertainColor(String color) throws IOException;
+    void notifyNeedDicePositionOfCertainColor(String message) throws IOException;
 
     /**
      * Notify the necessity to repeat the action (because of a failed command)

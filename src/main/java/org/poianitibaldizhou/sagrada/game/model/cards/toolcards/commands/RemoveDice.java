@@ -62,7 +62,7 @@ public class RemoveDice implements ICommand {
             color = toolCardExecutor.getNeededColor();
             if (!(toolCardExecutor.getTemporarySchemaCard().hasDiceOfColor(color)))
                 return CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR;
-            observerList.forEach(obs -> obs.notifyNeedDicePositionOfCertainColor(color));
+            observerList.forEach(obs -> obs.notifyNeedDicePositionOfCertainColor(color, toolCardExecutor.getTemporarySchemaCard()));
             position = toolCardExecutor.getNeededPosition();
             if (!toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color)) {
                 toolCardExecutor.setNeededPosition(null);
@@ -71,11 +71,17 @@ public class RemoveDice implements ICommand {
         } else {
             if (toolCardExecutor.getTemporarySchemaCard().isEmpty())
                 return CommandFlow.EMPTY_SCHEMACARD;
-            observerList.forEach(obs -> obs.notifyNeedPosition());
+            observerList.forEach(obs -> obs.notifyNeedPosition(toolCardExecutor.getTemporarySchemaCard()));
             position = toolCardExecutor.getNeededPosition();
         }
 
+        System.out.println("BEFORE REMOVING");
+        System.out.println(toolCardExecutor.getTemporarySchemaCard().toString());
+
         removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position);
+
+        System.out.println("AFTER REMOVING");
+        System.out.println(toolCardExecutor.getTemporarySchemaCard().toString());
 
         if (removed == null) {
             toolCardExecutor.setNeededPosition(null);

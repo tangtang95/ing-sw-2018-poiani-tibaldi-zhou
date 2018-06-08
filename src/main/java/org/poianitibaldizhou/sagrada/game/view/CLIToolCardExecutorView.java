@@ -162,14 +162,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedPosition() throws IOException {
+    public void notifyNeedPosition(String message) throws IOException {
+        System.out.println("NOTIFY NEED POSITION");
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        String sendingParam = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
-                createGameNameMessage(cliStateView.getGameName()).buildMessage();
-        String serverMessage = connectionManager.getGameController().getSchemaCardByToken(sendingParam);
-
-        SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(serverMessage);
+        SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card\n").
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
@@ -186,10 +183,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         ColorWrapper color = clientGetMessage.getColor(message);
 
-        String sendMessage = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
-                createTokenMessage(cliStateView.getToken()).buildMessage();
-        String serverResponse = connectionManager.getGameController().getSchemaCardByToken(sendMessage);
-        SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(serverResponse);
+        SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
                 + color.name()).

@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfac
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 
 import java.io.IOException;
@@ -48,15 +49,18 @@ public interface IToolCardExecutorFakeObserver {
 
     /**
      * Notify the requirement of a position on the schemaCard
+     *
+     * @param schemaCard schema card on which to choose the position
      */
-    void notifyNeedPosition();
+    void notifyNeedPosition(SchemaCard schemaCard);
 
     /**
      * Notify the requirement of a position of a dice on schemaCard of a certain color
      *
+     * @param schemaCard schema card on which to choose the position
      * @param color the certain color
      */
-    void notifyNeedDicePositionOfCertainColor(Color color);
+    void notifyNeedDicePositionOfCertainColor(Color color, SchemaCard schemaCard);
 
     /**
      * Notify the necessity to repeat the action (because of a failed command)
