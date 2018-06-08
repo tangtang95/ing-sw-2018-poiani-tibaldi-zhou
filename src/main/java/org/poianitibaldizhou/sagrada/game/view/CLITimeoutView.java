@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Objects;
 
 public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObserver {
 
@@ -28,5 +29,15 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
         String username = clientGetMessage.getTurnUserWrapper(message).getUsername();
 
         PrinterManager.consolePrint("User " + username + " has timed out", Level.STANDARD);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof CLITimeoutView;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
     }
 }

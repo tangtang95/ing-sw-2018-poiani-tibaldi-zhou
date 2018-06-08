@@ -15,10 +15,12 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
 
     private final transient CLIStateView cliStateView;
     private final transient ClientGetMessage clientGetMessage;
+    private final String username;
 
-    public CLIPlayerView(CLIStateView cliStateView) throws RemoteException {
+    public CLIPlayerView(CLIStateView cliStateView, String username) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
+        this.username = username;
         this.clientGetMessage = cliStateView.getClientGetMessage();
     }
 
@@ -50,13 +52,12 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
         if (!super.equals(o)) return false;
         CLIPlayerView that = (CLIPlayerView) o;
         return Objects.equals(cliStateView, that.cliStateView) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage);
+                Objects.equals(username, that.username);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage);
+        return this.getClass().getSimpleName().concat(username).hashCode();
     }
 
 }

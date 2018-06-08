@@ -29,6 +29,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @see IGameController
@@ -68,6 +70,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                          IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException {
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
+
+        System.out.println("User with token: " + token + "accessed: joinGame");
 
         if (!gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             try {
@@ -122,6 +126,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         SchemaCard schemaCard = serverGetMessage.getSchemaCard(message);
 
+        System.out.println("User with token: " + token + "accessed: chosenSchemaCard");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -168,6 +174,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String userName = serverGetMessage.getUserName(message);
         Player player = null;
+
+        System.out.println("User with token: " + token + "accessed: bindPlayer");
 
         if (initialCheck(token, gameName))
             return;
@@ -222,6 +230,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         ToolCard toolCard = serverGetMessage.getToolCard(message);
 
+        System.out.println("User with token: " + token + "accessed: bindToolCard");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -266,7 +276,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         IActionCommand actionCommand = serverGetMessage.getActionCommand(message);
 
-        System.out.println(actionCommand);
+        System.out.println("User with token: " + token + "accessed: choseAction");
 
         if(actionCommand instanceof EndTurnAction)
             System.out.println("");
@@ -315,6 +325,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         Dice dice = serverGetMessage.getDice(message);
         Position position = serverGetMessage.getPosition(message);
 
+        System.out.println("User with token: " + token + "accessed: placeDice");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -355,6 +367,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         ToolCard toolCard = serverGetMessage.getToolCard(message);
 
+        System.out.println("User with token: " + token + "accessed: useToolCard");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -391,6 +405,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
         final PrivateObjectiveCard privateObjectiveCard = serverGetMessage.getPrivateObjectiveCard(message);
+
+        System.out.println("User with token: " + token + "accessed: choosePrivateObjectiveCard");
 
         if (initialCheck(token, gameName))
             return;
@@ -431,6 +447,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         Dice dice = serverGetMessage.getDice(message);
 
+        System.out.println("User with token: " + token + "accessed: setDice");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -467,6 +485,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
         Integer value = serverGetMessage.getInteger(message);
+
+        System.out.println("User with token: " + token + "accessed: setNewValue");
 
         if (initialCheck(token, gameName))
             return;
@@ -505,6 +525,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         Color color = serverGetMessage.getColor(message);
 
+        System.out.println("User with token: " + token + "accessed: setColor");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -542,6 +564,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         Position position = serverGetMessage.getPosition(message);
 
+        System.out.println("User with token: " + token + "accessed: setPosition");
+
         if (initialCheck(token, gameName))
             return;
 
@@ -578,6 +602,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
         boolean answer = serverGetMessage.getBoolean(message);
+
+        System.out.println("User with token: " + token + "accessed: setContinueAction");
 
         if (initialCheck(token, gameName))
             return;
@@ -618,6 +644,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final String userName = serverGetMessage.getUserName(message);
         String token = null;
         String gameName = null;
+
+        System.out.println("User with username: " + userName + "accessed: bindToolCard");
 
 
         List<IGame> games = gameManager.getGameList();
@@ -699,6 +727,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final Optional<String> gameName;
         List<IGame> gameList = gameManager.getGameList();
 
+        System.out.println("User with username: " + username + "accessed: bindToolCard");
+
         gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(IGame::getName).findFirst();
 
         if (!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
@@ -732,16 +762,57 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         return serverCreateMessage.createToolCardList(toolCards).buildMessage();
     }
 
-    @Override
-    public String getMyCoins(String message) throws IOException {
-        //TODO
-        return null;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getPlayersCoins(String message) throws IOException {
-        //TODO
-        return null;
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        if(gameManager.getGameByName(gameName).isSinglePlayer()) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        HashMap<User, Integer> coinsMap = new HashMap<>();
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            gameManager.getGameByName(gameName).getPlayers().forEach(player -> coinsMap.putIfAbsent(player.getUser(),
+                    player.getCoins()));
+        }
+
+        return serverCreateMessage.createPlayersCoinsMessage(coinsMap).buildMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getMyCoins(String message) throws IOException {
+        String token = serverGetMessage.getToken(message);
+        String gameName = serverGetMessage.getGameName(message);
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        if(gameManager.getGameByName(gameName).isSinglePlayer())
+            return serverGetMessage.getErrorMessage();
+
+        Optional<Player> requestingPlayer;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            requestingPlayer = gameManager.getGameByName(gameName).getPlayers().stream().filter(player -> player.getToken().equals(token)).findFirst();
+        }
+
+        if(!requestingPlayer.isPresent())
+            return serverGetMessage.getErrorMessage();
+
+        return serverCreateMessage.createCoinsMessage(requestingPlayer.get().getCoins()).buildMessage();
     }
 
     /**
@@ -751,6 +822,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public String getPublicObjectiveCards(String message) throws IOException {
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
+
+        System.out.println("User with token: " + token + "accessed: getPublicObjectiveCards");
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
@@ -773,6 +846,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
+        System.out.println("User with token: " + token + "accessed: getPrivateObjectiveCardByToken");
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
         }
@@ -793,6 +868,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public String getSchemaCards(String message) throws IOException {
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
+
+        System.out.println("User with token: " + token + "accessed: getSchemaCards");
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
@@ -816,6 +893,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
+        System.out.println("User with token: " + token + "accessed: getDraftPool");
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
         }
@@ -838,6 +917,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
+        System.out.println("User with token: " + token + "accessed: getRoundTrack");
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
         }
@@ -859,6 +940,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
         String toolCardName = serverGetMessage.getToolCard(message).getName();
+
+        System.out.println("User with token: " + token + "accessed: getToolCardByName");
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
@@ -887,6 +970,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
+        System.out.println("User with token: " + token + "accessed: getCurrentPlayer");
+
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
         }
@@ -912,6 +997,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
         SchemaCard schemaCard = null;
+
+        System.out.println("User with token: " + token + "accessed: getSchemaCardByToken");
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();
@@ -939,6 +1026,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public String getListOfUser(String message) throws IOException {
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
+
+        System.out.println("User with token: " + token + "accessed: getListOfUser");
 
         if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverGetMessage.getErrorMessage();

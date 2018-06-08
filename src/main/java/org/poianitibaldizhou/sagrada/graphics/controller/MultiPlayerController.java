@@ -1,8 +1,11 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
@@ -15,6 +18,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjec
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
+import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.*;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
@@ -29,13 +33,17 @@ import java.util.*;
 public class MultiPlayerController extends Controller implements Initializable {
 
     @FXML
-    public Pane canvasPane;
+    public StackPane rootPane;
+
+    @FXML
+    public Pane corePane;
 
     private DraftPoolListener draftPoolView;
     private RoundTrackListener roundTrackView;
     private StateListener stateView;
     private GameListener gameView;
     private DiceBagListener diceBagView;
+    private TimeOutListener timeOutListener;
 
     private MultiPlayerModel multiPlayerModel;
 
@@ -47,6 +55,7 @@ public class MultiPlayerController extends Controller implements Initializable {
             stateView = new StateListener(new StateView());
             gameView = new GameListener(new GameView());
             diceBagView = new DiceBagListener();
+            timeOutListener = new TimeOutListener();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -63,10 +72,9 @@ public class MultiPlayerController extends Controller implements Initializable {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
         try {
             List<UserWrapper> users = multiPlayerModel.joinGame(gameView, gameView, stateView,
-                    roundTrackView, draftPoolView, diceBagView);
+                    roundTrackView, draftPoolView, diceBagView, timeOutListener);
             List<UserWrapper> usersOrdered = getUsersOrdered(users);
             System.out.println(users);
-            System.out.println(usersOrdered.toString());
             drawUsers(usersOrdered);
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,26 +104,64 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     private void drawUsers(List<UserWrapper> users){
-        double distance = canvasPane.getHeight()/3;
-        double centerX = canvasPane.getWidth()/2;
-        double centerY = canvasPane.getHeight()/2;
+
+        double centerX = rootPane.getPrefWidth()/2;
+        double centerY = rootPane.getPrefHeight()/2;
+
+        Map<Integer, Double> angles = new HashMap<>();
+
 
         for (int i = 0; i < users.size(); i++) {
+
+
             Pane pane = new Pane();
-            pane.setPrefWidth(100);
-            pane.setPrefHeight(100);
-            pane.setStyle("-fx-border-color: black; -fx-border-width: 2em");
+            ImageView imageView = TextureUtils.getSimpleImageView("images/user.png", 0.15);
+            imageView.translateXProperty().bind(pane.widthProperty().divide(2)
+                    .subtract(imageView.fitWidthProperty().divide(2)));
+            imageView.translateYProperty().bind(pane.heightProperty().divide(2)
+                    .subtract(imageView.fitHeightProperty().divide(2)));
+            pane.getChildren().add(imageView);
 
-            double angle = 2*Math.PI*i / users.size();
-            double offsetX = distance * Math.cos(angle);
-            double offsetY = distance * Math.sin(angle);
+            pane.setStyle("-fx-border-color: black; -fx-border-width: 0.6em; -fx-border-radius: 1em");
 
-            double x = centerX + offsetX;
-            double y = centerY + offsetY;
+            double angle = 2*Math.PI*i / ((users.size() == 3) ? users.size() + 1 : users.size()) - Math.PI/2;
+            DoubleBinding distance = rootPane.heightProperty().divide(2)
+                    .subtract(pane.heightProperty().divide(1.8));
+            DoubleBinding offsetX = distance.multiply(Math.cos(angle));
+            DoubleBinding offsetY = distance.multiply(Math.sin(angle));
 
-            this.canvasPane.getChildren().add(pane);
-            pane.setTranslateX(x - pane.getPrefWidth()/2);
-            pane.setTranslateY(y - pane.getPrefHeight()/2);
+            double tangentAngle = angle - Math.PI/2;
+            DoubleBinding tangentDistance = rootPane.heightProperty().divide(3);
+            DoubleBinding tangentOffsetX = tangentDistance.multiply(Math.cos(tangentAngle));
+            DoubleBinding tangentOffsetY = tangentDistance.multiply(Math.sin(tangentAngle));
+
+            DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
+            GameInjector.injectSchemaCards(schemaCards);
+            JSONObject object = null;
+            try {
+                object = (JSONObject) schemaCards.draw().getFrontSchemaCard().toJSON().get("body");
+            } catch (EmptyCollectionException e) {
+                e.printStackTrace();
+            }
+            SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
+            SchemaCardView schemaCardView1 = new SchemaCardView((SchemaCardWrapper) schemaCard.toObject(object), 0.2);
+            schemaCardView1.setRotate(angle*180.0/Math.PI - 90);
+            DoubleBinding distanceSchemaCard = rootPane.heightProperty().divide(2)
+                    .subtract(schemaCardView1.heightProperty().divide(1.8));
+
+            corePane.getChildren().addAll(schemaCardView1);
+            schemaCardView1.translateXProperty().bind(schemaCardView1.widthProperty().divide(2)
+                    .negate().add(centerX).add(distanceSchemaCard.multiply(Math.cos(angle))));
+            schemaCardView1.translateYProperty().bind(schemaCardView1.heightProperty().divide(2)
+                    .negate().add(centerY).add(distanceSchemaCard.multiply(Math.sin(angle))));
+
+            DoubleBinding x = offsetX.add(centerX).add(tangentOffsetX);
+            DoubleBinding y = offsetY.add(centerY).add(tangentOffsetY);
+
+            this.corePane.getChildren().add(pane);
+            pane.setRotate(angle*180.0/Math.PI - 90);
+            pane.translateXProperty().bind(pane.widthProperty().divide(2).negate().add(x));
+            pane.translateYProperty().bind(pane.heightProperty().divide(2).negate().add(y));
         }
 
     }
@@ -132,7 +178,7 @@ public class MultiPlayerController extends Controller implements Initializable {
                     (PrivateObjectiveCardWrapper) privateObjectiveCardWrapper.toObject(object), 0.3
             );
 
-            this.canvasPane.getChildren().add(privateObjectiveCardView);
+            this.corePane.getChildren().add(privateObjectiveCardView);
             privateObjectiveCardView.setTranslateX(100);
             privateObjectiveCardView.setTranslateY(400);
         } catch (EmptyCollectionException e) {
@@ -140,7 +186,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         }
 
         PrivateObjectiveCardView retroView = new PrivateObjectiveCardView(0.3);
-        this.canvasPane.getChildren().add(retroView);
+        this.corePane.getChildren().add(retroView);
 
     }
 
@@ -154,7 +200,7 @@ public class MultiPlayerController extends Controller implements Initializable {
                     new PublicObjectiveCardWrapper("Varietà di Colore", "dsad", 1);
             PublicObjectiveCardView publicObjectiveCardView = new PublicObjectiveCardView(
                     publicObjectiveCardWrapper, 0.5);
-            this.canvasPane.getChildren().add(publicObjectiveCardView);
+            this.corePane.getChildren().add(publicObjectiveCardView);
             publicObjectiveCardView.setTranslateX(600);
             publicObjectiveCardView.setTranslateY(300);
         } catch (EmptyCollectionException e) {
@@ -172,7 +218,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         JSONObject object = (JSONObject) toolCard.toJSON().get("body");
         ToolCardWrapper toolCardWrapper = new ToolCardWrapper("dasd", "dasd", ColorWrapper.BLUE, 3);
         ToolCardView toolCardView = new ToolCardView((ToolCardWrapper) toolCardWrapper.toObject(object), 0.6);
-        canvasPane.getChildren().add(toolCardView);
+        corePane.getChildren().add(toolCardView);
         toolCardView.setTranslateY(200);
     }
 
@@ -192,7 +238,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         FrontBackSchemaCardView cardView = new FrontBackSchemaCardView((SchemaCardWrapper) schemaCard.toObject(frontSchema),
                 (SchemaCardWrapper) schemaCard.toObject(backSchema), 0.3);
         cardView.flipCard(Duration.millis(5000));
-        canvasPane.getChildren().add(cardView);
+        corePane.getChildren().add(cardView);
         cardView.setTranslateY(400);
         cardView.setTranslateX(700);
     }
@@ -210,7 +256,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         RoundTrackWrapper roundTrackWrapper = new RoundTrackWrapper(dices);
         RoundTrackView roundTrackView = new RoundTrackView();
         roundTrackView.drawDices(roundTrackWrapper);
-        canvasPane.getChildren().add(roundTrackView);
+        corePane.getChildren().add(roundTrackView);
         roundTrackView.setTranslateX(400);
     }
 
@@ -226,7 +272,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
         SchemaCardView schemaCardView1 = new SchemaCardView((SchemaCardWrapper) schemaCard.toObject(object), 0.3);
 
-        canvasPane.getChildren().addAll(schemaCardView1);
+        corePane.getChildren().addAll(schemaCardView1);
         schemaCardView1.setTranslateX(300);
         schemaCardView1.setTranslateY(300);
     }
@@ -235,7 +281,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         DiceWrapper dice = new DiceWrapper(ColorWrapper.BLUE, 2);
         DiceView diceView = new DiceView(dice, 0.1);
 
-        canvasPane.getChildren().add(diceView);
+        corePane.getChildren().add(diceView);
         diceView.setTranslateX(300);
         diceView.setTranslateY(300);
     }

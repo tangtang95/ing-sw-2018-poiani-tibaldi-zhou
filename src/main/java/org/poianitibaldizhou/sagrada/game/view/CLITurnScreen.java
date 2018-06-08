@@ -59,9 +59,9 @@ public class CLITurnScreen extends CLIRoundScreen {
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
                         buildMessage("Choose a row:").toString(),
                 Level.STANDARD);
-        int row = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_ROWS + 1);
+        int row = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
         PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
-        int column = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS + 1);
+        int column = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
         return new PositionWrapper(row, column);
     }
 

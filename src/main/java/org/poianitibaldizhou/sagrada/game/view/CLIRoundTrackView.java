@@ -95,6 +95,6 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), cliStateView);
+        return this.getClass().getSimpleName().hashCode();
     }
 }

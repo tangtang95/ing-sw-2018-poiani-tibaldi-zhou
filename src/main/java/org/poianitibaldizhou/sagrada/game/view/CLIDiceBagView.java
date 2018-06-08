@@ -72,13 +72,11 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
         if (!(o instanceof CLIDiceBagView)) return false;
         if (!super.equals(o)) return false;
         CLIDiceBagView that = (CLIDiceBagView) o;
-        return Objects.equals(cliStateView, that.cliStateView) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage);
+        return Objects.equals(cliStateView, that.cliStateView);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage);
+        return this.getClass().getSimpleName().hashCode();
     }
 }

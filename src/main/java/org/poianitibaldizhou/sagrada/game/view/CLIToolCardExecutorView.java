@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
@@ -104,7 +105,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         int diceValue = clientGetMessage.getDiceValue(message);
         int value = clientGetMessage.getValue(message);
 
-        minNumber = diceValue - value <= 0 ? (DiceWrapper.MAX_VALUE + 1 ) * 2 - value + diceValue - 1 : diceValue - value;
+        minNumber = diceValue - value <= 0 ? (DiceWrapper.MAX_VALUE + 1) - value : diceValue - value;
         maxNumber = diceValue + value > 6 ? (diceValue + value) % 6 : diceValue + value;
 
         if (minNumber > maxNumber) {
@@ -114,8 +115,17 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             maxNumber = temp;
         }
 
+        if(!checkDeltaValueValidity(minNumber, diceValue, value)) {
+            minNumber = maxNumber;
+        } else if(!checkDeltaValueValidity(maxNumber, diceValue, value)) {
+            maxNumber = minNumber;
+        }
+
         do {
-            PrinterManager.consolePrint("Choose the number " + minNumber + " or " + maxNumber + ":\n", Level.STANDARD);
+            if(minNumber != maxNumber)
+                PrinterManager.consolePrint("Choose the number " + minNumber + " or " + maxNumber + ":\n", Level.STANDARD);
+            else
+                PrinterManager.consolePrint("Choose the number " + minNumber + ":\n", Level.STANDARD);
             response = r.readLine();
             try {
                 number = Integer.parseInt(response);
@@ -284,6 +294,20 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         connectionManager.getGameController().setDice(setMessage);
     }
 
+    /**
+     * Checks if the value is valid
+     *
+     * @param newValue new value
+     * @param oldValue old value
+     * @param delta delta between values
+     * @return true if valid, false otherwise
+     */
+    private boolean checkDeltaValueValidity(int newValue, int oldValue, int delta) {
+        if (newValue < DiceWrapper.MIN_VALUE || newValue > DiceWrapper.MAX_VALUE)
+            return false;
+        return (newValue == oldValue + delta) || (newValue == oldValue - delta);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -291,17 +315,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         if (!super.equals(o)) return false;
         CLIToolCardExecutorView that = (CLIToolCardExecutorView) o;
         return Objects.equals(cliStateView, that.cliStateView) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage) &&
-                Objects.equals(clientCreateMessage, that.clientCreateMessage) &&
-                Objects.equals(consoleListener, that.consoleListener) &&
-                Objects.equals(connectionManager, that.connectionManager) &&
                 Objects.equals(toolCardName, that.toolCardName);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), cliStateView, clientGetMessage,
-                clientCreateMessage, consoleListener, connectionManager, toolCardName);
+        return this.getClass().getSimpleName().hashCode();
     }
 }

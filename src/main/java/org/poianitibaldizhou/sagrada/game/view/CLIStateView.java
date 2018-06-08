@@ -86,6 +86,10 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         int round = clientGetMessage.getValue(jString);
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
         currentUser = turnUser;
+
+        System.out.println("On turn state: " + turnUser.getUsername());
+        System.out.println("I am "+ myUser.getUsername());
+
         if(turnUser.equals(myUser)){
             screenManager.pushScreen(new CLITurnScreen(connectionManager,screenManager,this));
             PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
@@ -151,6 +155,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onEndTurnState(String jString) throws IOException {
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
+        System.out.println("On end turn state: " + turnUser.getUsername());
+        System.out.println("I am "+ myUser.getUsername());
         if(turnUser.equals(myUser)){
             PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH------------------------\n",
                     Level.STANDARD);
@@ -186,14 +192,12 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         if (!super.equals(o)) return false;
         CLIStateView that = (CLIStateView) o;
         return Objects.equals(myUser, that.myUser) &&
-                Objects.equals(gameName, that.gameName) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage);
+                Objects.equals(gameName, that.gameName);
     }
 
     @Override
     public int hashCode() {
-
-        return Objects.hash(super.hashCode(), myUser, gameName, clientGetMessage);
+        return this.getClass().getSimpleName().hashCode();
     }
 
     public UserWrapper getMyUser() {
