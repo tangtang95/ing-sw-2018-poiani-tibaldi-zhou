@@ -1,20 +1,20 @@
 [
   {
-    "cardName": "Martelletto",
+    "cardName": "Tampone Diamantato",
+    "cardColour": "GREEN",
+    "cardDescription": "Dopo aver scelto un dado, giralo sulla faccia opposta. 6 diventa 1, 5 diventa 2, 4 diventa 3, ecc.",
+    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Pour over dice][8-Place new dice][16-CA]"
+  },
+  {
+    "cardName": "Diluente per Pasta Salda",
+    "cardColour": "PURPLE",
+    "cardDescription": "Dopo aver scelto un dado riponilo nel Sacchetto, poi pescane uno dal Sacchetto. Scegli il valore del nuovo dado e piazzalo, rispettando tutte le restrizioni di piazzamento",
+    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Add dice to Dicebag][8-Draw dice from Dicebag][16-Modify dice value][32-Place new dice][64-CA]"
+  },
+  {
+    "cardName": "Taglierina Manuale",
     "cardColour": "BLUE",
-    "cardDescription": "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante il tuo secondo turno, prima di scegliere il secondo dado",
-    "action": "[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]"
-  },
-  {
-    "cardName": "Tenaglia a Rotelle",
-    "cardColour": "RED",
-    "cardDescription": "Dopo il tuo primo turno scegli immediatamente un altro dado. Salta il tuo secondo turno in questo round",
-    "action": "[1-Check first turn][2-Wait turn end][4-Choose dice][8-Place old dice][16-Skip second turn][32-CA]"
-  },
-  {
-    "cardName": "Riga in Sughero",
-    "cardColour": "YELLOW",
-    "cardDescription": "Dopo aver scelto un dado, piazzalo in una casella che non sia adiacente a un altro dado. Devi rispettare tutte le restrizioni di piazzamento",
-    "action": "[1-Choose dice][2-Remove dice from DraftPool][4-Place isolated new dice][8-CA]"
+    "cardDescription": "Muovi fino a due dadi dello stesso colore di un solo dado sul Tracciato dei Round. Devi rispettare tutte le restrizioni di piazzamento",
+    "action": "[1-Choose color from RoundTrack][2-Remove dice of a certain color][4-CP][8-Place old dice][16-If continue][32-CA][64-Remove dice of a certain color][128-CP][256-Place old dice][512-CA]"
   }
 ]

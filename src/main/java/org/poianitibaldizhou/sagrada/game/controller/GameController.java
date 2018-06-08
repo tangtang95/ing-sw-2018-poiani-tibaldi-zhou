@@ -484,6 +484,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public void setNewValue(String message) throws IOException {
+        System.out.println("Message set new value: "+ message);
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
         Integer value = serverGetMessage.getInteger(message);
