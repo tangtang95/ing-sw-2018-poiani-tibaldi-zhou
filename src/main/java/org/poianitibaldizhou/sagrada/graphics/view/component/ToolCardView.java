@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.graphics.view;
+package org.poianitibaldizhou.sagrada.graphics.view.component;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;

@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
@@ -180,7 +181,7 @@ public class ToolCardTest {
                 "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante il tuo secondo turno, prima di scegliere il secondo dado",
                 "[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]");
         String message = "{\"name\":\"Martelletto\",\"token\":0}";
-        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        JSONParser jsonParser = new JSONParser();
         try {
             assertTrue((Objects.requireNonNull(ToolCard.toObject((JSONObject) jsonParser.parse(message)))).equals(trueToolCard));
         } catch (ParseException e) {

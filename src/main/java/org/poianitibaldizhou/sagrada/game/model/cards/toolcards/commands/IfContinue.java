@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -11,9 +12,10 @@ import java.util.Objects;
 public class IfContinue implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
-        toolCardExecutor.getObservers().forEach(obs -> obs.notifyNeedContinueAnswer());
+        toolCardExecutor.getObservers().forEach(IToolCardExecutorFakeObserver::notifyNeedContinueAnswer);
 
         boolean answer = toolCardExecutor.getNeededAnswer();
+        System.out.println("ANSWER: " + answer);
         return answer ? CommandFlow.MAIN : CommandFlow.SUB;
     }
 

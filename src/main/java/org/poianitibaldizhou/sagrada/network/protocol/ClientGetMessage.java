@@ -398,6 +398,18 @@ public class ClientGetMessage {
         return playersCoins;
     }
 
+    public int getTurnValue(String message) throws IOException {
+        Integer turnValue;
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TURN_VALUE_KEY);
+            turnValue = Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return turnValue;
+    }
+
+
     public String getCommandFlow(String message) throws IOException {
         String command;
         try {

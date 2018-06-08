@@ -58,13 +58,15 @@ public class RemoveDice implements ICommand {
         Dice removed = null;
         Color color;
 
+        System.out.println("REMOVE");
+
         if (this.constraintType == PlacementRestrictionType.COLOR) {
             color = toolCardExecutor.getNeededColor();
             if (!(toolCardExecutor.getTemporarySchemaCard().hasDiceOfColor(color)))
                 return CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR;
             observerList.forEach(obs -> obs.notifyNeedDicePositionOfCertainColor(color, toolCardExecutor.getTemporarySchemaCard()));
             position = toolCardExecutor.getNeededPosition();
-            if (!toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color)) {
+            if (toolCardExecutor.getTemporarySchemaCard().getDice(position) == null || !(toolCardExecutor.getTemporarySchemaCard().getDice(position).getColor().equals(color))) {
                 toolCardExecutor.setNeededPosition(null);
                 return CommandFlow.REPEAT;
             }

@@ -11,6 +11,10 @@
     -fx-font-size: 2em;
 }
 
+.state-message{
+    -fx-font-size: 4em;
+}
+
 .menu-pane{
     -fx-border-color: black;
     -fx-border-radius: 3em;

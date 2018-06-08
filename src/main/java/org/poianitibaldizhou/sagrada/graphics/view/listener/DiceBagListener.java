@@ -1,14 +1,18 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
+import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class DiceBagListener extends UnicastRemoteObject implements IDrawableCollectionObserver {
+public class DiceBagListener extends AbstractView implements IDrawableCollectionObserver {
 
-    public DiceBagListener() throws RemoteException {
+    public DiceBagListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+        super(controller, corePane, notifyPane);
     }
 
     @Override
