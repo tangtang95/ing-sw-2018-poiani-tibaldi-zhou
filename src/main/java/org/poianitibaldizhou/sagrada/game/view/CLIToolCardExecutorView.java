@@ -99,7 +99,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         String message = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
                 createTokenMessage(cliStateView.getToken())
-                .createValueMessage(consoleListener.readValue(6)).toString();
+                .createValueMessage(consoleListener.readValue(6)).buildMessage();
         connectionManager.getGameController().setNewValue(message);
     }
 

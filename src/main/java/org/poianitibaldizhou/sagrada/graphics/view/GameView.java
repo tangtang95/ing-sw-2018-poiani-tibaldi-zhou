@@ -27,11 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GameView {
-
-    private final MultiPlayerController controller;
-    private final Pane corePane;
-    private final Pane notifyPane;
+public class GameView extends AbstractView{
 
     private Pane publicObjectiveCardsContainer;
     private Pane toolCardsContainer;
@@ -40,17 +36,16 @@ public class GameView {
     private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.4;
     private static final double SCHEMA_CARD_SCALE = 0.25;
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.25;
-    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.3;
-    private static final double TOOL_CARD_SCALE = 0.3;
+    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.4;
+    private static final double TOOL_CARD_SCALE = 0.4;
+    private static final double ROUND_TRACK_SCALE = 0.5;
 
     private static final double HELPER_BAR_PERCENT_HEIGHT = 0.075;
 
     private static final double PADDING = 10;
 
     public GameView(MultiPlayerController controller, Pane corePane, Pane notifyPane) {
-        this.controller = controller;
-        this.corePane = corePane;
-        this.notifyPane = notifyPane;
+        super(controller, corePane, notifyPane);
     }
 
     public void showFrontBackSchemaCards(List<FrontBackSchemaCardWrapper> frontBackSchemaCardList) {
@@ -167,13 +162,14 @@ public class GameView {
         DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING);
         DoubleBinding y = new SimpleDoubleProperty(0).add(PADDING);
 
-        publicObjectiveCardsContainer.translateXProperty().bind(x);
+        publicObjectiveCardsContainer.translateXProperty().bind(x.add(toolCardsContainer.widthProperty().add(PADDING*4)));
         publicObjectiveCardsContainer.translateYProperty().bind(y);
 
         for (int i = 0; i < publicObjectiveCardWrappers.size(); i++) {
             PublicObjectiveCardView publicObjectiveCardView = new PublicObjectiveCardView(
                     publicObjectiveCardWrappers.get(i), PUBLIC_OBJECTIVE_CARD_SCALE);
             publicObjectiveCardView.setTranslateX(i*PADDING);
+            publicObjectiveCardView.setTranslateY(i*PADDING);
             publicObjectiveCardsContainer.getChildren().add(publicObjectiveCardView);
         }
 
@@ -187,17 +183,25 @@ public class GameView {
         DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING);
         DoubleBinding y = new SimpleDoubleProperty(0).add(PADDING);
 
-        toolCardsContainer.translateXProperty().bind(x.add(PADDING*5));
+        toolCardsContainer.translateXProperty().bind(x);
         toolCardsContainer.translateYProperty().bind(y);
 
-        for (int i = 1; i < toolCardWrappers.size(); i++) {
+        for (int i = 0; i < toolCardWrappers.size(); i++) {
             ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), TOOL_CARD_SCALE);
             toolCardView.setTranslateX(i*PADDING);
+            toolCardView.setTranslateY(i*PADDING);
             toolCardsContainer.getChildren().add(toolCardView);
         }
 
         corePane.getChildren().add(toolCardsContainer);
 
+    }
+
+    public void drawRoundTrack() {
+        RoundTrackView roundTrackView = new RoundTrackView(ROUND_TRACK_SCALE);
+
+
+        corePane.getChildren().add(roundTrackView);
     }
 
     private void drawPrivateObjectiveCard(List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
@@ -344,5 +348,4 @@ public class GameView {
     public void showSevereErrorMessage(String text) {
         // TODO
     }
-
 }

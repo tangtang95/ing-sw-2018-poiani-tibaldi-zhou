@@ -306,4 +306,9 @@ public class ToolCardExecutor extends Thread{
         this.interrupt();
     }
 
+    public void addSkipTurnPlayer(Player player, int turn) {
+        if (turn < TurnState.FIRST_TURN || turn > TurnState.SECOND_TURN)
+            throw new IllegalArgumentException("Turn has to be 1 or 2");
+        skipTurnPlayers.put(player, turn);
+    }
 }

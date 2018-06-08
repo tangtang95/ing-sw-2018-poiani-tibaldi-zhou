@@ -90,6 +90,10 @@ public class MultiPlayerController extends Controller implements Initializable {
 
     }
 
+    public void setRoundTrack() {
+
+    }
+
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
         multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
     }
@@ -100,9 +104,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         double centerY = rootPane.getPrefHeight()/2;
 
         Map<Integer, Double> angles = new HashMap<>();
-
         for (int i = 0; i < users.size(); i++) {
-
 
             Pane pane = new Pane();
             ImageView imageView = TextureUtils.getSimpleImageView("images/user.png", 0.15);
@@ -305,4 +307,5 @@ public class MultiPlayerController extends Controller implements Initializable {
     public List<PrivateObjectiveCardWrapper> getOwnPrivateObjectiveCard() throws IOException {
         return multiPlayerModel.getOwnPrivateObjectiveCard();
     }
+
 }
