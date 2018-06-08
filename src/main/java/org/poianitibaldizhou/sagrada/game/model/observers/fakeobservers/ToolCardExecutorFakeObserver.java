@@ -127,6 +127,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedPosition(SchemaCard schemaCard) {
         Runnable runnable = () -> {
             try {
+                System.out.println("IN NOTIFY THREAD: " + schemaCard.toString());
                 realObserver.notifyNeedPosition(serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

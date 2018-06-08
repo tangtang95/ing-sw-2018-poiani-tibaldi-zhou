@@ -9,12 +9,12 @@
     "cardName": "Pennello per Eglomise",
     "cardColour": "BLUE",
     "cardDescription": "Muovi un qualsiasi dado nella tua vetrata ignorando le restrizioni di colore. Devi rispettare tutte le altre restrizioni di piazzamento",
-    "action": "[1-Remove dice][2-Place old dice ignoring color constraints][4-CA]"
+    "action": "[1-Remove dice][2-CP][4-Place old dice ignoring color constraints][8-CA]"
   },
   {
     "cardName": "Alesatore per lamina di rame",
     "cardColour": "RED",
     "cardDescription": "Muovi un qualsiasi dado nella tua vetrata ignorando le restrizioni di valore. Devi rispettare tutte le altre restrizioni di piazzamento",
-    "action": "[1-Remove dice][2-Place old dice ignoring number constraints][4-CA]"
+    "action": "[1-Remove dice][2-CP][4-Place old dice ignoring number constraints][8-CA]"
   }
 ]

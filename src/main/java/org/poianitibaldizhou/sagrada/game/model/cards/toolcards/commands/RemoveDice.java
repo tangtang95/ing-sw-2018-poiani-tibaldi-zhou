@@ -75,13 +75,7 @@ public class RemoveDice implements ICommand {
             position = toolCardExecutor.getNeededPosition();
         }
 
-        System.out.println("BEFORE REMOVING");
-        System.out.println(toolCardExecutor.getTemporarySchemaCard().toString());
-
         removed = toolCardExecutor.getTemporarySchemaCard().removeDice(position);
-
-        System.out.println("AFTER REMOVING");
-        System.out.println(toolCardExecutor.getTemporarySchemaCard().toString());
 
         if (removed == null) {
             toolCardExecutor.setNeededPosition(null);

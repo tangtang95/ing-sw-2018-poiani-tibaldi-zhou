@@ -74,9 +74,6 @@ public class PlaceDice implements ICommand {
             return CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE;
         }
 
-        System.out.println("BEFORE NOTIFYIN (PLACE)");
-        System.out.println(toolCardExecutor.getTemporarySchemaCard().toString());
-
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         observerList.forEach(obs -> obs.notifyNeedPosition(toolCardExecutor.getTemporarySchemaCard()));
 
