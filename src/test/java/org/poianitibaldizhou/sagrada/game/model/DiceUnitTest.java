@@ -48,7 +48,7 @@ public class DiceUnitTest {
         String message = "{\"color\":\"YELLOW\",\"value\":5}";
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         try {
-            assertTrue((dice.toObject((JSONObject) jsonParser.parse(message))).equals(dice));
+            assertTrue((Dice.toObject((JSONObject) jsonParser.parse(message))).equals(dice));
         } catch (ParseException e) {
             e.printStackTrace();
         }

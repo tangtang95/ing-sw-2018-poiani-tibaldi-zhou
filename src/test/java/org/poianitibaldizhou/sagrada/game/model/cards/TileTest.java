@@ -11,6 +11,8 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
+import java.util.Objects;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -246,14 +248,6 @@ public class TileTest {
 
     @Test
     public void testToObject(){
-        JSONParser parser = new JSONParser();
-        JSONObject test = null;
-        try {
-            test = (JSONObject) parser.parse("{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":3}}");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
         NoConstraint noc = mock(NoConstraint.class);
 
         ColorConstraint cc1 = mock(ColorConstraint.class);
@@ -290,13 +284,12 @@ public class TileTest {
         String message1 = "{\"constraint\":null}";
         String message2 = "{\"constraint\":\"PURPLE\"}";
         String message3 = "{\"constraint\":3}";
-        String message4 = "{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":3}},\"constraint\":null}";
 
         JSONParser jsonParser = new JSONParser();
         try {
-            assertTrue(noConstraintTile.toObject((JSONObject) jsonParser.parse(message1)).equals(noConstraintTile));
-            assertTrue(tile3.toObject((JSONObject) jsonParser.parse(message3)).equals(tile3));
-            assertTrue(tilePurple.toObject((JSONObject) jsonParser.parse(message2)).equals(tilePurple));
+            assertTrue(Objects.requireNonNull(Tile.toObject((JSONObject) jsonParser.parse(message1))).equals(noConstraintTile));
+            assertTrue(Objects.requireNonNull(Tile.toObject((JSONObject) jsonParser.parse(message3))).equals(tile3));
+            assertTrue(Objects.requireNonNull(Tile.toObject((JSONObject) jsonParser.parse(message2))).equals(tilePurple));
         } catch (ParseException e) {
             e.printStackTrace();
         }

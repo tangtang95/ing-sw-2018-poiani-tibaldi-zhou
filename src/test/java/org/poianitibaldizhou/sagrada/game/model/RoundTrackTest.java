@@ -77,7 +77,7 @@ public class RoundTrackTest {
                 "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":9}]}";
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         try {
-            assertTrue((roundTrack.toObject((JSONObject) jsonParser.parse(message)))== null);
+            assertTrue((RoundTrack.toObject((JSONObject) jsonParser.parse(message)))== null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -90,11 +90,11 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void newInstance() throws Exception {
+    public void newInstance(){
     }
 
     @Test
-    public void addDicesToRound() throws Exception {
+    public void addDicesToRound() {
         roundTrack.addDicesToRound(dices, 1);
         for (Dice dice : roundTrack.getDices(1)) {
             assertTrue(dices.contains(dice));
@@ -102,7 +102,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void addDiceToRound() throws Exception {
+    public void addDiceToRound(){
         roundTrack.addDiceToRound(dice1, 3);
         assertTrue(roundTrack.getDices(3).contains(dice1));
         roundTrack.addDiceToRound(dice2, 3);
@@ -116,7 +116,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void removeDiceFromRoundTrack() throws Exception {
+    public void removeDiceFromRoundTrack() {
         roundTrack.addDicesToRound(dices, 2);
         for (Dice dice : roundTrack.getDices(2)) {
             assertTrue(dices.contains(dice));
@@ -133,7 +133,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void testEmptinessWithAddDice() throws Exception{
+    public void testEmptinessWithAddDice() {
         roundTrack.addDiceToRound(dice1, 1);
         assertEquals(false, roundTrack.isEmpty());
 
@@ -142,7 +142,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void testEmptinessWithAddDices() throws Exception{
+    public void testEmptinessWithAddDices() {
         roundTrack.addDicesToRound(dices, 1);
         assertEquals(false, roundTrack.isEmpty());
 
@@ -184,7 +184,7 @@ public class RoundTrackTest {
     }
 
     @Test
-    public void testNewInstance() throws Exception {
+    public void testNewInstance() {
         roundTrack.addDicesToRound(dices, 1);
         dices.remove(dice1);
         roundTrack.addDicesToRound(dices, 2);
@@ -210,12 +210,12 @@ public class RoundTrackTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddNull() throws Exception{
+    public void testAddNull() {
         roundTrack.addDiceToRound(null, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testAddsNull() throws Exception {
+    public void testAddsNull() {
         roundTrack.addDicesToRound(null, 0);
     }
 }

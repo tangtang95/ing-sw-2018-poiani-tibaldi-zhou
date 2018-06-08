@@ -5,8 +5,6 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
-    public static final String RECONNECT_ERROR = "Error reconnecting";
-
     private SharedConstants() { }
 
     /**
@@ -36,14 +34,7 @@ public class SharedConstants {
     public static final String COMMAND_FLOW = "commandFlow";
     public static final String ELEM = "elem";
     public static final String OUTCOME = "outcome";
-    public static final String OLD_DICE = "oldDice";
-    public static final String NEW_DICE = "newDice";
-    public static final String ROUND_USER = "roundUser";
-    public static final String TURN_USER = "turnUser";
     public static final String BOOLEAN = "boolean";
-    public static final String VICTORY_POINT_MAP = "victoryPointMap";
-    public static final String COLOR_LIST_KEY = "colorListKey";
-    public static final String DICE_VALUE = "diceValue";
     public static final String FRONT_BACK_SCHEMA_CARD = "frontBackSchemaCard";
     public static final String END_TURN_ACTION = "endTurnAction";
     public static final String PLACE_DICE_ACTION = "placeDiceAction";
@@ -51,7 +42,7 @@ public class SharedConstants {
 
 
     /**
-     * Key protocol communication
+     * Key protocol communication.
      */
     public static final String GAME_NAME_KEY = "gameNameKey";
     public static final String TOKEN_KEY = "tokenKey";
@@ -68,9 +59,19 @@ public class SharedConstants {
     public static final String ACTION_KEY = "action";
     public static final String TURN_VALUE_KEY = "turnValue";
     public static final String MAP_PLAYERS_COINS_KEY = "mapPlayersCoinsKey";
+    public static final String COLOR_LIST_KEY = "colorListKey";
+    public static final String DICE_VALUE_KEY = "diceValueKey";
+    public static final String VICTORY_POINT_MAP_KEY = "victoryPointMapKey";
+    public static final String OLD_DICE_KEY = "oldDiceKey";
+    public static final String NEW_DICE_KEY = "newDiceKey";
+    public static final String ROUND_USER_KEY = "roundUserKey";
+    public static final String TURN_USER_KEY = "turnUserKey";
 
-
+    /**
+     * Error message.
+     */
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";
     public static final String GET_ERROR_KEY = "error";
+    public static final String RECONNECT_ERROR = "Error reconnecting";
 }

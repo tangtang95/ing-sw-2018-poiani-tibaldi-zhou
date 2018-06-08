@@ -38,11 +38,7 @@ public class CLIReconnectToGameScreen implements IScreen {
 
         getParameter();
         if(userList != null && token != null && gameName != null) {
-            try {
-                screenManager.replaceScreen(CLIRoundScreen.reconnect());
-            } catch (RemoteException e) {
-                PrinterManager.consolePrint("Re-connect failed", Level.ERROR);
-            }
+            screenManager.replaceScreen(CLIRoundScreen.reconnect());
         }
 
         screenManager.popScreen();

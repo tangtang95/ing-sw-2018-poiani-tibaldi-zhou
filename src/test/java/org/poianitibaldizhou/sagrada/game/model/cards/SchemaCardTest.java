@@ -421,8 +421,8 @@ public class SchemaCardTest {
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}";
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         try {
-            assertTrue((emptySchemaCard.toObject((JSONObject) jsonParser.parse(message))).equals(emptySchemaCard));
-            assertTrue((fullSchemaCard.toObject((JSONObject) jsonParser.parse(message1))).equals(fullSchemaCard));
+            assertTrue((SchemaCard.toObject((JSONObject) jsonParser.parse(message))).equals(emptySchemaCard));
+            assertTrue((SchemaCard.toObject((JSONObject) jsonParser.parse(message1))).equals(fullSchemaCard));
         } catch (ParseException e) {
             e.printStackTrace();
         }

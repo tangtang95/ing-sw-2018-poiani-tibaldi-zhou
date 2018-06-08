@@ -164,7 +164,7 @@ public class ServerGetMessage {
 
         try {
             JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.COLOR);
-            color = Color.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
+            color = Color.toObject(jsonObject);
         } catch(ParseException | ClassCastException e) {
             throw new IOException();
         }

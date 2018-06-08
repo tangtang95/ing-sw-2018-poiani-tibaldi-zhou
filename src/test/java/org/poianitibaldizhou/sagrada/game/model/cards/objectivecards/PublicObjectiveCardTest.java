@@ -111,7 +111,7 @@ public class PublicObjectiveCardTest {
         String message = "{\"name\":\"Test\"}";
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         try {
-            assertTrue((publicObjectiveCard.toObject((JSONObject) jsonParser.parse(message))) == null);
+            assertTrue((PublicObjectiveCard.toObject((JSONObject) jsonParser.parse(message))) == null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
