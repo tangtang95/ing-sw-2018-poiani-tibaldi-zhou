@@ -32,7 +32,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
         String message = cliStateView.getCurrentUser().getUsername() + " has spent " +
                 clientGetMessage.getValue(value) + "token";
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.INFORMATION);
     }
 
     /**
@@ -42,7 +42,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
     public void onSetOutcome(String outcome) throws IOException {
         String message = "Your outcome is: " + clientGetMessage.getOutcome(outcome);
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.INFORMATION);
     }
 
     @Override

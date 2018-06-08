@@ -51,37 +51,38 @@ public class BuildGraphic {
     private void buildListDices(List<DiceWrapper> diceWrappers, int start, int end) {
         if (start != 0 || end != 0) {
             for (int i = start; i < end; i++)
-                stringBuilder.append("  [").append(i + 1).append("]  ");
+                stringBuilder.append("  [").append(i + 1).append("]    ");
+            stringBuilder.append("\n");
+            buildBorderDice(start,end);
             stringBuilder.append("\n");
             for (int i = start; i < end; i++) {
-                stringBuilder.append((char) 9556);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9559 + " ");
-            }
-            stringBuilder.append("\n");
-            for (int i = start; i < end; i++) {
-                stringBuilder.append((char) 9553 + " ");
+                stringBuilder.append("|" + " ");
                 stringBuilder.append(diceWrappers.get(i).toString());
-                stringBuilder.append(" " + (char) 9553 + " ");
+                stringBuilder.append(" " + "|" + "  ");
             }
             stringBuilder.append("\n");
-            for (int i = start; i < end; i++) {
-                stringBuilder.append((char) 9562);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9552);
-                stringBuilder.append((char) 9565 + " ");
-            }
+            buildBorderDice(start,end);
         }
         stringBuilder.append("\n");
+    }
+
+    /**
+     * build the border of dice.
+     *
+     * @param start the start point.
+     * @param end the end point.
+     */
+    private void buildBorderDice(int start, int end) {
+        for (int i = start; i < end; i++) {
+            stringBuilder.append(" ");
+            stringBuilder.append("-");
+            stringBuilder.append("-");
+            stringBuilder.append("-");
+            stringBuilder.append("-");
+            stringBuilder.append("-");
+            stringBuilder.append(" ");
+            stringBuilder.append("  ");
+        }
     }
 
     /**

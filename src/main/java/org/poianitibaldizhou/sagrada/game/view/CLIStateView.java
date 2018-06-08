@@ -126,7 +126,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             currentUser = turnUser;
 
             if (turnUser.equals(myUser)) {
-                PrinterManager.consolePrint("---------------------------IS YOUR TURN--------------------------\n",
+                PrinterManager.consolePrint("----------------------------IS YOUR TURN---------------------------\n",
                         Level.STANDARD);
                 screenManager.pushScreen(new CLITurnScreen(connectionManager, screenManager, this));
 
@@ -144,6 +144,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public void onRoundEnd(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
         PrinterManager.consolePrint("The round " + (round + 1) + "end\n", Level.STANDARD);
+        start = true;
     }
 
     /**
@@ -169,10 +170,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onPlaceDiceState(String jString) throws IOException {
-        UserWrapper user = clientGetMessage.getTurnUserWrapper(jString);
-        if (!user.equals(myUser))
-            PrinterManager.consolePrint("The player " + user.getUsername() + " place a dice\n",
-                Level.INFORMATION);
+        /*NOT IMPORTANT FOR THE CLI*/
     }
 
     /**
@@ -191,15 +189,17 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onEndTurnState(String jString) throws IOException {
-        UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
-        if(turnUser.equals(myUser)){
-            PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH------------------------\n",
-                    Level.STANDARD);
-            screenManager.popScreen();
-        } else
-            PrinterManager.consolePrint("The turn of " + turnUser.getUsername() + " is ending\n",
-                    Level.INFORMATION);
-
+        synchronized (lock) {
+            UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
+            if (turnUser.equals(myUser)) {
+                PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH-----------------------\n",
+                        Level.STANDARD);
+                screenManager.popScreen();
+                start = true;
+            } else
+                PrinterManager.consolePrint("The turn of " + turnUser.getUsername() + " is ending\n",
+                        Level.INFORMATION);
+        }
     }
 
     @Override

@@ -28,26 +28,16 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDiceAdd(String dice) throws IOException {
-        /* NOT IMPORTANT FOR THE CLI
-        String message = cliStateView.getCurrentUser().getUsername() + " has added a dice to the draft pool";
-        BuildGraphic buildGraphic = new BuildGraphic();
-        DiceWrapper diceWrapper = clientGetMessage.getDice(dice);
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
-        */
+    public void onDiceAdd(String dice) {
+        /* NOT IMPORTANT FOR THE CLI*/
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void onDiceRemove(String dice) throws IOException {
-        /* NOT IMPORTANT FOR THE CLI
-        BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliStateView.getCurrentUser().getUsername() + " has removed a dice from the draft pool.";
-        DiceWrapper diceWrapper = clientGetMessage.getDice(dice);
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
-        */
+    public void onDiceRemove(String dice) {
+        /* NOT IMPORTANT FOR THE CLI*/
     }
 
 
@@ -55,13 +45,8 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDicesAdd(String dices) throws IOException {
-        /* NOT IMPORTANT FOR THE CLI
-        BuildGraphic buildGraphic = new BuildGraphic();
-        String message = cliStateView.getCurrentUser().getUsername() + " has added a set of dices to the draft pool.";
-        List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(dices);
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(), Level.STANDARD);
-        */
+    public void onDicesAdd(String dices) {
+        /* NOT IMPORTANT FOR THE CLI*/
     }
 
     /**
@@ -72,7 +57,8 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (cliStateView.getCurrentUser().getUsername() + " has re-rolled the draft pool.");
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(dices);
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(),
+                Level.INFORMATION);
     }
 
     /**
@@ -80,9 +66,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      */
     @Override
     public void onDraftPoolClear() {
-        BuildGraphic buildGraphic = new BuildGraphic();
-        String message = (cliStateView.getCurrentUser().getUsername() + " has cleared the draft pool.");
-        PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
+        /* NOT IMPORTANT FOR THE CLI*/
     }
 
     @Override
