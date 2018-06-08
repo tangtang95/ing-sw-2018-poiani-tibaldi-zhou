@@ -105,7 +105,7 @@ public class SetupPlayerState extends IStateGame {
             playersReady.add(token);
             game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
-                game.getGameObservers().forEach((key, value) -> value.onPlayersCreate(game.getPlayers()));
+                game.getGameObservers().forEach((key, value) -> value.onPlayersCreate(game.getUsers()));
                 game.setState(new SetupGameState(game));
             }
             return;

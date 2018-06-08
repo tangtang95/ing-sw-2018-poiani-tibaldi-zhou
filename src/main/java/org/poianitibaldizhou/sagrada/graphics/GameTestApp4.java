@@ -13,7 +13,7 @@ import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
-public class GameTestApp2 extends Application{
+public class GameTestApp4 extends Application {
     public static void main(String[] args){
         launch(args);
     }
@@ -32,7 +32,7 @@ public class GameTestApp2 extends Application{
         controller.setStage(primaryStage);
         controller.setSceneManager(sceneManager);
         ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.RMI.getPort(), ConnectionType.RMI);
-        controller.setMultiPlayerModel(String.valueOf("cordero2".hashCode()), "cordero2", "corderoGame", connectionManager);
+        controller.setMultiPlayerModel(String.valueOf("cordero4".hashCode()), "cordero4", "corderoGame", connectionManager);
         sceneManager.pushScene(root);
 
         Scene scene = new Scene(scenes, size.getWidth(), size.getHeight());

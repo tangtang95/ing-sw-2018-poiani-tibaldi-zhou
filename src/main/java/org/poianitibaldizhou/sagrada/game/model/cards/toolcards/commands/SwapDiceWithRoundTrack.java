@@ -33,18 +33,23 @@ public class SwapDiceWithRoundTrack implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
+        System.out.println("Draftpool dice: " + dice);
         Dice roundTrackDice;
         int round;
-        List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
+
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
 
         if(roundTrack.isEmpty())
             return CommandFlow.EMPTY_ROUNDTRACK;
 
-        observerList.forEach(observer -> observer.notifyNeedDiceFromRoundTrack(roundTrack));
+        toolCardExecutor.getObservers().forEach(observer -> observer.notifyNeedDiceFromRoundTrack(roundTrack));
 
-        roundTrackDice = toolCardExecutor.getNeededDice();
+
+        toolCardExecutor.setNeededDice(null);
         round = toolCardExecutor.getNeededValue();
+        roundTrackDice = toolCardExecutor.getNeededDice();
+
+        System.out.println("Roundtrack dice: " + dice);
 
         try {
             toolCardExecutor.getTemporaryDraftPool().useDice(dice);

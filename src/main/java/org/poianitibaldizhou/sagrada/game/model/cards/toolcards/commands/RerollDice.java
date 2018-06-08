@@ -26,6 +26,10 @@ public class RerollDice implements ICommand {
         Dice dice = toolCardExecutor.getNeededDice();
         Random rand = new Random();
         dice = new Dice(rand.nextInt(Dice.MAX_VALUE - 1) + 1, dice.getColor());
+
+        final Dice finalDice = dice;
+        toolCardExecutor.getObservers().forEach(obs -> obs.notifyDiceReroll(finalDice));
+
         toolCardExecutor.setNeededDice(dice);
         return CommandFlow.MAIN;
     }

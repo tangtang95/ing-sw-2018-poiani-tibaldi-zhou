@@ -64,7 +64,6 @@ public class ToolCard extends Card implements JSONable{
      * @param toolCard the toolCard to copy
      */
     private ToolCard(ToolCard toolCard) {
-        //TODO refactor
         super(toolCard.getName(), toolCard.getDescription());
         this.color = toolCard.getColor();
         this.tokens = toolCard.getTokens();

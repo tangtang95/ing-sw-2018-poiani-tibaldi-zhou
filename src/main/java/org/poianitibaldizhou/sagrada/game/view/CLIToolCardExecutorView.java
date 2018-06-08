@@ -69,7 +69,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         this.clientCreateMessage = cliStateView.getClientCreateMessage();
         this.toolCardName = toolCardName;
         this.connectionManager = cliStateView.getConnectionManager();
-        
+
     }
 
     /**
@@ -148,14 +148,15 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             maxNumber = temp;
         }
 
-        if(checkValidityDeltaValue(minNumber, diceValue, value)) {
+
+        if(!checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
-        } else if(checkValidityDeltaValue(maxNumber, diceValue, value)) {
+        } else if(!checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
 
         do {
-            if(minNumber != maxNumber)
+            if (minNumber != maxNumber)
                 PrinterManager.consolePrint("Choose the number " + minNumber + " or " + maxNumber + ":\n", Level.STANDARD);
             else
                 PrinterManager.consolePrint("Choose the number " + minNumber + ":\n", Level.STANDARD);
@@ -166,7 +167,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 number = -1;
             }
             if (number == minNumber || number == maxNumber) {
-                String messageForController  = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                String messageForController = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                         createGameNameMessage(cliStateView.getGameName()).createValueMessage(number).buildMessage();
                 connectionManager.getGameController().setNewValue(messageForController);
             } else {
@@ -227,7 +228,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyRepeatAction(){
+    public void notifyRepeatAction() {
         PrinterManager.consolePrint("There was an error with the last command" +
                 "which will be repeated.\n", Level.INFORMATION);
     }
@@ -236,7 +237,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyCommandInterrupted(String error){
+    public void notifyCommandInterrupted(String error) {
         PrinterManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
                 toolCardName + ", so you will not be able to use it this turn.\n", Level.INFORMATION);
     }
@@ -270,7 +271,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     doAgain = true;
                     break;
             }
-        } while(doAgain);
+        } while (doAgain);
 
         String setMessage = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
                 createTokenMessage(cliStateView.getToken()).createAnswerMessage(answer).buildMessage();
@@ -278,6 +279,18 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         connectionManager.getGameController().setContinueAction(setMessage);
         consoleListener.wakeUpCommandConsole();
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void notifyDiceReroll(String message) throws IOException {
+        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
+
+
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been re-rolled: ").buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
     /**
@@ -297,7 +310,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                 createGameNameMessage(cliStateView.getGameName()).createPositionMessage(
-                        new PositionWrapper(row, column)).buildMessage();
+                new PositionWrapper(row, column)).buildMessage();
         connectionManager.getGameController().setPosition(setMessage);
     }
 
@@ -308,16 +321,24 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @throws IOException error reading or network communication errors
      */
     private void readRoundTrackParameters(RoundTrackWrapper roundTrack) throws IOException {
-        PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
-        int roundNumber = consoleListener.readPositionNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
+        int roundNumber;
+
+        do {
+            PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
+            roundNumber = consoleListener.readPositionNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
+        } while (roundTrack.getDicesPerRound(roundNumber).isEmpty());
 
         PrinterManager.consolePrint("Choose a dice: \n", Level.STANDARD);
         int diceNumber = consoleListener.readPositionNumber(roundTrack.getDicesPerRound(roundNumber).size());
 
-        String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+        String setRoundMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).createGameNameMessage(cliStateView.getGameName())
+                .createValueMessage(roundNumber).buildMessage();
+        connectionManager.getGameController().setNewValue(setRoundMessage);
+
+        String setDiceMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
                 createGameNameMessage(cliStateView.getGameName()).
                 createDiceMessage(roundTrack.getDicesPerRound(roundNumber).get(diceNumber)).buildMessage();
-        connectionManager.getGameController().setDice(setMessage);
+        connectionManager.getGameController().setDice(setDiceMessage);
     }
 
     /**
@@ -325,7 +346,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      *
      * @param newValue new value
      * @param oldValue old value
-     * @param delta delta between values
+     * @param delta    delta between values
      * @return true if valid, false otherwise
      */
     private boolean checkValidityDeltaValue(int newValue, int oldValue, int delta) {

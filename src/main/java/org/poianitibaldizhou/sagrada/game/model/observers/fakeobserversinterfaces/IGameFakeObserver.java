@@ -2,14 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfac
 
 
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.io.IOException;
-import java.rmi.Remote;
 import java.util.List;
 
 public interface IGameFakeObserver  {
@@ -19,9 +16,9 @@ public interface IGameFakeObserver  {
     /**
      * Notify the list of players to the user
      *
-     * @param players the list of players of the game
+     * @param users the list of players of the game
      */
-    void onPlayersCreate(List<Player> players) ;
+    void onPlayersCreate(List<User> users) ;
 
     /**
      * Notify the list of public objective cards drawn in the game to the user

@@ -38,6 +38,8 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private static final int COLUMNS = 4;
 
+    private static final double RETRO_IMAGE_SCALE = 0.7;
+
     public LobbyView(LobbyController controller, GridPane usersPane) throws RemoteException {
         this.controller = controller;
         this.usersPane = usersPane;
@@ -100,9 +102,8 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private Canvas getUserContainer(int numberOfUser){
         Image retroImage = new Image(getClass().getClassLoader().getResourceAsStream("images/userRetro.png"));
-        // TODO FIX 0.7
-        double width = retroImage.getWidth()*0.7;
-        double height = retroImage.getHeight()*0.7;
+        double width = retroImage.getWidth()*RETRO_IMAGE_SCALE;
+        double height = retroImage.getHeight()* RETRO_IMAGE_SCALE;
 
         Canvas canvas = new Canvas( width, height);
         GraphicsContext gc = canvas.getGraphicsContext2D();

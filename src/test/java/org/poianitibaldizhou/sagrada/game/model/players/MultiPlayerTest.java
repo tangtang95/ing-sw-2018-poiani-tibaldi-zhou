@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -33,6 +34,7 @@ public class MultiPlayerTest {
 
     private List<PrivateObjectiveCard> privateObjectiveCardList;
     private Player player;
+    private FavorToken favorToken;
 
     @Before
     public void setUp() {
@@ -41,7 +43,8 @@ public class MultiPlayerTest {
         privateObjectiveCardList.add(privateObjectiveCard1);
         schemaCard = spy(new SchemaCard("schemaName", 3,
                 new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS]));
-        player = new MultiPlayer(user, schemaCard, privateObjectiveCardList);
+        favorToken = new FavorToken(schemaCard.getDifficulty());
+        player = new MultiPlayer(user, favorToken, schemaCard, privateObjectiveCardList);
     }
 
     @After
