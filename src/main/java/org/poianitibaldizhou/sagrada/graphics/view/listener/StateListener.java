@@ -78,4 +78,15 @@ public class StateListener extends UnicastRemoteObject implements IStateObserver
     public void onResultGame(String winner) throws IOException {
 
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StateListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
 }

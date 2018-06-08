@@ -111,10 +111,10 @@ public class MultiPlayerGame extends Game{
             toolCard.addTokens(toolCard.getCost());
             return CommandFlow.MAIN;
         });
-        Node<ICommand> preCommands = new Node<>(new ClearAll());
+        Node<ICommand> clearAll = new Node<>(new ClearAll());
 
         removeFavorToken.setLeftChild(addTokenToolCard);
-        addTokenToolCard.setLeftChild(preCommands);
+        addTokenToolCard.setLeftChild(clearAll);
         return removeFavorToken;
     }
 

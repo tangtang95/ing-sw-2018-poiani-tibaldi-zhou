@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
+import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.graphics.view.DraftPoolView;
 
@@ -43,4 +44,15 @@ public class DraftPoolListener extends UnicastRemoteObject implements IDraftPool
     public void onDraftPoolClear() throws IOException {
 
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof DraftPoolListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
 }

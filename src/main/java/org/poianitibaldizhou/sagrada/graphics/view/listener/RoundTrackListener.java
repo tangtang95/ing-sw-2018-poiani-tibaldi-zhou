@@ -39,4 +39,15 @@ public class RoundTrackListener extends UnicastRemoteObject implements IRoundTra
     public void onDiceSwap(String message) throws IOException {
 
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RoundTrackListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
 }

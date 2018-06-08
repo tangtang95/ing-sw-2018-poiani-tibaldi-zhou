@@ -34,33 +34,37 @@ public class MultiPlayerController extends Controller implements Initializable {
 
     @FXML
     public StackPane rootPane;
-
     @FXML
     public Pane corePane;
+    @FXML
+    public Pane notifyPane;
 
     private DraftPoolListener draftPoolView;
     private RoundTrackListener roundTrackView;
     private StateListener stateView;
-    private GameListener gameView;
+    private GameListener gameListener;
     private DiceBagListener diceBagView;
-    private TimeOutListener timeOutListener;
+    private TimeoutListener timeoutListener;
 
     private MultiPlayerModel multiPlayerModel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        initNotifyPane();
+        GameView gameView = new GameView(this, corePane, notifyPane);
         try {
             draftPoolView = new DraftPoolListener(new DraftPoolView());
             roundTrackView = new RoundTrackListener(new RoundTrackView());
             stateView = new StateListener(new StateView());
-            gameView = new GameListener(new GameView());
+            gameListener = new GameListener(gameView);
             diceBagView = new DiceBagListener();
-            timeOutListener = new TimeOutListener();
+            timeoutListener = new TimeoutListener();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        /*testFrontBackSchemaCardView();
-        testSchemaCardView();
+
+        testFrontBackSchemaCardView();
+        /*testSchemaCardView();
         testDiceView();
         testRoundTrackView();
         testToolCardView();
@@ -68,19 +72,30 @@ public class MultiPlayerController extends Controller implements Initializable {
         testPrivateObjectiveCardView();*/
     }
 
+    private void initNotifyPane(){
+        notifyPane.setVisible(false);
+        notifyPane.prefWidthProperty().bind(rootPane.widthProperty());
+        notifyPane.prefHeightProperty().bind(rootPane.heightProperty());
+        notifyPane.toBack();
+    }
+
     public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
-        try {
-            List<UserWrapper> users = multiPlayerModel.joinGame(gameView, gameView, stateView,
-                    roundTrackView, draftPoolView, diceBagView, timeOutListener);
+        /*try {
+            List<UserWrapper> users = multiPlayerModel.joinGame(gameListener, gameListener, stateView,
+                    roundTrackView, draftPoolView, diceBagView, timeoutListener);
             List<UserWrapper> usersOrdered = getUsersOrdered(users);
             System.out.println(users);
             drawUsers(usersOrdered);
         } catch (IOException e) {
             e.printStackTrace();
             AlertBox.displayBox("Errore di rete", "Sagrada è crashato: " + e.toString());
-        }
+        }*/
 
+    }
+
+    public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
+        multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
     }
 
     private List<UserWrapper> getUsersOrdered(final List<UserWrapper> users){
@@ -225,22 +240,25 @@ public class MultiPlayerController extends Controller implements Initializable {
     private void testFrontBackSchemaCardView(){
         DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
         GameInjector.injectSchemaCards(schemaCards);
-        JSONObject frontSchema = null;
-        JSONObject backSchema = null;
+
+        List<FrontBackSchemaCardWrapper> frontBackSchemaCardWrappers = new ArrayList<>();
+        JSONObject firstSchema = null;
+        JSONObject secondSchema = null;
         try {
             FrontBackSchemaCard frontBackSchemaCard = schemaCards.draw();
-            frontSchema = (JSONObject) frontBackSchemaCard.getFrontSchemaCard().toJSON().get("body");
-            backSchema = (JSONObject) frontBackSchemaCard.getBackSchemaCard().toJSON().get("body");
+            firstSchema = (JSONObject) frontBackSchemaCard.toJSON().get("body");
+            frontBackSchemaCardWrappers.add(FrontBackSchemaCardWrapper.toObject(firstSchema));
+            frontBackSchemaCard = schemaCards.draw();
+            secondSchema = (JSONObject) frontBackSchemaCard.toJSON().get("body");
+            frontBackSchemaCardWrappers.add(FrontBackSchemaCardWrapper.toObject(secondSchema));
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
         }
-        SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
-        FrontBackSchemaCardView cardView = new FrontBackSchemaCardView((SchemaCardWrapper) schemaCard.toObject(frontSchema),
-                (SchemaCardWrapper) schemaCard.toObject(backSchema), 0.3);
-        cardView.flipCard(Duration.millis(5000));
-        corePane.getChildren().add(cardView);
-        cardView.setTranslateY(400);
-        cardView.setTranslateX(700);
+        GameView gameView = gameListener.getGameView();
+
+        gameView.activateNotifyPane();
+        gameView.clearNotifyPane();
+        gameView.showFrontBackSchemaCards(frontBackSchemaCardWrappers);
     }
 
     private void testRoundTrackView(){
@@ -285,7 +303,5 @@ public class MultiPlayerController extends Controller implements Initializable {
         diceView.setTranslateX(300);
         diceView.setTranslateY(300);
     }
-
-
 
 }
