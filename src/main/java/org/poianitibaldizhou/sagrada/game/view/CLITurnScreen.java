@@ -106,8 +106,7 @@ public class CLITurnScreen extends CLIRoundScreen {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
         viewToolCards();
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a Tool Card:").
-                buildGraphicToolCards(toolCardList).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a Tool Card:").toString(), Level.STANDARD);
         ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readPositionNumber(toolCardList.size()));
         try {
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
