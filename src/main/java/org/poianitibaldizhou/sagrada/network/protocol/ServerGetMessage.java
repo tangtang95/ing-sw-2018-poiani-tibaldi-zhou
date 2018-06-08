@@ -199,7 +199,7 @@ public class ServerGetMessage {
         Boolean b;
         try {
             JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
-            b = Boolean.valueOf(jsonObject.get(SharedConstants.BODY).toString());
+            b = Boolean.getBoolean(jsonObject.get(SharedConstants.BODY).toString());
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }

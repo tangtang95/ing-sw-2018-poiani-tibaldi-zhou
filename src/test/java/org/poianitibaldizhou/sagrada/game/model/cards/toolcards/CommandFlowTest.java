@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
@@ -13,12 +16,19 @@ public class CommandFlowTest {
 
     @Test
     public void toJsonTest() {
-        String message = "";
+        String message = "{\"type\":\"commandFlow\",\"body\":\"REPEAT\"}";
+        assertEquals(message, commandFlow.toJSON().toJSONString());
     }
 
     @Test
     public void toObjectTest() {
-
+        String message = "{\"type\":\"commandFlow\",\"body\":\"REPEAT\"}";
+        JSONParser jsonParser = new JSONParser();
+        try {
+            assertEquals(commandFlow, CommandFlow.toObject((JSONObject) jsonParser.parse(message)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Before

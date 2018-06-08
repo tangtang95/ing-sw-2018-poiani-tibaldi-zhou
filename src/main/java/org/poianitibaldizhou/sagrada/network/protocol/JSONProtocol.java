@@ -96,6 +96,13 @@ public class JSONProtocol {
             jsonObject.put(SharedConstants.BODY, t.toString());
             return jsonObject;
         }
+        if (t instanceof  Boolean) {
+            jsonObject = new JSONObject();
+            jsonObject.put(SharedConstants.TYPE, SharedConstants.BOOLEAN);
+            jsonObject.put(SharedConstants.BODY, t.toString());
+            return jsonObject;
+        }
+
         throw new IllegalArgumentException();
     }
 }
