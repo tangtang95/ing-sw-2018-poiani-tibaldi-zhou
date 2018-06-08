@@ -7,7 +7,6 @@ import org.junit.runners.Parameterized;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,53 +17,52 @@ import static org.junit.Assert.*;
 
 @RunWith(Enclosed.class)
 public class DrawableCollectionTest {
-    //TODO Riccardo :)
-/*
+
     public static class NonParameterizedPart {
 
-        private static DrawableCollectionFakeObserver<String> drawableCollection;
+        private static DrawableCollection<Dice> drawableCollection;
 
-        private static List<String> stringList;
+        private static List<Dice> diceList;
 
         @BeforeClass
         public static void setUpClass() {
-            stringList = new ArrayList<>();
+            diceList = new ArrayList<>();
         }
 
         @AfterClass
         public static void tearDownClass() {
-            stringList = null;
+            diceList = null;
             drawableCollection = null;
         }
 
         @Before
         public void setUp() throws Exception{
             for (int i = 0; i < 5; i++) {
-                stringList.add("string" + i);
+                diceList.add(new Dice(i+1, Color.GREEN));
             }
             drawableCollection = new DrawableCollection<>();
-            drawableCollection.addElements(stringList);
+            drawableCollection.addElements(diceList);
         }
 
         @After
         public void tearDown() {
-            stringList.clear();
+            diceList.clear();
             drawableCollection = null;
         }
 
         @Test
         public void testAddElementAndDraw() throws Exception{
-            drawableCollection.addElement("stringX");
-            stringList.add("stringX");
-            assertArrayEquals("Error adding a single element", stringList.toArray(), drawableCollection.toArray());
+            drawableCollection.addElement(new Dice(2, Color.GREEN));
+            diceList.add(new Dice(2, Color.GREEN));
+            assertArrayEquals("Error adding a single element", diceList.toArray(), drawableCollection.toArray());
 
             int initial_size = drawableCollection.size();
             try {
                 for (int i = 0; i < initial_size - 1; i++) {
-                    String temp = drawableCollection.draw();
-                    stringList.remove(temp);
-                    assertArrayEquals("Error drawing an element", stringList.toArray(), drawableCollection.toArray());
-                    assertEquals("Error size", stringList.size(), drawableCollection.size());
+                    Dice temp = drawableCollection.draw();
+                    diceList.remove(temp);
+                    assertArrayEquals("Error drawing an element", diceList.toArray(), drawableCollection.toArray());
+                    assertEquals("Error size", diceList.size(), drawableCollection.size());
                 }
             } catch (EmptyCollectionException e) {
                 fail("No exception expected");
@@ -87,24 +85,24 @@ public class DrawableCollectionTest {
 
         @Test
         public void testAddElementsMethod() throws Exception{
-            List<String> newStrings = new ArrayList<>();
+            List<Dice> diceArrayList = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
-                newStrings.add("newString" + i);
+                diceArrayList.add(new Dice(1+i, Color.PURPLE));
             }
 
-            drawableCollection.addElements(newStrings);
+            drawableCollection.addElements(diceArrayList);
 
-            stringList.addAll(newStrings);
+            diceList.addAll(diceArrayList);
 
-            assertArrayEquals("Add elements not working properly", stringList.toArray(), drawableCollection.toArray());
+            assertArrayEquals("Add elements not working properly", diceList.toArray(), drawableCollection.toArray());
         }
     }
 
     @RunWith(value = Parameterized.class)
     public static class ParameterizedPart {
 
-        private DrawableCollection<String> collection1;
-        private DrawableCollection<String> collection2;
+        private DrawableCollection<Dice> collection1;
+        private DrawableCollection<Dice> collection2;
         private boolean expected;
 
         public ParameterizedPart(boolean expected, Object[] list1, Object[] list2) throws Exception{
@@ -113,14 +111,14 @@ public class DrawableCollectionTest {
             if(list1 != null) {
                 collection1 = new DrawableCollection<>();
                 for (Object o : list1)
-                    collection1.addElement((String) o);
+                    collection1.addElement((Dice) o);
             } else {
                 collection1 = null;
             }
             if(list2 != null) {
                 collection2 = new DrawableCollection<>();
                 for (Object o : list2)
-                    collection2.addElement((String) o);
+                    collection2.addElement((Dice) o);
             } else {
                 collection2 = null;
             }
@@ -129,16 +127,14 @@ public class DrawableCollectionTest {
         @Parameterized.Parameters
         public static Collection<Object[]> data() {
             return Arrays.asList(new Object[][] {
-                    {true, new Object[] {"1", "2", "1"}, new Object[]{"1", "2", "1"}},
-                    {false, new Object[] {"1", "1"}, new Object[]{"1"}},
-                    {true, new Object[] {"1", "2", "3"}, new Object[] {"1", "2", "3"}},
-                    {true, new Object[] {"1", "2", "3"}, new Object[] {"3", "2", "1"}},
-                    {true, new Object[] {"1", "2", "2"}, new Object[] {"2", "1", "2"}},
-                    {false, new Object[] {"2", "2", "1"}, new Object[] {"2", "2", "3"}},
-                    {false, new Object[] {"1", "2", "4"}, new Object[] {"4", "4", "4"}},
-                    {true, new Object[] {"", "", ""}, new Object[] {"", "", ""}},
-                    {false, new Object[] {""}, null},
-                    {true, new Object[] {"1", "1", "1", "2", "2"}, new Object[] {"2", "1", "2", "1", "1"}},
+                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}},
+                    {false, new Object[] {new Dice(1, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE)}},
+                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}},
+                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}, new Object[] {new Dice(3, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}},
+                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(2, Color.BLUE)}, new Object[] {new Dice(2, Color.BLUE), new Dice(1, Color.BLUE), new Dice(2, Color.BLUE)}},
+                    {false, new Object[] {new Dice(2, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[] {new Dice(2, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}},
+                    {false, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(4, Color.BLUE)}, new Object[] {new Dice(4, Color.BLUE), new Dice(4, Color.BLUE), new Dice(4, Color.BLUE)}},
+                    {false, new Object[] {new Dice(1, Color.BLUE)}, null},
             });
         }
 
@@ -153,5 +149,5 @@ public class DrawableCollectionTest {
                 assertEquals(expected, collection1.hashCode() == collection2.hashCode());
         }
     }
-    */
+
 }
