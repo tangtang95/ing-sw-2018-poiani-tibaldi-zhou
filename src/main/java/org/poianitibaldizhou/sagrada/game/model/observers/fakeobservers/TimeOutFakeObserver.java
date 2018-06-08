@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 
 public class TimeOutFakeObserver implements IStateFakeObserver {
 
-    public static final String TIME_OUT = "TIMEOUT";
+    public static final String TIME_OUT = "TIMEOUT_KEY";
 
     private static final long TIME = ServerSettings.getPlayerTimeout();
 
@@ -116,7 +116,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onRoundStart(int round, User roundUser) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -143,7 +143,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onRoundEnd(int round, User roundUser) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -151,7 +151,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onEndGame(User roundUser) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -159,7 +159,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -167,7 +167,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onPlaceDiceState(User turnUser) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -175,7 +175,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onUseCardState(User turnUser) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -192,7 +192,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 
     /**
@@ -200,6 +200,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onResultGame(User winner) {
-        // DO NOTHING BECAUSE TIMEOUT DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
     }
 }

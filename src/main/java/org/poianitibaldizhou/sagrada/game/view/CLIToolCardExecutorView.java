@@ -112,7 +112,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         PrinterManager.consolePrint("Colors: \n", Level.STANDARD);
         for (int i = 0; i < colorWrapperList.size(); i++) {
-            PrinterManager.consolePrint("[" + i + 1 + "] " + colorWrapperList.get(i) + "\n", Level.STANDARD);
+            PrinterManager.consolePrint("[" + (i + 1) + "] " + colorWrapperList.get(i) + "\n", Level.STANDARD);
         }
         PrinterManager.consolePrint("Choose a color: \n", Level.STANDARD);
 
@@ -149,9 +149,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         }
 
 
-        if(!checkValidityDeltaValue(minNumber, diceValue, value)) {
+        if (!checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
-        } else if(!checkValidityDeltaValue(maxNumber, diceValue, value)) {
+        } else if (!checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
 
@@ -237,9 +237,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyCommandInterrupted(String error) {
-        PrinterManager.consolePrint("You made an unforgivable mistake when using the Tool Card " +
-                toolCardName + ", so you will not be able to use it this turn.\n", Level.INFORMATION);
+    public void notifyCommandInterrupted(String error) throws IOException {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage("ERROR TYPE: " + clientGetMessage.getCommandFlow(error)).
+                buildMessage("You made an unforgivable mistake when using the Tool Card " +
+                        toolCardName + ", so you will not be able to use it this turn.").toString(), Level.INFORMATION);
     }
 
     /**

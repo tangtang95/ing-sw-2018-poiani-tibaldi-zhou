@@ -36,8 +36,8 @@ public class ServerCreateMessage {
     }
 
     public ServerCreateMessage createDiceSwapMessage(Dice oldDice, Dice newDice) {
-        jsonServerProtocol.appendMessage(SharedConstants.OLD_DICE, oldDice);
-        jsonServerProtocol.appendMessage(SharedConstants.NEW_DICE, newDice);
+        jsonServerProtocol.appendMessage(SharedConstants.OLD_DICE_KEY, oldDice);
+        jsonServerProtocol.appendMessage(SharedConstants.NEW_DICE_KEY, newDice);
         return this;
     }
 
@@ -48,7 +48,7 @@ public class ServerCreateMessage {
     }
 
     public ServerCreateMessage createTimeoutMessage(String timeout) {
-        jsonServerProtocol.appendMessage(SharedConstants.TIMEOUT, timeout);
+        jsonServerProtocol.appendMessage(SharedConstants.TIMEOUT_KEY, timeout);
         return this;
     }
 
@@ -112,12 +112,12 @@ public class ServerCreateMessage {
     }
 
     public ServerCreateMessage createRoundUserMessage(User user) {
-        jsonServerProtocol.appendMessage(SharedConstants.ROUND_USER, user);
+        jsonServerProtocol.appendMessage(SharedConstants.ROUND_USER_KEY, user);
         return this;
     }
 
     public ServerCreateMessage createTurnUserMessage(User user) {
-        jsonServerProtocol.appendMessage(SharedConstants.TURN_USER, user);
+        jsonServerProtocol.appendMessage(SharedConstants.TURN_USER_KEY, user);
         return this;
     }
 
@@ -132,7 +132,7 @@ public class ServerCreateMessage {
     }
 
     public ServerCreateMessage createVictoryPointMapMessage(Map<User, Integer> map) {
-        jsonServerProtocol.appendMessage(SharedConstants.VICTORY_POINT_MAP, map);
+        jsonServerProtocol.appendMessage(SharedConstants.VICTORY_POINT_MAP_KEY, map);
         return this;
     }
 
@@ -142,7 +142,7 @@ public class ServerCreateMessage {
     }
 
     public ServerCreateMessage createDiceValueMessage(Integer value) {
-        jsonServerProtocol.appendMessage(SharedConstants.DICE_VALUE, value);
+        jsonServerProtocol.appendMessage(SharedConstants.DICE_VALUE_KEY, value);
         return this;
     }
 

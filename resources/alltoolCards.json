@@ -69,6 +69,6 @@
     "cardName": "Taglierina Manuale",
     "cardColour": "BLUE",
     "cardDescription": "Muovi fino a due dadi dello stesso colore di un solo dado sul Tracciato dei Round. Devi rispettare tutte le restrizioni di piazzamento",
-    "action": "[1-Choose color from RoundTrack][2-Remove dice of a certain color][4-Place old dice][8-If continue][9-CA][16-Remove dice of a certain color][32-Place old dice][64-CA]"
+    "action": "[1-Choose color from RoundTrack][2-Remove dice of a certain color][4-CP][8-Place old dice][16-If continue][32-CP][64-CD][33-CA][128-Remove dice of a certain color][256-CP][512-Place old dice][1024-CA]"
   }
 ]

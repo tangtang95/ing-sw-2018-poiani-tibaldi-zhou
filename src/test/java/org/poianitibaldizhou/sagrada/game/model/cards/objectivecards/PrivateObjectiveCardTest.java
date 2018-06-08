@@ -11,6 +11,8 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
+import java.util.Objects;
+
 import static org.junit.Assert.*;
 
 public class PrivateObjectiveCardTest {
@@ -135,7 +137,7 @@ public class PrivateObjectiveCardTest {
         String message = "{\"name\":\"Sfumature Rosse - Privata\"}";
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         try {
-            assertTrue((privateObjectiveCard.toObject((JSONObject) jsonParser.parse(message))).equals(privateObjectiveCard));
+            assertTrue((Objects.requireNonNull(PrivateObjectiveCard.toObject((JSONObject) jsonParser.parse(message)))).equals(privateObjectiveCard));
         } catch (ParseException e) {
             e.printStackTrace();
         }

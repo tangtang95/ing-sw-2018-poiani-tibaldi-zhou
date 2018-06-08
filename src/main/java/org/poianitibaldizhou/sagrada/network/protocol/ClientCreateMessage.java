@@ -27,7 +27,7 @@ public class ClientCreateMessage {
 
 
     public ClientCreateMessage createUsernameMessage(String username) {
-        jsonClientProtocol.appendMessage(SharedConstants.USER_NAME_STRING, username);
+        jsonClientProtocol.appendMessage(SharedConstants.USER_NAME_STRING_KEY, username);
         return this;
     }
 

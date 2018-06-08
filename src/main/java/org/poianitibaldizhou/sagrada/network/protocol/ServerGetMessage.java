@@ -164,7 +164,7 @@ public class ServerGetMessage {
 
         try {
             JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.COLOR);
-            color = Color.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
+            color = Color.toObject(jsonObject);
         } catch(ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -175,7 +175,7 @@ public class ServerGetMessage {
     public String getUserName(String message) throws IOException {
         String username;
         try {
-            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING_KEY);
             username = (String) jsonObject.get(SharedConstants.BODY);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -198,7 +198,7 @@ public class ServerGetMessage {
     public boolean getBoolean(String message) throws IOException {
         Boolean b;
         try {
-            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER_NAME_STRING);
+            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.BOOLEAN);
             b = Boolean.valueOf(jsonObject.get(SharedConstants.BODY).toString());
         } catch (ParseException | ClassCastException e) {
             throw new IOException();

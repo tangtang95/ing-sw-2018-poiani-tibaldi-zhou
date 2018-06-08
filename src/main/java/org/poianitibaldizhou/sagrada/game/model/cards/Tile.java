@@ -189,7 +189,6 @@ public class Tile implements Serializable, JSONable{
         JSONObject tileJSON =  new JSONObject();
         if(this.getDice() != null) {
             tileJSON.put(SharedConstants.DICE, this.getDice().toJSON());
-            System.out.println("DICE NOT NULL");
         }
         if (this.getConstraint() instanceof ColorConstraint)
             tileJSON.put(JSON_CONSTRAINT, ((ColorConstraint) this.getConstraint()).getColor().name());

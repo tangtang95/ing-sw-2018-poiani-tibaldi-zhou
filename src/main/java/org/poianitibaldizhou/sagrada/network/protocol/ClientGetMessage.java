@@ -82,7 +82,7 @@ public class ClientGetMessage {
     public UserWrapper getTurnUserWrapper(String message) throws IOException {
         UserWrapper userWrapper;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TURN_USER);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TURN_USER_KEY);
             userWrapper = UserWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -94,7 +94,7 @@ public class ClientGetMessage {
         Map<UserWrapper, Integer> victoryPoint = new HashMap<>();
         JSONParser jsonParser = new JSONParser();
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.VICTORY_POINT_MAP);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.VICTORY_POINT_MAP_KEY);
             JSONObject map = (JSONObject) jsonObject.get(SharedConstants.BODY);
             for (Object o : map.keySet()) {
                 JSONObject user = (JSONObject) jsonParser.parse(o.toString());
@@ -147,7 +147,7 @@ public class ClientGetMessage {
     public String getTimeout(String message) throws IOException {
         String timeout;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TIMEOUT);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TIMEOUT_KEY);
             timeout = jsonObject.get(SharedConstants.BODY).toString();
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -180,7 +180,7 @@ public class ClientGetMessage {
     public DiceWrapper getOldDice(String message) throws IOException {
         DiceWrapper diceWrapper;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.OLD_DICE);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.OLD_DICE_KEY);
             diceWrapper = DiceWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -191,7 +191,7 @@ public class ClientGetMessage {
     public DiceWrapper getNewDice (String message) throws IOException {
         DiceWrapper diceWrapper;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.NEW_DICE);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.NEW_DICE_KEY);
             diceWrapper = DiceWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -216,7 +216,7 @@ public class ClientGetMessage {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR_LIST_KEY);
             JSONArray jsonArray = (JSONArray) jsonObject.get(SharedConstants.BODY);
             for (Object o : jsonArray)
-                colorWrappers.add(ColorWrapper.toObject((JSONObject)((JSONObject) o).get(SharedConstants.BODY)));
+                colorWrappers.add(ColorWrapper.toObject((JSONObject) o));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -226,7 +226,7 @@ public class ClientGetMessage {
     public Integer getDiceValue(String message) throws IOException {
         Integer value;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE_VALUE);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.DICE_VALUE_KEY);
             value = Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -305,7 +305,7 @@ public class ClientGetMessage {
         ColorWrapper colorWrapper;
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.COLOR);
-            colorWrapper = ColorWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
+            colorWrapper = ColorWrapper.toObject(jsonObject);
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
@@ -359,7 +359,7 @@ public class ClientGetMessage {
     public UserWrapper getRoundUser(String message) throws IOException {
         UserWrapper userWrapper;
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.ROUND_USER);
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.ROUND_USER_KEY);
             userWrapper = UserWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
@@ -407,5 +407,17 @@ public class ClientGetMessage {
             throw new IOException();
         }
         return turnValue;
+    }
+
+
+    public String getCommandFlow(String message) throws IOException {
+        String command;
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.COMMAND_FLOW);
+            command = jsonObject.get(SharedConstants.BODY).toString();
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return command;
     }
 }

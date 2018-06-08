@@ -15,6 +15,7 @@ public class IfContinue implements ICommand {
         toolCardExecutor.getObservers().forEach(IToolCardExecutorFakeObserver::notifyNeedContinueAnswer);
 
         boolean answer = toolCardExecutor.getNeededAnswer();
+        System.out.println("ANSWER: " + answer);
         return answer ? CommandFlow.MAIN : CommandFlow.SUB;
     }
 

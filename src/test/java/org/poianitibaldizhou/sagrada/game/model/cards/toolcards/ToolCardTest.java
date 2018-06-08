@@ -15,6 +15,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -175,14 +176,14 @@ public class ToolCardTest {
 
     @Test
     public void testToObject(){
-        ToolCard trueToolCard = new ToolCard(Color.PURPLE,
-                "Pinza Sgrossatrice",
-                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
-                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][8-CA]");
-        String message = "{\"name\":\"Pinza Sgrossatrice\",\"token\":0}";
+        ToolCard trueToolCard = new ToolCard(Color.BLUE,
+                "Martelletto",
+                "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante il tuo secondo turno, prima di scegliere il secondo dado",
+                "[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]");
+        String message = "{\"name\":\"Martelletto\",\"token\":0}";
         JSONParser jsonParser = new JSONParser();
         try {
-            assertTrue((trueToolCard.toObject((JSONObject) jsonParser.parse(message))).equals(trueToolCard));
+            assertTrue((Objects.requireNonNull(ToolCard.toObject((JSONObject) jsonParser.parse(message)))).equals(trueToolCard));
         } catch (ParseException e) {
             e.printStackTrace();
         }
