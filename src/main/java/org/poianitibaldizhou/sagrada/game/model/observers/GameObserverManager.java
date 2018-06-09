@@ -26,7 +26,7 @@ public class GameObserverManager {
      * This class handles a thread pool for sending updates to the observers.
      *
      * @param tokenList list of player's token of the intended game
-     * @param game game that observers listen to
+     * @param game      game that observers listen to
      */
     public GameObserverManager(List<String> tokenList, IGame game) {
         disconnectedPlayer = new HashSet<>();
@@ -75,15 +75,21 @@ public class GameObserverManager {
     // MODIFIER
 
     public void setTimeOutFakeObserver(TimeOutFakeObserver timeOutFakeObserver) {
-        this.timeOutFakeObserver = timeOutFakeObserver;
+        synchronized (getGame()) {
+            this.timeOutFakeObserver = timeOutFakeObserver;
+        }
     }
 
     public void attachTimeoutObserver(String token, ITimeOutObserver timeOutObserver) {
-        observerTimeoutHashMap.putIfAbsent(token, timeOutObserver);
+        synchronized (getGame()) {
+            observerTimeoutHashMap.putIfAbsent(token, timeOutObserver);
+        }
     }
 
     public void detachTimeoutObserver(String token) {
-        observerTimeoutHashMap.remove(token);
+        synchronized (getGame()) {
+            observerTimeoutHashMap.remove(token);
+        }
     }
 
     /**
@@ -93,9 +99,11 @@ public class GameObserverManager {
      * @param notify runnable interface that needs to be scheduled
      */
     public void pushThreadInQueue(String token, Runnable notify) {
-        System.out.println("Pushing thread in queue (GAME OBS MAN)");
-        if (!disconnectedPlayer.contains(token))
-            executorHashMap.get(token).submit(notify);
+        synchronized (getGame()) {
+            System.out.println("Pushing thread in queue (GAME OBS MAN)");
+            if (!disconnectedPlayer.contains(token))
+                executorHashMap.get(token).submit(notify);
+        }
     }
 
     /**
@@ -104,8 +112,10 @@ public class GameObserverManager {
      * @param token player's token
      */
     public void notifyDisconnection(String token) {
-        System.out.println("Disconnection of a certain user has been notified (GAME OBS MAN)");
-        disconnectedPlayerNotNotified.remove(token);
+        synchronized (getGame()) {
+            System.out.println("Disconnection of a certain user has been notified (GAME OBS MAN)");
+
+        }
     }
 
     /**
@@ -115,11 +125,13 @@ public class GameObserverManager {
      * @param token player's token
      */
     public void signalDisconnection(String token) {
-        System.out.println("Disconnection signaled (GAME OBS MAN)");
-        executorHashMap.get(token).shutdownNow();
-        disconnectedPlayerNotNotified.add(token);
-        disconnectedPlayer.add(token);
-        detachTimeoutObserver(token);
+        synchronized (getGame()) {
+            System.out.println("Disconnection signaled (GAME OBS MAN)");
+            executorHashMap.get(token).shutdownNow();
+            disconnectedPlayerNotNotified.add(token);
+            disconnectedPlayer.add(token);
+            detachTimeoutObserver(token);
+        }
     }
 
     /**
@@ -129,10 +141,12 @@ public class GameObserverManager {
      * @param token player's token
      */
     public void signalReconnect(String token) {
-        System.out.println("Reconnection signaled (GAME OBS MAN)");
-        executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
-        disconnectedPlayer.remove(token);
-        disconnectedPlayerNotNotified.remove(token);
+        synchronized (getGame()) {
+            System.out.println("Reconnection signaled (GAME OBS MAN)");
+            executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
+            disconnectedPlayer.remove(token);
+            disconnectedPlayerNotNotified.remove(token);
+        }
     }
 
     /**
@@ -142,32 +156,38 @@ public class GameObserverManager {
      * @param notify runnable interface that needs to be scheduled
      */
     public void pushLastThreadInQueue(String token, Runnable notify) {
-        System.out.println("push last thread in queeu ((GAME OBS MAN)");
-        if (!disconnectedPlayer.contains(token)) {
-            executorHashMap.get(token).submit(notify);
-            executorHashMap.get(token).shutdown();
+        synchronized (getGame()) {
+            System.out.println("push last thread in queeu ((GAME OBS MAN)");
+            if (!disconnectedPlayer.contains(token)) {
+                executorHashMap.get(token).submit(notify);
+                executorHashMap.get(token).shutdown();
+            }
         }
     }
 
     public void pushTimeoutThread(String token, Runnable notify, String timedOutToken) {
-        System.out.println("push timeout thread in queue (GAME OBS MAN)");
-        if(!disconnectedPlayer.contains(token)) {
-            if(token.equals(timedOutToken)) {
-                executorHashMap.get(token).shutdownNow();
-                executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
-                executorHashMap.get(TIME_OUT).submit(notify);
-            } else {
-                executorHashMap.get(token).submit(notify);
+        synchronized (getGame()) {
+            System.out.println("push timeout thread in queue (GAME OBS MAN)");
+            if (!disconnectedPlayer.contains(token)) {
+                if (token.equals(timedOutToken)) {
+                    executorHashMap.get(token).shutdownNow();
+                    executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
+                    executorHashMap.get(TIME_OUT).submit(notify);
+                } else {
+                    executorHashMap.get(token).submit(notify);
+                }
             }
         }
     }
 
     public void shutdownAll() {
-        System.out.println("shut down all (GAME OBS MAN)");
-        game.getUsers().forEach(user -> {
-            if(!disconnectedPlayer.contains(user.getToken())) {
-                executorHashMap.get(user.getToken()).shutdown();
-            }
-        });
+        synchronized (getGame()) {
+            System.out.println("shut down all (GAME OBS MAN)");
+            game.getUsers().forEach(user -> {
+                if (!disconnectedPlayer.contains(user.getToken())) {
+                    executorHashMap.get(user.getToken()).shutdown();
+                }
+            });
+        }
     }
 }
