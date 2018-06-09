@@ -20,7 +20,7 @@ public class PrinterManager {
      * @param message to print
      * @param level of the message
      */
-    public static void consolePrint(String message, Level level) {
+    public static synchronized void consolePrint(String message, Level level) {
         if (level == Level.STANDARD)
             if (!message.equals("") && message.substring(0, 1).equals("\n"))
                 System.out.print("\b\b\b" + message + ">> ");

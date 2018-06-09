@@ -54,7 +54,12 @@ public final class TileWrapper implements JSONable{
         JSONObject tileJSON =  new JSONObject();
         if(this.getDice() != null)
             tileJSON.put(SharedConstants.DICE, this.getDice().toJSON());
-        tileJSON.put(JSON_CONSTRAINT, constraint);
+        try {
+            int val = Integer.parseInt(constraint);
+            tileJSON.put(JSON_CONSTRAINT, val);
+        }catch (NumberFormatException e) {
+            tileJSON.put(JSON_CONSTRAINT, constraint);
+        }
         main.put(SharedConstants.TYPE, SharedConstants.TILE);
         main.put(SharedConstants.BODY,tileJSON);
         return main;
