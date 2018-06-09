@@ -56,11 +56,26 @@ public class CLITurnScreen extends CLIRoundScreen {
         commandMap.put(endTurn.getCommandText(), endTurn);
 
         Command quit = new Command(QUIT, "Quit from current game");
-        quit.setCommandAction(() -> {
-            screenManager.popScreen();
-            screenManager.popScreen();
-        });
+        quit.setCommandAction(this::quitGame);
         commandMap.put(quit.getCommandText(), quit);
+    }
+
+    /**
+     * Quit the game
+     */
+    private void quitGame() {
+        endTurn();
+        try {
+            connectionManager.getGameController().quitGame(
+                    clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+            );
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + "You have left the game.\n", Level.STANDARD);
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
+        }
+
+        screenManager.popWithouthStartinScreen();
+        screenManager.popScreen();
     }
 
     /**
