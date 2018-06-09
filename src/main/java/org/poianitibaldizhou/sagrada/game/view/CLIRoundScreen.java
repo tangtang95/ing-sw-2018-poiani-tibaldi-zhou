@@ -184,6 +184,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
         }
 
+
+        if(cliStateView.getCurrentUser() != null && myUser.equals(cliStateView.getCurrentUser()))
+            screenManager.popWithouthStartinScreen();
         screenManager.popScreen();
     }
 

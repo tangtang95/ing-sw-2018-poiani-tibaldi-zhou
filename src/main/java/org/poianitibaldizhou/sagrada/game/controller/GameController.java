@@ -756,7 +756,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final Optional<String> gameName;
         List<IGame> gameList = gameManager.getGameList();
 
-        System.out.println("User with username: " + username + "accessed: bindToolCard");
+        System.out.println("User with username: " + username + "accessed: attemp reconnect");
 
         gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(IGame::getName).findFirst();
 

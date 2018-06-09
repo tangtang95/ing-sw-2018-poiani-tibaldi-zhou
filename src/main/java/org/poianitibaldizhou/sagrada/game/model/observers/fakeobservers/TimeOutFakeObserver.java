@@ -217,6 +217,13 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onResultGame(User winner) {
-        // DO NOTHING BECAUSE TIMEOUT_KEY DOESN'T TRIGGER ON OBSERVING THIS METHOD
+        timeoutStart = null;
+        if(timeOutThreadSetupPlayer != null)
+            timeOutThreadSetupPlayer.interrupt();
+        timeOutThreadSetupPlayer = null;
+
+        if(timeOutThreadTurnState != null)
+            timeOutThreadTurnState.interrupt();
+        timeOutThreadTurnState = null;
     }
 }

@@ -425,11 +425,11 @@ public class ClientGetMessage {
     }
 
 
-    public boolean hasTerminateGameError(String response) {
-        String message = null;
+    public boolean hasTerminateGameError(String message) {
+        String error = null;
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.ERROR_TERMINATE_GAME_KEY);
-            message = jsonObject.get(SharedConstants.BODY).toString();
+            error  = jsonObject.get(SharedConstants.BODY).toString();
         } catch (Exception e) {
             return false;
         }

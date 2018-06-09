@@ -159,4 +159,12 @@ public class GameObserverManager {
             }
         }
     }
+
+    public void shutdownAll() {
+        game.getUsers().forEach(user -> {
+            if(!disconnectedPlayer.contains(user.getToken())) {
+                executorHashMap.get(user.getToken()).shutdown();
+            }
+        });
+    }
 }
