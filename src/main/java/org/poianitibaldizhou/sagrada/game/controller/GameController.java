@@ -30,6 +30,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -1050,6 +1052,30 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
+    public String getTimeout(String message) throws IOException {
+        // TODO
+        final String token = serverGetMessage.getToken(message);
+        final String gameName = serverGetMessage.getGameName(message);
+
+        System.out.println("User with token: " + token + " accessed: getTimeOut");
+
+        if (!viewMap.containsKey(token) || !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+            return serverGetMessage.getErrorMessage();
+        }
+
+        long timeToTimeout;
+
+        synchronized (gameManager.getGameByName(gameName)) {
+            timeToTimeout = gameManager.getObserverManagerByGame(gameName).getTimeToTimeout();
+        }
+
+        return serverCreateMessage.createTimeoutMessage(formatTime(timeToTimeout)).buildMessage();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String createSinglePlayer(String message) throws IOException {
         String username = serverGetMessage.getUserName(message);
         int difficulty = serverGetMessage.getInteger(message);
@@ -1199,5 +1225,18 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             }
         }
         return false;
+    }
+
+
+    /**
+     * Format a certain time given as long in mm:ss
+     *
+     * @param time time to format
+     * @return string in format mm:ss representing time
+     */
+    private String formatTime(long time) {
+        Date date = new Date(time);
+        DateFormat formatter = new SimpleDateFormat("mm:ss");
+        return formatter.format(date);
     }
 }

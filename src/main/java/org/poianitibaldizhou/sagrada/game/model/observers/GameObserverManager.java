@@ -15,6 +15,8 @@ public class GameObserverManager {
     private HashMap<String, ScheduledExecutorService> executorHashMap;
     private HashMap<String, ITimeOutObserver> observerTimeoutHashMap;
 
+    private TimeOutFakeObserver timeOutFakeObserver;
+
     public static final String TIME_OUT = "TimeOut";
 
     /**
@@ -28,6 +30,8 @@ public class GameObserverManager {
         disconnectedPlayerNotNotified = new HashSet<>();
         executorHashMap = new HashMap<>();
         observerTimeoutHashMap = new HashMap<>();
+
+        timeOutFakeObserver = null;
 
         tokenList.forEach(token -> {
             ScheduledExecutorService scheduledTask = Executors.newScheduledThreadPool(1);
@@ -54,7 +58,16 @@ public class GameObserverManager {
         return new HashSet<>(disconnectedPlayerNotNotified);
     }
 
+    @Contract(pure = true)
+    public Long getTimeToTimeout() {
+        return timeOutFakeObserver.getTimeToTimeout();
+    }
+
     // MODIFIER
+
+    public void setTimeOutFakeObserver(TimeOutFakeObserver timeOutFakeObserver) {
+        this.timeOutFakeObserver = timeOutFakeObserver;
+    }
 
     public void attachTimeoutObserver(String token, ITimeOutObserver timeOutObserver) {
         observerTimeoutHashMap.putIfAbsent(token, timeOutObserver);

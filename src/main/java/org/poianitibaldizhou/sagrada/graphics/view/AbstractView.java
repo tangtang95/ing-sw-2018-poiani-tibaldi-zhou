@@ -79,7 +79,7 @@ public abstract class AbstractView extends UnicastRemoteObject{
         HBox helperPane = new HBox(10);
         helperPane.setAlignment(Pos.CENTER_LEFT);
         helperPane.setPadding(new Insets(0, 10, 0, 10));
-
+        return null;
     }
 
     public void showSevereErrorMessage(String text) {

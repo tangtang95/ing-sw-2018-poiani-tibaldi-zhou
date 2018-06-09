@@ -86,7 +86,7 @@ public class CLISetupGameScreen extends CLIBasicScreen {
                     cliStateView,
                     new CLIDraftPoolView(cliStateView),
                     new CLIDiceBagView(cliStateView),
-                    new CLITimeoutView()
+                    new CLITimeoutView(cliStateView)
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +

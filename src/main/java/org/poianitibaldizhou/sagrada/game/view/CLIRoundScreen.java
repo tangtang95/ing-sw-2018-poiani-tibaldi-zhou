@@ -77,6 +77,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     private static final String VIEW_PRIVATE_OBJECTIVE_CARD = "View the private objective cards";
     private static final String VIEW_MY_COINS = "View my coins";
     private static final String VIEW_PLAYERS_COINS = "View players coins";
+    private static final String VIEW_TIME_TO_TIMEOUT = "View time to timeout";
 
     /**
      * constructor.
@@ -142,6 +143,10 @@ public class CLIRoundScreen extends CLIBasicScreen {
         viewPrivateObjectiveCards.setCommandAction(this::viewPrivateObjectiveCards);
         commandMap.put(viewPrivateObjectiveCards.getCommandText(), viewPrivateObjectiveCards);
 
+        Command viewTimeToTimeout = new Command(VIEW_TIME_TO_TIMEOUT, "View time to time out");
+        viewTimeToTimeout.setCommandAction(this::viewTimeToTimeout);
+        commandMap.put(viewTimeToTimeout.getCommandText(), viewTimeToTimeout);
+
         Command quit = new Command(QUIT, "Quit from current game");
         quit.setCommandAction(screenManager::popScreen);
         commandMap.put(quit.getCommandText(), quit);
@@ -163,6 +168,23 @@ public class CLIRoundScreen extends CLIBasicScreen {
             consoleListener.setCommandMap(commandMap);
             cliStateView.setStart(false);
             lock.notifyAll();
+        }
+    }
+
+    /**
+     * View time to time out
+     */
+    private void viewTimeToTimeout() {
+        String timeout;
+        try {
+            timeout = clientGetMessage.getTimeout(
+                    connectionManager.getGameController().getTimeout(
+                            clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+                    )
+            );
+            PrinterManager.consolePrint("Time to timeout is: " + timeout, Level.STANDARD);
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
     }
 

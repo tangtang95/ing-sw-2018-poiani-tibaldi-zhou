@@ -79,8 +79,11 @@ public class GameManager {
             gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
 
             // TODO re-add when wants to test timeout
-            if(!game.isSinglePlayer())
-                game.attachStateObserver(GameObserverManager.TIME_OUT, new TimeOutFakeObserver(getObserverManagerByGame(gameName), game));
+            TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName), game);
+            if(!game.isSinglePlayer()) {
+                game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
+                gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
+            }
         }
     }
 

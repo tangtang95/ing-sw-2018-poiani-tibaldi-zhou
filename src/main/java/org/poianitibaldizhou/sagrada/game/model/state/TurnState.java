@@ -313,5 +313,4 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         game.getStateObservers().forEach((key, value) -> value.onEndTurnState(currentTurnPlayer.getUser()));
     }
 
-
 }
