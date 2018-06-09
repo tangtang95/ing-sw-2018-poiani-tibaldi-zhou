@@ -644,8 +644,6 @@ public class ClientGetMessage {
         return command;
     }
 
-
-<<<<<<< HEAD
     /**
      * Get a ErrorTerminate message from server.
      *

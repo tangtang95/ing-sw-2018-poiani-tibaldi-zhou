@@ -86,7 +86,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
     /**
      * Creates a new single player game
      */
-    private void newSinglePlayerGame() throws RemoteException {
+    private void newSinglePlayerGame() {
         ConsoleListener.getInstance().stopCommandConsole();
         String gameName;
         String token;
@@ -116,7 +116,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
             try {
                 difficulty = Integer.valueOf(r.readLine());
                 if (difficulty < 1 || difficulty > 5) {
-                    PrinterManager.consolePrint("Difficulty must range from 1 to 5: ", Level.STANDARD);
+                    PrinterManager.consolePrint("Difficulty must range from 1 to 5: \n", Level.STANDARD);
                     throw new IllegalArgumentException();
 
                 }
@@ -136,7 +136,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
             token = clientGetMessage.getToken(message);
 
             ConsoleListener.getInstance().wakeUpCommandConsole();
-            screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
+            screenManager.pushScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
                     new UserWrapper(username), token));
         } catch (IOException e) {
             PrinterManager.consolePrint("Error in creating single player game\n", Level.STANDARD);

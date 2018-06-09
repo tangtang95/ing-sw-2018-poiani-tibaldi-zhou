@@ -43,7 +43,7 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         String username = clientGetMessage.getUserWrapper(message).getUsername();
         if(username.equals(cliStateView.getMyUser().getUsername())) {
-            PrinterManager.consolePrint("You have spent all the time for your turn", Level.INFORMATION);
+            PrinterManager.consolePrint("You have spent all the time for your turn\n", Level.INFORMATION);
         } else {
             PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
         }
