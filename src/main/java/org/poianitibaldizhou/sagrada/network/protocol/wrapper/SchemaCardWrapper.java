@@ -7,6 +7,7 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 @Immutable
@@ -29,7 +30,12 @@ public final class SchemaCardWrapper implements JSONable{
     public SchemaCardWrapper(String name, int difficulty, TileWrapper[][] tileMatrix) {
         this.name = name;
         this.difficulty = difficulty;
-        this.tileMatrix = tileMatrix;
+        this.tileMatrix = new TileWrapper[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                this.tileMatrix[i][j] = TileWrapper.newInstance(tileMatrix[i][j]);
+            }
+        }
     }
 
     public String getName() {
@@ -111,5 +117,30 @@ public final class SchemaCardWrapper implements JSONable{
             stringBuilder.append("  -----   -----   -----   -----   -----  \n");
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SchemaCardWrapper)) return false;
+        SchemaCardWrapper that = (SchemaCardWrapper) o;
+        boolean hasSameTiles = true;
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if (!getTile(new PositionWrapper(i, j)).equals(that.getTile(new PositionWrapper(i, j))))
+                    hasSameTiles = false;
+            }
+        }
+        return getDifficulty() == that.getDifficulty() &&
+                Objects.equals(getName(), that.getName()) &&
+                hasSameTiles;
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = Objects.hash(getName(), getDifficulty());
+        result = 31 * result + Arrays.hashCode(tileMatrix);
+        return result;
     }
 }

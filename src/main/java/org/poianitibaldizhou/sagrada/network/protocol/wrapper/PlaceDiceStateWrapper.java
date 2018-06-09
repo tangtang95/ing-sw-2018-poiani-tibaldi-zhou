@@ -4,8 +4,13 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+/**
+ * Copy class of PlaceDiceState in the game model.
+ * Place dice action.
+ */
 @Immutable
 public final class PlaceDiceStateWrapper implements IActionWrapper {
+
     /**
      * Convert a action in a JSONObject.
      *
@@ -20,7 +25,10 @@ public final class PlaceDiceStateWrapper implements IActionWrapper {
         return main;
     }
 
-    public static PlaceDiceStateWrapper toObject(JSONObject jsonObject) {
+    /**
+     * @return null.
+     */
+    public static PlaceDiceStateWrapper toObject() {
         return null;
     }
 }

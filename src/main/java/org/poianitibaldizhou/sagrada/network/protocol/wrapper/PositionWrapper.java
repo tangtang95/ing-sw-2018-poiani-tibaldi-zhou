@@ -5,10 +5,20 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+/**
+ * Copy class of Position in the model.
+ */
 @Immutable
 public final class PositionWrapper implements JSONable {
 
+    /**
+     * Row position.
+     */
     private final int row;
+
+    /**
+     * Column position.
+     */
     private final int column;
 
     /**
@@ -17,15 +27,27 @@ public final class PositionWrapper implements JSONable {
     private static final String JSON_ROW = "row";
     private static final String JSON_COLUMN = "column";
 
+    /**
+     * Constructor.
+     *
+     * @param row position on column.
+     * @param column position on row.
+     */
     public PositionWrapper(int row, int column) {
         this.row = row;
         this.column = column;
     }
 
+    /**
+     * @return the column position.
+     */
     public int getColumn() {
         return column;
     }
 
+    /**
+     * @return the row position.
+     */
     public int getRow() {
         return row;
     }
@@ -36,7 +58,7 @@ public final class PositionWrapper implements JSONable {
      * @return a JSONObject.
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "Duplicates"})
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
         JSONObject position = new JSONObject();
@@ -59,6 +81,9 @@ public final class PositionWrapper implements JSONable {
                 Integer.parseInt(jsonObject.get(JSON_COLUMN).toString()));
     }
 
+    /**
+     * @return Position to string -> (row + 1,column + 1)
+     */
     @Override
     public String toString() {
         return "(" + (getRow() + 1) + ", " + (getColumn() + 1) + ")";

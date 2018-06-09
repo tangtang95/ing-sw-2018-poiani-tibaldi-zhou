@@ -26,6 +26,7 @@ public class BuildGraphic {
     public static final String COMMAND_NOT_FOUND = "Command not found, please retry.\n";
     public static final String ERROR_READING = ": Error while reading from keyboard.\n";
     public static final String NETWORK_ERROR = ": Network error.\n";
+    public static final String AUTOMATIC_ACTION = "The action was chosen automatically, due to the expiration of the timeout\n";
 
     /**
      * Card attributes.

@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
@@ -162,10 +163,14 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         buildGraphic.buildMessage("Choose a schema card:");
         PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 
-        connectionManager.getGameController().chosenSchemaCard(
-                clientCreateMessage.createSchemaCardMessage(schemaCards.get(consoleListener.readPositionNumber(schemaCards.size()))).
-                        createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
-        );
+        try {
+            connectionManager.getGameController().chosenSchemaCard(
+                    clientCreateMessage.createSchemaCardMessage(schemaCards.get(consoleListener.readNumber(schemaCards.size()))).
+                            createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+            );
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION,Level.INFORMATION);
+        }
     }
 
     /**

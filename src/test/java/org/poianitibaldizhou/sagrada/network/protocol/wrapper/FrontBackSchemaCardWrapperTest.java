@@ -17,10 +17,12 @@ public class FrontBackSchemaCardWrapperTest {
     @DataPoint
     public static SchemaCardWrapper fullSchemaCardWrapper;
 
+    @DataPoint
+    public static SchemaCardWrapper emptySchemaCard;
+
     @Before
     public void setUp() throws Exception {
         frontBackSchemaCardWrapper = new FrontBackSchemaCardWrapper();
-        DiceWrapper d1 = new DiceWrapper(ColorWrapper.YELLOW,4);
 
         TileWrapper[][] constraints = new TileWrapper[SchemaCardWrapper.NUMBER_OF_ROWS][SchemaCardWrapper.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCardWrapper.NUMBER_OF_ROWS; i++) {
@@ -28,7 +30,7 @@ public class FrontBackSchemaCardWrapperTest {
                 constraints[i][j] = new TileWrapper(null);
             }
         }
-        SchemaCardWrapper emptySchemaCard = new SchemaCardWrapper("test1", 1, constraints);
+        emptySchemaCard = new SchemaCardWrapper("test1", 1, constraints);
 
         constraints[0][2] = new TileWrapper(ColorWrapper.YELLOW.name());
         constraints[1][3] = new TileWrapper("4");
@@ -85,8 +87,10 @@ public class FrontBackSchemaCardWrapperTest {
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}]}";
         JSONParser jsonParser = new JSONParser();
         try {
-            assertEquals(frontBackSchemaCardWrapper,
+            assertEquals(fullSchemaCardWrapper,
                     FrontBackSchemaCardWrapper.toObject((JSONObject) jsonParser.parse(message)).getBackSchemaCard());
+            assertEquals(emptySchemaCard,
+                    FrontBackSchemaCardWrapper.toObject((JSONObject) jsonParser.parse(message)).getFrontSchemaCard());
         } catch (ParseException e) {
             e.printStackTrace();
         }

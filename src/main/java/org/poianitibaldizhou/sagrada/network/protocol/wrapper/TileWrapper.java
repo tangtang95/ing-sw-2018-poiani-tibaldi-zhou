@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
 
 @Immutable
 public final class TileWrapper implements JSONable{
@@ -19,6 +21,11 @@ public final class TileWrapper implements JSONable{
 
     public TileWrapper(String constraint) {
         this.constraint = constraint;
+        this.dice = null;
+    }
+
+    public static TileWrapper newInstance(TileWrapper t) {
+        return new TileWrapper(t.getConstraint());
     }
 
     public DiceWrapper getDice() {
@@ -85,5 +92,20 @@ public final class TileWrapper implements JSONable{
 
     public void setDice(DiceWrapper dice) {
         this.dice = dice;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TileWrapper)) return false;
+        TileWrapper that = (TileWrapper) o;
+        return Objects.equals(getConstraint(), that.getConstraint()) &&
+                Objects.equals(getDice(), that.getDice());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getConstraint(), getDice());
     }
 }

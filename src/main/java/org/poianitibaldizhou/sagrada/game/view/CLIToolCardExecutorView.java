@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
@@ -83,11 +84,16 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         PrinterManager.consolePrint(buildGraphic.buildGraphicDices(diceWrapperList).
                 buildMessage("Choose a dice: ").toString(), Level.STANDARD);
 
-        String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
-                createGameNameMessage(cliStateView.getGameName()).
-                createDiceMessage(diceWrapperList.get(
-                        consoleListener.readPositionNumber(diceWrapperList.size()))).buildMessage();
-        connectionManager.getGameController().setDice(message);
+        try {
+            String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                    createGameNameMessage(cliStateView.getGameName()).
+                    createDiceMessage(diceWrapperList.get(
+                            consoleListener.readNumber(diceWrapperList.size()))).buildMessage();
+            connectionManager.getGameController().setDice(message);
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+        }
+
     }
 
     /**
@@ -97,10 +103,14 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     public void notifyNeedNewValue() throws IOException {
         PrinterManager.consolePrint("Choose a number between 1 and 6:\n", Level.STANDARD);
 
-        String message = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
-                createTokenMessage(cliStateView.getToken())
-                .createValueMessage(consoleListener.readValue(6)).buildMessage();
-        connectionManager.getGameController().setNewValue(message);
+        try {
+            String message = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
+                    createTokenMessage(cliStateView.getToken())
+                    .createValueMessage(consoleListener.readValue(6)).buildMessage();
+            connectionManager.getGameController().setNewValue(message);
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+        }
     }
 
     /**
@@ -116,11 +126,15 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         }
         PrinterManager.consolePrint("Choose a color: \n", Level.STANDARD);
 
-        String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
-                createGameNameMessage(cliStateView.getGameName()).
-                createColorMessage(colorWrapperList.get(
-                        consoleListener.readPositionNumber(colorWrapperList.size()))).buildMessage();
-        connectionManager.getGameController().setColor(message);
+        try {
+            String message = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                    createGameNameMessage(cliStateView.getGameName()).
+                    createColorMessage(colorWrapperList.get(
+                            consoleListener.readNumber(colorWrapperList.size()))).buildMessage();
+            connectionManager.getGameController().setColor(message);
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+        }
     }
 
     /**
@@ -128,9 +142,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedNewDeltaForDice(String message) throws IOException {
-        consoleListener.stopCommandConsole();
-        BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-        String response;
         int number;
         int minNumber;
         int maxNumber;
@@ -148,34 +159,30 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             maxNumber = temp;
         }
 
-
         if (!checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
         } else if (!checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
-
-        do {
-            if (minNumber != maxNumber)
-                PrinterManager.consolePrint("Choose the number " + minNumber + " or " + maxNumber + ":\n", Level.STANDARD);
-            else
-                PrinterManager.consolePrint("Choose the number " + minNumber + ":\n", Level.STANDARD);
-            response = r.readLine();
-            try {
-                number = Integer.parseInt(response);
-            } catch (NumberFormatException e) {
-                number = -1;
-            }
-            if (number == minNumber || number == maxNumber) {
-                String messageForController = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
-                        createGameNameMessage(cliStateView.getGameName()).createValueMessage(number).buildMessage();
-                connectionManager.getGameController().setNewValue(messageForController);
-            } else {
-                PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
-                number = -1;
-            }
-        } while (number < 0);
-        consoleListener.wakeUpCommandConsole();
+        try {
+            do {
+                if (minNumber != maxNumber)
+                    PrinterManager.consolePrint("Choose the number " + minNumber + " or " + maxNumber + ":\n", Level.STANDARD);
+                else
+                    PrinterManager.consolePrint("Choose the number " + minNumber + ":\n", Level.STANDARD);
+                number = consoleListener.readNumber(maxNumber);
+                if (number == minNumber || number == maxNumber) {
+                    String messageForController = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                            createGameNameMessage(cliStateView.getGameName()).createValueMessage(number).buildMessage();
+                    connectionManager.getGameController().setNewValue(messageForController);
+                } else {
+                    PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
+                    number = -1;
+                }
+            } while (number < 0);
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+        }
     }
 
     /**
@@ -306,14 +313,19 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
                         buildMessage("Choose a row:").toString(),
                 Level.STANDARD);
-        int row = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
-        PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
-        int column = consoleListener.readPositionNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
+        try {
+            int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
+            PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
+            int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
 
-        String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
-                createGameNameMessage(cliStateView.getGameName()).createPositionMessage(
-                new PositionWrapper(row, column)).buildMessage();
-        connectionManager.getGameController().setPosition(setMessage);
+            String setMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                    createGameNameMessage(cliStateView.getGameName()).createPositionMessage(
+                    new PositionWrapper(row, column)).buildMessage();
+            connectionManager.getGameController().setPosition(setMessage);
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+        }
+
     }
 
     /**
@@ -324,23 +336,27 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     private void readRoundTrackParameters(RoundTrackWrapper roundTrack) throws IOException {
         int roundNumber;
+        try {
 
-        do {
-            PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
-            roundNumber = consoleListener.readPositionNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
-        } while (roundTrack.getDicesPerRound(roundNumber).isEmpty());
+            do {
+                PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
+                roundNumber = consoleListener.readNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
+            } while (roundTrack.getDicesPerRound(roundNumber).isEmpty());
 
-        PrinterManager.consolePrint("Choose a dice: \n", Level.STANDARD);
-        int diceNumber = consoleListener.readPositionNumber(roundTrack.getDicesPerRound(roundNumber).size());
+            PrinterManager.consolePrint("Choose a dice: \n", Level.STANDARD);
+            int diceNumber = consoleListener.readNumber(roundTrack.getDicesPerRound(roundNumber).size());
 
-        String setRoundMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).createGameNameMessage(cliStateView.getGameName())
-                .createValueMessage(roundNumber).buildMessage();
-        connectionManager.getGameController().setNewValue(setRoundMessage);
+            String setRoundMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).createGameNameMessage(cliStateView.getGameName())
+                    .createValueMessage(roundNumber).buildMessage();
+            connectionManager.getGameController().setNewValue(setRoundMessage);
 
-        String setDiceMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
-                createGameNameMessage(cliStateView.getGameName()).
-                createDiceMessage(roundTrack.getDicesPerRound(roundNumber).get(diceNumber)).buildMessage();
-        connectionManager.getGameController().setDice(setDiceMessage);
+            String setDiceMessage = clientCreateMessage.createTokenMessage(cliStateView.getToken()).
+                    createGameNameMessage(cliStateView.getGameName()).
+                    createDiceMessage(roundTrack.getDicesPerRound(roundNumber).get(diceNumber)).buildMessage();
+            connectionManager.getGameController().setDice(setDiceMessage);
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+        }
     }
 
     /**

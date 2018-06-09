@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
@@ -21,7 +22,6 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      */
     private final transient ClientGetMessage clientGetMessage;
 
-
     /**
      * Constructor.
      *
@@ -37,8 +37,10 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      */
     @Override
     public void onTimeOut(String message) throws IOException {
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
         String username = clientGetMessage.getUserWrapper(message).getUsername();
         PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
+        consoleListener.stopReadNumber();
     }
 
     /**

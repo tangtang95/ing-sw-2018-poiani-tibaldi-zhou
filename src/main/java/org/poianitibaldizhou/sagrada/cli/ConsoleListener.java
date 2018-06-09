@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.cli;
 
+import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 
 import java.io.BufferedReader;
@@ -28,6 +29,11 @@ public class ConsoleListener {
      * Object used to handle thread concurrency.
      */
     private boolean needToPause;
+
+    /**
+     * Object used to handle thread concurrency.
+     */
+    private boolean needToStop;
 
     /**
      * Object use for locking the CommandConsole.
@@ -59,6 +65,11 @@ public class ConsoleListener {
     public void stopCommandConsole() { needToPause = true; }
 
     /**
+     * Stop keyboard Reader number.
+     */
+    public void stopReadNumber() {needToStop = true; }
+
+    /**
      * Wake up keyboard listener thread.
      */
     public void wakeUpCommandConsole() {
@@ -83,12 +94,18 @@ public class ConsoleListener {
      * @param maxInt max number that is could to insert.
      * @return a number read - 1.
      */
-    public int readPositionNumber(int maxInt) {
+    public int readNumber(int maxInt) throws TimeoutException {
         stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
+        needToStop = false;
         int key = 0;
         do {
             try {
+                consoleReady(r);
+                if (needToStop) {
+                    wakeUpCommandConsole();
+                    throw new TimeoutException();
+                }
                 String read = r.readLine();
                 key = Integer.parseInt(read);
                 if (!(key > 0 && key <= maxInt))
@@ -109,13 +126,28 @@ public class ConsoleListener {
     }
 
     /**
+     * Control input stream before reading.
+     *
+     * @throws IOException is launched by the ready function (BufferReader class).
+     */
+    private void consoleReady(BufferedReader r) throws IOException {
+        while (!needToStop && !r.ready()) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }
+    }
+
+    /**
      * Read a number from keyboard stream.
      *
      * @param maxInt max number that is could to insert.
      * @return a number read.
      */
-    public int readValue(int maxInt){
-        return readPositionNumber(maxInt) + 1;
+    public int readValue(int maxInt) throws TimeoutException {
+        return readNumber(maxInt) + 1;
     }
 
 
