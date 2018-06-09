@@ -66,7 +66,7 @@ public class RoundTrackView extends Pane{
     }
 
     private void drawDices(RoundTrackWrapper roundTrack){
-        for (int i = 0; i < roundTrack.size(); i++) {
+        for (int i = 0; i < RoundTrackWrapper.NUMBER_OF_TRACK; i++) {
             Optional<DiceWrapper> diceOptional =roundTrack.getDicesPerRound(i).stream().findFirst();
             final int round = i;
             diceOptional.ifPresent((dice) -> drawDice(dice, round, roundTrackWidth,

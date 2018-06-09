@@ -10,11 +10,25 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 import java.util.Arrays;
 import java.util.Objects;
 
+/**
+ * Copy class of SchemaCard in the game model.
+ */
 @Immutable
 public final class SchemaCardWrapper implements JSONable{
 
+    /**
+     * Card's name.
+     */
     private final String name;
+
+    /**
+     * Card's difficulty.
+     */
     private final int difficulty;
+
+    /**
+     * Schema card matrix with constraint and diceWrapper.
+     */
     private final TileWrapper[][] tileMatrix;
 
     /**
@@ -23,10 +37,19 @@ public final class SchemaCardWrapper implements JSONable{
     private static final String JSON_DIFFICULTY = "difficulty";
     private static final String JSON_MATRIX = "matrix";
 
+    /**
+     * SchemaCardWrapper Parameter.
+     */
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
 
-
+    /**
+     * Constructor.
+     *
+     * @param name card name.
+     * @param difficulty card difficulty.
+     * @param tileMatrix card matrix.
+     */
     public SchemaCardWrapper(String name, int difficulty, TileWrapper[][] tileMatrix) {
         this.name = name;
         this.difficulty = difficulty;
@@ -38,10 +61,16 @@ public final class SchemaCardWrapper implements JSONable{
         }
     }
 
+    /**
+     * @return the card name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * @return the card difficulty.
+     */
     public int getDifficulty() {
         return difficulty;
     }
@@ -105,6 +134,17 @@ public final class SchemaCardWrapper implements JSONable{
         );
     }
 
+    /**
+     * @return Schema card wrapper to string ->  "  -----   -----   -----   -----   -----  "
+     *                                           "|       |   2   |   Y   |       |       |"
+     *                                           "  -----   -----   -----   -----   -----  "
+     *                                           "|       |       |       |   4   |       |"
+     *                                           "  -----   -----   -----   -----   -----  "
+     *                                           "|       |       |       |       |   R   |"
+     *                                           "  -----   -----   -----   -----   -----  "
+     *                                           "|       |  4/R  |       |       |       |"
+     *                                           "  -----   -----   -----   -----   -----  "
+     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -119,6 +159,11 @@ public final class SchemaCardWrapper implements JSONable{
         return stringBuilder.toString();
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the SchemaCardWrapper is the same object or if the matrix is the same, name is same and
+     * difficulty is the same..
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -136,6 +181,9 @@ public final class SchemaCardWrapper implements JSONable{
                 hasSameTiles;
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
 

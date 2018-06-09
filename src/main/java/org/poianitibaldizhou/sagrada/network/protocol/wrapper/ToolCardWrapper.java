@@ -5,6 +5,11 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
+/**
+ * Copy of class ToolCard in game model.
+ */
 @Immutable
 public final class ToolCardWrapper  extends CardWrapper implements JSONable{
 
@@ -13,20 +18,40 @@ public final class ToolCardWrapper  extends CardWrapper implements JSONable{
      */
     private static final String JSON_TOKENS = "token";
 
+    /**
+     * ToolCardWrapper's color.
+     */
     private final ColorWrapper color;
+
+    /**
+     * number of token on the toolCardWrapper.
+     */
     private final int token;
 
+    /**
+     * Constructor.
+     *
+     * @param name card name
+     * @param description card description.
+     * @param color card color.
+     * @param token number of token on toolCard.
+     */
     public ToolCardWrapper(String name, String description, ColorWrapper color, int token) {
         super(name, description);
         this.color = color;
         this.token = token;
     }
 
-
+    /**
+     * @return the toolCardWrapper color.
+     */
     public ColorWrapper getColor() {
         return color;
     }
 
+    /**
+     * @return the token on toolCardWrapper.
+     */
     public int getToken() {
         return token;
     }
@@ -63,4 +88,28 @@ public final class ToolCardWrapper  extends CardWrapper implements JSONable{
         );
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the ToolCardWrapper is the same object or
+     * if it has the same color, name, description and number of token.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ToolCardWrapper)) return false;
+        ToolCardWrapper that = (ToolCardWrapper) o;
+        return getToken() == that.getToken() &&
+                getColor() == that.getColor()&&
+                getName().equals(that.getName()) &&
+                getDescription().equals(that.getDescription());
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getColor(), getToken(), getName(),getDescription());
+    }
 }

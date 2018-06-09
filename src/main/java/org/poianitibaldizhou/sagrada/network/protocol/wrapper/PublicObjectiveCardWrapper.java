@@ -3,11 +3,18 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
+/**
+ * Copy class of PublicObjectiveCard in the model.
+ */
 @Immutable
 public final class PublicObjectiveCardWrapper extends CardWrapper implements JSONable{
 
+    /**
+     * Card's point.
+     */
     private final int point;
 
     /**
@@ -15,9 +22,23 @@ public final class PublicObjectiveCardWrapper extends CardWrapper implements JSO
      */
     private static final String JSON_CARD_POINT = "cardPoint";
 
+    /**
+     * Constructor.
+     *
+     * @param name card name.
+     * @param description card description.
+     * @param point card point.
+     */
     public PublicObjectiveCardWrapper(String name, String description, int point) {
         super(name, description);
         this.point = point;
+    }
+
+    /**
+     * @return the card point.
+     */
+    public int getCardPoint() {
+        return point;
     }
 
     /**
@@ -46,7 +67,27 @@ public final class PublicObjectiveCardWrapper extends CardWrapper implements JSO
         );
     }
 
-    public int getCardPoint() {
-        return point;
+    /**
+     * @param o the other object to compare.
+     * @return true if the PublicObjectiveCardWrapper is the same object or
+     * if it has the same card point, name and description.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PublicObjectiveCardWrapper)) return false;
+        PublicObjectiveCardWrapper that = (PublicObjectiveCardWrapper) o;
+        return point == that.point &&
+                getName().equals(that.getName()) &&
+                getDescription().equals(that.getDescription());
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(point,getName(),getDescription());
     }
 }

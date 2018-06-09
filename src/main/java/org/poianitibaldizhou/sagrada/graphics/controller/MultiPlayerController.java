@@ -192,7 +192,7 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     private void testRoundTrackView(){
-        List<Collection<DiceWrapper>> dices = new ArrayList<>();
+        List<List<DiceWrapper>> dices = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             List<DiceWrapper> diceRound = new ArrayList<>();
             Random rng = new Random();

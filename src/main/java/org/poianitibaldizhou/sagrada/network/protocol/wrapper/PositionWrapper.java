@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
 /**
  * Copy class of Position in the model.
  */
@@ -89,4 +91,25 @@ public final class PositionWrapper implements JSONable {
         return "(" + (getRow() + 1) + ", " + (getColumn() + 1) + ")";
     }
 
+    /**
+     * @param o the other object to compare.
+     * @return true if the PositionWrapper is the same object or if it has the same numberRow and
+     * the same numberColumn.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PositionWrapper)) return false;
+        PositionWrapper that = (PositionWrapper) o;
+        return getRow() == that.getRow() &&
+                getColumn() == that.getColumn();
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(getRow(), getColumn());
+    }
 }

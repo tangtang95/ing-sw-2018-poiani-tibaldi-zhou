@@ -4,6 +4,10 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+/**
+ * Copy class of UseToolCardState in the game model.
+ * Use toolCard action.
+ */
 @Immutable
 public final class UseToolCardStateWrapper implements IActionWrapper{
 
@@ -21,7 +25,10 @@ public final class UseToolCardStateWrapper implements IActionWrapper{
         return main;
     }
 
-    public static UseToolCardStateWrapper toObject(JSONObject jsonObject) {
+    /**
+     * @return null.
+     */
+    public static UseToolCardStateWrapper toObject() {
         return null;
     }
 }

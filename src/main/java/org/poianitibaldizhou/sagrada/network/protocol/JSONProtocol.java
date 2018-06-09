@@ -8,8 +8,14 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable
 
 import java.util.*;
 
+/**
+ * Protocol class for create a json message for networking communication.
+ */
 public class JSONProtocol {
 
+    /**
+     * packet that contains the json message.
+     */
     private final JSONObject packet = new JSONObject();
 
     /**

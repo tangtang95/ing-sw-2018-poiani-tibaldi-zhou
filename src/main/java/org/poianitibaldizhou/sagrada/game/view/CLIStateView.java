@@ -254,7 +254,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      * {@inheritDoc}
      */
     @Override
-    public void onPlaceDiceState(String jString) throws IOException {
+    public void onPlaceDiceState(String jString) {
         /*NOT IMPORTANT FOR THE CLI*/
     }
 

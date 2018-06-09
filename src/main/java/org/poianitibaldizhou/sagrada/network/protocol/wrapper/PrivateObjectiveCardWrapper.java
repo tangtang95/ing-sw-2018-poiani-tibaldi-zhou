@@ -5,14 +5,36 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+import java.util.Objects;
+
+/**
+ * Copy class of PrivateObjectiveCard in the game model.
+ */
 @Immutable
 public final class PrivateObjectiveCardWrapper extends CardWrapper implements JSONable {
 
+    /**
+     * Card's color.
+     */
     private final ColorWrapper color;
 
+    /**
+     * Constructor.
+     *
+     * @param name card name.
+     * @param description card description.
+     * @param color card color.
+     */
     public PrivateObjectiveCardWrapper(String name, String description, ColorWrapper color) {
         super(name, description);
         this.color = color;
+    }
+
+    /**
+     * @return the card color.
+     */
+    public ColorWrapper getColor() {
+        return color;
     }
 
     /**
@@ -47,7 +69,27 @@ public final class PrivateObjectiveCardWrapper extends CardWrapper implements JS
         );
     }
 
-    public ColorWrapper getColor() {
-        return color;
+    /**
+     * @param o the other object to compare.
+     * @return true if the PrivateObjectiveCardWrapper is the same object or
+     * if it has the same color, name and description.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PrivateObjectiveCardWrapper)) return false;
+        PrivateObjectiveCardWrapper that = (PrivateObjectiveCardWrapper) o;
+        return getColor() == that.getColor() &&
+                getName().equals(that.getName()) &&
+                getDescription().equals(that.getDescription());
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getColor(),getName(),getDescription());
     }
 }
