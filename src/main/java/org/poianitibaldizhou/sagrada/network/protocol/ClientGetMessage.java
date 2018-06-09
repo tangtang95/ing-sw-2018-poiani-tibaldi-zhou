@@ -29,6 +29,13 @@ public class ClientGetMessage {
         jsonClientProtocol = new JSONProtocol();
     }
 
+    /**
+     * Get a dice message with key elem.
+     *
+     * @param message json message from server.
+     * @return a dice.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public DiceWrapper getDiceElem(String message) throws IOException {
         DiceWrapper diceWrapper;
         try {
@@ -40,6 +47,13 @@ public class ClientGetMessage {
         return diceWrapper;
     }
 
+    /**
+     * Get a dice list from server with key elemList.
+     *
+     * @param message json message from server.
+     * @return a dice list.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<DiceWrapper> getDiceElemList(String message) throws IOException {
         List<DiceWrapper> diceWrapperList = new ArrayList<>();
         try {
@@ -53,6 +67,13 @@ public class ClientGetMessage {
         return diceWrapperList;
     }
 
+    /**
+     * Get a dice message with key dice.
+     *
+     * @param message json message from server.
+     * @return a dice.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public DiceWrapper getDice(String message) throws IOException {
         DiceWrapper diceWrapper;
         try {
@@ -64,6 +85,13 @@ public class ClientGetMessage {
         return diceWrapper;
     }
 
+    /**
+     * Get a dice list from server with key diceList.
+     *
+     * @param message json message from server.
+     * @return a dice list.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<DiceWrapper> getDiceList(String message) throws IOException {
         List<DiceWrapper> diceWrapper = new ArrayList<>();
         try {
@@ -77,6 +105,13 @@ public class ClientGetMessage {
         return diceWrapper;
     }
 
+    /**
+     * Get a UserWrapper from server with key user.
+     *
+     * @param message json message from server.
+     * @return a UserWrapper.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public UserWrapper getUserWrapper(String message) throws IOException {
         UserWrapper userWrapper;
         try {
@@ -88,6 +123,13 @@ public class ClientGetMessage {
         return userWrapper;
     }
 
+    /**
+     * Get a UserWrapper from server with key turnUser.
+     *
+     * @param message json message from server.
+     * @return a UserWrapper.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public UserWrapper getTurnUserWrapper(String message) throws IOException {
         UserWrapper userWrapper;
         try {
@@ -99,6 +141,13 @@ public class ClientGetMessage {
         return userWrapper;
     }
 
+    /**
+     * Get victory point from server with key victoryPoint.
+     *
+     * @param message json message from server.
+     * @return a vicToryPoint Map<UserWrapper/Point>
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Map<UserWrapper, Integer> getVictoryPoint(String message) throws IOException {
         Map<UserWrapper, Integer> victoryPoint = new HashMap<>();
         JSONParser jsonParser = new JSONParser();
@@ -117,7 +166,13 @@ public class ClientGetMessage {
         return victoryPoint;
     }
 
-
+    /**
+     * Get a list of UserWrapper from server with key userList.
+     *
+     * @param message json message from server.
+     * @return a list of UserWrapper.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<UserWrapper> getListOfUserWrapper(String message) throws IOException {
         List<UserWrapper> userWrappers = new ArrayList<>();
         try {
@@ -131,6 +186,13 @@ public class ClientGetMessage {
         return userWrappers;
     }
 
+    /**
+     * Get a game name from server with key gameName.
+     *
+     * @param message json message from server.
+     * @return a game name.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getGameName(String message) throws IOException {
         String gameName;
         try {
@@ -142,6 +204,13 @@ public class ClientGetMessage {
         return gameName;
     }
 
+    /**
+     * Get token of player from server with key token.
+     *
+     * @param message json message from server.
+     * @return player's token.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getToken(String message) throws IOException {
         String token;
         try {
@@ -153,6 +222,13 @@ public class ClientGetMessage {
         return token;
     }
 
+    /**
+     * Get timeout from server with key timeout.
+     *
+     * @param message json message from server.
+     * @return time to timeout
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getTimeout(String message) throws IOException {
         String timeout;
         try {
@@ -164,6 +240,13 @@ public class ClientGetMessage {
         return timeout;
     }
 
+    /**
+     * Get value from server with key integer.
+     *
+     * @param message json message from server.
+     * @return a value.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Integer getValue(String message) throws IOException {
         Integer value;
         try {
@@ -175,6 +258,13 @@ public class ClientGetMessage {
         return value;
     }
 
+    /**
+     * Get the player's outcome from server with key outcome.
+     *
+     * @param message json message from server.
+     * @return a player's outcome.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getOutcome(String message) throws IOException {
         String outcome;
         try {
@@ -186,6 +276,13 @@ public class ClientGetMessage {
         return outcome;
     }
 
+    /**
+     * Get a dice from server with key oldDice.
+     *
+     * @param message json message from server.
+     * @return a dice.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public DiceWrapper getOldDice(String message) throws IOException {
         DiceWrapper diceWrapper;
         try {
@@ -197,7 +294,14 @@ public class ClientGetMessage {
         return diceWrapper;
     }
 
-    public DiceWrapper getNewDice (String message) throws IOException {
+    /**
+     * Get a dice from server with key newDice.
+     *
+     * @param message json message from server.
+     * @return a dice.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
+    public DiceWrapper getNewDice(String message) throws IOException {
         DiceWrapper diceWrapper;
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.NEW_DICE_KEY);
@@ -208,6 +312,13 @@ public class ClientGetMessage {
         return diceWrapper;
     }
 
+    /**
+     * Get position from server with key position.
+     *
+     * @param message json message from server.
+     * @return a position.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public PositionWrapper getPosition(String message) throws IOException {
         PositionWrapper positionWrapper;
         try {
@@ -219,6 +330,13 @@ public class ClientGetMessage {
         return positionWrapper;
     }
 
+    /**
+     * Get a list of colors from server with key colorList.
+     *
+     * @param message json message from server.
+     * @return a list of colors.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<ColorWrapper> getColorList(String message) throws IOException {
         List<ColorWrapper> colorWrappers = new ArrayList<>();
         try {
@@ -232,6 +350,13 @@ public class ClientGetMessage {
         return colorWrappers;
     }
 
+    /**
+     * Get a dice value from server with key diceValue.
+     *
+     * @param message json message from server.
+     * @return a value.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Integer getDiceValue(String message) throws IOException {
         Integer value;
         try {
@@ -243,6 +368,13 @@ public class ClientGetMessage {
         return value;
     }
 
+    /**
+     * Get a list of publicObjectiveCard from server with key publicObjectiveCard.
+     *
+     * @param message json message from server.
+     * @return a list of publicObjectiveCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<PublicObjectiveCardWrapper> getPublicObjectiveCards(String message) throws IOException {
         List<PublicObjectiveCardWrapper> poc = new ArrayList<>();
         try {
@@ -257,6 +389,13 @@ public class ClientGetMessage {
         return poc;
     }
 
+    /**
+     * Get TooCard from server with key toolCard.
+     *
+     * @param message json message from server.
+     * @return a toolCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<ToolCardWrapper> getToolCards(String message) throws IOException {
         List<ToolCardWrapper> toolCardWrappers = new ArrayList<>();
         try {
@@ -271,6 +410,13 @@ public class ClientGetMessage {
         return toolCardWrappers;
     }
 
+    /**
+     * Get a list of privateObjectiveCard from server with key privateObjectiveCard.
+     *
+     * @param message json message from server.
+     * @return a list of privateObjectiveCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<PrivateObjectiveCardWrapper> getPrivateObjectiveCards(String message) throws IOException {
         List<PrivateObjectiveCardWrapper> poc = new ArrayList<>();
         try {
@@ -285,6 +431,13 @@ public class ClientGetMessage {
         return poc;
     }
 
+    /**
+     * Get a list of frontBackSchemaCard from server with key frontBackSchemaCard.
+     *
+     * @param message json message from server.
+     * @return a list of frontBackSchemaCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public List<FrontBackSchemaCardWrapper> getFrontBackSchemaCards(String message) throws IOException {
         List<FrontBackSchemaCardWrapper> fbsc = new ArrayList<>();
         try {
@@ -299,6 +452,13 @@ public class ClientGetMessage {
         return fbsc;
     }
 
+    /**
+     * Get schemaCard from server with key schemaCard.
+     *
+     * @param message json message from server.
+     * @return a schemaCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public SchemaCardWrapper getSchemaCard(String message) throws IOException {
         SchemaCardWrapper schemaCardWrapper;
         try {
@@ -310,6 +470,13 @@ public class ClientGetMessage {
         return schemaCardWrapper;
     }
 
+    /**
+     * Get color from server with key color.
+     *
+     * @param message json message from server.
+     * @return a color.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public ColorWrapper getColor(String message) throws IOException{
         ColorWrapper colorWrapper;
         try {
@@ -321,6 +488,13 @@ public class ClientGetMessage {
         return colorWrapper;
     }
 
+    /**
+     * Get a roundTrack from server with key roundTrack.
+     *
+     * @param message json message rom server.
+     * @return a roundTrack.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public RoundTrackWrapper getRoundTrack(String message) throws IOException {
         RoundTrackWrapper roundTrack;
         try {
@@ -332,16 +506,19 @@ public class ClientGetMessage {
         return roundTrack;
     }
 
-
+    /**
+     * Get a map of schemaCard from server with key schemaCardMap.
+     *
+     * @param message json message from server.
+     * @return a map of schemaCard Map<User/SchemaCard>
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Map<UserWrapper,SchemaCardWrapper> getSchemaCards(String message) throws IOException {
         Map<UserWrapper,SchemaCardWrapper> schemaCardWrappers = new HashMap<>();
         JSONParser jsonParser = new JSONParser();
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message,
                     SharedConstants.MAP_SCHEMA_CARD_KEY);
-            if(jsonObject == null){
-                jsonObject.get(SharedConstants.BODY);
-            }
             JSONObject map = (JSONObject) jsonObject.get(SharedConstants.BODY);
 
             for (Object o : map.keySet()) {
@@ -356,6 +533,13 @@ public class ClientGetMessage {
         return schemaCardWrappers;
     }
 
+    /**
+     * Get a draftPool from server with key draftPool.
+     *
+     * @param message json message from server.
+     * @return a draftPool.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public DraftPoolWrapper getDraftPool(String message) throws IOException {
         DraftPoolWrapper draftPoolWrapper;
         try {
@@ -368,6 +552,13 @@ public class ClientGetMessage {
         return draftPoolWrapper;
     }
 
+    /**
+     * Get user from server with key roundUser.
+     *
+     * @param message json message from server.
+     * @return a user.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public UserWrapper getRoundUser(String message) throws IOException {
         UserWrapper userWrapper;
         try {
@@ -379,17 +570,24 @@ public class ClientGetMessage {
         return userWrapper;
     }
 
+    /**
+     * Get player's coins from server with key integer.
+     *
+     * @param message json message from server.
+     * @return a player's coins.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Integer getMyCoins(String message) throws IOException {
-        Integer value;
-        try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.INTEGER);
-            value = Integer.parseInt(jsonObject.get(SharedConstants.BODY).toString());
-        } catch (ParseException | ClassCastException e) {
-            throw new IOException();
-        }
-        return value;
+        return getValue(message);
     }
 
+    /**
+     * Get a map of player's coins from server with key playerCoinsMap.
+     *
+     * @param message json message from server.
+     * @return a map of player's coins Map<User/coins>
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Map<UserWrapper,Integer> getPlayersCoins(String message) throws IOException {
         Map<UserWrapper,Integer> playersCoins = new HashMap<>();
         JSONParser jsonParser = new JSONParser();
@@ -410,7 +608,14 @@ public class ClientGetMessage {
         return playersCoins;
     }
 
-    public int getTurnValue(String message) throws IOException {
+    /**
+     * Get a value from server with key turnValue.
+     *
+     * @param message json message rom server.
+     * @return a value.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
+    public Integer getTurnValue(String message) throws IOException {
         Integer turnValue;
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TURN_VALUE_KEY);
@@ -421,7 +626,13 @@ public class ClientGetMessage {
         return turnValue;
     }
 
-
+    /**
+     * Get a commandFlow from server with key commandFlow.
+     *
+     * @param message json message from server.
+     * @return a commandFlow.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getCommandFlow(String message) throws IOException {
         String command;
         try {
@@ -434,15 +645,18 @@ public class ClientGetMessage {
     }
 
 
-    public boolean hasTerminateGameError(String response) {
-        String message = null;
+    /**
+     * Get a ErrorTerminate message from server.
+     *
+     * @param message json message from server.
+     * @return a boolean value: true is the game is finish, false if the game is on.
+     */
+    public boolean hasTerminateGameError(String message) {
         try {
-            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.ERROR_TERMINATE_GAME_KEY);
-            message = jsonObject.get(SharedConstants.BODY).toString();
+            jsonClientProtocol.getResponseByKey(message, SharedConstants.ERROR_TERMINATE_GAME_KEY);
         } catch (Exception e) {
             return false;
         }
-
         return true;
     }
 }

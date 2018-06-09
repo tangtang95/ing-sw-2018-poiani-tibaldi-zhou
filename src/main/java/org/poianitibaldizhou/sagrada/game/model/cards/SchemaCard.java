@@ -21,7 +21,7 @@ public class SchemaCard implements JSONable {
     private final String name;
     private final int difficulty;
     private final Tile[][] tileMatrix;
-    private final transient Map<String, ISchemaCardFakeObserver> observerMap;
+    private final Map<String, ISchemaCardFakeObserver> observerMap;
 
     public static final int NUMBER_OF_COLUMNS = 5;
     public static final int NUMBER_OF_ROWS = 4;
