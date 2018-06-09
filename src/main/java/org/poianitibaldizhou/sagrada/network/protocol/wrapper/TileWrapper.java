@@ -7,11 +7,24 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.Objects;
 
-
+/**
+ * Copy class of Tile in game model.
+ */
 @Immutable
 public final class TileWrapper implements JSONable{
 
+    /**
+     * TileWrapper's constraint.
+     * Constraint type:
+     * - Color
+     * - Number
+     * - Null
+     */
     private final String constraint;
+
+    /**
+     * DiceWrapper contained in the TileWrapper.
+     */
     private DiceWrapper dice;
 
     /**
@@ -19,19 +32,65 @@ public final class TileWrapper implements JSONable{
      */
     private static final String JSON_CONSTRAINT = "constraint";
 
+    /**
+     * Constructor.
+     *
+     * @param constraint tileWrapper constraint.
+     */
     public TileWrapper(String constraint) {
         this.constraint = constraint;
         this.dice = null;
     }
 
-    public static TileWrapper newInstance(TileWrapper t) {
-        return new TileWrapper(t.getConstraint());
+    /**
+     * Copy constructor.
+     *
+     * @param tile original TileWrapper.
+     */
+    private TileWrapper(TileWrapper tile){
+        this.constraint = tile.constraint;
+        this.dice = tile.dice;
     }
 
+    /**
+     * Constructor.
+     *
+     * @param constraint tileWrapper constraint.
+     * @param dice diceWrapper contained.
+     */
+    TileWrapper(String constraint, DiceWrapper dice) {
+        this.constraint = constraint;
+        this.dice = dice;
+    }
+
+    /**
+     * @return the tileWrapper constraint.
+     */
+    public String getConstraint() {
+        return constraint;
+    }
+
+    /**
+     * @return the diceWrapper contained in the tileWrapper.
+     */
     public DiceWrapper getDice() {
         return dice;
     }
 
+    /**
+     * new Instance for deep copy.
+     *
+     * @param t original tileWrapper
+     * @return new instance of the same tileWrapper.
+     */
+    public static TileWrapper newInstance(TileWrapper t) {
+        return new TileWrapper(t);
+    }
+
+    /**
+     * @return the tileWrapper to string -> constraint or dice.toString
+     */
+    @Override
     public String toString(){
         String val;
         if (dice != null)
@@ -72,7 +131,6 @@ public final class TileWrapper implements JSONable{
      * @return a tile object or null if the jsonObject is wrong.
      */
     public static TileWrapper toObject(JSONObject jsonObject) {
-        TileWrapper tile;
         Object object = jsonObject.get(JSON_CONSTRAINT);
         String constraintValue;
         if (object == null)
@@ -81,24 +139,19 @@ public final class TileWrapper implements JSONable{
             constraintValue = String.valueOf(object.toString());
         else
             constraintValue = (String) object;
-        tile = new TileWrapper(constraintValue);
 
         if (jsonObject.containsKey(SharedConstants.DICE)) {
             DiceWrapper readDice = DiceWrapper.toObject(
                     (JSONObject) ((JSONObject) jsonObject.get(SharedConstants.DICE)).get(SharedConstants.BODY));
-            tile.setDice(readDice);
+            return new TileWrapper(constraintValue, readDice);
         }
-        return tile;
+        return new TileWrapper(constraintValue);
     }
 
-    public String getConstraint() {
-        return constraint;
-    }
-
-    public void setDice(DiceWrapper dice) {
-        this.dice = dice;
-    }
-
+    /**
+     * @param o the other object to compare.
+     * @return true if the TileWrapper is the same object or the constraint and the diceWrapper are the same.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -108,6 +161,9 @@ public final class TileWrapper implements JSONable{
                 Objects.equals(getDice(), that.getDice());
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
 

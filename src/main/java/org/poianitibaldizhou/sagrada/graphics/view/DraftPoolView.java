@@ -1,9 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
-
-import java.io.IOException;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DraftPoolWrapper;
 
 public class DraftPoolView extends Pane{
 
@@ -12,4 +10,9 @@ public class DraftPoolView extends Pane{
 
     }
 
+    public void drawDraftPool(DraftPoolWrapper draftPoolWrapper) {
+    }
+
+    public void drawRollingDraftPool(DraftPoolWrapper draftPoolWrapper) {
+    }
 }

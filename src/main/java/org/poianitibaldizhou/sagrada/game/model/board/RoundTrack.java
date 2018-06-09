@@ -19,10 +19,10 @@ import java.util.Map;
  * OVERVIEW: A round track contains a list of dices for each single round that it contains.
  * Order in the dice list does not matter.
  */
-public class RoundTrack implements Serializable, JSONable {
+public class RoundTrack implements JSONable {
 
     private final List<List<Dice>> listOfDices;
-    private final transient Map<String, IRoundTrackFakeObserver> observerMap;
+    private final Map<String, IRoundTrackFakeObserver> observerMap;
     private int numberOfDices;
 
     public static final int NUMBER_OF_TRACK = 10;

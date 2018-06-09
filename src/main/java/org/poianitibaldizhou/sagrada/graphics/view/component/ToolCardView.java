@@ -14,7 +14,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 
 import java.io.IOException;
 
-public class ToolCardView extends Pane implements IToolCardObserver{
+public class ToolCardView extends Pane{
 
 
 
@@ -63,13 +63,7 @@ public class ToolCardView extends Pane implements IToolCardObserver{
         return canvas;
     }
 
-    @Override
-    public void onTokenChange(String message) throws IOException {
-
-    }
-
-    @Override
-    public void onCardDestroy() throws IOException {
-
+    public void decreaseToken(Integer value) {
+        // TODO
     }
 }

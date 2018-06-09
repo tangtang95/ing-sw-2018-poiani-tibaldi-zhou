@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
  * OVERVIEW: Represents a collection of dices. It is a core element of the game.
  * Order does not matter.
  */
-public class DraftPool implements Serializable, JSONable {
+public class DraftPool implements JSONable {
     private final List<Dice> dices;
-    private final transient Map<String, IDraftPoolFakeObserver> observerMap;
+    private final Map<String, IDraftPoolFakeObserver> observerMap;
 
     /**
      * draftPool param for network protocol.

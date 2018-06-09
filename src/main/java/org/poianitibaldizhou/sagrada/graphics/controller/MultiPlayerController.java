@@ -1,9 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
-import javafx.beans.binding.DoubleBinding;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.json.simple.JSONObject;
@@ -15,10 +13,12 @@ import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.component.*;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MultiPlayerController extends Controller implements Initializable {
 
@@ -80,7 +82,7 @@ public class MultiPlayerController extends Controller implements Initializable {
     public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
         try {
-            List<UserWrapper> users = multiPlayerModel.joinGame(gameListener, gameListener, stateView,
+            multiPlayerModel.joinGame(gameListener, gameListener, stateView,
                     roundTrackView, draftPoolView, diceBagView, timeoutListener);
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,71 +92,15 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     public void setRoundTrack() {
+        roundTrackView.drawRoundTrack();
+    }
 
+    public void setDraftPool() {
+        draftPoolView.drawDraftPool();
     }
 
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
         multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
-    }
-
-    private void drawUsers(List<UserWrapper> users){
-
-        double centerX = rootPane.getPrefWidth()/2;
-        double centerY = rootPane.getPrefHeight()/2;
-
-        Map<Integer, Double> angles = new HashMap<>();
-        for (int i = 0; i < users.size(); i++) {
-
-            Pane pane = new Pane();
-            ImageView imageView = TextureUtils.getSimpleImageView("images/user.png", 0.15);
-            imageView.translateXProperty().bind(pane.widthProperty().divide(2)
-                    .subtract(imageView.fitWidthProperty().divide(2)));
-            imageView.translateYProperty().bind(pane.heightProperty().divide(2)
-                    .subtract(imageView.fitHeightProperty().divide(2)));
-            pane.getChildren().add(imageView);
-
-            pane.setStyle("-fx-border-color: black; -fx-border-width: 0.6em; -fx-border-radius: 1em");
-
-            double angle = 2*Math.PI*i / ((users.size() == 3) ? users.size() + 1 : users.size()) - Math.PI/2;
-            DoubleBinding distance = rootPane.heightProperty().divide(2)
-                    .subtract(pane.heightProperty().divide(1.8));
-            DoubleBinding offsetX = distance.multiply(Math.cos(angle));
-            DoubleBinding offsetY = distance.multiply(Math.sin(angle));
-
-            double tangentAngle = angle - Math.PI/2;
-            DoubleBinding tangentDistance = rootPane.heightProperty().divide(3);
-            DoubleBinding tangentOffsetX = tangentDistance.multiply(Math.cos(tangentAngle));
-            DoubleBinding tangentOffsetY = tangentDistance.multiply(Math.sin(tangentAngle));
-
-            DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
-            GameInjector.injectSchemaCards(schemaCards);
-            JSONObject object = null;
-            try {
-                object = (JSONObject) schemaCards.draw().getFrontSchemaCard().toJSON().get("body");
-            } catch (EmptyCollectionException e) {
-                e.printStackTrace();
-            }
-            SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
-            SchemaCardView schemaCardView1 = new SchemaCardView((SchemaCardWrapper) schemaCard.toObject(object), 0.2);
-            schemaCardView1.setRotate(angle*180.0/Math.PI - 90);
-            DoubleBinding distanceSchemaCard = rootPane.heightProperty().divide(2)
-                    .subtract(schemaCardView1.heightProperty().divide(1.8));
-
-            corePane.getChildren().addAll(schemaCardView1);
-            schemaCardView1.translateXProperty().bind(schemaCardView1.widthProperty().divide(2)
-                    .negate().add(centerX).add(distanceSchemaCard.multiply(Math.cos(angle))));
-            schemaCardView1.translateYProperty().bind(schemaCardView1.heightProperty().divide(2)
-                    .negate().add(centerY).add(distanceSchemaCard.multiply(Math.sin(angle))));
-
-            DoubleBinding x = offsetX.add(centerX).add(tangentOffsetX);
-            DoubleBinding y = offsetY.add(centerY).add(tangentOffsetY);
-
-            this.corePane.getChildren().add(pane);
-            pane.setRotate(angle*180.0/Math.PI - 90);
-            pane.translateXProperty().bind(pane.widthProperty().divide(2).negate().add(x));
-            pane.translateYProperty().bind(pane.heightProperty().divide(2).negate().add(y));
-        }
-
     }
 
     private void testPrivateObjectiveCardView(){
@@ -165,8 +111,8 @@ public class MultiPlayerController extends Controller implements Initializable {
             JSONObject object = (JSONObject) privateObjectiveCards.draw().toJSON().get("body");
             PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
                     new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
-            PrivateObjectiveCardView privateObjectiveCardView = new PrivateObjectiveCardView(
-                    (PrivateObjectiveCardWrapper) privateObjectiveCardWrapper.toObject(object), 0.3
+            PrivateObjectiveCardView privateObjectiveCardView =
+                    new PrivateObjectiveCardView(privateObjectiveCardWrapper.toObject(object), 0.3
             );
 
             this.corePane.getChildren().add(privateObjectiveCardView);
@@ -257,7 +203,7 @@ public class MultiPlayerController extends Controller implements Initializable {
 
         RoundTrackWrapper roundTrackWrapper = new RoundTrackWrapper(dices);
         RoundTrackView roundTrackView = new RoundTrackView();
-        roundTrackView.drawDices(roundTrackWrapper);
+        roundTrackView.drawRoundTrack(roundTrackWrapper);
         corePane.getChildren().add(roundTrackView);
         roundTrackView.setTranslateX(400);
     }
@@ -300,4 +246,54 @@ public class MultiPlayerController extends Controller implements Initializable {
         return multiPlayerModel.getOwnPrivateObjectiveCard();
     }
 
+    public RoundTrackWrapper getRoundTrack() {
+        RoundTrackWrapper roundTrackWrapper;
+        try {
+            roundTrackWrapper =  multiPlayerModel.getRoundTrack();
+        } catch (IOException e) {
+            showCrashErrorMessage();
+            return null;
+        }
+        return roundTrackWrapper;
+    }
+
+    private void showCrashErrorMessage() {
+        Logger.getAnonymousLogger().log(Level.SEVERE, "Game crashed");
+        // TODO close program and show AlertBox
+    }
+
+    public void bindPlayer(UserWrapper user, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) {
+        try {
+            multiPlayerModel.bindPlayer(user, playerObserver, schemaCardObserver);
+        } catch (IOException e) {
+           showCrashErrorMessage();
+        }
+    }
+
+    public DraftPoolWrapper getDraftPool() {
+        DraftPoolWrapper draftPoolWrapper;
+        try {
+            draftPoolWrapper = multiPlayerModel.getDraftPool();
+        } catch (IOException e) {
+            showCrashErrorMessage();
+            return null;
+        }
+        return draftPoolWrapper;
+    }
+
+    public void bindToolCard(ToolCardWrapper toolCard, IToolCardObserver toolCardObserver) {
+        try {
+            multiPlayerModel.bindToolCard(toolCard, toolCardObserver);
+        } catch (IOException e) {
+            showCrashErrorMessage();
+        }
+    }
+
+    public void endTurn() {
+        try {
+            multiPlayerModel.endTurn();
+        } catch (IOException e) {
+            showCrashErrorMessage();
+        }
+    }
 }

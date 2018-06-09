@@ -283,7 +283,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         } while (doAgain);
 
         String setMessage = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
-                createTokenMessage(cliStateView.getToken()).createAnswerMessage(answer).buildMessage();
+                createTokenMessage(cliStateView.getToken()).createBooleanMessage(answer).buildMessage();
 
         connectionManager.getGameController().setContinueAction(setMessage);
         consoleListener.wakeUpCommandConsole();

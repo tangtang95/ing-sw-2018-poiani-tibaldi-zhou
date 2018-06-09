@@ -116,10 +116,13 @@ public class SetupPlayerState extends IStateGame {
     public void forceStateChange() {
         game.getUsers().forEach(user -> {
             if(!playersReady.contains(user.getToken())) {
+                playersReady.add(user.getToken());
                 game.setPlayerSchemaCard(user.getToken(), playerFrontBackSchemaCards.get(user.getToken()).get(0).getFrontSchemaCard(),
                         privateObjectiveCardMap.get(user.getToken()));
             }
         });
+
+        game.getGameObservers().forEach((key, value) -> value.onPlayersCreate(game.getUsers()));
 
         game.setState(new SetupGameState(game));
     }

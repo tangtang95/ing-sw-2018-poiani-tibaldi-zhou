@@ -40,5 +40,6 @@ public abstract class Controller {
     public void popScene() {
         sceneManager.popScene();
     }
+
 }
 

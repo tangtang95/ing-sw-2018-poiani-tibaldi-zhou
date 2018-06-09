@@ -3,11 +3,11 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
-public class ForcedEndGame extends IStateGame {
+public class ForcedEndGameState extends IStateGame {
 
     private Player winner;
 
-    public ForcedEndGame(Game game, Player winner) {
+    public ForcedEndGameState(Game game, Player winner) {
         super(game);
         this.winner = winner;
     }

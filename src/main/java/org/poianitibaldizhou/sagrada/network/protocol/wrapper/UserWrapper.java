@@ -7,9 +7,15 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.Objects;
 
+/**
+ * Copy class of User in the lobby model.
+ */
 @Immutable
 public final class UserWrapper implements JSONable{
 
+    /**
+     * Username of player in game.
+     */
     private final String username;
 
     /**
@@ -17,11 +23,18 @@ public final class UserWrapper implements JSONable{
      */
     private static final String JSON_USER_NAME = "userName";
 
-
+    /**
+     * Constructor.
+     *
+     * @param username name of player.
+     */
     public UserWrapper(String username) {
         this.username = username;
     }
 
+    /**
+     * @return the userWrapper username.
+     */
     public String getUsername() {
         return username;
     }
@@ -52,7 +65,10 @@ public final class UserWrapper implements JSONable{
         return new UserWrapper(jsonObject.get(JSON_USER_NAME).toString());
     }
 
-
+    /**
+     * @param o the other object to compare.
+     * @return true if the UserWrapper is the same object or the username is the same.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,11 +77,17 @@ public final class UserWrapper implements JSONable{
         return getUsername().equals(that.getUsername());
     }
 
+    /**
+     * @return the hash code.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getUsername());
     }
 
+    /**
+     * @return UserWrapper toString -> username
+     */
     @Override
     public String toString() {
         return username;

@@ -19,7 +19,7 @@ import java.util.*;
 public abstract class PublicObjectiveCard extends Card implements IScore, JSONable {
 
     protected final ObjectiveCardType type;
-    protected transient Set<IConstraint> constraints;
+    protected Set<IConstraint> constraints;
     private final int cardPoints;
 
     /**

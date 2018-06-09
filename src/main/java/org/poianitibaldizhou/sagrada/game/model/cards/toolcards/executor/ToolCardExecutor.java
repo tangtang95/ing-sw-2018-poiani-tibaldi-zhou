@@ -140,6 +140,7 @@ public class ToolCardExecutor extends Thread{
         } catch (InterruptedException e) {
             System.out.println("Interrupted exception");
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
+            // TODO notify everyone that the toolCard has been interrupted
             Thread.currentThread().interrupt();
         } finally {
             System.out.println("");

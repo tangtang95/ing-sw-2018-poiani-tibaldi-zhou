@@ -7,7 +7,8 @@ import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DiceBagListener extends AbstractView implements IDrawableCollectionObserver {
 
@@ -17,17 +18,18 @@ public class DiceBagListener extends AbstractView implements IDrawableCollection
 
     @Override
     public void onElementAdd(String elem) throws IOException {
-
+        /*NOT IMPORTANT FOR THE GUI*/
     }
 
     @Override
     public void onElementsAdd(String elemList) throws IOException {
-
+        /*NOT IMPORTANT FOR THE GUI*/
     }
 
     @Override
     public void onElementDraw(String elem) throws IOException {
-
+        /*NOT IMPORTANT FOR THE GUI*/
+        Logger.getAnonymousLogger().log(Level.INFO, "JSON: {0}", elem);
     }
 
     @Override

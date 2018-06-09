@@ -6,6 +6,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.geometry.Point2D;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -27,13 +28,13 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameListener extends AbstractView implements IGameView, IGameObserver{
 
     private transient Pane publicObjectiveCardsContainer;
     private transient Pane toolCardsContainer;
-
-    private transient Map<String, SchemaCardView> schemaCardViewMap;
 
     private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.3;
     private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.4;
@@ -41,7 +42,6 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.25;
     private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.4;
     private static final double TOOL_CARD_SCALE = 0.4;
-    private static final double ROUND_TRACK_SCALE = 0.5;
 
     private static final double PADDING = 10;
 
@@ -51,12 +51,14 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     @Override
     public void ack(String ack) throws IOException {
-
+        /*NOT IMPORTANT FOR GUI*/
+        Logger.getAnonymousLogger().log(Level.INFO, ack);
     }
 
     @Override
     public void err(String err) throws IOException {
-
+        /*NOT IMPORTANT FOR GUI*/
+        Logger.getAnonymousLogger().log(Level.INFO, err);
     }
 
     @Override
@@ -75,8 +77,6 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 return;
             }
 
-            this.clearNotifyPane();
-            this.deactivateNotifyPane();
             this.drawUsers(users, schemaCardWrapperMap, privateObjectiveCardWrappers);
         });
     }
@@ -89,6 +89,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         Platform.runLater(()->{
             this.drawPublicObjectiveCards(publicObjectiveCardWrappers);
             controller.setRoundTrack();
+            controller.setDraftPool();
         });
 
     }
@@ -104,8 +105,15 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     }
 
     @Override
-    public void onChoosePrivateObjectiveCards(String privateObjectiveCards) throws IOException {
+    public void onChoosePrivateObjectiveCards(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        List<PrivateObjectiveCardWrapper> privateObjectiveCards = parser.getPrivateObjectiveCards(message);
 
+        Platform.runLater(() -> {
+            clearNotifyPane();
+            activateNotifyPane();
+            this.showChoosePrivateObjectiveCards(privateObjectiveCards);
+        });
     }
 
     @Override
@@ -123,13 +131,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         List<FrontBackSchemaCardWrapper> frontBackSchemaCards = parser.getFrontBackSchemaCards(message);
 
         Platform.runLater(() -> {
-            this.activateNotifyPane();
-            this.clearNotifyPane();
             this.showFrontBackSchemaCards(frontBackSchemaCards);
         });
     }
 
-    public void showFrontBackSchemaCards(List<FrontBackSchemaCardWrapper> frontBackSchemaCardList) {
+    private void showFrontBackSchemaCards(List<FrontBackSchemaCardWrapper> frontBackSchemaCardList) {
         DoubleBinding startX = getCenterX();
         DoubleBinding y = getCenterX().subtract(getWidth().divide(4));
 
@@ -179,7 +185,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         helperBox.getChildren().addAll(spacer, continueButton);
     }
 
-    public void showPrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
+    private void showPrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
 
         DoubleBinding x = getWidth().subtract(PADDING);
         DoubleBinding startY = new SimpleDoubleProperty(0).add(PADDING);
@@ -197,8 +203,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         }
     }
 
-    public void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
-                          List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers) {
+    private void showChoosePrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
+    }
+
+    private void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
+                           List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers) {
         List<UserWrapper> orderedUsers = getUsersOrdered(users);
         for (int i = 0; i < orderedUsers.size(); i++) {
             final double angle = 2 * Math.PI * i / ((orderedUsers.size() == 3) ? orderedUsers.size() + 1 :
@@ -213,6 +222,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
             SchemaCardWrapper schemaCard = schemaCardWrapperMap.get(orderedUsers.get(i));
             SchemaCardView schemaCardView = new SchemaCardView(schemaCard, SCHEMA_CARD_SCALE);
+
             schemaCardView.setRotate(angle * 180.0 / Math.PI - 90);
             DoubleBinding distanceSchemaCard = getCenterY().subtract(schemaCardView.heightProperty().divide(1.8));
 
@@ -234,10 +244,36 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             else
                 drawRetroPrivateObjectiveCard(pocX, pocY, angle);
 
+            try {
+                PlayerListener playerListener = drawUser(orderedUsers.get(i), new Point2D(Math.round(Math.cos(angle)),
+                        Math.round(Math.sin(angle))));
+                SchemaCardListener schemaCardListener = new SchemaCardListener(schemaCardView,
+                        controller, corePane, notifyPane);
+                controller.bindPlayer(orderedUsers.get(i), playerListener, schemaCardListener);
+            } catch (RemoteException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot initialize SchemaCardListener");
+            }
         }
     }
 
-    public void drawPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers) {
+    private PlayerListener drawUser(UserWrapper userWrapper, Point2D direction){
+        if(direction.equals(new Point2D(1,0))){
+
+        }
+        else if(direction.equals(new Point2D(0, 1))){
+
+        }
+        else if(direction.equals(new Point2D(-1, 0 ))){
+
+        }
+        else{
+
+        }
+        // TODO
+        return null;
+    }
+
+    private void drawPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers) {
 
         publicObjectiveCardsContainer = new Pane();
 
@@ -258,7 +294,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         corePane.getChildren().add(publicObjectiveCardsContainer);
     }
 
-    public void drawToolCards(List<ToolCardWrapper> toolCardWrappers) {
+    private void drawToolCards(List<ToolCardWrapper> toolCardWrappers) {
 
         toolCardsContainer = new Pane();
 
@@ -272,6 +308,12 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), TOOL_CARD_SCALE);
             toolCardView.setTranslateX(i*PADDING);
             toolCardView.setTranslateY(i*PADDING);
+            try {
+                ToolCardListener toolCardListener = new ToolCardListener(toolCardView, controller, corePane, notifyPane);
+                controller.bindToolCard(toolCardWrappers.get(i), toolCardListener);
+            } catch (RemoteException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
+            }
             toolCardsContainer.getChildren().add(toolCardView);
         }
 

@@ -24,7 +24,7 @@ import java.util.logging.Logger;
  * OVERVIEW: The constraint of the tile is always != null (if there is no constraint
  * there is an object of NoConstraint)
  */
-public class Tile implements Serializable, JSONable{
+public class Tile implements JSONable{
 
     private final IConstraint constraint;
     private Dice dice;

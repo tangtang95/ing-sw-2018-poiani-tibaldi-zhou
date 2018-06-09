@@ -27,8 +27,8 @@ public class ToolCard extends Card implements JSONable{
 
     private final Color color;
     private int tokens;
-    private final transient Node<ICommand> commands;
-    private final transient Map<String, IToolCardFakeObserver> observerMap;
+    private final Node<ICommand> commands;
+    private final Map<String, IToolCardFakeObserver> observerMap;
 
     private static final int LOW_COST = 1;
     private static final int HIGH_COST = 2;

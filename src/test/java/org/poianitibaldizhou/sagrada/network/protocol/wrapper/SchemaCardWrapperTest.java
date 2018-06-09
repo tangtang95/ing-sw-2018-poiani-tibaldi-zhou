@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
@@ -32,7 +35,7 @@ public class SchemaCardWrapperTest {
         constraints[2][4] = new TileWrapper(ColorWrapper.RED.name());
         constraints[0][1] = new TileWrapper("2");
         fullSchemaCardWrapper = new SchemaCardWrapper("test3", 2, constraints);
-        constraints[0][4].setDice(new DiceWrapper(ColorWrapper.PURPLE,1));
+        constraints[0][4] = new TileWrapper(null, new DiceWrapper(ColorWrapper.PURPLE,1));
         schemaCardWrapperDice = new SchemaCardWrapper("test2", 2, constraints);
 
     }
@@ -83,12 +86,12 @@ public class SchemaCardWrapperTest {
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}";
         assertTrue(message.equals(fullSchemaCardWrapper.toJSON().toJSONString()));
-        message = "{\"type\":\"schemaCard\",\"body\":{\"difficulty\":2,\"name\":\"test3\",\"matrix\":[" +
+        message = "{\"type\":\"schemaCard\",\"body\":{\"difficulty\":2,\"name\":\"test2\",\"matrix\":[" +
                 "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":2}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":\"YELLOW\"}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
-                "{\"type\":\"tile\",\"body\":{\"constraint\":null,\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"PURPLE\",\"value\":1}}}}]," +
+                "{\"type\":\"tile\",\"body\":{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"PURPLE\",\"value\":1}},\"constraint\":null}}]," +
                 "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
@@ -104,15 +107,84 @@ public class SchemaCardWrapperTest {
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}";
-        System.out.println(message);
-        System.out.println(schemaCardWrapperDice.toJSON());
         assertTrue(message.equals(schemaCardWrapperDice.toJSON().toJSONString()));
     }
 
     @Test
     public void toObjectTest() {
-
+        String message = "{\"difficulty\":1,\"name\":\"test1\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}";
+        String message1 ="{\"difficulty\":2,\"name\":\"test3\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":2}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"YELLOW\"}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":4}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"RED\"}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}";
+        String message2 = "{\"difficulty\":2,\"name\":\"test2\",\"matrix\":[" +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":2}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"YELLOW\"}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"PURPLE\",\"value\":1}},\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":4}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":\"RED\"}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}";
+        JSONParser jsonParser = new JSONParser();
+        try {
+            assertEquals(emptySchemaCard,
+                    SchemaCardWrapper.toObject((JSONObject) jsonParser.parse(message)));
+            assertEquals(fullSchemaCardWrapper,
+                    SchemaCardWrapper.toObject((JSONObject) jsonParser.parse(message1)));
+            assertEquals(schemaCardWrapperDice,
+                    SchemaCardWrapper.toObject((JSONObject) jsonParser.parse(message2)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
-
-
 }

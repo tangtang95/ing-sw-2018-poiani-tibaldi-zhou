@@ -6,9 +6,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.listener.TimeoutListener;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -80,5 +78,42 @@ public class MultiPlayerModel {
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
         String response = connectionManager.getGameController().getPrivateObjectiveCardByToken(request);
         return parser.getPrivateObjectiveCards(response);
+    }
+
+    public RoundTrackWrapper getRoundTrack() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getRoundTrack(request);
+        return parser.getRoundTrack(response);
+    }
+
+    public void bindPlayer(UserWrapper user, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createUsernameMessage(user.getUsername()).buildMessage();
+        connectionManager.getGameController().bindPlayer(request, playerObserver, schemaCardObserver);
+    }
+
+    public DraftPoolWrapper getDraftPool() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getDraftPool(request);
+        return parser.getDraftPool(response);
+    }
+
+    public void bindToolCard(ToolCardWrapper toolCard, IToolCardObserver toolCardObserver) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createToolCardMessage(toolCard).buildMessage();
+        connectionManager.getGameController().bindToolCard(request, toolCardObserver);
+    }
+
+    public void endTurn() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createActionMessage(new PlaceDiceStateWrapper()).buildMessage();
+        connectionManager.getGameController().chooseAction(request);
     }
 }

@@ -126,11 +126,16 @@ public class GameObserverManager {
         }
     }
 
-    public void pushTimeoutThread(String token, Runnable notify) {
+    public void pushTimeoutThread(String token, Runnable notify, String timedOutToken) {
         if(!disconnectedPlayer.contains(token)) {
-            executorHashMap.get(token).shutdownNow();
-            executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
-            executorHashMap.get(TIME_OUT).submit(notify);
+            if(token.equals(timedOutToken)) {
+                executorHashMap.get(token).shutdownNow();
+                executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
+                executorHashMap.get(TIME_OUT).submit(notify);
+            } else {
+                executorHashMap.get(timedOutToken).submit(notify);
+            }
+
         }
     }
 }
