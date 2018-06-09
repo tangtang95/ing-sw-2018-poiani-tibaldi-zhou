@@ -122,6 +122,8 @@ public class GameManager {
     }
 
     public synchronized boolean containsGame(final String gameName) {
+        // TODO ?? perche non come nel commentato
+        //return gameMap.containsKey(gameName);
         return gameMap.values().stream().map(IGame::getName).anyMatch(s -> s.equals(gameName));
     }
 

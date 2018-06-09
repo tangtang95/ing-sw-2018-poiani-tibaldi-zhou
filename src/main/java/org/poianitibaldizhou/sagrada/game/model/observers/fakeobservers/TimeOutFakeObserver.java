@@ -68,7 +68,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 }
             };
             System.out.println("Notify timeout of " + timedOutPlayer.getName() + " to " + token);
-            observerManager.pushTimeoutThread(token, notify);
+            observerManager.pushTimeoutThread(token, notify, timedOutPlayer.getToken());
         });
     }
 
