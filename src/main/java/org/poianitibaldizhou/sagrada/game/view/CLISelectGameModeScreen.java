@@ -37,7 +37,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+    public CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
         super(networkManager, screenManager);
 
         this.clientCreateMessage = new ClientCreateMessage();
@@ -134,14 +134,14 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
                     createUsernameMessage(username).createValueMessage(difficulty).buildMessage());
             gameName = clientGetMessage.getGameName(message);
             token = clientGetMessage.getToken(message);
-        } catch (IOException e) {
-            PrinterManager.consolePrint("Error in creating single player game", Level.STANDARD);
-            return;
-        }
 
+            ConsoleListener.getInstance().wakeUpCommandConsole();
+            screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
+                    new UserWrapper(username), token));
+        } catch (IOException e) {
+            PrinterManager.consolePrint("Error in creating single player game\n", Level.STANDARD);
+        }
         ConsoleListener.getInstance().wakeUpCommandConsole();
-        screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
-                new UserWrapper(username), token));
     }
 
     /**

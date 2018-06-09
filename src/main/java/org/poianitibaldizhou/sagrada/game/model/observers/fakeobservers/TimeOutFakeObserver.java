@@ -21,7 +21,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private static final long TIME = ServerSettings.getPlayerTimeout();
 
     private GameObserverManager observerManager;
-    private final IGame game;
 
     private Thread timeOutThreadSetupPlayer;
     private Thread timeOutThreadTurnState;
@@ -33,11 +32,9 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
      *
      * @param observerManager observer manager for the specific game
-     * @param game game in which the timeout happens
      */
-    public TimeOutFakeObserver(GameObserverManager observerManager, IGame game) {
+    public TimeOutFakeObserver(GameObserverManager observerManager) {
         this.observerManager = observerManager;
-        this.game = game;
 
         timeoutStart = null;
         serverCreateMessage = new ServerCreateMessage();
@@ -55,11 +52,11 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     private void handleTimeoutSetUpPlayer() {
         try {
-            synchronized (game) {
+            synchronized (observerManager.getGame()) {
                 if(timeOutThreadSetupPlayer != null) {
-                    List<User> timedOutUsers = game.getTimedOutUsers();
+                    List<User> timedOutUsers = observerManager.getGame().getTimedOutUsers();
                     timedOutUsers.forEach(this::createAndPushNotify);
-                    game.forceStateChange();
+                    observerManager.getGame().forceStateChange();
                 }
             }
         } catch (InvalidActionException e) {
@@ -88,10 +85,10 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     private void handleTimeoutTurnState(User turnUser) {
         try {
-            synchronized (game) {
+            synchronized (observerManager.getGame()) {
                 if(timeOutThreadTurnState != null) {
                     createAndPushNotify(turnUser);
-                    game.forceStateChange();
+                    observerManager.getGame().forceStateChange();
                 }
             }
         } catch (InvalidActionException e) {

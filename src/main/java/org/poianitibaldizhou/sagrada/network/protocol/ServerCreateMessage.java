@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
@@ -14,6 +15,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,25 @@ public class ServerCreateMessage {
     public ServerCreateMessage createDiceMessage(Dice dice){
         jsonServerProtocol.appendMessage(SharedConstants.DICE,dice);
         return this;
+    }
+
+    public String getErrorMessage() {
+        Map<String, String> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
+        return JSONObject.toJSONString(error);
+    }
+
+    public String getGameTerminatedErrorMessage() {
+        Map<String, String> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.ERROR_TERMINATE_GAME_KEY, SharedConstants.ERROR_TEMINATE_GAME);
+        return JSONObject.toJSONString(error);
+    }
+
+
+    public String reconnectErrorMessage() {
+        Map<String, String> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.RECONNECT_ERROR);
+        return JSONObject.toJSONString(error);
     }
 
     public ServerCreateMessage createTokenMessage(String token) {

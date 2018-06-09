@@ -5,6 +5,7 @@ package org.poianitibaldizhou.sagrada.network.protocol;
  */
 public class SharedConstants {
 
+
     private SharedConstants() { }
 
     /**
@@ -67,6 +68,8 @@ public class SharedConstants {
     public static final String ROUND_USER_KEY = "roundUserKey";
     public static final String TURN_USER_KEY = "turnUserKey";
     public static final String GET_ERROR_KEY = "errorKey";
+    public static final String ERROR_TERMINATE_GAME_KEY = "errorTerminateGameKey";
+
 
     /**
      * Error message.
@@ -74,4 +77,6 @@ public class SharedConstants {
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";
     public static final String RECONNECT_ERROR = "Error reconnecting";
+    public static final String ERROR_TEMINATE_GAME = "Game has terminated";
+
 }

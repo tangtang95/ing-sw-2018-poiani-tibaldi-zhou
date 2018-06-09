@@ -43,6 +43,7 @@ public class MultiPlayerModel {
         String response;
         try {
             response = connectionManager.getGameController().getListOfUser(request);
+            // TODO HANDLE WITH HAS TERMINATE GAME ERROR
             System.out.println(response);
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Network error");
@@ -69,6 +70,7 @@ public class MultiPlayerModel {
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
         String response =  connectionManager.getGameController().getSchemaCards(request);
+        // TODO HANDLE TERMINATE ERROR GAME
         return parser.getSchemaCards(response);
     }
 
@@ -77,6 +79,7 @@ public class MultiPlayerModel {
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
         String response = connectionManager.getGameController().getPrivateObjectiveCardByToken(request);
+        // TODO HANDLE TERMINATE ERROR GAME
         return parser.getPrivateObjectiveCards(response);
     }
 
@@ -85,6 +88,7 @@ public class MultiPlayerModel {
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
         String response = connectionManager.getGameController().getRoundTrack(request);
+        // TODO HANDLE TERMINATE ERROR GAME
         return parser.getRoundTrack(response);
     }
 

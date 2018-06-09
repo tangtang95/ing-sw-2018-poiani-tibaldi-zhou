@@ -40,7 +40,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     transient List<ToolCardWrapper> toolCardList;
 
     /**
-     *The game's draftPool
+     * The game's draftPool
      */
     protected transient DraftPoolWrapper draftPool;
 
@@ -192,13 +192,14 @@ public class CLIRoundScreen extends CLIBasicScreen {
      */
     private void viewTimeToTimeout() {
         String timeout;
+        String response;
         try {
-            timeout = clientGetMessage.getTimeout(
-                    connectionManager.getGameController().getTimeout(
-                            clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
-                    )
-            );
-            PrinterManager.consolePrint("Time to timeout is: " + timeout, Level.STANDARD);
+            response = connectionManager.getGameController().getTimeout(
+                    clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage());
+            if (!clientGetMessage.hasTerminateGameError(response)) {
+                timeout = clientGetMessage.getTimeout(response);
+                PrinterManager.consolePrint("Time to timeout is: " + timeout, Level.STANDARD);
+            }
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
@@ -211,11 +212,13 @@ public class CLIRoundScreen extends CLIBasicScreen {
     private void viewMyCoins() {
         Integer coins;
         try {
-            coins = clientGetMessage.getMyCoins(
-                    connectionManager.getGameController().getMyCoins(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
-            PrinterManager.consolePrint("Your coins: " + coins + "\n",Level.STANDARD);
+            String response = connectionManager.getGameController().getMyCoins(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if(clientGetMessage.hasTerminateGameError(response))
+                return;
+            coins = clientGetMessage.getMyCoins(response);
+            PrinterManager.consolePrint("Your coins: " + coins + "\n", Level.STANDARD);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
@@ -229,11 +232,13 @@ public class CLIRoundScreen extends CLIBasicScreen {
     private void viewPlayersCoins() {
         Map<UserWrapper, Integer> playersCoins;
         try {
-            playersCoins = clientGetMessage.getPlayersCoins(
-                    connectionManager.getGameController().getPlayersCoins(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
-            playersCoins.forEach((k,v) ->
+            String resposne = connectionManager.getGameController().getPlayersCoins(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if(clientGetMessage.hasTerminateGameError(resposne))
+                return;
+            playersCoins = clientGetMessage.getPlayersCoins(resposne);
+            playersCoins.forEach((k, v) ->
                     PrinterManager.consolePrint("Coins of " + k.getUsername() + ": " + v.toString() + "\n",
                             Level.STANDARD));
         } catch (IOException e) {
@@ -246,19 +251,21 @@ public class CLIRoundScreen extends CLIBasicScreen {
      * View private objective cards command.
      * Print to screen the private objective cards of the player.
      */
-    private void viewPrivateObjectiveCards(){
+    private void viewPrivateObjectiveCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<PrivateObjectiveCardWrapper> poc = new ArrayList<>();
         try {
-            poc = clientGetMessage.getPrivateObjectiveCards(
-                    connectionManager.getGameController().getPrivateObjectiveCardByToken(
+            String response = connectionManager.getGameController().getPrivateObjectiveCardByToken(
                     clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-            ));
+            );
+            if(clientGetMessage.hasTerminateGameError(response))
+                return;
+            poc = clientGetMessage.getPrivateObjectiveCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
-        PrinterManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCards(poc).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCards(poc).toString(), Level.STANDARD);
     }
 
     /**
@@ -269,15 +276,18 @@ public class CLIRoundScreen extends CLIBasicScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
         SchemaCardWrapper schemaCard = null;
         try {
-            schemaCard = clientGetMessage.getSchemaCard(
-                    connectionManager.getGameController().getSchemaCardByToken(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
+            String response = connectionManager.getGameController().getSchemaCardByToken(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if (!clientGetMessage.hasTerminateGameError(response))
+                schemaCard = clientGetMessage.getSchemaCard(response);
+            else
+                return;
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
-        PrinterManager.consolePrint(buildGraphic.buildGraphicSchemaCard(schemaCard).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicSchemaCard(schemaCard).toString(), Level.STANDARD);
 
     }
 
@@ -287,15 +297,17 @@ public class CLIRoundScreen extends CLIBasicScreen {
      */
     private void viewSchemaCards() {
         BuildGraphic buildGraphic = new BuildGraphic();
-        Map<UserWrapper,SchemaCardWrapper> schemaCards;
+        Map<UserWrapper, SchemaCardWrapper> schemaCards;
         try {
-            schemaCards = clientGetMessage.getSchemaCards(
-                    connectionManager.getGameController().getSchemaCards(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
+            String response = connectionManager.getGameController().getSchemaCards(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if(clientGetMessage.hasTerminateGameError(response))
+                return;
+            schemaCards = clientGetMessage.getSchemaCards(response);
             Objects.requireNonNull(schemaCards).forEach((k, v) -> buildGraphic.buildMessage("Schema of Player:" + k).
                     buildGraphicSchemaCard(v));
-            PrinterManager.consolePrint(buildGraphic.toString(),Level.STANDARD);
+            PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
@@ -310,15 +322,16 @@ public class CLIRoundScreen extends CLIBasicScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<PublicObjectiveCardWrapper> pocList = null;
         try {
-            pocList = clientGetMessage.getPublicObjectiveCards(
-                    connectionManager.getGameController().getPublicObjectiveCards(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
+            String response = connectionManager.getGameController().getPublicObjectiveCards(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if(clientGetMessage.hasTerminateGameError(response));
+            pocList = clientGetMessage.getPublicObjectiveCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
-        PrinterManager.consolePrint(buildGraphic.buildGraphicPublicObjectiveCards(pocList).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicPublicObjectiveCards(pocList).toString(), Level.STANDARD);
     }
 
     /**
@@ -329,16 +342,18 @@ public class CLIRoundScreen extends CLIBasicScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<ToolCardWrapper> toolCardWrapperList = null;
         try {
-            toolCardWrapperList = clientGetMessage.getToolCards(
-                    connectionManager.getGameController().getToolCards(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
+            String response = connectionManager.getGameController().getToolCards(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if(clientGetMessage.hasTerminateGameError(response))
+                return;
+            toolCardWrapperList = clientGetMessage.getToolCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
         toolCardList = new ArrayList<>(Objects.requireNonNull(toolCardWrapperList));
-        PrinterManager.consolePrint(buildGraphic.buildGraphicToolCards(toolCardWrapperList).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicToolCards(toolCardWrapperList).toString(), Level.STANDARD);
     }
 
     /**
@@ -349,15 +364,18 @@ public class CLIRoundScreen extends CLIBasicScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
         RoundTrackWrapper roundTrackWrapper = null;
         try {
-            roundTrackWrapper = clientGetMessage.getRoundTrack(
-                    connectionManager.getGameController().getRoundTrack(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
+            String response = connectionManager.getGameController().getRoundTrack(
+                    clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
+            );
+            if(!clientGetMessage.hasTerminateGameError(response))
+                roundTrackWrapper = clientGetMessage.getRoundTrack(response);
+            else
+                return;
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
-        PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrackWrapper).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrackWrapper).toString(), Level.STANDARD);
     }
 
     /**
@@ -368,16 +386,17 @@ public class CLIRoundScreen extends CLIBasicScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
         DraftPoolWrapper draftPoolWrapper = null;
         try {
-            draftPoolWrapper = clientGetMessage.getDraftPool(
-                    connectionManager.getGameController().getDraftPool(
-                            clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
-                    ));
+            String response = connectionManager.getGameController().getDraftPool(clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage());
+            if(!clientGetMessage.hasTerminateGameError(response))
+                draftPoolWrapper = clientGetMessage.getDraftPool(response);
+            else
+                return;
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
         }
         draftPool = draftPoolWrapper;
-        PrinterManager.consolePrint(buildGraphic.buildGraphicDraftPool(draftPoolWrapper).toString(),Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildGraphicDraftPool(draftPoolWrapper).toString(), Level.STANDARD);
     }
 
     /**

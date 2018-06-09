@@ -423,4 +423,17 @@ public class ClientGetMessage {
         }
         return command;
     }
+
+
+    public boolean hasTerminateGameError(String response) {
+        String message = null;
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.ERROR_TERMINATE_GAME_KEY);
+            message = jsonObject.get(SharedConstants.BODY).toString();
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
+    }
 }

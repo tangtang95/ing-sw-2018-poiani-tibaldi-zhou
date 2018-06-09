@@ -306,6 +306,12 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public void onResultGame(String winner) throws IOException {
         UserWrapper user = clientGetMessage.getUserWrapper(winner);
         PrinterManager.consolePrint("The winner is " + user.getUsername() + "\n", Level.STANDARD);
+        if(myUser.equals(currentUser)) {
+            screenManager.popWithouthStartinScreen();
+            screenManager.popScreen();
+        } else {
+            screenManager.popScreen();
+        }
     }
 
     /**
