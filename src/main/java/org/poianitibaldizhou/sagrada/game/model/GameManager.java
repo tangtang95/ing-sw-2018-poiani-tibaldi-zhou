@@ -47,7 +47,7 @@ public class GameManager {
         // Creates the game
         do {
             gameName = UUID.randomUUID().toString();
-        } while(gameMap.containsKey(gameMap));
+        } while(gameMap.containsKey(gameName));
 
         String token = String.valueOf(userName.hashCode());
 
@@ -56,7 +56,7 @@ public class GameManager {
         gameMap.putIfAbsent(gameName, singlePlayer);
         playersByGame.putIfAbsent(gameName, Collections.singletonList(token));
         players.add(token);
-        gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
+        gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), singlePlayer));
 
         return gameName;
     }
@@ -76,10 +76,10 @@ public class GameManager {
                 playersByGame.get(gameName).add(user.getToken());
                 players.add(user.getToken());
             });
-            gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName)));
+            gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), game));
 
             // TODO re-add when wants to test timeout
-            TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName), game);
+            TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName));
             if(!game.isSinglePlayer()) {
                 game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
                 gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);

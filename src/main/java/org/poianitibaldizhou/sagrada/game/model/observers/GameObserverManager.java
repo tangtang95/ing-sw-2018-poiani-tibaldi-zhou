@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 
@@ -15,6 +16,7 @@ public class GameObserverManager {
     private HashMap<String, ScheduledExecutorService> executorHashMap;
     private HashMap<String, ITimeOutObserver> observerTimeoutHashMap;
 
+    private IGame game;
     private TimeOutFakeObserver timeOutFakeObserver;
 
     public static final String TIME_OUT = "TimeOut";
@@ -24,14 +26,16 @@ public class GameObserverManager {
      * This class handles a thread pool for sending updates to the observers.
      *
      * @param tokenList list of player's token of the intended game
+     * @param game game that observers listen to
      */
-    public GameObserverManager(List<String> tokenList) {
+    public GameObserverManager(List<String> tokenList, IGame game) {
         disconnectedPlayer = new HashSet<>();
         disconnectedPlayerNotNotified = new HashSet<>();
         executorHashMap = new HashMap<>();
         observerTimeoutHashMap = new HashMap<>();
 
         timeOutFakeObserver = null;
+        this.game = game;
 
         tokenList.forEach(token -> {
             ScheduledExecutorService scheduledTask = Executors.newScheduledThreadPool(1);
@@ -42,6 +46,11 @@ public class GameObserverManager {
     }
 
     // GETTER
+
+    @Contract(pure = true)
+    public IGame getGame() {
+        return game;
+    }
 
     @Contract(pure = true)
     public Map<String, ITimeOutObserver> getObserverTimeoutHashMap() {

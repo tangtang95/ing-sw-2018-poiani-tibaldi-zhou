@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
@@ -23,8 +24,8 @@ public class StateFakeObserver implements IStateFakeObserver {
      * Creates a fake observer of the state used to manage the asynchronous call made to various client
      * and network communication errors
      *
-     * @param token player's token of the real observer
-     * @param realObserver real state observer
+     * @param token           player's token of the real observer
+     * @param realObserver    real state observer
      * @param observerManager observer manager of the specified game
      */
     public StateFakeObserver(String token, GameObserverManager observerManager, IStateObserver realObserver) {
@@ -98,6 +99,14 @@ public class StateFakeObserver implements IStateFakeObserver {
         };
 
         observerManager.pushThreadInQueue(token, runnable);
+
+        if (observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
+            try {
+                observerManager.getGame().forceStateChange();
+            } catch (InvalidActionException e) {
+                throw new IllegalStateException();
+            }
+        }
     }
 
     /**

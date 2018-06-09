@@ -43,9 +43,7 @@ public class SetupPlayerState extends IStateGame {
      */
     @Override
     public void init() {
-        List<String> failedNotifyTokens = new ArrayList<>();
         game.getStateObservers().forEach((key, value) -> value.onSetupPlayer());
-        failedNotifyTokens.forEach((token) -> game.getStateObservers().remove(token));
 
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         DrawableCollection<FrontBackSchemaCard> frontBackSchemaCards = new DrawableCollection<>();
@@ -80,7 +78,6 @@ public class SetupPlayerState extends IStateGame {
                 throw new IllegalStateException("SEVERE ERROR: cannot find token");
             game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
         }
-
     }
 
 

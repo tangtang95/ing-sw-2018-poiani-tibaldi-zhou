@@ -93,7 +93,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         } catch (TimeoutException e) {
             PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
         }
-
     }
 
     /**

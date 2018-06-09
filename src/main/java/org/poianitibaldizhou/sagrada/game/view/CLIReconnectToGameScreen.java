@@ -96,16 +96,21 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 Map<String, IToolCardObserver> cliToolCardViewMap = new HashMap<>();
                 Map<String, ISchemaCardObserver> cliSchemaCardViewMap = new HashMap<>();
 
-                List<ToolCardWrapper> toolCardWrappers = clientGetMessage.getToolCards(
-                        connectionManager.getGameController().getToolCards(
-                                clientCreateMessage.createGameNameMessage(gameName).
-                                        createTokenMessage(token).buildMessage()
-                        ));
-                Collection<SchemaCardWrapper> schemaCardWrappers = clientGetMessage.getSchemaCards(
-                        connectionManager.getGameController().getSchemaCards(
-                                clientCreateMessage.createGameNameMessage(gameName).
-                                        createTokenMessage(token).buildMessage()
-                        )).values();
+                String response = connectionManager.getGameController().getToolCards(
+                        clientCreateMessage.createGameNameMessage(gameName).
+                                createTokenMessage(token).buildMessage()
+                );
+                if(clientGetMessage.hasTerminateGameError(response))
+                    return;
+                List<ToolCardWrapper> toolCardWrappers = clientGetMessage.getToolCards(response);
+
+                response = connectionManager.getGameController().getSchemaCards(
+                        clientCreateMessage.createGameNameMessage(gameName).
+                                createTokenMessage(token).buildMessage()
+                );
+                if(clientGetMessage.hasTerminateGameError(response))
+                    return;
+                Collection<SchemaCardWrapper> schemaCardWrappers = clientGetMessage.getSchemaCards(response).values();
 
                 for (UserWrapper u : userList)
                     cliPlayerViewMap.put(u.getUsername(), new CLIPlayerView(cliStateView));

@@ -56,6 +56,19 @@ public class ScreenManager {
     }
 
     /**
+     * Stop the currentThread and pop a screen from the stack without starting it.
+     *
+     * @return the screen at the top of the stack
+     * @throws EmptyStackException if the stack of screen is empty
+     */
+    public synchronized IScreen popWithouthStartinScreen() {
+        if(screens.isEmpty())
+            throw new EmptyStackException();
+        stopCurrentThread();
+        return screens.pop();
+    }
+
+    /**
      * Replace the current screen with another one; first of all pop the screen from the stack
      * and then push the new screen.
      *

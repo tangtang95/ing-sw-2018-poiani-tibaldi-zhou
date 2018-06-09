@@ -40,21 +40,33 @@ public class MultiPlayerGame extends Game{
         setState(new ResetState(this));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfToolCardForGame() {
         return NUMBER_OF_TOOL_CARDS;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfPublicObjectiveCardForGame() {
         return NUMBER_OF_PUBLIC_OBJECTIVE_CARDS;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfDicesToDraw() {
         return this.getNumberOfPlayers()*2 + 1;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfPrivateObjectiveCardForGame() {
         return NUMBER_OF_PRIVATE_OBJECTIVE_CARDS;
@@ -82,6 +94,10 @@ public class MultiPlayerGame extends Game{
         }
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isSinglePlayer() {
         return false;
@@ -95,17 +111,26 @@ public class MultiPlayerGame extends Game{
         getState().forceTermination(winner);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         players.put(user.getToken(), new MultiPlayer(user, new FavorToken(schemaCard.getDifficulty()),
                 schemaCard, privateObjectiveCards));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleEndGame() {
         getState().calculateVictoryPoints();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Node<ICommand> getPreCommands(ToolCard toolCard) {
         Node<ICommand> removeFavorToken = new Node<>(new RemoveFavorToken(toolCard.getCost()));
