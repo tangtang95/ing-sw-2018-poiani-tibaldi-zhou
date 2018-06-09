@@ -25,6 +25,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
     private Thread timeOutThreadSetupPlayer;
     private Thread timeOutThreadTurnState;
+    private Long timeoutStart;
 
     private ServerCreateMessage serverCreateMessage;
 
@@ -38,7 +39,15 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         this.observerManager = observerManager;
         this.game = game;
 
+        timeoutStart = null;
         serverCreateMessage = new ServerCreateMessage();
+    }
+
+    public long getTimeToTimeout() {
+        if ((timeOutThreadSetupPlayer == null && timeOutThreadTurnState == null) || timeoutStart == null)
+            throw new IllegalStateException();
+        long currTime = System.currentTimeMillis();
+        return TIME  - (currTime - timeoutStart);
     }
 
     /**
@@ -67,7 +76,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                     observerManager.notifyDisconnection(token);
                 }
             };
-            System.out.println("Notify timeout of " + timedOutPlayer.getName() + " to " + token);
             observerManager.pushTimeoutThread(token, notify, timedOutPlayer.getToken());
         });
     }
@@ -82,6 +90,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         try {
             synchronized (game) {
                 if(timeOutThreadTurnState != null) {
+                    System.out.println("Handling turn state timout");
                     createAndPushNotify(turnUser);
                     game.forceStateChange();
                 }
@@ -97,6 +106,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     @Override
     public void onSetupGame() {
         System.out.println("Ending timeout turn player");
+        timeoutStart = null;
         timeOutThreadSetupPlayer.interrupt();
         timeOutThreadSetupPlayer = null;
     }
@@ -117,6 +127,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
             }
         };
 
+        timeoutStart = System.currentTimeMillis();
         timeOutThreadSetupPlayer = new Thread(timeout);
         timeOutThreadSetupPlayer.start();
     }
@@ -134,7 +145,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
-        /*
         System.out.println("Starting time out turn state");
         Runnable timeOut = () -> {
             try {
@@ -146,9 +156,9 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
             }
         };
 
+        timeoutStart = System.currentTimeMillis();
         timeOutThreadTurnState = new Thread(timeOut);
         timeOutThreadTurnState.start();
-        */
     }
 
     /**
@@ -196,11 +206,10 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onEndTurnState(User turnUser) {
-        /*
         System.out.println("Ending timeout turn state");
+        timeoutStart = null;
         timeOutThreadTurnState.interrupt();
         timeOutThreadTurnState = null;
-        */
     }
 
     /**

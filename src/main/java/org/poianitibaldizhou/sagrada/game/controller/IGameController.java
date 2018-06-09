@@ -279,6 +279,17 @@ public interface IGameController extends Remote {
      */
     String getListOfUser(String message) throws IOException;
 
+
+    /**
+     * Get timeout for the current player move or for the time that
+     *
+     * @param message message containing the token of the player requesting the action
+     *                and the name of the game
+     * @return protocol message containing the time to timeout
+     * @throws IOException network communication error
+     */
+    String getTimeout(String message) throws IOException;
+
     /**
      * Creates a single player game.
      *

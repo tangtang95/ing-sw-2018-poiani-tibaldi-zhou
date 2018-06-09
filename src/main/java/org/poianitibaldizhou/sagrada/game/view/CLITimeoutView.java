@@ -22,14 +22,17 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      */
     private final transient ClientGetMessage clientGetMessage;
 
+    private final transient CLIStateView cliStateView;
+
     /**
      * Constructor.
      *
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITimeoutView() throws RemoteException {
+    public CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.clientGetMessage = new ClientGetMessage();
+        this.cliStateView = cliStateView;
     }
 
     /**
@@ -39,7 +42,11 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
     public void onTimeOut(String message) throws IOException {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         String username = clientGetMessage.getUserWrapper(message).getUsername();
-        PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
+        if(username.equals(cliStateView.getMyUser().getUsername())) {
+            PrinterManager.consolePrint("You have spent all the time for your turn", Level.INFORMATION);
+        } else {
+            PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
+        }
         consoleListener.stopReadNumber();
     }
 

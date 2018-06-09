@@ -32,5 +32,4 @@ public class PrinterManager {
         else
             System.out.print("\r" + level.name() + ": " + message + ">> ");
     }
-
 }
