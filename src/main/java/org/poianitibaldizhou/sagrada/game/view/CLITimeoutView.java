@@ -9,7 +9,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Objects;
+
 
 /**
  * This class implement the ITimeOutObserver and it takes care
@@ -29,7 +29,7 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      *
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
+    CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.clientGetMessage = new ClientGetMessage();
         this.cliStateView = cliStateView;

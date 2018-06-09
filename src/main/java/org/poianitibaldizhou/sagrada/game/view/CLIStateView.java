@@ -83,6 +83,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public CLIStateView(ConnectionManager connectionManager, ScreenManager screenManager,
                         String gameName, UserWrapper myUser, String token
     ) throws RemoteException {
+        super();
 
         this.token = token;
         this.myUser = myUser;

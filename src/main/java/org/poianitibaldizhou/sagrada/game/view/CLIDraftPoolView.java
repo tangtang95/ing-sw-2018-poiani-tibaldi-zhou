@@ -35,7 +35,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * @param cliStateView the CLI that contains all parameter.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIDraftPoolView(CLIStateView cliStateView) throws RemoteException {
+    CLIDraftPoolView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
         this.clientGetMessage = cliStateView.getClientGetMessage();

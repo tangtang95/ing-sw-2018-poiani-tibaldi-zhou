@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
+import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyScreen;
@@ -37,7 +38,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+    CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
         super(networkManager, screenManager);
 
         this.clientCreateMessage = new ClientCreateMessage();
@@ -87,61 +88,40 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      * Creates a new single player game
      */
     private void newSinglePlayerGame() {
-        ConsoleListener.getInstance().stopCommandConsole();
-        String gameName;
-        String token;
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.stopCommandConsole();
+
         String username = null;
-        Integer difficulty = null;
 
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
         PrinterManager.consolePrint("Provide an username: \n", Level.STANDARD);
 
-        while (username == null) {
-            try {
+        try {
+            while (username == null) {
                 username = r.readLine();
                 if (username.equals(""))
-                    throw new IllegalArgumentException();
-            } catch (IOException e) {
-                PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
-                break;
-            } catch (IllegalArgumentException e) {
-                username = null;
+                    username = null;
             }
-        }
 
-        PrinterManager.consolePrint("Provide a difficulty ranging from 1 to 5: \n", Level.STANDARD);
+            PrinterManager.consolePrint("Provide a difficulty ranging from 1 to 5: \n", Level.STANDARD);
+            int difficulty = consoleListener.readNumber(5);
 
-        while (difficulty == null) {
-            try {
-                difficulty = Integer.valueOf(r.readLine());
-                if (difficulty < 1 || difficulty > 5) {
-                    PrinterManager.consolePrint("Difficulty must range from 1 to 5: \n", Level.STANDARD);
-                    throw new IllegalArgumentException();
-
-                }
-            } catch (IOException e) {
-                PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
-                break;
-            } catch (IllegalArgumentException e) {
-                difficulty = null;
-            }
-        }
-
-        try {
             String message = connectionManager.getGameController().createSinglePlayer(clientCreateMessage.
                     createUsernameMessage(username).createValueMessage(difficulty).buildMessage());
-            gameName = clientGetMessage.getGameName(message);
-            token = clientGetMessage.getToken(message);
+            String gameName = clientGetMessage.getGameName(message);
+            String token = clientGetMessage.getToken(message);
 
-            ConsoleListener.getInstance().wakeUpCommandConsole();
+            consoleListener.wakeUpCommandConsole();
             screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
                     new UserWrapper(username), token));
+
         } catch (IOException e) {
-            PrinterManager.consolePrint("Error in creating single player game\n", Level.STANDARD);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                    BuildGraphic.ERROR_READING, Level.ERROR);
+        } catch (TimeoutException e) {
+            /*NEVER THROWN HERE*/
         }
-        ConsoleListener.getInstance().wakeUpCommandConsole();
+        consoleListener.wakeUpCommandConsole();
     }
 
     /**

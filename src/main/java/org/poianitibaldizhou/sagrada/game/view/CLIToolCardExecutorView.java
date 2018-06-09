@@ -62,7 +62,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @param toolCardName the name of toolCard associated at this class.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIToolCardExecutorView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
+    CLIToolCardExecutorView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
         this.consoleListener = ConsoleListener.getInstance();
         this.cliStateView = cliStateView;
@@ -158,9 +158,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             maxNumber = temp;
         }
 
-        if (!checkValidityDeltaValue(minNumber, diceValue, value)) {
+        if (checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
-        } else if (!checkValidityDeltaValue(maxNumber, diceValue, value)) {
+        } else if (checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
         try {
@@ -281,7 +281,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             }
         } while (doAgain);
 
-        System.out.println("ANSWER IN VIEW: " + answer);
 
         String setMessage = clientCreateMessage.createGameNameMessage(cliStateView.getGameName()).
                 createTokenMessage(cliStateView.getToken()).createBooleanMessage(answer).buildMessage();
@@ -369,7 +368,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @return true if valid, false otherwise
      */
     private boolean checkValidityDeltaValue(int newValue, int oldValue, int delta) {
-        return newValue < DiceWrapper.MIN_VALUE || newValue > DiceWrapper.MAX_VALUE || (newValue != oldValue + delta) && (newValue != oldValue - delta);
+        return !(newValue < DiceWrapper.MIN_VALUE || newValue > DiceWrapper.MAX_VALUE || (newValue != oldValue + delta) && (newValue != oldValue - delta));
     }
 
     /**

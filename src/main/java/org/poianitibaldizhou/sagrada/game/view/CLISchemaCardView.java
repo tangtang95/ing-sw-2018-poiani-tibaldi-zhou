@@ -41,7 +41,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      * @param username my username in the current game.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLISchemaCardView(CLIStateView cliStateView, String username) throws RemoteException {
+    CLISchemaCardView(CLIStateView cliStateView, String username) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
         this.username = username;

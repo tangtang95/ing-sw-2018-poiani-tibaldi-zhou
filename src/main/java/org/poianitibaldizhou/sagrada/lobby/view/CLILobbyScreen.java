@@ -143,7 +143,6 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
-                break;
             } catch (IllegalArgumentException e) {
                 username = null;
             }
