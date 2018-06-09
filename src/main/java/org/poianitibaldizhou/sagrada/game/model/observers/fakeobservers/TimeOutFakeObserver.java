@@ -18,8 +18,6 @@ import java.util.logging.Logger;
 
 public class TimeOutFakeObserver implements IStateFakeObserver {
 
-    public static final String TIME_OUT = "TIMEOUT_KEY";
-
     private static final long TIME = ServerSettings.getPlayerTimeout();
 
     private GameObserverManager observerManager;
@@ -70,7 +68,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 }
             };
             System.out.println("Notify timeout of " + timedOutPlayer.getName() + " to " + token);
-            observerManager.pushThreadInQueue(token, notify);
+            observerManager.pushTimeoutThread(token, notify);
         });
     }
 

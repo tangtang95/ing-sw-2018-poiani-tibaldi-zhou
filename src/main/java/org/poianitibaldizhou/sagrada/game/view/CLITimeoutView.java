@@ -37,7 +37,7 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      */
     @Override
     public void onTimeOut(String message) throws IOException {
-        String username = clientGetMessage.getTurnUserWrapper(message).getUsername();
+        String username = clientGetMessage.getUserWrapper(message).getUsername();
         PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
     }
 

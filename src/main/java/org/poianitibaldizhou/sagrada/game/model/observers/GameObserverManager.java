@@ -15,6 +15,8 @@ public class GameObserverManager {
     private HashMap<String, ScheduledExecutorService> executorHashMap;
     private HashMap<String, ITimeOutObserver> observerTimeoutHashMap;
 
+    public static final String TIME_OUT = "TimeOut";
+
     /**
      * Creates an observer manager for a certain game, starting from the the list of the player of that game.
      * This class handles a thread pool for sending updates to the observers.
@@ -32,7 +34,7 @@ public class GameObserverManager {
             executorHashMap.putIfAbsent(token, scheduledTask);
         });
 
-        executorHashMap.putIfAbsent(TimeOutFakeObserver.TIME_OUT, Executors.newScheduledThreadPool(1));
+        executorHashMap.putIfAbsent(TIME_OUT, Executors.newScheduledThreadPool(1));
     }
 
     // GETTER
@@ -121,6 +123,14 @@ public class GameObserverManager {
         if (!disconnectedPlayer.contains(token)) {
             executorHashMap.get(token).submit(notify);
             executorHashMap.get(token).shutdown();
+        }
+    }
+
+    public void pushTimeoutThread(String token, Runnable notify) {
+        if(!disconnectedPlayer.contains(token)) {
+            executorHashMap.get(token).shutdownNow();
+            executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
+            executorHashMap.get(TIME_OUT).submit(notify);
         }
     }
 }
