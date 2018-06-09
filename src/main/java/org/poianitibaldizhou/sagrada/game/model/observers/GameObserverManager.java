@@ -55,7 +55,7 @@ public class GameObserverManager {
     // MODIFIER
 
     public void attachTimeoutObserver(String token, ITimeOutObserver timeOutObserver) {
-        observerTimeoutHashMap.replace(token, timeOutObserver);
+        observerTimeoutHashMap.putIfAbsent(token, timeOutObserver);
     }
 
     public void detachTimeoutObserver(String token) {
@@ -114,7 +114,7 @@ public class GameObserverManager {
     /**
      * Add the last notification thread for a certain token. Needed when the game ends
      *
-     * @param token player's token
+     * @param token  player's token
      * @param notify runnable interface that needs to be scheduled
      */
     public void pushLastThreadInQueue(String token, Runnable notify) {

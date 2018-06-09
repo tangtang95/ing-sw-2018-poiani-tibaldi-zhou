@@ -4,7 +4,6 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
@@ -13,11 +12,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
-import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -149,6 +145,13 @@ public abstract class Game implements IGame, IGameStrategy {
     @Override
     public void forceStateChange() throws InvalidActionException {
         state.forceStateChange();
+    }
+
+    @Override
+    public List<User> getTimedOutUsers() {
+        List<User> timedOutUsers = getUsers().stream().filter(user -> !players.containsKey(user.getToken())).collect(Collectors.toList());
+        System.out.println("TIMEDOUTUSERS: " + timedOutUsers);
+        return timedOutUsers;
     }
 
     @Override

@@ -67,6 +67,8 @@ public interface IGame {
 
     void forceStateChange() throws InvalidActionException;
 
+    List<User> getTimedOutUsers();
+
     boolean isSinglePlayer();
 
     void forceGameTermination(Player winner);

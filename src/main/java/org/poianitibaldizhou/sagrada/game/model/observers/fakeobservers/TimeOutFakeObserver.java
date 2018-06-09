@@ -10,6 +10,8 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,12 +49,29 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private void handleTimeoutSetUpPlayer() {
         try {
             synchronized (game) {
-                if(timeOutThreadSetupPlayer != null)
+                if(timeOutThreadSetupPlayer != null) {
+                    List<User> timedOutUsers = game.getTimedOutUsers();
+                    timedOutUsers.forEach(this::createAndPushNotify);
                     game.forceStateChange();
+                }
             }
         } catch (InvalidActionException e) {
             Logger.getAnonymousLogger().log(Level.INFO, "Impossible because have to happen in this way");
         }
+    }
+
+    private void createAndPushNotify(User timedOutPlayer) {
+        observerManager.getObserverTimeoutHashMap().forEach((token, obs) -> {
+            Runnable notify = () -> {
+                try {
+                    obs.onTimeOut(serverCreateMessage.createUserMessage(timedOutPlayer).buildMessage());
+                } catch (IOException e) {
+                    observerManager.notifyDisconnection(token);
+                }
+            };
+            System.out.println("Notify timeout of " + timedOutPlayer.getName() + " to " + token);
+            observerManager.pushThreadInQueue(token, notify);
+        });
     }
 
     /**
@@ -65,16 +84,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         try {
             synchronized (game) {
                 if(timeOutThreadTurnState != null) {
-                    Runnable notify = () -> observerManager.getObserverTimeoutHashMap().forEach((token, obs) -> {
-                        try {
-                            obs.onTimeOut(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
-                        } catch (IOException e) {
-                            observerManager.notifyDisconnection(token);
-                        }
-                    });
-
-                    observerManager.pushThreadInQueue(TIME_OUT, notify);
-
+                    createAndPushNotify(turnUser);
                     game.forceStateChange();
                 }
             }
@@ -126,6 +136,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
+        /*
         System.out.println("Starting time out turn state");
         Runnable timeOut = () -> {
             try {
@@ -139,6 +150,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
 
         timeOutThreadTurnState = new Thread(timeOut);
         timeOutThreadTurnState.start();
+        */
     }
 
     /**
@@ -186,9 +198,11 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onEndTurnState(User turnUser) {
+        /*
         System.out.println("Ending timeout turn state");
         timeOutThreadTurnState.interrupt();
         timeOutThreadTurnState = null;
+        */
     }
 
     /**

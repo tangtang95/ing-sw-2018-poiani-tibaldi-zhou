@@ -64,10 +64,6 @@ public class SetupPlayerState extends IStateGame {
             }
             playerFrontBackSchemaCards.put(token, schemaCardList);
 
-            System.out.println(game.getGameObservers().get(token) == null);
-            System.out.println("Token: " + token);
-            System.out.println(game.getGameObservers().keySet());
-
             game.getGameObservers().get(token).onSchemaCardsDraw(schemaCardList);
 
             int numberOfPrivateObjectiveCard = game.getNumberOfPrivateObjectiveCardForGame();
@@ -118,10 +114,10 @@ public class SetupPlayerState extends IStateGame {
      */
     @Override
     public void forceStateChange() {
-        game.getPlayers().forEach(player -> {
-            if(!playersReady.contains(player)) {
-                game.setPlayerSchemaCard(player.getToken(), playerFrontBackSchemaCards.get(player.getToken()).get(0).getFrontSchemaCard(),
-                        privateObjectiveCardMap.get(player.getToken()));
+        game.getUsers().forEach(user -> {
+            if(!playersReady.contains(user.getToken())) {
+                game.setPlayerSchemaCard(user.getToken(), playerFrontBackSchemaCards.get(user.getToken()).get(0).getFrontSchemaCard(),
+                        privateObjectiveCardMap.get(user.getToken()));
             }
         });
 
