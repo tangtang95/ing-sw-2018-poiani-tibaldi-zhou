@@ -799,7 +799,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getPlayersCoins(String message) throws IOException {
+    public synchronized String getPlayersCoins(String message) throws IOException {
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -887,7 +887,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getPrivateObjectiveCardByToken(String message) throws IOException {
+    public synchronized String getPrivateObjectiveCardByToken(String message) throws IOException {
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -913,7 +913,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public String getSchemaCards(String message) throws IOException {
+    public synchronized String getSchemaCards(String message) throws IOException {
+
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -928,6 +929,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         Map<User, SchemaCard> stringSchemaCardMap = new HashMap<>();
 
+        // TODO FIX synchronized, with 4 players the get methods give a response = "{}”
         synchronized (gameManager.getGameByName(gameName)) {
             List<Player> players = gameManager.getGameByName(gameName).getPlayers();
             players.forEach(player -> stringSchemaCardMap.put(player.getUser(), player.getSchemaCard()));

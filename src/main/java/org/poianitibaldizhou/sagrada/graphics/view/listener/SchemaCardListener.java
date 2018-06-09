@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 
 public class SchemaCardListener extends AbstractView implements ISchemaCardObserver{
 
-    private SchemaCardView schemaCardView;
+    private transient SchemaCardView schemaCardView;
 
     protected SchemaCardListener(SchemaCardView schemaCardView, MultiPlayerController controller,
                                  Pane corePane, Pane notifyPane) throws RemoteException {

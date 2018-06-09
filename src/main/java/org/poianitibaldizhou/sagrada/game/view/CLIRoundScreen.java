@@ -86,7 +86,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
+    CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
             throws RemoteException {
         super(networkManager, screenManager);
         this.token = cliStateView.getToken();
@@ -232,12 +232,12 @@ public class CLIRoundScreen extends CLIBasicScreen {
     private void viewPlayersCoins() {
         Map<UserWrapper, Integer> playersCoins;
         try {
-            String resposne = connectionManager.getGameController().getPlayersCoins(
+            String response = connectionManager.getGameController().getPlayersCoins(
                     clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
             );
-            if(clientGetMessage.hasTerminateGameError(resposne))
+            if(clientGetMessage.hasTerminateGameError(response))
                 return;
-            playersCoins = clientGetMessage.getPlayersCoins(resposne);
+            playersCoins = clientGetMessage.getPlayersCoins(response);
             playersCoins.forEach((k, v) ->
                     PrinterManager.consolePrint("Coins of " + k.getUsername() + ": " + v.toString() + "\n",
                             Level.STANDARD));
@@ -279,10 +279,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
             String response = connectionManager.getGameController().getSchemaCardByToken(
                     clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
             );
-            if (!clientGetMessage.hasTerminateGameError(response))
-                schemaCard = clientGetMessage.getSchemaCard(response);
-            else
+            if (clientGetMessage.hasTerminateGameError(response))
                 return;
+            schemaCard = clientGetMessage.getSchemaCard(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
@@ -325,7 +324,8 @@ public class CLIRoundScreen extends CLIBasicScreen {
             String response = connectionManager.getGameController().getPublicObjectiveCards(
                     clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
             );
-            if(clientGetMessage.hasTerminateGameError(response));
+            if(clientGetMessage.hasTerminateGameError(response))
+                return;
             pocList = clientGetMessage.getPublicObjectiveCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
@@ -367,10 +367,9 @@ public class CLIRoundScreen extends CLIBasicScreen {
             String response = connectionManager.getGameController().getRoundTrack(
                     clientCreateMessage.createGameNameMessage(gameName).createTokenMessage(token).buildMessage()
             );
-            if(!clientGetMessage.hasTerminateGameError(response))
-                roundTrackWrapper = clientGetMessage.getRoundTrack(response);
-            else
+            if(clientGetMessage.hasTerminateGameError(response))
                 return;
+            roundTrackWrapper = clientGetMessage.getRoundTrack(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);

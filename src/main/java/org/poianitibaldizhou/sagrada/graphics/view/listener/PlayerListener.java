@@ -15,10 +15,11 @@ import java.util.logging.Logger;
 
 public class PlayerListener extends AbstractView implements IPlayerObserver{
 
-    private PlayerView playerView;
+    private final transient PlayerView playerView;
 
-    protected PlayerListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    protected PlayerListener(PlayerView playerView, MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
+        this.playerView = playerView;
     }
 
     @Override

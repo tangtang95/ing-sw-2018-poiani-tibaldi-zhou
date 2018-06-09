@@ -7,7 +7,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -18,6 +20,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateOb
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
+import org.poianitibaldizhou.sagrada.graphics.view.component.DraftPoolView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
@@ -30,11 +33,13 @@ import java.util.logging.Logger;
 
 public class StateListener extends AbstractView implements IStateObserver {
 
-    private final SequentialTransition sequentialTransition;
+    private transient final SequentialTransition sequentialTransition;
 
-    private HBox helperBox;
+    private transient HBox helperBox;
+    private transient HBox topBarBox;
 
     private static final double DURATION_IN_MILLIS = 1500;
+
 
     public StateListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
@@ -43,21 +48,15 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     @Override
     public void onSetupGame() throws IOException {
-        //TODO opacity pane with height a quarter and set thread sleep if last time create label was....
-        System.out.println("onSetupGame");
         Platform.runLater(() -> {
             clearNotifyPane();
             deactivateNotifyPane();
-            Label stateMessageLabel = createLabelMessage("Setup Game");
-            corePane.getChildren().add(stateMessageLabel);
         });
-
 
     }
 
     @Override
     public void onSetupPlayer() throws IOException {
-        System.out.println("onSetupPlayer");
         Platform.runLater(() -> {
             clearNotifyPane();
             activateNotifyPane();
@@ -72,10 +71,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         int round = parser.getValue(message);
         UserWrapper roundUser = parser.getRoundUser(message);
         Platform.runLater(() -> {
-            Label stateMessageLabel = createLabelMessage(String.format("Round %s del giocatore: %s",
-                    String.valueOf(round + 1), roundUser.getUsername()));
-            corePane.getChildren().add(stateMessageLabel);
-
+            corePane.getChildren().remove(topBarBox);
+            topBarBox = showTopBarText(corePane, String.format("%s Round, il sacchetto dei dadi è assegnato a %s",
+                    getOrdinalNumberStrings().get(round), roundUser.getUsername().toUpperCase()));
+            topBarBox.setOpacity(0.7);
+            topBarBox.setAlignment(Pos.CENTER);
         });
     }
 
@@ -85,6 +85,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         int turn = parser.getTurnValue(message);
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
+            corePane.getChildren().remove(helperBox);
             if(turnUser.getUsername().equals(controller.getUsername())) {
                 //SHOW COMMANDS
                 helperBox = showHelperText(corePane, "Tocca a te, scegli una delle seguenti azioni");
@@ -98,16 +99,22 @@ public class StateListener extends AbstractView implements IStateObserver {
 
                 placeDiceButton.setOnAction(this::onPlaceDiceButtonPressed);
                 useCardButton.setOnAction(this::onUseCardButtonPressed);
-                endTurnButton.setOnAction(this::onEndTurnButtonPressed);
+                endTurnButton.setOnAction(event -> {
+                    placeDiceButton.setDisable(true);
+                    useCardButton.setDisable(true);
+                    endTurnButton.setDisable(true);
+                    onEndTurnButtonPressed(event);
+                });
 
                 helperBox.getChildren().addAll(spacer, placeDiceButton, useCardButton, endTurnButton);
 
                 //TODO add notify to disable some button (???);
             }
             else{
-                showHelperText(corePane, String.format("%s turno del giocatore: %s",
+                helperBox = showHelperText(corePane, String.format("%s turno del giocatore: %s",
                         getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()));
             }
+            helperBox.setOpacity(0.7);
         });
     }
 

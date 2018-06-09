@@ -29,7 +29,7 @@ public class CLITurnScreen extends CLIRoundScreen {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
+    CLITurnScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
             throws RemoteException {
         super(networkManager, screenManager, cliStateView);
 
@@ -64,7 +64,6 @@ public class CLITurnScreen extends CLIRoundScreen {
      * Quit the game
      */
     private void quitGame() {
-        System.out.println("DOUBLE POP QUIT");
         endTurn();
         try {
             connectionManager.getGameController().quitGame(

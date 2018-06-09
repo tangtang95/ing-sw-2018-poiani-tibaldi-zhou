@@ -9,6 +9,8 @@ public class PrivateObjectiveCardView extends Pane {
 
     private ImageView cardView;
 
+    private PrivateObjectiveCardWrapper privateObjectiveCardWrapper;
+
     private static final String CARD_IMAGE_PATH = "images/cards/private-objective-cards.png";
     private static final String CARD_JSON_PATH = "images/cards/private-objective-cards.json";
 
@@ -19,6 +21,7 @@ public class PrivateObjectiveCardView extends Pane {
      * @param scale the number to scale the component
      */
     public PrivateObjectiveCardView(double scale){
+        privateObjectiveCardWrapper = null;
         cardView = TextureUtils.getImageView( "retro.png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
         this.getChildren().add(cardView);
     }
@@ -28,12 +31,15 @@ public class PrivateObjectiveCardView extends Pane {
     }
 
     public PrivateObjectiveCardView(PrivateObjectiveCardWrapper privateObjectiveCard, double scale){
+        this.privateObjectiveCardWrapper = privateObjectiveCard;
         String cardKey = TextureUtils.convertNameIntoObjectiveCardKey(privateObjectiveCard.getName());
-        System.out.println(cardKey);
         cardView = TextureUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
-
         this.getChildren().add(cardView);
     }
 
-
+    public PrivateObjectiveCardWrapper getPrivateObjectiveCardWrapper() {
+        if(privateObjectiveCardWrapper == null)
+            throw new IllegalStateException();
+        return privateObjectiveCardWrapper;
+    }
 }

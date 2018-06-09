@@ -64,7 +64,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
      * @param screenManager manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
+    CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
         super(connectionManager,screenManager);
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();

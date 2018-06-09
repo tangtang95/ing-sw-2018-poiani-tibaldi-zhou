@@ -51,7 +51,8 @@ public class GameManager {
 
         String token = String.valueOf(userName.hashCode());
 
-        SinglePlayerGame singlePlayer = new SinglePlayerGame(gameName, new User(userName, token), difficulty, new TerminationGameManager(gameName, this));
+        SinglePlayerGame singlePlayer = new SinglePlayerGame(gameName, new User(userName, token), difficulty,
+                new TerminationGameManager(gameName, this));
 
         gameMap.putIfAbsent(gameName, singlePlayer);
         playersByGame.putIfAbsent(gameName, Collections.singletonList(token));

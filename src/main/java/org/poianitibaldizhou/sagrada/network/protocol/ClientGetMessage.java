@@ -422,6 +422,9 @@ public class ClientGetMessage {
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message,
                     SharedConstants.PRIVATE_OBJECTIVE_CARD_LIST_KEY);
+            if(jsonObject == null){
+                System.out.println(jsonObject);
+            }
             JSONArray jsonArray = (JSONArray) jsonObject.get(SharedConstants.BODY);
             for (Object o : jsonArray)
                 poc.add(PrivateObjectiveCardWrapper.toObject((JSONObject)((JSONObject) o).get(SharedConstants.BODY)));
@@ -594,6 +597,9 @@ public class ClientGetMessage {
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message,
                     SharedConstants.MAP_PLAYERS_COINS_KEY);
+            if(jsonObject == null){
+                System.out.println(jsonObject);
+            }
             JSONObject map = (JSONObject) jsonObject.get(SharedConstants.BODY);
             for (Object o : map.keySet()) {
                 JSONObject user = (JSONObject) jsonParser.parse(o.toString());
@@ -650,9 +656,10 @@ public class ClientGetMessage {
      * @param message json message from server.
      * @return a boolean value: true is the game is finish, false if the game is on.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean hasTerminateGameError(String message) {
         try {
-            jsonClientProtocol.getResponseByKey(message, SharedConstants.ERROR_TERMINATE_GAME_KEY);
+            jsonClientProtocol.getResponseByKey(message, SharedConstants.ERROR_TERMINATE_GAME_KEY).toString();
         } catch (Exception e) {
             return false;
         }

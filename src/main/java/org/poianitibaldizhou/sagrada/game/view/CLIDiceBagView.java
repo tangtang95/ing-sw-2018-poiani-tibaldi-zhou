@@ -23,7 +23,7 @@ public class CLIDiceBagView extends UnicastRemoteObject implements IDrawableColl
      * @param cliStateView the CLI that contains all parameter.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
       */
-    public CLIDiceBagView(CLIStateView cliStateView) throws RemoteException {
+    CLIDiceBagView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
     }
