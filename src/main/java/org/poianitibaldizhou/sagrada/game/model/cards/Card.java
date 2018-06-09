@@ -1,8 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
-import java.io.Serializable;
-
-public abstract class Card implements Serializable{
+public abstract class Card{
 
     private final String name;
     private final String description;

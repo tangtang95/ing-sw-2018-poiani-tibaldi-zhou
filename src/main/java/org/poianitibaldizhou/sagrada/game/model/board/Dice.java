@@ -18,7 +18,7 @@ import java.util.Objects;
  * Numbers are integer in the interval [MIN_VALUE, MAX_VALUE].
  */
 @Immutable
-public class Dice implements Serializable, JSONable{
+public class Dice implements JSONable{
 
     private final NumberConstraint numberConstraint;
     private final ColorConstraint colorConstraint;

@@ -19,7 +19,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.io.Serializable;
 import java.util.*;
 
-public abstract class Player implements IVictoryPoints, Serializable, JSONable {
+public abstract class Player implements IVictoryPoints, JSONable {
 
     protected final ICoin coin;
     private final User user;

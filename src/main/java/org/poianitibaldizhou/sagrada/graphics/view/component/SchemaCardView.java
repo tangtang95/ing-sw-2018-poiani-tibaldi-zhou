@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
@@ -86,6 +87,12 @@ public class SchemaCardView extends Pane {
         return imageView;
     }
 
+    public void drawDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
+
+    }
+
+    public void removeDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
+    }
 
     public ImageView getImageView() {
         return schemaCardImage;
@@ -94,4 +101,5 @@ public class SchemaCardView extends Pane {
     public SchemaCardWrapper getSchemaCardWrapper() {
         return schemaCardWrapper;
     }
+
 }

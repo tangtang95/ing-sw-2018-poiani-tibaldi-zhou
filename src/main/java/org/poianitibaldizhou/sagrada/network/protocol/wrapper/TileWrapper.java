@@ -24,8 +24,13 @@ public final class TileWrapper implements JSONable{
         this.dice = null;
     }
 
+    private TileWrapper(TileWrapper tile){
+        this.constraint = tile.constraint;
+        this.dice = tile.dice;
+    }
+
     public static TileWrapper newInstance(TileWrapper t) {
-        return new TileWrapper(t.getConstraint());
+        return new TileWrapper(t);
     }
 
     public DiceWrapper getDice() {

@@ -1,9 +1,11 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
+import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
+import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -17,7 +19,9 @@ public class TimeoutListener extends AbstractView implements ITimeOutObserver {
 
     @Override
     public void onTimeOut(String message) throws IOException {
-
+        Platform.runLater(() -> {
+            showMessage(getActivePane(), "Scaduto il tempo", MessageType.ERROR);
+        });
     }
 
     @Override

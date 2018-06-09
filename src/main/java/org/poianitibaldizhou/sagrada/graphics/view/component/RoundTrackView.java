@@ -12,6 +12,8 @@ import javafx.scene.text.TextAlignment;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.RoundTrackWrapper;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class RoundTrackView extends Pane{
@@ -19,6 +21,9 @@ public class RoundTrackView extends Pane{
     private final ImageView roundTrackView;
     private final double roundTrackWidth;
     private final double roundTrackHeight;
+
+    private final List<DiceView> diceViewList;
+    private RoundTrackWrapper roundTrack;
 
     //Based on component width
     private static final double FIRST_OFFSET_X_PERCENT = 0.04;
@@ -38,6 +43,8 @@ public class RoundTrackView extends Pane{
     }
 
     public RoundTrackView(double scale){
+        diceViewList = new ArrayList<>();
+        roundTrack = new RoundTrackWrapper(new ArrayList<>());
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
         roundTrackView = new ImageView(image);
         roundTrackView.setPreserveRatio(true);
@@ -48,7 +55,17 @@ public class RoundTrackView extends Pane{
         this.getChildren().add(roundTrackView);
     }
 
-    public void drawDices(RoundTrackWrapper roundTrack){
+    public void drawRoundTrack(RoundTrackWrapper roundTrack) {
+        this.roundTrack = roundTrack;
+        clearDices();
+        drawDices(roundTrack);
+    }
+
+    public List<DiceWrapper> getDices(int round){
+        return roundTrack.getDicesPerRound(round);
+    }
+
+    private void drawDices(RoundTrackWrapper roundTrack){
         for (int i = 0; i < roundTrack.size(); i++) {
             Optional<DiceWrapper> diceOptional =roundTrack.getDicesPerRound(i).stream().findFirst();
             final int round = i;
@@ -66,6 +83,7 @@ public class RoundTrackView extends Pane{
         diceView.setTranslateX(firstOffsetX + diceView.getImageWidth()*round + offsetX*round);
         diceView.setTranslateY(offsetY);
         this.getChildren().add(diceView);
+        diceViewList.add(diceView);
 
         drawNumberOfDicesIcon(diceView, numberOfDices);
     }
@@ -88,5 +106,9 @@ public class RoundTrackView extends Pane{
         canvas.setTranslateX(diceView.getImageWidth() - diceView.getImageWidth() * ICON_PERCENT_RADIUS / 1.5);
         canvas.setTranslateY(diceView.getImageHeight() - diceView.getImageHeight() * ICON_PERCENT_RADIUS / 1.5);
         diceView.getChildren().add(canvas);
+    }
+
+    private void clearDices(){
+        diceViewList.forEach(diceView -> this.getChildren().remove(diceView));
     }
 }

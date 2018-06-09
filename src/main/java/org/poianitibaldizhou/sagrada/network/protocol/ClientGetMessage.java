@@ -330,6 +330,9 @@ public class ClientGetMessage {
         try {
             JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message,
                     SharedConstants.MAP_SCHEMA_CARD_KEY);
+            if(jsonObject == null){
+                jsonObject.get(SharedConstants.BODY);
+            }
             JSONObject map = (JSONObject) jsonObject.get(SharedConstants.BODY);
 
             for (Object o : map.keySet()) {

@@ -1,12 +1,12 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
-import javafx.animation.Interpolator;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
@@ -20,20 +20,29 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class StateListener extends AbstractView implements IStateObserver {
 
+    private final SequentialTransition sequentialTransition;
+
+    private static final double DURATION_IN_MILLIS = 1500;
+
     public StateListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
+        sequentialTransition = new SequentialTransition();
     }
 
     @Override
     public void onSetupGame() throws IOException {
-
         //TODO opacity pane with height a quarter and set thread sleep if last time create label was....
-        Platform.runLater(()->{
-            createLabelMessage("Setup Game", corePane);
+        System.out.println("onSetupGame");
+        Platform.runLater(() -> {
+            clearNotifyPane();
+            deactivateNotifyPane();
+            Label stateMessageLabel = createLabelMessage("Setup Game");
+            corePane.getChildren().add(stateMessageLabel);
         });
 
 
@@ -41,9 +50,12 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     @Override
     public void onSetupPlayer() throws IOException {
-        Platform.runLater(()->{
-            Pane statePane = getBackgroundPane();
-            createLabelMessage("Setup Player", corePane);
+        System.out.println("onSetupPlayer");
+        Platform.runLater(() -> {
+            clearNotifyPane();
+            activateNotifyPane();
+            Label stateMessageLabel = createLabelMessage("Setup Player");
+            notifyPane.getChildren().add(stateMessageLabel);
         });
     }
 
@@ -52,9 +64,10 @@ public class StateListener extends AbstractView implements IStateObserver {
         ClientGetMessage parser = new ClientGetMessage();
         int round = parser.getValue(message);
         UserWrapper roundUser = parser.getRoundUser(message);
-        Platform.runLater(()->{
-            createLabelMessage(String.format("Round %s del giocatore: %s",
-                    String.valueOf(round + 1), roundUser.getUsername()), corePane);
+        Platform.runLater(() -> {
+            Label stateMessageLabel = createLabelMessage(String.format("Round %s del giocatore: %s",
+                    String.valueOf(round + 1), roundUser.getUsername()));
+            corePane.getChildren().add(stateMessageLabel);
         });
     }
 
@@ -64,8 +77,9 @@ public class StateListener extends AbstractView implements IStateObserver {
         int turn = parser.getTurnValue(message);
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
-            createLabelMessage(String.format("%s turno del giocatore: %s",
-                    getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()), corePane);
+            Label stateMessageLabel = createLabelMessage(String.format("%s turno del giocatore: %s",
+                    getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()));
+            corePane.getChildren().add(stateMessageLabel);
         });
     }
 
@@ -75,15 +89,17 @@ public class StateListener extends AbstractView implements IStateObserver {
         int round = parser.getValue(message);
         UserWrapper roundUser = parser.getRoundUser(message);
         Platform.runLater(() -> {
-            createLabelMessage(String.format("Fine del round %s del giocatore: %s",
-                    String.valueOf(round + 1), roundUser.getUsername()), corePane);
+            Label stateMessageLabel = createLabelMessage(String.format("Fine del round %s del giocatore: %s",
+                    String.valueOf(round + 1), roundUser.getUsername()));
+            corePane.getChildren().add(stateMessageLabel);
         });
     }
 
     @Override
     public void onEndGame(String roundUser) throws IOException {
         Platform.runLater(() -> {
-            createLabelMessage("Fine del gioco", corePane);
+            Label stateMessageLabel = createLabelMessage("Fine del gioco");
+            corePane.getChildren().add(stateMessageLabel);
         });
     }
 
@@ -92,8 +108,9 @@ public class StateListener extends AbstractView implements IStateObserver {
         ClientGetMessage parser = new ClientGetMessage();
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
-            createLabelMessage(String.format("E\' stato saltato il turno del giocatore: %s",
-                    turnUser.getUsername()), corePane);
+            Label stateMessageLabel = createLabelMessage(String.format("E\' stato saltato il turno del giocatore: %s",
+                    turnUser.getUsername()));
+            corePane.getChildren().add(stateMessageLabel);
         });
     }
 
@@ -113,8 +130,9 @@ public class StateListener extends AbstractView implements IStateObserver {
         int turn = parser.getTurnValue(message);
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
-            createLabelMessage(String.format("Fine del %s turno del giocatore: %s",
-                    getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()), corePane);
+            Label stateMessageLabel = createLabelMessage(String.format("Fine del %s turno del giocatore: %s",
+                    getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()));
+            corePane.getChildren().add(stateMessageLabel);
         });
     }
 
@@ -128,19 +146,22 @@ public class StateListener extends AbstractView implements IStateObserver {
         // TODO
     }
 
-    private Label createLabelMessage(String text, Pane pane) {
+    private Label createLabelMessage(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("state-message");
-        label.setTextFill(Color.DEEPSKYBLUE);
-        label.translateYProperty().bind(getCenterY().subtract(getCenterY().divide(4)));
-        pane.getChildren().add(label);
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(3000), label);
-        translateTransition.fromXProperty().bind(label.widthProperty().negate());
-        translateTransition.toXProperty().bind(getWidth().add(label.widthProperty()));
-        translateTransition.setInterpolator(Interpolator.LINEAR);
-        translateTransition.setCycleCount(1);
-        translateTransition.play();
-        translateTransition.setOnFinished(event -> pane.getChildren().remove(label));
+        label.setTextFill(Color.TOMATO);
+        label.translateXProperty().bind(getPivotX(getCenterX(), label.widthProperty(), 0.5));
+        label.translateYProperty().bind(getCenterY().subtract(getCenterY().divide(1.3)));
+        label.setOpacity(1);
+
+        FadeTransition transition = new FadeTransition(Duration.millis(DURATION_IN_MILLIS), label);
+        transition.setFromValue(0);
+        transition.setToValue(1);
+        transition.setInterpolator(Interpolator.LINEAR);
+        transition.setCycleCount(6);
+        transition.setAutoReverse(true);
+        sequentialTransition.getChildren().add(transition);
+        sequentialTransition.play();
 
         return label;
     }

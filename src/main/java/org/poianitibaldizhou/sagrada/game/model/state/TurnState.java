@@ -112,7 +112,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void chooseAction(Player player, IActionCommand action) throws InvalidActionException {
-        if (!player.equals(currentTurnPlayer))
+        if (player != currentTurnPlayer)
             throw new InvalidActionException();
         if (actionsUsed.contains(action))
             throw new InvalidActionException();
@@ -132,7 +132,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void useCard(Player player, ToolCard toolCard, IToolCardExecutorFakeObserver observer)
             throws InvalidActionException {
 
-        if (!player.equals(currentTurnPlayer))
+        if (player != currentTurnPlayer)
             throw new InvalidActionException();
         try {
             if (!playerState.useCard(player, toolCard))
@@ -156,9 +156,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void placeDice(Player player, Dice dice, Position position) throws InvalidActionException {
-        if (!player.equals(currentTurnPlayer))
-            throw new InvalidActionException();
-        if (!(playerState instanceof PlaceDiceState))
+        if (player != currentTurnPlayer)
             throw new InvalidActionException();
         try {
             playerState.placeDice(player, dice, position);
@@ -187,7 +185,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void interruptToolCardExecution(Player player) throws InvalidActionException {
-        if (!player.equals(currentTurnPlayer))
+        if (player != currentTurnPlayer)
             throw new InvalidActionException();
         if (toolCardExecutor.isExecutingCommands())
             toolCardExecutor.interruptCommandsInvocation();

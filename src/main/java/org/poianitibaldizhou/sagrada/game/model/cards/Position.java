@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class Position implements Serializable, JSONable {
+public class Position implements JSONable {
     private int row;
     private int column;
 

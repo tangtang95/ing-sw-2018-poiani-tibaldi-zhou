@@ -16,9 +16,9 @@ import java.util.*;
  *
  * @param <T> type of elements of the collection
  */
-public class DrawableCollection<T extends JSONable> implements Serializable{
-    private final transient List<T> collection;
-    private final transient Map<String, IDrawableCollectionFakeObserver<T>> observerMap;
+public class DrawableCollection<T extends JSONable>{
+    private final List<T> collection;
+    private final Map<String, IDrawableCollectionFakeObserver<T>> observerMap;
 
     /**
      * Constructor.
