@@ -117,7 +117,15 @@ public class MultiPlayerModel {
     public void endTurn() throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
-                .createActionMessage(new PlaceDiceStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
         connectionManager.getGameController().chooseAction(request);
+    }
+
+    public Map<UserWrapper,Integer> getCoinsMap() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getPlayersCoins(request);
+        return parser.getPlayersCoins(response);
     }
 }

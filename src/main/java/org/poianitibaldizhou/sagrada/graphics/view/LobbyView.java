@@ -34,7 +34,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     private transient LobbyController controller;
     private transient GridPane usersPane;
     private transient List<Canvas> userViews;
-    private int numberOfUsers;
+    private transient int numberOfUsers;
 
     private static final int COLUMNS = 4;
 

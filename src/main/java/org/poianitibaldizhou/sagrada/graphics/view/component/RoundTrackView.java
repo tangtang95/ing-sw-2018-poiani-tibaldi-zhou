@@ -21,6 +21,7 @@ public class RoundTrackView extends Pane{
     private final ImageView roundTrackView;
     private final double roundTrackWidth;
     private final double roundTrackHeight;
+    private final double scale;
 
     private final List<DiceView> diceViewList;
     private RoundTrackWrapper roundTrack;
@@ -34,7 +35,7 @@ public class RoundTrackView extends Pane{
     private static final double OFFSET_Y_PERCENT = 0.565;
 
     //based on component width
-    private static final double ICON_PERCENT_RADIUS = 0.3;
+    private static final double ICON_PERCENT_RADIUS = 1;
 
     private static final double DICE_SCALE = 0.15;
 
@@ -43,6 +44,7 @@ public class RoundTrackView extends Pane{
     }
 
     public RoundTrackView(double scale){
+        this.scale = scale;
         diceViewList = new ArrayList<>();
         roundTrack = new RoundTrackWrapper(new ArrayList<>());
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
@@ -79,7 +81,7 @@ public class RoundTrackView extends Pane{
         long offsetX = Math.round(OFFSET_X_PERCENT*imageWidth);
         long offsetY = Math.round(OFFSET_Y_PERCENT*imageHeight);
 
-        DiceView diceView = new DiceView(dice, DICE_SCALE);
+        DiceView diceView = new DiceView(dice, scale*DICE_SCALE);
         diceView.setTranslateX(firstOffsetX + diceView.getImageWidth()*round + offsetX*round);
         diceView.setTranslateY(offsetY);
         this.getChildren().add(diceView);
@@ -89,22 +91,23 @@ public class RoundTrackView extends Pane{
     }
 
     private void drawNumberOfDicesIcon(DiceView diceView, int numberOfDices) {
-        Canvas canvas = new Canvas(diceView.getImageWidth() * ICON_PERCENT_RADIUS * 1.5,
-                diceView.getImageHeight() * ICON_PERCENT_RADIUS * 1.5);
+        double diceIconScale = this.scale * ICON_PERCENT_RADIUS;
+        Canvas canvas = new Canvas(diceView.getImageWidth() * diceIconScale * 1.5,
+                diceView.getImageHeight() * diceIconScale * 1.5);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
-        gc.fillOval(0, 0, diceView.getImageWidth() * ICON_PERCENT_RADIUS,
-                diceView.getImageHeight() * ICON_PERCENT_RADIUS);
+        gc.fillOval(0, 0, diceView.getImageWidth() * diceIconScale,
+                diceView.getImageHeight() * diceIconScale);
         gc.setFill(Color.BLACK);
-        gc.setFont(Font.font(10));
+        gc.setFont(Font.font(diceIconScale*16));
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
-        gc.strokeText(String.valueOf(numberOfDices), diceView.getImageWidth() * ICON_PERCENT_RADIUS / 2,
-                diceView.getImageHeight() * ICON_PERCENT_RADIUS / 2);
-        gc.strokeOval(0, 0, diceView.getImageWidth() * ICON_PERCENT_RADIUS,
-                diceView.getImageHeight() * ICON_PERCENT_RADIUS);
-        canvas.setTranslateX(diceView.getImageWidth() - diceView.getImageWidth() * ICON_PERCENT_RADIUS / 1.5);
-        canvas.setTranslateY(diceView.getImageHeight() - diceView.getImageHeight() * ICON_PERCENT_RADIUS / 1.5);
+        gc.strokeText(String.valueOf(numberOfDices), diceView.getImageWidth() * diceIconScale / 2,
+                diceView.getImageHeight() * diceIconScale / 2);
+        gc.strokeOval(0, 0, diceView.getImageWidth() * diceIconScale,
+                diceView.getImageHeight() * diceIconScale);
+        canvas.setTranslateX(diceView.getImageWidth() - diceView.getImageWidth() * diceIconScale / 1.5);
+        canvas.setTranslateY(diceView.getImageHeight() - diceView.getImageHeight() * diceIconScale / 1.5);
         diceView.getChildren().add(canvas);
     }
 

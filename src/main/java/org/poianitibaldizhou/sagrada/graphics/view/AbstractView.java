@@ -22,7 +22,9 @@ public abstract class AbstractView extends UnicastRemoteObject{
     protected final transient Pane corePane;
     protected final transient Pane notifyPane;
 
-    private static final double HELPER_BAR_PERCENT_HEIGHT = 0.075;
+    private static final double HELPER_BAR_PERCENT_HEIGHT = 0.05;
+
+    protected static final double PADDING = 10;
 
     protected AbstractView(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super();
@@ -71,15 +73,26 @@ public abstract class AbstractView extends UnicastRemoteObject{
 
         pane.getChildren().add(helperPane);
         helperPane.setTranslateX(0);
-        helperPane.translateYProperty().bind(pane.prefHeightProperty().subtract(helperPane.prefHeightProperty()));
+        helperPane.translateYProperty().bind(pane.heightProperty().subtract(helperPane.heightProperty()));
         return helperPane;
     }
 
-    public HBox showTopBarText(){
-        HBox helperPane = new HBox(10);
-        helperPane.setAlignment(Pos.CENTER_LEFT);
-        helperPane.setPadding(new Insets(0, 10, 0, 10));
-        return null;
+    public HBox showTopBarText(Pane pane, String text){
+        HBox topBarBox = new HBox(10);
+        topBarBox.setAlignment(Pos.CENTER_LEFT);
+        topBarBox.setPadding(new Insets(0, 10, 0, 10));
+        topBarBox.setStyle("-fx-background-color: black");
+        topBarBox.prefWidthProperty().bind(pane.widthProperty());
+        topBarBox.prefHeightProperty().bind(pane.heightProperty().multiply(HELPER_BAR_PERCENT_HEIGHT));
+
+        Label textLabel = new Label(text);
+        textLabel.setTextFill(Color.WHITE);
+        topBarBox.getChildren().add(textLabel);
+
+        pane.getChildren().add(topBarBox);
+        topBarBox.setTranslateX(0);
+        topBarBox.setTranslateY(0);
+        return topBarBox;
     }
 
     public void showSevereErrorMessage(String text) {

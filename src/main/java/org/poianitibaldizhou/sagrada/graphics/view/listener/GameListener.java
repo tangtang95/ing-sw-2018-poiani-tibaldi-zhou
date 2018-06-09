@@ -26,6 +26,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,17 +37,20 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private transient Pane publicObjectiveCardsContainer;
     private transient Pane toolCardsContainer;
 
+    private transient Map<UserWrapper, SchemaCardView> schemaCardViewMap;
+
     private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.3;
     private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.4;
     private static final double SCHEMA_CARD_SCALE = 0.25;
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.25;
-    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.4;
-    private static final double TOOL_CARD_SCALE = 0.4;
+    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.35;
+    private static final double TOOL_CARD_SCALE = 0.35;
 
     private static final double PADDING = 10;
 
     public GameListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
+        schemaCardViewMap = new HashMap<>();
     }
 
     @Override
@@ -68,16 +72,18 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
         Platform.runLater(()->{
             Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap;
+            Map<UserWrapper, Integer> favorTokenMap;
             List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers;
             try {
                 privateObjectiveCardWrappers = controller.getOwnPrivateObjectiveCard();
+                favorTokenMap = controller.getCoinsMap();
                 schemaCardWrapperMap = controller.getSchemaCardMap();
             } catch (IOException e) {
                 this.showSevereErrorMessage("Errore di connessione");
                 return;
             }
 
-            this.drawUsers(users, schemaCardWrapperMap, privateObjectiveCardWrappers);
+            this.drawUsers(users, schemaCardWrapperMap, privateObjectiveCardWrappers, favorTokenMap);
         });
     }
 
@@ -207,31 +213,33 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     }
 
     private void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
-                           List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers) {
+                           List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers, Map<UserWrapper, Integer> coinsMap) {
         List<UserWrapper> orderedUsers = getUsersOrdered(users);
         for (int i = 0; i < orderedUsers.size(); i++) {
             final double angle = 2 * Math.PI * i / ((orderedUsers.size() == 3) ? orderedUsers.size() + 1 :
                     orderedUsers.size()) + Math.PI / 2;
+            // CALCULATE SCHEMA CARD POSITION
             DoubleBinding distance;
             if(Math.abs(Math.abs(angle) - 2*Math.PI) < 0.0001f || Math.abs(Math.abs(angle) - Math.PI) < 0.0001f)
                 distance = getHeight().divide(2).subtract(getHeight().divide(3));
             else
-                distance = getHeight().divide(2).subtract(getHeight().divide(1.8));
+                distance = getHeight().divide(2).subtract(getHeight().divide(1.8)).subtract(PADDING);
             DoubleBinding offsetX = distance.multiply(Math.cos(angle));
             DoubleBinding offsetY = distance.multiply(Math.sin(angle));
 
+            // DRAW SCHEMA CARD
             SchemaCardWrapper schemaCard = schemaCardWrapperMap.get(orderedUsers.get(i));
             SchemaCardView schemaCardView = new SchemaCardView(schemaCard, SCHEMA_CARD_SCALE);
-
             schemaCardView.setRotate(angle * 180.0 / Math.PI - 90);
             DoubleBinding distanceSchemaCard = getCenterY().subtract(schemaCardView.heightProperty().divide(1.8));
-
             schemaCardView.translateXProperty().bind(getPivotX(getCenterX().add(offsetX), schemaCardView.widthProperty(), 0.5)
                     .add(distanceSchemaCard.multiply(Math.cos(angle))));
             schemaCardView.translateYProperty().bind(getPivotY(getCenterY().add(offsetY), schemaCardView.heightProperty(), 0.5)
                     .add(distanceSchemaCard.multiply(Math.sin(angle))));
+            schemaCardViewMap.putIfAbsent(orderedUsers.get(i), schemaCardView);
             corePane.getChildren().addAll(schemaCardView);
 
+            // CALCULATE PRIVATE OBJECTIVE CARD POSITION
             final double tangentAngle = angle - Math.PI / 2;
             DoubleBinding tangentDistance = schemaCardView.widthProperty().divide(2).add(PADDING);
             DoubleBinding pocX = getCenterX().add(offsetX).add(distanceSchemaCard.multiply(Math.cos(angle)))
@@ -239,13 +247,14 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             DoubleBinding pocY = getCenterY().add(offsetY).add(distanceSchemaCard.multiply(Math.sin(angle)))
                     .add(tangentDistance.multiply(Math.sin(tangentAngle)));
 
+            // DRAW PRIVATE OBJECTIVE CARD
             if (i == 0)
                 drawPrivateObjectiveCard(privateObjectiveCardWrappers, pocX, pocY, angle);
             else
                 drawRetroPrivateObjectiveCard(pocX, pocY, angle);
 
             try {
-                PlayerListener playerListener = drawUser(orderedUsers.get(i), new Point2D(Math.round(Math.cos(angle)),
+                PlayerListener playerListener = drawUser(orderedUsers.get(i), coinsMap.get(orderedUsers.get(i)), new Point2D(Math.round(Math.cos(angle)),
                         Math.round(Math.sin(angle))));
                 SchemaCardListener schemaCardListener = new SchemaCardListener(schemaCardView,
                         controller, corePane, notifyPane);
@@ -256,21 +265,42 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         }
     }
 
-    private PlayerListener drawUser(UserWrapper userWrapper, Point2D direction){
+    private PlayerListener drawUser(UserWrapper userWrapper, int favorTokens, Point2D direction) throws RemoteException {
+        PlayerView playerView = new PlayerView(userWrapper, favorTokens);
         if(direction.equals(new Point2D(1,0))){
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper);
+            DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.heightProperty().divide(2));
+            DoubleBinding y = schemaCardView.translateYProperty().add(schemaCardView.widthProperty()).add(PADDING);
 
+            playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
+            playerView.translateYProperty().bind(getPivotY(y, playerView.heightProperty(), 0));
         }
         else if(direction.equals(new Point2D(0, 1))){
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper);
+            DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2));
+            DoubleBinding y = schemaCardView.translateYProperty().add(schemaCardView.heightProperty()).add(PADDING);
 
+            playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
+            playerView.translateYProperty().bind(y);
         }
         else if(direction.equals(new Point2D(-1, 0 ))){
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper);
+            DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.heightProperty().divide(2));
+            DoubleBinding y = schemaCardView.translateYProperty().subtract(PADDING*2);
 
+            playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
+            playerView.translateYProperty().bind(getPivotY(y, playerView.heightProperty(), 0));
         }
         else{
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper);
+            DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2));
+            DoubleBinding y = schemaCardView.translateYProperty().subtract(PADDING);
 
+            playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
+            playerView.translateYProperty().bind(getPivotY(y, playerView.heightProperty(), 0));
         }
-        // TODO
-        return null;
+        corePane.getChildren().add(playerView);
+        return new PlayerListener(playerView, controller, corePane, notifyPane);
     }
 
     private void drawPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers) {

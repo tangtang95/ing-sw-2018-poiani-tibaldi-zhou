@@ -62,7 +62,6 @@ public class MultiPlayerController extends Controller implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
         //testFrontBackSchemaCardView();
         /*testSchemaCardView();
         testDiceView();
@@ -295,5 +294,15 @@ public class MultiPlayerController extends Controller implements Initializable {
         } catch (IOException e) {
             showCrashErrorMessage();
         }
+    }
+
+    public Map<UserWrapper,Integer> getCoinsMap() {
+        Map<UserWrapper, Integer> coinsMap = new HashMap<>();
+        try {
+            coinsMap =  multiPlayerModel.getCoinsMap();
+        } catch (IOException e) {
+            showCrashErrorMessage();
+        }
+        return coinsMap;
     }
 }

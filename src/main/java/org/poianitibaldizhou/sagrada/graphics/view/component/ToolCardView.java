@@ -16,10 +16,9 @@ import java.io.IOException;
 
 public class ToolCardView extends Pane{
 
-
-
     private final ImageView toolCardView;
-
+    private ToolCardWrapper toolCardWrapper;
+    private final double scale;
     private Canvas tokenView;
 
     //Based on toolCardWidth
@@ -30,6 +29,8 @@ public class ToolCardView extends Pane{
 
 
     public ToolCardView(ToolCardWrapper toolCard, double scale){
+        this.toolCardWrapper = toolCard;
+        this.scale = scale;
         String cardKey = TextureUtils.convertNameIntoCardKey(toolCard.getName());
         toolCardView = TextureUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
 
@@ -63,7 +64,15 @@ public class ToolCardView extends Pane{
         return canvas;
     }
 
-    public void decreaseToken(Integer value) {
-        // TODO
+    public void increaseToken(Integer value) {
+        toolCardWrapper = new ToolCardWrapper(toolCardWrapper.getName(),
+                toolCardWrapper.getDescription(), toolCardWrapper.getColor(), toolCardWrapper.getToken() + value);
+        this.getChildren().remove(tokenView);
+        tokenView = drawToken(value);
+
+        tokenView.setTranslateX(toolCardView.getFitWidth() - tokenView.getWidth()/2);
+        tokenView.setTranslateY(- tokenView.getHeight()/2);
+
+        this.getChildren().add(tokenView);
     }
 }

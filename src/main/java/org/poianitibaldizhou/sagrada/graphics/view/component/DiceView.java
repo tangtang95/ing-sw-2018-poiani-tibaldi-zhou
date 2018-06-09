@@ -10,7 +10,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 
 public class DiceView extends Pane {
 
-    private ImageView diceView;
+    private ImageView diceImage;
+    private DiceWrapper diceWrapper;
+    private double scale;
 
     private boolean isMovable;
 
@@ -21,20 +23,22 @@ public class DiceView extends Pane {
     private static final String DICE_JSON_PATH = "images/board/dices.json";
 
     public DiceView(DiceWrapper dice, double scale) {
+        this.diceWrapper = dice;
+        this.scale = scale;
         String imageKey = String.format("dice-%s-%s.png", dice.getColor().name().toLowerCase(),
                 String.valueOf(dice.getNumber()));
-        diceView = TextureUtils.getImageView(imageKey, DICE_IMAGE_PATH, DICE_JSON_PATH, scale);
+        diceImage = TextureUtils.getImageView(imageKey, DICE_IMAGE_PATH, DICE_JSON_PATH, scale);
 
-        this.getChildren().add(diceView);
+        this.getChildren().add(diceImage);
         this.setOnMouseEntered(event -> {
             Glow glow = new Glow();
             glow.setLevel(0.6);
-            diceView.setEffect(glow);
+            diceImage.setEffect(glow);
         });
         this.setOnMouseExited(event -> {
             Glow glow = new Glow();
             glow.setLevel(0);
-            diceView.setEffect(glow);
+            diceImage.setEffect(glow);
         });
 
         setMovable(false);
@@ -44,6 +48,7 @@ public class DiceView extends Pane {
     public void setMovable(boolean movable){
         isMovable = movable;
         if(movable){
+            // TODO FIX
             this.setOnMousePressed(event -> {
                 mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
                 initialTranslate = new Point2D(this.getTranslateX(), this.getTranslateY());
@@ -75,13 +80,23 @@ public class DiceView extends Pane {
     }
 
     public double getImageWidth(){
-        return diceView.getFitWidth();
+        return diceImage.getFitWidth();
     }
 
     public double getImageHeight(){
-        return diceView.getFitHeight();
+        return diceImage.getFitHeight();
     }
 
 
+    public DiceWrapper getDiceWrapper() {
+        return diceWrapper;
+    }
 
+    public void reRoll(int number) {
+        // TODO ANIMATION
+        diceWrapper = new DiceWrapper(diceWrapper.getColor(), number);
+        String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
+                String.valueOf(diceWrapper.getNumber()));
+        TextureUtils.changeViewport(diceImage, imageKey, DICE_JSON_PATH, scale);
+    }
 }

@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 
 public class ToolCardListener extends AbstractView implements IToolCardObserver {
 
-    private ToolCardView toolCardView;
+    private transient ToolCardView toolCardView;
 
     protected ToolCardListener(ToolCardView toolCardView, MultiPlayerController controller,
                                Pane corePane, Pane notifyPane) throws RemoteException {
@@ -26,7 +26,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
         ClientGetMessage parser = new ClientGetMessage();
         Integer value = parser.getValue(message);
         Platform.runLater(() -> {
-            toolCardView.decreaseToken(value);
+            toolCardView.increaseToken(value);
         });
     }
 
