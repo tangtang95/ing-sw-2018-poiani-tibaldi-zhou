@@ -626,6 +626,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         boolean answer = serverGetMessage.getBoolean(message);
 
+        System.out.println("ANSWER IN CONTROLLER: " + answer);
+
         System.out.println("User with token: " + token + "accessed: setContinueAction");
 
         if (initialCheck(token, gameName))
