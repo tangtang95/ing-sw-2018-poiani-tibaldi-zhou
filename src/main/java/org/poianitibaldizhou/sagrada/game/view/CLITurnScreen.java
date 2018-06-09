@@ -73,8 +73,6 @@ public class CLITurnScreen extends CLIRoundScreen {
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
         }
-
-        screenManager.popWithouthStartinScreen();
         screenManager.popScreen();
     }
 

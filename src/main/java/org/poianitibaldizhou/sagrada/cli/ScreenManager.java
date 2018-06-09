@@ -61,7 +61,7 @@ public class ScreenManager {
      * @return the screen at the top of the stack
      * @throws EmptyStackException if the stack of screen is empty
      */
-    public synchronized IScreen popWithouthStartinScreen() {
+    public synchronized IScreen popWithoutStartInScreen() {
         if(screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();

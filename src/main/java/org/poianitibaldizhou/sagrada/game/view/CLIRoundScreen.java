@@ -148,7 +148,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
         commandMap.put(viewTimeToTimeout.getCommandText(), viewTimeToTimeout);
 
         Command quit = new Command(QUIT, "Quit from current game");
-        quit.setCommandAction(this::viewQuitScreen);
+        quit.setCommandAction(this::quitRoundScreen);
         commandMap.put(quit.getCommandText(), quit);
     }
 
@@ -174,7 +174,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
     /**
      * View the quit from the game.
      */
-    private void viewQuitScreen() {
+    private void quitRoundScreen() {
         try {
             connectionManager.getGameController().quitGame(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()

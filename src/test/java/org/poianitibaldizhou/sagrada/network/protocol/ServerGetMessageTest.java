@@ -77,26 +77,6 @@ public class ServerGetMessageTest {
         assertEquals(message, serverNetworkProtocol.buildMessage());
     }
 
-    @Test
-    public void testMixedMessage() {
-        String message = "{\"1\":{\"type\":\"string\",\"body\":\"ciao\"},\"2\":{\"type\":\"string\",\"body\":\"antonio\"}," +
-                "\"3\":{\"type\":\"integer\",\"body\":\"45\"},\"4\":{\"type\":\"integer\",\"body\":\"78\"}}";
-        assertEquals(message, serverNetworkProtocol.buildMessage());
-    }
-
-    @Test
-    public void testMixedMessage2() {
-        String message2 = "{\"map\":{\"type\":\"map\",\"body\":" +
-                "{\"{\\\"type\\\":\\\"string\\\",\\\"body\\\":\\\"1\\\"}\":\"{\\\"type\\\":\\\"dice\\\"," +
-                "\\\"body\\\":{\\\"color\\\":\\\"BLUE\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
-                "\\\"body\\\":\\\"4\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"RED\\\"," +
-                "\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\",\\\"body\\\":\\\"3\\\"}\":\"{\\\"type\\\":\\\"dice\\\"," +
-                "\\\"body\\\":{\\\"color\\\":\\\"YELLOW\\\",\\\"value\\\":1}}\",\"{\\\"type\\\":\\\"string\\\"," +
-                "\\\"body\\\":\\\"6\\\"}\":\"{\\\"type\\\":\\\"dice\\\",\\\"body\\\":{\\\"color\\\":\\\"PURPLE\\\"," +
-                "\\\"value\\\":1}}\"}}}";
-
-        assertEquals(message2, serverNetworkProtocol.buildMessage());
-    }
 
 
     @Test
