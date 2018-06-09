@@ -89,23 +89,24 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
-        Runnable runnable = () -> {
-            try {
-                realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createTurnValueMessage(turn).
-                        createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
-            } catch (IOException e) {
-                observerManager.signalDisconnection(token);
-            }
-        };
-
-        observerManager.pushThreadInQueue(token, runnable);
-
         if (observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
             try {
                 observerManager.getGame().forceStateChange();
             } catch (InvalidActionException e) {
                 throw new IllegalStateException();
             }
+        } else {
+
+            Runnable runnable = () -> {
+                try {
+                    realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createTurnValueMessage(turn).
+                            createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
+                } catch (IOException e) {
+                    observerManager.signalDisconnection(token);
+                }
+            };
+
+            observerManager.pushThreadInQueue(token, runnable);
         }
     }
 
@@ -237,6 +238,6 @@ public class StateFakeObserver implements IStateFakeObserver {
             }
         };
 
-        observerManager.pushLastThreadInQueue(token, runnable);
+        observerManager.pushThreadInQueue(token, runnable);
     }
 }

@@ -99,7 +99,6 @@ public class GameManager {
             List<String> playersPlaying = playersByGame.get(gameName);
             players.removeAll(playersPlaying);
             playersByGame.remove(gameName);
-            gameObserverManagerMap.get(gameName).shutdownAll();
             gameObserverManagerMap.remove(gameName);
         }
     }

@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class TimeOutFakeObserver implements IStateFakeObserver {
+public class  TimeOutFakeObserver implements IStateFakeObserver {
 
     private static final long TIME = ServerSettings.getPlayerTimeout();
 

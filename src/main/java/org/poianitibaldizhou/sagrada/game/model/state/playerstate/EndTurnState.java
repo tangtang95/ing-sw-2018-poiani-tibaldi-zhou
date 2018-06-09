@@ -25,10 +25,14 @@ public class EndTurnState extends IPlayerState {
                 Logger.getAnonymousLogger().log(Level.INFO, "toolCardExecution ended");
                 Thread.currentThread().interrupt();
             }
-
-            turnState.notifyOnEndTurnState();
-            turnState.nextTurn();
         });
         thread.start();
+        try {
+            thread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        turnState.notifyOnEndTurnState();
+        turnState.nextTurn();
     }
 }

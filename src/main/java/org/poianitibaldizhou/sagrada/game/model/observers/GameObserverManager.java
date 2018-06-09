@@ -8,8 +8,12 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOut
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GameObserverManager {
+
+    Lock lock;
 
     private Set<String> disconnectedPlayer;
     private Set<String> disconnectedPlayerNotNotified;
@@ -33,6 +37,8 @@ public class GameObserverManager {
         disconnectedPlayerNotNotified = new HashSet<>();
         executorHashMap = new HashMap<>();
         observerTimeoutHashMap = new HashMap<>();
+
+        lock = new ReentrantLock();
 
         timeOutFakeObserver = null;
         this.game = game;
@@ -100,9 +106,11 @@ public class GameObserverManager {
      */
     public void pushThreadInQueue(String token, Runnable notify) {
         synchronized (getGame()) {
+            lock.lock();
             System.out.println("Pushing thread in queue (GAME OBS MAN)");
             if (!disconnectedPlayer.contains(token))
                 executorHashMap.get(token).submit(notify);
+            lock.unlock();
         }
     }
 
@@ -113,8 +121,10 @@ public class GameObserverManager {
      */
     public void notifyDisconnection(String token) {
         synchronized (getGame()) {
+            lock.lock();
             System.out.println("Disconnection of a certain user has been notified (GAME OBS MAN)");
-
+            disconnectedPlayerNotNotified.remove(token);
+            lock.unlock();
         }
     }
 
@@ -126,11 +136,13 @@ public class GameObserverManager {
      */
     public void signalDisconnection(String token) {
         synchronized (getGame()) {
+            lock.lock();
             System.out.println("Disconnection signaled (GAME OBS MAN)");
             executorHashMap.get(token).shutdownNow();
             disconnectedPlayerNotNotified.add(token);
             disconnectedPlayer.add(token);
             detachTimeoutObserver(token);
+            lock.unlock();
         }
     }
 
@@ -142,10 +154,12 @@ public class GameObserverManager {
      */
     public void signalReconnect(String token) {
         synchronized (getGame()) {
+            lock.lock();
             System.out.println("Reconnection signaled (GAME OBS MAN)");
             executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
             disconnectedPlayer.remove(token);
             disconnectedPlayerNotNotified.remove(token);
+            lock.unlock();
         }
     }
 
@@ -157,16 +171,19 @@ public class GameObserverManager {
      */
     public void pushLastThreadInQueue(String token, Runnable notify) {
         synchronized (getGame()) {
+            lock.lock();
             System.out.println("push last thread in queeu ((GAME OBS MAN)");
             if (!disconnectedPlayer.contains(token)) {
                 executorHashMap.get(token).submit(notify);
                 executorHashMap.get(token).shutdown();
             }
+            lock.unlock();
         }
     }
 
     public void pushTimeoutThread(String token, Runnable notify, String timedOutToken) {
         synchronized (getGame()) {
+            lock.lock();
             System.out.println("push timeout thread in queue (GAME OBS MAN)");
             if (!disconnectedPlayer.contains(token)) {
                 if (token.equals(timedOutToken)) {
@@ -177,17 +194,7 @@ public class GameObserverManager {
                     executorHashMap.get(token).submit(notify);
                 }
             }
-        }
-    }
-
-    public void shutdownAll() {
-        synchronized (getGame()) {
-            System.out.println("shut down all (GAME OBS MAN)");
-            game.getUsers().forEach(user -> {
-                if (!disconnectedPlayer.contains(user.getToken())) {
-                    executorHashMap.get(user.getToken()).shutdown();
-                }
-            });
+            lock.unlock();
         }
     }
 }
