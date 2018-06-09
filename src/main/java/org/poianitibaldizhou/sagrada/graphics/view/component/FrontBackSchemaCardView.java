@@ -25,15 +25,6 @@ public class FrontBackSchemaCardView extends Pane {
 
     private static final double ROTATE_AMPLIFY = 0.8;
 
-    public FrontBackSchemaCardView(SchemaCardWrapper frontSchemaCard, SchemaCardWrapper backSchemaCard, double scale) {
-        this.frontSchemaCard = new SchemaCardView(frontSchemaCard, scale);
-        this.backSchemaCard = new SchemaCardView(backSchemaCard, scale);
-
-        this.currentSchemaCard = this.frontSchemaCard;
-
-        this.getChildren().add(this.currentSchemaCard);
-    }
-
     public FrontBackSchemaCardView(FrontBackSchemaCardWrapper frontBackSchemaCard, double scale) {
         this.frontSchemaCard = new SchemaCardView(frontBackSchemaCard.getFrontSchemaCard(), scale);
         this.backSchemaCard = new SchemaCardView(frontBackSchemaCard.getBackSchemaCard(), scale);

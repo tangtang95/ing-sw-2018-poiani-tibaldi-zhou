@@ -87,12 +87,7 @@ public class SchemaCardView extends Pane {
         return imageView;
     }
 
-    public void drawDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
 
-    }
-
-    public void removeDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
-    }
 
     public ImageView getImageView() {
         return schemaCardImage;
@@ -102,4 +97,10 @@ public class SchemaCardView extends Pane {
         return schemaCardWrapper;
     }
 
+    public void drawDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
+        
+    }
+
+    public void removeDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
+    }
 }

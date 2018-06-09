@@ -16,6 +16,10 @@ import java.util.logging.Logger;
 
 public class TextureUtils {
 
+    private TextureUtils(){
+        throw new IllegalStateException("Cannot instantiate TextureUtils");
+    }
+
     public static String convertNameIntoObjectiveCardKey(String name){
         String processedName = name.replace("-", "")
                 .replace("  ", " ");
@@ -36,6 +40,11 @@ public class TextureUtils {
     public static ImageView getImageView(String keyName, String imageResourcePath, String jsonResourcePath, double scale){
         Image image = new Image(TextureUtils.class.getClassLoader().getResourceAsStream(imageResourcePath));
         ImageView imageView = new ImageView(image);
+        changeViewport(imageView, keyName, jsonResourcePath, scale);
+        return imageView;
+    }
+
+    public static void changeViewport(ImageView imageView, String keyName, String jsonResourcePath, double scale) {
         try {
             TextureJSONParser textureParser = new TextureJSONParser(jsonResourcePath);
             Rectangle2D rectangle2D = textureParser.getRectangleView(keyName);
@@ -47,7 +56,6 @@ public class TextureUtils {
         } catch (ParseException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Parse failed");
         }
-        return imageView;
     }
 
     public static ImageView getSimpleImageView(String imageResourcePath, double scale){
@@ -74,5 +82,6 @@ public class TextureUtils {
         radioButton.setFocusTraversable(false);
         return radioButton;
     }
+
 
 }
