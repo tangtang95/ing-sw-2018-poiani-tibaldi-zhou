@@ -146,9 +146,8 @@ public class GameObserverManager {
                 executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
                 executorHashMap.get(TIME_OUT).submit(notify);
             } else {
-                executorHashMap.get(timedOutToken).submit(notify);
+                executorHashMap.get(token).submit(notify);
             }
-
         }
     }
 }

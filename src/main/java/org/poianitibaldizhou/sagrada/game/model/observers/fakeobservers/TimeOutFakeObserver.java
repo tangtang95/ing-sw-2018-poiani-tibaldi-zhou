@@ -90,7 +90,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         try {
             synchronized (game) {
                 if(timeOutThreadTurnState != null) {
-                    System.out.println("Handling turn state timout");
                     createAndPushNotify(turnUser);
                     game.forceStateChange();
                 }
@@ -105,7 +104,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onSetupGame() {
-        System.out.println("Ending timeout turn player");
         timeoutStart = null;
         timeOutThreadSetupPlayer.interrupt();
         timeOutThreadSetupPlayer = null;
@@ -116,7 +114,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onSetupPlayer() {
-        System.out.println("Starting timeout player setup");
         Runnable timeout = () -> {
             try {
                 Thread.sleep(TIME);
@@ -145,7 +142,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
-        System.out.println("Starting time out turn state");
         Runnable timeOut = () -> {
             try {
                 Thread.sleep(TIME);
@@ -206,7 +202,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onEndTurnState(User turnUser) {
-        System.out.println("Ending timeout turn state");
         timeoutStart = null;
         timeOutThreadTurnState.interrupt();
         timeOutThreadTurnState = null;

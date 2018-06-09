@@ -297,4 +297,12 @@ public interface IGameController extends Remote {
      * @return message containing game's name and player's token or errors
      */
     String createSinglePlayer(String message) throws IOException;
+
+    /**
+     * Signals that a player has chosen to quit the game
+     *
+     * @param message protocol message containing player's token and the name of the game
+     * @throws IOException network communication error
+     */
+    void quitGame(String message) throws IOException;
 }

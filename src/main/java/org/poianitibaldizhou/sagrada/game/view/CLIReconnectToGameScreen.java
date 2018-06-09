@@ -35,11 +35,14 @@ public class CLIReconnectToGameScreen implements IScreen {
 
     @Override
     public void startCLI() {
-
         getParameter();
         if(userList != null && token != null && gameName != null) {
-            screenManager.replaceScreen(CLIRoundScreen.reconnect());
-            PrinterManager.consolePrint("Re-connect failed", Level.ERROR);
+            try {
+                screenManager.replaceScreen(CLIRoundScreen.reconnect(token, username, gameName, userList,connectionManager, screenManager));
+                PrinterManager.consolePrint("Re-connect failed", Level.ERROR);
+                } catch (RemoteException e) {
+                PrinterManager.consolePrint(BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            }
         }
 
         screenManager.popScreen();
@@ -62,16 +65,22 @@ public class CLIReconnectToGameScreen implements IScreen {
                     String response = connectionManager.getGameController().attemptReconnect(clientCreateMessage.
                             createUsernameMessage(username).buildMessage());
 
+                    if(response == null)
+                        System.out.println("Response is null");
+
                     gameName = clientGetMessage.getGameName(response);
                     token = clientGetMessage.getToken(response);
                     userList = clientGetMessage.getListOfUserWrapper(response);
                 }
-            } catch (IOException e) {
+            } catch (IOException  e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
                 break;
             } catch (IllegalArgumentException e) {
                 username = null;
+            } catch(NullPointerException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                BuildGraphic.NETWORK_ERROR, Level.ERROR);
             }
         }
     }

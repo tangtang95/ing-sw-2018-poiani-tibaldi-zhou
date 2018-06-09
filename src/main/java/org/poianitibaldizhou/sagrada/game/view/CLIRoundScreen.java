@@ -148,7 +148,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
         commandMap.put(viewTimeToTimeout.getCommandText(), viewTimeToTimeout);
 
         Command quit = new Command(QUIT, "Quit from current game");
-        quit.setCommandAction(screenManager::popScreen);
+        quit.setCommandAction(this::viewQuitScreen);
         commandMap.put(quit.getCommandText(), quit);
     }
 
@@ -169,6 +169,22 @@ public class CLIRoundScreen extends CLIBasicScreen {
             cliStateView.setStart(false);
             lock.notifyAll();
         }
+    }
+
+    /**
+     * View the quit from the game.
+     */
+    private void viewQuitScreen() {
+        try {
+            connectionManager.getGameController().quitGame(
+                    clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+            );
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + "You have left the game.\n", Level.STANDARD);
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
+        }
+
+        screenManager.popScreen();
     }
 
     /**
@@ -389,8 +405,8 @@ public class CLIRoundScreen extends CLIBasicScreen {
         return Objects.hash(super.hashCode(), gameName, myUser, token, clientGetMessage, clientCreateMessage);
     }
 
-    public static CLIRoundScreen reconnect() {
-        // TODO handle reconnection; not sure if here
-        return null;
+    public static CLIRoundScreen reconnect(String token, String userName, String gameName, List<UserWrapper> userList, ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
+        CLIStateView cliStateView = new CLIStateView(connectionManager, screenManager, gameName, new UserWrapper(userName), token);
+        return new CLIRoundScreen(connectionManager, screenManager, cliStateView);
     }
 }

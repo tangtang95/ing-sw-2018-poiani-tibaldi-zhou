@@ -14,6 +14,7 @@ import java.util.Map;
  */
 public class BuildGraphic {
 
+
     /**
      * the unique stringBuilder whom append any graphic object.
      */
@@ -27,6 +28,7 @@ public class BuildGraphic {
     public static final String ERROR_READING = ": Error while reading from keyboard.\n";
     public static final String NETWORK_ERROR = ": Network error.\n";
     public static final String AUTOMATIC_ACTION = "The action was chosen automatically, due to the expiration of the timeout\n";
+    public static final String FATAL_ERROR = ": Fatal error. Please close the game and restart it\n";
 
     /**
      * Card attributes.
