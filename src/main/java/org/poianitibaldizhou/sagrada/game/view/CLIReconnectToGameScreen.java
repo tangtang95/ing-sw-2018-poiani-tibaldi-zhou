@@ -1,57 +1,153 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.*;
 
-public class CLIReconnectToGameScreen implements IScreen {
+/**
+ * CLIReconnectToGameScreen for reconnect the player to his game.
+ */
+public class CLIReconnectToGameScreen extends CLIBasicScreen {
 
-    private ConnectionManager connectionManager;
-    private ScreenManager screenManager;
+    /**
+     * Reference to ClientCreateMessage for making the message to send at the server.
+     */
+    private final transient ClientCreateMessage clientCreateMessage;
 
+    /**
+     * Reference to ClientGetMessage for getting message from the server.
+     */
+    private final transient ClientGetMessage clientGetMessage;
+
+    /**
+     * Reference at the player's token.
+     */
     private String token = null;
+
+    /**
+     * Reference to my username in game.
+     */
     private String username = null;
+
+    /**
+     * Reference at the game name of the current game.
+     */
     private String gameName = null;
-    private List<UserWrapper> userList = null;
 
-    private ClientCreateMessage clientCreateMessage;
-    private ClientGetMessage clientGetMessage;
+    /**
+     * List of user in game.
+     */
+    private transient List<UserWrapper> userList = null;
 
-    public CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) {
-        this.connectionManager = connectionManager;
-        this.screenManager = screenManager;
+    /**
+     * Reference to CLIStateView for passing the parameter.
+     */
+    private final transient CLIStateView cliStateView;
 
+    /**
+     * Constructor.
+     *
+     * @param connectionManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
+     */
+    public CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
+        super(connectionManager,screenManager);
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();
+        this.cliStateView = new CLIStateView(connectionManager,screenManager, gameName, new UserWrapper(username),token);
+
+        initializeCommands();
     }
 
+    /**
+     * Initialize the ChangeConnection's commands.
+     */
+    @Override
+    protected void initializeCommands() {
+        /* For this CLI there are not any commands. */
+    }
+
+    /**
+     * Start the CLI.
+     */
     @Override
     public void startCLI() {
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.setCommandMap(commandMap);
+        PrinterManager.consolePrint("Re-connecting to your game...", Level.INFORMATION);
         getParameter();
-        if(userList != null && token != null && gameName != null) {
+        if (userList != null && token != null && gameName != null) {
             try {
-                screenManager.replaceScreen(CLIRoundScreen.reconnect(token, username, gameName, userList,connectionManager, screenManager));
-                PrinterManager.consolePrint("Re-connect failed", Level.ERROR);
-                } catch (RemoteException e) {
-                PrinterManager.consolePrint(BuildGraphic.NETWORK_ERROR, Level.ERROR);
-            }
-        }
+                Map<String, IPlayerObserver> cliPlayerViewMap = new HashMap<>();
+                Map<String, IToolCardObserver> cliToolCardViewMap = new HashMap<>();
+                Map<String, ISchemaCardObserver> cliSchemaCardViewMap = new HashMap<>();
 
-        screenManager.popScreen();
+                List<ToolCardWrapper> toolCardWrappers = clientGetMessage.getToolCards(
+                        connectionManager.getGameController().getToolCards(
+                                clientCreateMessage.createGameNameMessage(gameName).
+                                        createTokenMessage(token).buildMessage()
+                        ));
+                Collection<SchemaCardWrapper> schemaCardWrappers = clientGetMessage.getSchemaCards(
+                        connectionManager.getGameController().getSchemaCards(
+                                clientCreateMessage.createGameNameMessage(gameName).
+                                        createTokenMessage(token).buildMessage()
+                        )).values();
+
+                for (UserWrapper u : userList)
+                    cliPlayerViewMap.put(u.getUsername(), new CLIPlayerView(cliStateView));
+
+                for (ToolCardWrapper t : toolCardWrappers)
+                    cliToolCardViewMap.put(t.getName(), new CLIToolCardView(cliStateView, t.getName()));
+
+                for (SchemaCardWrapper s : schemaCardWrappers)
+                    cliSchemaCardViewMap.put(s.getName(), new CLISchemaCardView(cliStateView, s.getName()));
+
+                connectionManager.getGameController().reconnect(
+                        clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage(),
+                        new CLIGameView(cliStateView, connectionManager),
+                        cliStateView,
+                        cliPlayerViewMap,
+                        cliToolCardViewMap,
+                        cliSchemaCardViewMap,
+                        new CLIGameView(cliStateView, connectionManager),
+                        new CLIDraftPoolView(cliStateView),
+                        new CLIRoundTrackView(cliStateView),
+                        new CLIDiceBagView(cliStateView),
+                        new CLITimeoutView(cliStateView)
+                );
+
+                screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, cliStateView));
+            } catch (IOException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() +
+                        BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                screenManager.popScreen();
+            }
+        } else {
+            PrinterManager.consolePrint("Re-connecting failed.", Level.ERROR);
+            screenManager.popScreen();
+        }
     }
 
     /**
      * Gets the parameter necessary for the reconnection.
      */
     private void getParameter()  {
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
 
         PrinterManager.consolePrint("Provide an username: \n", Level.STANDARD);
@@ -65,14 +161,11 @@ public class CLIReconnectToGameScreen implements IScreen {
                     String response = connectionManager.getGameController().attemptReconnect(clientCreateMessage.
                             createUsernameMessage(username).buildMessage());
 
-                    if(response == null)
-                        System.out.println("Response is null");
-
                     gameName = clientGetMessage.getGameName(response);
                     token = clientGetMessage.getToken(response);
                     userList = clientGetMessage.getListOfUserWrapper(response);
                 }
-            } catch (IOException  e) {
+            } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.ERROR_READING, Level.ERROR);
                 break;
@@ -80,8 +173,33 @@ public class CLIReconnectToGameScreen implements IScreen {
                 username = null;
             } catch(NullPointerException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                        BuildGraphic.NETWORK_ERROR, Level.ERROR);
             }
         }
+        consoleListener.wakeUpCommandConsole();
+    }
+
+    /**
+     * @param o the other object to compare.
+     * @return true if the CLIReconnectToScreen has the same gameName, username, token and userList.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof CLIReconnectToGameScreen)) return false;
+        if (!super.equals(o)) return false;
+        CLIReconnectToGameScreen that = (CLIReconnectToGameScreen) o;
+        return Objects.equals(token, that.token) &&
+                Objects.equals(username, that.username) &&
+                Objects.equals(gameName, that.gameName) &&
+                Objects.equals(userList, that.userList);
+    }
+
+    /**
+     * @return the hash code.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(),token, username, gameName, userList);
     }
 }

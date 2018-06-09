@@ -7,17 +7,10 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.poianitibaldizhou.sagrada.cli.ScreenManager;
-import org.poianitibaldizhou.sagrada.game.view.CLIStartGameScreen;
 import org.poianitibaldizhou.sagrada.graphics.controller.Controller;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
-import org.poianitibaldizhou.sagrada.network.ConnectionManager;
-import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
-import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 public class GameApp extends Application {
 
     public static void main(String[] args){

@@ -66,5 +66,10 @@ public class ClientCreateMessageTest {
         assertEquals(message,clientCreateMessage.createSchemaCardMessage(emptySchemaCard).buildMessage());
     }
 
-    
+    @Test
+    public void createUsernameMessageTest() {
+        String username = "test";
+        String message = "{\"usernameKey\":{\"type\":\"string\",\"body\":\"test\"}}";
+        assertEquals(message,clientCreateMessage.createUsernameMessage(username).buildMessage());
+    }
 }

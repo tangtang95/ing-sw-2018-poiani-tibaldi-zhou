@@ -382,7 +382,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
 
     /**
      * @param o the other object to compare.
-     * @return true if the CLIRoundScreen has the same gameName, user, token, clientGetMessage and clientCreateMessage.
+     * @return true if the CLIRoundScreen has the same gameName, user and token.
      */
     @Override
     public boolean equals(Object o) {
@@ -392,9 +392,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
         CLIRoundScreen that = (CLIRoundScreen) o;
         return Objects.equals(gameName, that.gameName) &&
                 Objects.equals(myUser, that.myUser) &&
-                Objects.equals(token, that.token) &&
-                Objects.equals(clientGetMessage, that.clientGetMessage) &&
-                Objects.equals(clientCreateMessage, that.clientCreateMessage);
+                Objects.equals(token, that.token);
     }
 
     /**
@@ -402,11 +400,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), gameName, myUser, token, clientGetMessage, clientCreateMessage);
+        return Objects.hash(super.hashCode(), gameName, myUser, token);
     }
 
-    public static CLIRoundScreen reconnect(String token, String userName, String gameName, List<UserWrapper> userList, ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
-        CLIStateView cliStateView = new CLIStateView(connectionManager, screenManager, gameName, new UserWrapper(userName), token);
-        return new CLIRoundScreen(connectionManager, screenManager, cliStateView);
-    }
 }

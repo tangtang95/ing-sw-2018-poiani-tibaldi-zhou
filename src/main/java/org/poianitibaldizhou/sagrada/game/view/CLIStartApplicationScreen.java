@@ -10,7 +10,7 @@ import java.util.Objects;
  * The firs CLI launched.
  * The class contain the command for starting the game.
  */
-public class CLIStartGameScreen extends CLIBasicScreen {
+public class CLIStartApplicationScreen extends CLIBasicScreen {
 
     /**
      * StartGame commands.
@@ -20,6 +20,7 @@ public class CLIStartGameScreen extends CLIBasicScreen {
     private static final String QUIT = "Quit";
     private static final String RECONNECT = "Reconnect";
 
+
     /**
      * constructor.
      *
@@ -27,9 +28,8 @@ public class CLIStartGameScreen extends CLIBasicScreen {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIStartGameScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+    public CLIStartApplicationScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
         super(networkManager, screenManager);
-
         initializeCommands();
     }
 
@@ -53,7 +53,8 @@ public class CLIStartGameScreen extends CLIBasicScreen {
         commandMap.put(quitCommand.getCommandText(), quitCommand);
 
         Command reconnectCommand = new Command(RECONNECT, "Reconnect to an on-going game");
-        reconnectCommand.setCommandAction(() -> screenManager.pushScreen(new CLIReconnectToGameScreen(connectionManager, screenManager)));
+        reconnectCommand.setCommandAction(() ->
+                screenManager.pushScreen(new CLIReconnectToGameScreen(connectionManager,screenManager)));
         commandMap.putIfAbsent(reconnectCommand.getCommandText(), reconnectCommand);
     }
 
@@ -83,16 +84,17 @@ public class CLIStartGameScreen extends CLIBasicScreen {
         System.exit(0);
     }
 
+
     /**
      * @param o the other object to compare.
-     * @return true if the CLIStartGameScreen has the same commandMap.
+     * @return true if the CLIStartApplicationScreen has the same commandMap.
      */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof CLIStartGameScreen)) return false;
+        if (!(o instanceof CLIStartApplicationScreen)) return false;
         if (!super.equals(o)) return false;
-        CLIStartGameScreen that = (CLIStartGameScreen) o;
+        CLIStartApplicationScreen that = (CLIStartApplicationScreen) o;
         return Objects.equals(commandMap, that.commandMap);
     }
 
