@@ -756,7 +756,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final Optional<String> gameName;
         List<IGame> gameList = gameManager.getGameList();
 
-        System.out.println("User with username: " + username + "accessed: bindToolCard");
+        System.out.println("User with username: " + username + "accessed: attemp reconnect");
 
         gameName = gameList.stream().filter(game -> gameManager.getPlayersByGame(game.getName()).contains(token)).map(IGame::getName).findFirst();
 
@@ -1157,7 +1157,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
 
-        gameManager.getObserverManagerByGame(gameName).notifyDisconnection(token);
+        gameManager.getObserverManagerByGame(gameName).signalDisconnection(token);
         clearObservers(gameName);
     }
 
@@ -1190,6 +1190,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             Set<String> disconnected = observerManager.getDisconnectedPlayer();
             List<User> playerList = gameManager.getGameByName(gameName).getUsers();
 
+            System.out.println("Disc list: " + disconnected);
+
             toNotifyDisconnect.forEach(disconnectedToken -> {
                 playerList.forEach(player -> {
                     if (!disconnected.contains(player.getToken())) {
@@ -1208,6 +1210,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 observerManager.notifyDisconnection(disconnectedToken);
                 viewMap.remove(disconnectedToken);
             });
+
+            System.out.println("Disc list after: " + disconnected);
 
             return handleEndGame(gameManager.getGameByName(gameName), observerManager);
         }
@@ -1237,6 +1241,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 return true;
             }
         } else if(!observerManager.getDisconnectedPlayer().isEmpty()){
+            System.out.println("The list of disconnected users is not empty, so the game gets terminated");
             gameManager.terminateGame(game.getName());
             return true;
         }

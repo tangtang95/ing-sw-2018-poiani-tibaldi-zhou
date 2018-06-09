@@ -40,7 +40,7 @@ public class GameManager {
         String gameName;
 
         // Try login with this username
-        if(managerMediator.isAlreadyWaitingInALobby(userName)) {
+        if(managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(String.valueOf(userName.hashCode()))) {
             throw new IOException();
         }
 
@@ -78,7 +78,7 @@ public class GameManager {
             });
             gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), game));
 
-            // TODO re-add when wants to test timeout
+            // Adding timeout
             TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName));
             if(!game.isSinglePlayer()) {
                 game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
@@ -99,6 +99,7 @@ public class GameManager {
             List<String> playersPlaying = playersByGame.get(gameName);
             players.removeAll(playersPlaying);
             playersByGame.remove(gameName);
+            gameObserverManagerMap.get(gameName).shutdownAll();
             gameObserverManagerMap.remove(gameName);
         }
     }
