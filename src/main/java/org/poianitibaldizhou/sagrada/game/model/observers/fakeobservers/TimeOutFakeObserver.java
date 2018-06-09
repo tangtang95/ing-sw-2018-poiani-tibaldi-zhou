@@ -31,7 +31,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     /**
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
      *
-     * @param observerManager observer manager for the specifid game
+     * @param observerManager observer manager for the specific game
      * @param game game in which the timeout happens
      */
     public TimeOutFakeObserver(GameObserverManager observerManager, IGame game) {
@@ -88,6 +88,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onSetupGame() {
+        System.out.println("Ending timeout turn player");
         timeOutThreadSetupPlayer.interrupt();
         timeOutThreadSetupPlayer = null;
     }
@@ -97,14 +98,15 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onSetupPlayer() {
+        System.out.println("Starting timeout player setup");
         Runnable timeout = () -> {
             try {
                 Thread.sleep(TIME);
+                handleTimeoutSetUpPlayer();
             } catch (InterruptedException e) {
                 Logger.getAnonymousLogger().log(Level.INFO, "TimeoutThread interrupted");
                 Thread.currentThread().interrupt();
             }
-            handleTimeoutSetUpPlayer();
         };
 
         timeOutThreadSetupPlayer = new Thread(timeout);
@@ -124,14 +126,15 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
+        System.out.println("Starting time out turn state");
         Runnable timeOut = () -> {
             try {
                 Thread.sleep(TIME);
+                handleTimeoutTurnState(turnUser);
             } catch (InterruptedException e) {
                 Logger.getAnonymousLogger().log(Level.INFO, "TimeoutThread interrupted");
                 Thread.currentThread().interrupt();
             }
-            handleTimeoutTurnState(turnUser);
         };
 
         timeOutThreadTurnState = new Thread(timeOut);
@@ -183,6 +186,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onEndTurnState(User turnUser) {
+        System.out.println("Ending timeout turn state");
         timeOutThreadTurnState.interrupt();
         timeOutThreadTurnState = null;
     }
