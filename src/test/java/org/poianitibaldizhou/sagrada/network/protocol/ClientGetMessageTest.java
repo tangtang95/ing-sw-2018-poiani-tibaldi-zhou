@@ -29,7 +29,8 @@ public class ClientGetMessageTest {
     }
 
     @Test
-    public void getDiceElemList() {
+    public void getDiceElemList() throws IOException {
+        String message = "{\"diceList\":{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":3}}}";
     }
 
     @Test

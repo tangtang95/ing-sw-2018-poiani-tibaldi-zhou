@@ -136,7 +136,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
             token = clientGetMessage.getToken(message);
 
             ConsoleListener.getInstance().wakeUpCommandConsole();
-            screenManager.pushScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
+            screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
                     new UserWrapper(username), token));
         } catch (IOException e) {
             PrinterManager.consolePrint("Error in creating single player game\n", Level.STANDARD);

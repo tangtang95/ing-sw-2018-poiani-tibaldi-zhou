@@ -64,7 +64,6 @@ public class CLITurnScreen extends CLIRoundScreen {
      * Quit the game
      */
     private void quitGame() {
-        System.out.println("DOUBLE POP QUIT");
         endTurn();
         try {
             connectionManager.getGameController().quitGame(
