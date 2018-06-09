@@ -213,8 +213,11 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public void forceStateChange() {
         toolCardExecutor.interruptCommandsInvocation();
-        if (!(playerState instanceof EndTurnState))
-            setPlayerState(new EndTurnState(this));
+        if (!(playerState instanceof EndTurnState)) {
+            EndTurnState endTurnState = new EndTurnState(this);
+            setPlayerState(endTurnState);
+            endTurnState.endTurn();
+        }
     }
 
     /**

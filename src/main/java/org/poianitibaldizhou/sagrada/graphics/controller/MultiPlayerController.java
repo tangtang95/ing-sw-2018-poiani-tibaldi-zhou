@@ -111,8 +111,8 @@ public class MultiPlayerController extends Controller implements Initializable {
             JSONObject object = (JSONObject) privateObjectiveCards.draw().toJSON().get("body");
             PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
                     new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
-            PrivateObjectiveCardView privateObjectiveCardView = new PrivateObjectiveCardView(
-                    (PrivateObjectiveCardWrapper) privateObjectiveCardWrapper.toObject(object), 0.3
+            PrivateObjectiveCardView privateObjectiveCardView =
+                    new PrivateObjectiveCardView(privateObjectiveCardWrapper.toObject(object), 0.3
             );
 
             this.corePane.getChildren().add(privateObjectiveCardView);
@@ -284,6 +284,14 @@ public class MultiPlayerController extends Controller implements Initializable {
     public void bindToolCard(ToolCardWrapper toolCard, IToolCardObserver toolCardObserver) {
         try {
             multiPlayerModel.bindToolCard(toolCard, toolCardObserver);
+        } catch (IOException e) {
+            showCrashErrorMessage();
+        }
+    }
+
+    public void endTurn() {
+        try {
+            multiPlayerModel.endTurn();
         } catch (IOException e) {
             showCrashErrorMessage();
         }

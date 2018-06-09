@@ -109,4 +109,11 @@ public class MultiPlayerModel {
                 .createToolCardMessage(toolCard).buildMessage();
         connectionManager.getGameController().bindToolCard(request, toolCardObserver);
     }
+
+    public void endTurn() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createActionMessage(new PlaceDiceStateWrapper()).buildMessage();
+        connectionManager.getGameController().chooseAction(request);
+    }
 }
