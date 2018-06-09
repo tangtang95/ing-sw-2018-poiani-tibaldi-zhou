@@ -3,8 +3,7 @@ package org.poianitibaldizhou.sagrada.network.protocol;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.TileWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import static org.junit.Assert.*;
 
@@ -71,5 +70,53 @@ public class ClientCreateMessageTest {
         String username = "test";
         String message = "{\"usernameKey\":{\"type\":\"string\",\"body\":\"test\"}}";
         assertEquals(message,clientCreateMessage.createUsernameMessage(username).buildMessage());
+    }
+
+    @Test
+    public void createValueMessageTest() {
+        int value = 5;
+        String message = "{\"integer\":{\"type\":\"integer\",\"body\":\"5\"}}";
+        assertEquals(message,clientCreateMessage.createValueMessage(value).buildMessage());
+    }
+
+    @Test
+    public void createDiceMessageTest() {
+        DiceWrapper diceWrapper = new DiceWrapper(ColorWrapper.BLUE,5);
+        String message = "{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":5}}}";
+        assertEquals(message,clientCreateMessage.createDiceMessage(diceWrapper).buildMessage());
+    }
+
+    @Test
+    public void createColorMessageTest() {
+        ColorWrapper colorWrapper = ColorWrapper.GREEN;
+        String message = "{\"color\":{\"type\":\"color\",\"body\":\"GREEN\"}}";
+        assertEquals(message,clientCreateMessage.createColorMessage(colorWrapper).buildMessage());
+    }
+
+    @Test
+    public void createBooleanMessageTest() {
+        String message = "{\"boolean\":{\"type\":\"boolean\",\"body\":\"true\"}}";
+        assertEquals(message,clientCreateMessage.createBooleanMessage(true).buildMessage());
+    }
+
+    @Test
+    public void createPositionMessageTest() {
+        PositionWrapper positionWrapper = new PositionWrapper(1,1);
+        String message = "{\"position\":{\"type\":\"position\",\"body\":{\"column\":1,\"row\":1}}}";
+        assertEquals(message,clientCreateMessage.createPositionMessage(positionWrapper).buildMessage());
+    }
+
+    @Test
+    public void createToolCardMessageTest() {
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("test","test",ColorWrapper.PURPLE, 1);
+        String message = "{\"toolCard\":{\"type\":\"toolCard\",\"body\":{\"name\":\"test\",\"token\":1}}}";
+        assertEquals(message,clientCreateMessage.createToolCardMessage(toolCardWrapper).buildMessage());
+    }
+
+    @Test
+    public void createActionMessageTest() {
+        IActionWrapper iActionWrapper = new UseToolCardStateWrapper();
+        String message = "{\"actionKey\":{\"type\":\"useToolCardAction\",\"body\":{}}}";
+        assertEquals(message,clientCreateMessage.createActionMessage(iActionWrapper).buildMessage());
     }
 }

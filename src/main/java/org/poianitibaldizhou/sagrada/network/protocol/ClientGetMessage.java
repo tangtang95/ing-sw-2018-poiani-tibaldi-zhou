@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,9 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class for getting a message from server.
+ */
 public class ClientGetMessage {
+
+    /**
+     * network protocol.
+     */
     private JSONProtocol jsonClientProtocol;
 
+    /**
+     * ClientGetMessage constructor.
+     */
     public ClientGetMessage() {
         jsonClientProtocol = new JSONProtocol();
     }
