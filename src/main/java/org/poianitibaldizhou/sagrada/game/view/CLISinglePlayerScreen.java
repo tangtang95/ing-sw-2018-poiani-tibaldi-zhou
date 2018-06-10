@@ -3,6 +3,8 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 
+import java.io.IOException;
+
 public class CLISinglePlayerScreen extends GameModeStrategy {
 
     /**
@@ -67,7 +69,7 @@ public class CLISinglePlayerScreen extends GameModeStrategy {
         commandMap.put(viewPrivateObjectiveCards.getCommandText(), viewPrivateObjectiveCards);
 
         Command quit = new Command(QUIT, "Quit from current game");
-        quit.setCommandAction(this::quit);
+        quit.setCommandAction(this::quitGame);
         commandMap.put(quit.getCommandText(), quit);
 
         Command placeDice = new Command(PLACE_DICE, "Place a dice on Schema Card from Draft Pool");
@@ -81,6 +83,22 @@ public class CLISinglePlayerScreen extends GameModeStrategy {
         Command endTurn = new Command(END_TURN, "End the turn");
         endTurn.setCommandAction(this::endTurn);
         commandMap.put(endTurn.getCommandText(), endTurn);
+    }
+
+    /**
+     * Quit the game
+     */
+    private void quitGame() {
+        try {
+            connectionManager.getGameController().quitGame(
+                    clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+            );
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + "You have left the game.\n", Level.STANDARD);
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
+        }
+        screenManager.popWithoutStartInScreen();
+        screenManager.popScreen();
     }
 
 }
