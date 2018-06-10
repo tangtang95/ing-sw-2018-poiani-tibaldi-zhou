@@ -285,4 +285,16 @@ public interface IGame {
      * @throws InvalidActionException if state instance != TurnState
      */
     void forceSkipTurn() throws InvalidActionException;
+
+    /**
+     * Force the game to terminate because the player didn't join before
+     * the timeout experience
+     * @throws InvalidActionException if state instace != ResetState
+     */
+    void forceGameTerminationBeforeStarting() throws InvalidActionException;
+
+    /**
+     * Initialize the game to the reset state
+     */
+    void initGame();
 }

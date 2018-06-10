@@ -316,6 +316,16 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onGameTerminationBeforeStarting() throws IOException {
+        PrinterManager.consolePrint("The game has terminated before starting due to the fact that some" +
+                "players failed in joining the game", Level.ERROR);
+        screenManager.popScreen();
+    }
+
+    /**
      * @param o the other object to compare.
      * @return true if the CLIStateView is the same or myUser is the same and the game name is the same.
      */

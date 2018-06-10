@@ -78,7 +78,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         if (gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             view.err("The game doesn't exist or you are not signaled as an entering player");
-            return;
+            throw new IOException();
         }
 
         synchronized (gameManager.getGameByName(gameName)) {

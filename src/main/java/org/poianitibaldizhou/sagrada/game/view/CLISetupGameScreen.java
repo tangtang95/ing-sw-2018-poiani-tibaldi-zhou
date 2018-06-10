@@ -91,6 +91,7 @@ public class CLISetupGameScreen extends CLIBasicScreen {
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            screenManager.popScreen();
         }
     }
 

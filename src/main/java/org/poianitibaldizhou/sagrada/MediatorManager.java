@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
 import org.poianitibaldizhou.sagrada.game.model.TerminationGameManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -35,7 +36,7 @@ public class MediatorManager {
     public String createMultiPlayerGame(List<User> users)  {
         String gameName = UUID.randomUUID().toString();
         IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
-        gameManager.addGame(game, gameName);
+        gameManager.createMultiPlayerGame(game, gameName);
         return gameName;
     }
 
@@ -43,7 +44,7 @@ public class MediatorManager {
     public String createMultiPlayerGameTest(List<User> users) {
         String gameName = "corderoGame";
         IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
-        gameManager.addGame(game, gameName);
+        gameManager.createMultiPlayerGame(game, gameName);
         return gameName;
     }
 

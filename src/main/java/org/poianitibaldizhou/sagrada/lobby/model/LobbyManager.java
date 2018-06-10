@@ -9,6 +9,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Lobby manager for handling the lobby stage of Sagrada.
+ * This do not contains duplicate.
+ */
 public class LobbyManager {
 
     private final List<User> users;
@@ -20,13 +24,13 @@ public class LobbyManager {
     private MediatorManager managerMediator;
     private LobbyObserverManager lobbyObserverManager;
 
-    private static final long DELAY_TIME = ServerSettings.getLobbyTimeout();
+    public static final long DELAY_TIME = ServerSettings.getLobbyTimeout();
 
     /**
      * Constructor.
      * Create a manager for the lobby
      *
-     * @param managerMediator ...
+     * @param managerMediator acts as an mediator between this and the server game manager
      */
     public LobbyManager(MediatorManager managerMediator) {
         this.managerMediator = managerMediator;
@@ -46,6 +50,9 @@ public class LobbyManager {
         };
     }
 
+    /**
+     * Set timeout: it starts the thread related with timeout and save the start time.
+     */
     private synchronized void setTimeout() {
         timeoutThread = new Thread(timeout);
         timeoutThread.start();
@@ -130,6 +137,13 @@ public class LobbyManager {
         }
     }
 
+    /**
+     * Disconnects an user.
+     * It differs from the user leave because this detach the observers before of signal the disconnection
+     * to the client
+     *
+     * @param token token of the player detected as disconnected
+     */
     public synchronized void userDisconnects(String token) {
         if (lobby == null || !lobby.getUserList().contains(getUserByToken(token)))
             throw new IllegalArgumentException("Can't leave because user is not in the lobby");
@@ -186,12 +200,20 @@ public class LobbyManager {
         throw new IllegalArgumentException("No user with this token exists. Impossible to logout");
     }
 
+    /**
+     *
+     * @return list of the user in the lobby
+     */
     public List<User> getLobbyUsers() {
         if (lobby == null)
             throw new IllegalStateException("No lobby active");
         return lobby.getUserList();
     }
 
+    /**
+     *
+     * @return list of the player that have logged in
+     */
     public List<User> getLoggedUser() {
         return new ArrayList<>(users);
     }
@@ -219,6 +241,10 @@ public class LobbyManager {
         }
     }
 
+    /**
+     *
+     * @return lobby observer manager for the lobby
+     */
     public LobbyObserverManager getLobbyObserverManager() {
         return lobbyObserverManager;
     }
@@ -235,10 +261,9 @@ public class LobbyManager {
         return DELAY_TIME - (currTime - timeoutStart);
     }
 
-    public long getDelayTime() {
-        return DELAY_TIME;
-    }
-
+    /**
+     * Pings the client in the lobby
+     */
     public synchronized void ping() {
         if (isLobbyActive()) {
             lobby.getLobbyObserverMap().forEach((k, v) -> v.onPing());

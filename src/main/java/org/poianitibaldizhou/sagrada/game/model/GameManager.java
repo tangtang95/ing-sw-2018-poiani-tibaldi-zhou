@@ -57,7 +57,7 @@ public class GameManager {
      */
     @Contract(pure = true)
     public synchronized List<String> getPlayersByGame(String gameName) {
-        return gameMap.containsKey(gameName)? new ArrayList<>(playersByGame.get(gameName)) : null;
+        return gameMap.containsKey(gameName) ? new ArrayList<>(playersByGame.get(gameName)) : null;
     }
 
     public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
@@ -79,7 +79,7 @@ public class GameManager {
     /**
      * Creates a new single player game.
      *
-     * @param userName single player's difficulty
+     * @param userName   single player's difficulty
      * @param difficulty difficulty of the game
      * @return name of the single player name
      * @throws IOException network communication error
@@ -88,14 +88,14 @@ public class GameManager {
         String gameName;
 
         // Try login with this username
-        if(managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(String.valueOf(userName.hashCode()))) {
+        if (managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(String.valueOf(userName.hashCode()))) {
             throw new IOException();
         }
 
         // Creates the game
         do {
             gameName = UUID.randomUUID().toString();
-        } while(gameMap.containsKey(gameName));
+        } while (gameMap.containsKey(gameName));
 
         String token = String.valueOf(userName.hashCode());
 
@@ -107,19 +107,24 @@ public class GameManager {
         players.add(token);
         gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), singlePlayer));
 
+        singlePlayer.initGame();
+
         return gameName;
     }
 
     /**
-     * Adds a game to the list of current gameMap, if it's not present.
+     * Adds a multi player game to the list of current gameMap, if it's not present.
      * It also creates the GameObserverManager associated with the game
      * If the game is already present, does nothing.
      *
-     * @param game game to add
+     * @param game     game to add
      * @param gameName game's name
      */
-    public synchronized void addGame(IGame game, String gameName) {
-        if(gameMap.putIfAbsent(gameName, game) == null){
+    public synchronized void createMultiPlayerGame(IGame game, String gameName) {
+        if (game.isSinglePlayer())
+            throw new IllegalArgumentException();
+
+        if (gameMap.putIfAbsent(gameName, game) == null) {
             playersByGame.put(gameName, new ArrayList<>());
             game.getUsers().forEach(user -> {
                 playersByGame.get(gameName).add(user.getToken());
@@ -129,12 +134,11 @@ public class GameManager {
 
             // Adding timeout
             TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName));
+            game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
+            gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
+            game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
 
-            if(!game.isSinglePlayer()) {
-                game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
-                gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
-                game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
-            }
+            game.initGame();
         }
     }
 
@@ -146,7 +150,7 @@ public class GameManager {
      * @param gameName game to terminate
      */
     public synchronized void terminateGame(String gameName) {
-        if(gameMap.remove(gameName) != null) {
+        if (gameMap.remove(gameName) != null) {
             List<String> playersPlaying = playersByGame.get(gameName);
             players.removeAll(playersPlaying);
             playersByGame.remove(gameName);

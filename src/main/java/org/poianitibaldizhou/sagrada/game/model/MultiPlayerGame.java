@@ -37,8 +37,6 @@ public class MultiPlayerGame extends Game{
     public MultiPlayerGame(String name, List<User> users, TerminationGameManager terminationGameManager)  {
         super(name, terminationGameManager);
         this.users.addAll(users);
-
-        setState(new ResetState(this));
     }
 
     /**
@@ -223,5 +221,4 @@ public class MultiPlayerGame extends Game{
             return currentRoundPlayer;
         throw new IllegalStateException("SEVERE ERROR: No winners founded");
     }
-
 }

@@ -21,7 +21,7 @@ public class ResetState extends IStateGame {
      */
     @Override
     public void init() {
-        // Nothing to notify
+        game.getStateObservers().forEach((key, value) -> value.onWaitingForPlayer());
     }
 
 
@@ -41,5 +41,14 @@ public class ResetState extends IStateGame {
         playersReady.add(token);
         if (playersReady.size() == game.getNumberOfPlayers())
             game.setState(new SetupPlayerState(game));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void forceGameTerminationBeforeStarting() {
+        game.getStateObservers().forEach((key, value) -> value.onGameTerminationBeforeStarting());
+        game.terminateGame();
     }
 }

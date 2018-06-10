@@ -43,8 +43,6 @@ public class SinglePlayerGame extends Game{
         super(name, terminationGameManager);
         this.users.add(user);
         this.difficulty = difficulty;
-
-        setState(new ResetState(this));
     }
 
     public int getDifficulty(){

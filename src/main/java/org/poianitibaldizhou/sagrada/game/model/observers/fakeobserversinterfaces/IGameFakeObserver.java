@@ -58,5 +58,4 @@ public interface IGameFakeObserver  {
      * @param schemaCards the list of schema cards drawn
      */
     void onSchemaCardsDraw(List<FrontBackSchemaCard> schemaCards) ;
-
 }

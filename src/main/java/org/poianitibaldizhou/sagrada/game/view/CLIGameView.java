@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
+import javafx.print.Printer;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
