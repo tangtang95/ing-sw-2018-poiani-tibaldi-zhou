@@ -20,22 +20,78 @@ import java.util.List;
 
 public interface IGame {
 
+    /**
+     * Attach a state observer to the game
+     *
+     * @param token token of the observer
+     * @param stateObserver state fake observer that listens to modification of the game state
+     */
     void attachStateObserver(String token, IStateFakeObserver stateObserver);
 
+    /**
+     * Attach a game observer to the game
+     *
+     * @param userToken token of the observer
+     * @param gameObserver game fake observer that listens to modification of the game
+     */
     void attachGameObserver(String userToken, IGameFakeObserver gameObserver);
 
+    /**
+     * Attach a round track observer to the round track of this game
+     *
+     * @param token token of the observer
+     * @param roundTrackObserver round track fake observer that listens to modification of the round track of this game
+     */
     void attachRoundTrackObserver(String token, IRoundTrackFakeObserver roundTrackObserver);
 
+    /**
+     * Attach a draft pool observer to the draft pool of this game
+     *
+     * @param token token of the observer
+     * @param draftPoolObserver draft pool fake observer that listens to modification of the draft pool of this game
+     */
     void attachDraftPoolObserver(String token, IDraftPoolFakeObserver draftPoolObserver);
 
+    /**
+     * Attach a tool card observer to a tool card of the game
+     *
+     * @param token token of the observer
+     * @param toolCard tool card on which the observer listen
+     * @param toolCardObserver tool card fake observer that listens to modification of toolCard
+     */
     void attachToolCardObserver(String token, ToolCard toolCard, IToolCardFakeObserver toolCardObserver);
 
+    /**
+     * Attach a dice bag observer to the dice bag of this game
+     *
+     * @param token token of the observer
+     * @param drawableCollectionObserver dice bag fake observer that listens to modification of the dice bag
+     */
     void attachDiceBagObserver(String token, IDrawableCollectionFakeObserver<Dice> drawableCollectionObserver);
 
+    /**
+     * Attach a schema card observer to a specified schema card of this game
+     *
+     * @param token token of the observer
+     * @param schemaCard schema card that will be listened by schemaCardObserver
+     * @param schemaCardObserver schema card fake observer that listens to modification of schemaCard
+     */
     void attachSchemaCardObserver(String token, SchemaCard schemaCard, ISchemaCardFakeObserver schemaCardObserver);
 
+    /**
+     * Attach a player observer to a specified player
+     *
+     * @param token token of the observer
+     * @param player player that will be listened by playerObserver
+     * @param playerObserver player fake observer that listens to modification of player
+     */
     void attachPlayerObserver(String token, Player player, IPlayerFakeObserver playerObserver);
 
+    /**
+     * Detach all the fake observer related to token
+     *
+     * @param token token of the observer
+     */
     void detachObservers(String token);
 
     void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException;
