@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
@@ -78,4 +79,6 @@ public interface IGame {
     List<PublicObjectiveCard> getPublicObjectiveCards();
 
     List<PrivateObjectiveCard> getPrivateObjectiveCardsByToken(String token);
+
+    void setGameObserverManager(GameObserverManager gameObserverManager);
 }

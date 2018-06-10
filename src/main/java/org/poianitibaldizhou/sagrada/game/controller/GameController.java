@@ -1192,8 +1192,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             Set<String> disconnected = observerManager.getDisconnectedPlayer();
             List<User> playerList = gameManager.getGameByName(gameName).getUsers();
 
-            System.out.println("Disc list: " + disconnected);
-
             toNotifyDisconnect.forEach(disconnectedToken -> {
                 playerList.forEach(player -> {
                     if (!disconnected.contains(player.getToken())) {
@@ -1212,8 +1210,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 observerManager.notifyDisconnection(disconnectedToken);
                 viewMap.remove(disconnectedToken);
             });
-
-            System.out.println("Disc list after: " + disconnected);
 
             return handleEndGame(gameManager.getGameByName(gameName), observerManager);
         }
@@ -1243,7 +1239,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 return true;
             }
         } else if(!observerManager.getDisconnectedPlayer().isEmpty()){
-            System.out.println("The list of disconnected users is not empty, so the game gets terminated");
             gameManager.terminateGame(game.getName());
             return true;
         }

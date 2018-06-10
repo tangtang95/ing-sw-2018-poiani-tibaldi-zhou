@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAl
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;

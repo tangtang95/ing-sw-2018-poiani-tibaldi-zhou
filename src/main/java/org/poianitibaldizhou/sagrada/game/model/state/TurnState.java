@@ -91,13 +91,18 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     @Override
     public void init() {
-        if (skipTurnPlayers.containsKey(getCurrentTurnPlayer())
-                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN)) {
+        if ((skipTurnPlayers.containsKey(getCurrentTurnPlayer())
+                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN))){
             game.getStateObservers().forEach((key, value) ->
                     value.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
             nextTurn();
             return;
         }
+        if(!game.isSinglePlayer() && game.getObserverManager().getDisconnectedPlayer().contains(getCurrentTurnPlayer().getToken())) {
+            nextTurn();
+            return;
+        }
+
         game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound,
                     (isFirstTurn) ? FIRST_TURN : SECOND_TURN, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
 

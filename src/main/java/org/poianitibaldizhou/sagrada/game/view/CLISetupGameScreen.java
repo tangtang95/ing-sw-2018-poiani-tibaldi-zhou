@@ -65,7 +65,7 @@ public class CLISetupGameScreen extends CLIBasicScreen {
      */
     @Override
     protected void initializeCommands() {
-        /* For this CLI there are not any commands. */
+        /* For this CLI there is not any command. */
     }
 
     /**

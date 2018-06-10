@@ -107,7 +107,7 @@ public class GameObserverManager {
     public void pushThreadInQueue(String token, Runnable notify) {
         synchronized (getGame()) {
             lock.lock();
-            System.out.println("Pushing thread in queue (GAME OBS MAN)");
+            //System.out.println("Pushing thread in queue (GAME OBS MAN)");
             if (!disconnectedPlayer.contains(token))
                 executorHashMap.get(token).submit(notify);
             lock.unlock();

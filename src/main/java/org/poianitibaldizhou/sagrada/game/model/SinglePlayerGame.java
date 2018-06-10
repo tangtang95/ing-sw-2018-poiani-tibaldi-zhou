@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAl
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;

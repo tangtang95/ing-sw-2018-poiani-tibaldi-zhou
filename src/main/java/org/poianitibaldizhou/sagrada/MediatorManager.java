@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
 import org.poianitibaldizhou.sagrada.game.model.TerminationGameManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;

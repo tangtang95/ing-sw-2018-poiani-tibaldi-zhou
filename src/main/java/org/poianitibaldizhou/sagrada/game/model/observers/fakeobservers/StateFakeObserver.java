@@ -73,6 +73,7 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onRoundStart(int round, User roundUser) {
+        System.out.println("ON ROUND START");
         Runnable runnable = () -> {
             try {
                 realObserver.onRoundStart(serverCreateMessage.createRoundUserMessage(roundUser).createMessageValue(round).buildMessage());
@@ -89,14 +90,8 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
-        if (observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
-            try {
-                observerManager.getGame().forceStateChange();
-            } catch (InvalidActionException e) {
-                throw new IllegalStateException();
-            }
-        } else {
-
+        if (!observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
+            System.out.println("ON TURN STATE " + turnUser.getName());
             Runnable runnable = () -> {
                 try {
                     realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createTurnValueMessage(turn).
@@ -115,6 +110,7 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onRoundEnd(int round, User roundUser) {
+        System.out.println("ON ROUND END " + roundUser.getName());
         Runnable runnable = () -> {
             try {
                 realObserver.onRoundEnd(serverCreateMessage.createRoundUserMessage(roundUser).createMessageValue(round).buildMessage());
@@ -196,15 +192,18 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onEndTurnState(User turnUser) {
-        Runnable runnable = () -> {
-            try {
-                realObserver.onEndTurnState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
-            } catch (IOException e) {
-                observerManager.signalDisconnection(token);
-            }
-        };
+        if (!observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
+            System.out.println("ON END TURN STATEE " + turnUser.getName());
+            Runnable runnable = () -> {
+                try {
+                    realObserver.onEndTurnState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
+                } catch (IOException e) {
+                    observerManager.signalDisconnection(token);
+                }
+            };
 
-        observerManager.pushThreadInQueue(token, runnable);
+            observerManager.pushThreadInQueue(token, runnable);
+        }
     }
 
     /**

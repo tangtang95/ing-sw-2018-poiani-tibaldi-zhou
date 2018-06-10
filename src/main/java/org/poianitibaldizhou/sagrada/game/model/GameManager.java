@@ -81,9 +81,11 @@ public class GameManager {
 
             // Adding timeout
             TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName));
+
             if(!game.isSinglePlayer()) {
                 game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
                 gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
+                game.setGameObserverManager(gameObserverManagerMap.get(gameName));
             }
         }
     }

@@ -14,6 +14,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -43,6 +44,7 @@ public abstract class Game implements IGame, IGameStrategy {
     private final Map<String, IStateFakeObserver> stateObservers;
 
     private final TerminationGameManager terminationGameManager;
+    private GameObserverManager gameObserverManager;
 
     protected Game(String name, TerminationGameManager terminationGameManager) {
         this.name = name;
@@ -390,7 +392,13 @@ public abstract class Game implements IGame, IGameStrategy {
         return state.getCurrentPlayer();
     }
 
+    @Override
+    public void setGameObserverManager(GameObserverManager gameObserverManager) {
+        this.gameObserverManager = gameObserverManager;
+    }
+
     //MODIFIER
+
 
     public void detachGameObserver(String token) {
         gameObservers.remove(token);
@@ -500,5 +508,9 @@ public abstract class Game implements IGame, IGameStrategy {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
             }
         }
+    }
+
+    public GameObserverManager getObserverManager() {
+        return gameObserverManager;
     }
 }
