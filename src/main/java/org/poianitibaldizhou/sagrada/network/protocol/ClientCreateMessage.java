@@ -24,7 +24,7 @@ public class ClientCreateMessage {
      * Create a gameName message.
      *
      * @param gameName the game name to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createGameNameMessage(@NotNull String gameName) {
         jsonClientProtocol.appendMessage(SharedConstants.GAME_NAME_KEY, gameName);
@@ -35,7 +35,7 @@ public class ClientCreateMessage {
      * Create a token message.
      *
      * @param token the token of player to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createTokenMessage(@NotNull String token) {
         jsonClientProtocol.appendMessage(SharedConstants.TOKEN_KEY, token);
@@ -46,7 +46,7 @@ public class ClientCreateMessage {
      * Create a schemaCard message.
      *
      * @param schemaCard the schemaCard to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createSchemaCardMessage(@NotNull SchemaCardWrapper schemaCard) {
         jsonClientProtocol.appendMessage(SharedConstants.SCHEMA_CARD, schemaCard);
@@ -57,7 +57,7 @@ public class ClientCreateMessage {
      * Create a username message.
      *
      * @param username the username of player to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createUsernameMessage(@NotNull String username) {
         jsonClientProtocol.appendMessage(SharedConstants.USER_NAME_STRING_KEY, username);
@@ -68,7 +68,7 @@ public class ClientCreateMessage {
      * Create a value message.
      *
      * @param value the value to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createValueMessage(@NotNull Integer value) {
         jsonClientProtocol.appendMessage(SharedConstants.INTEGER, value);
@@ -79,7 +79,7 @@ public class ClientCreateMessage {
      * Create a dice message.
      *
      * @param dice the dice to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createDiceMessage(@NotNull DiceWrapper dice) {
         jsonClientProtocol.appendMessage(SharedConstants.DICE, dice);
@@ -90,7 +90,7 @@ public class ClientCreateMessage {
      * Create a color message.
      *
      * @param color the color to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createColorMessage(@NotNull ColorWrapper color) {
         jsonClientProtocol.appendMessage(SharedConstants.COLOR, color);
@@ -101,7 +101,7 @@ public class ClientCreateMessage {
      * Create a boolean message.
      *
      * @param bool the bool value to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createBooleanMessage(@NotNull Boolean bool) {
         jsonClientProtocol.appendMessage(SharedConstants.BOOLEAN, bool);
@@ -112,7 +112,7 @@ public class ClientCreateMessage {
      * Create a position message.
      *
      * @param positionWrapper the position to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createPositionMessage(@NotNull PositionWrapper positionWrapper) {
         jsonClientProtocol.appendMessage(SharedConstants.POSITION, positionWrapper);
@@ -120,10 +120,20 @@ public class ClientCreateMessage {
     }
 
     /**
+     * Creates a message containing a private objective card 
+     * @param privateObjectiveCardWrapper private objective card that needs to be sent
+     * @return the ClientCreateMessage with the message added to the packed
+     */
+    public ClientCreateMessage createPrivateObjectiveCardMessage(@NotNull PrivateObjectiveCardWrapper privateObjectiveCardWrapper) {
+        jsonClientProtocol.appendMessage(SharedConstants.PRIVATE_OBJECTIVE_CARD, privateObjectiveCardWrapper);
+        return this;
+    }
+
+    /**
      * Create a toolCard message.
      *
      * @param toolCardWrapper the toolCard to send to server.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createToolCardMessage(@NotNull ToolCardWrapper toolCardWrapper) {
         jsonClientProtocol.appendMessage(SharedConstants.TOOL_CARD, toolCardWrapper);
@@ -134,7 +144,7 @@ public class ClientCreateMessage {
      * Create a action message.
      *
      * @param iActionWrapper the action that you will do.
-     * @return the ClientCreateMessage with the message adds to packet.
+     * @return the ClientCreateMessage with the message added to the packet.
      */
     public ClientCreateMessage createActionMessage(@NotNull IActionWrapper iActionWrapper) {
         jsonClientProtocol.appendMessage(SharedConstants.ACTION_KEY, iActionWrapper);

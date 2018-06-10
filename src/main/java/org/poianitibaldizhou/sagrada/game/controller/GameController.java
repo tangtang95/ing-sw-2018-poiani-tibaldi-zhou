@@ -121,12 +121,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void chosenSchemaCard(String message) throws IOException {
+    public void chooseSchemaCard(String message) throws IOException {
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
         SchemaCard schemaCard = serverGetMessage.getSchemaCard(message);
 
-        System.out.println("User with token: " + token + "accessed: chosenSchemaCard");
+        System.out.println("User with token: " + token + "accessed: chooseSchemaCard");
 
         if (initialCheck(token, gameName))
             throw new IOException();

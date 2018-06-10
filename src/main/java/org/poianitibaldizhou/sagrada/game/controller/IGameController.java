@@ -38,7 +38,7 @@ public interface IGameController extends Remote {
      * @param message message containing player's token, his game name and the schema card that he had chosen
      * @throws IOException network communication error
      */
-    void chosenSchemaCard(String message) throws IOException;
+    void chooseSchemaCard(String message) throws IOException;
 
     /**
      * Binds the player  and the schema card observers of a certain player to the specified player and its schema card.
