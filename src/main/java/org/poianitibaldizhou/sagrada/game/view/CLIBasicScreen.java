@@ -72,6 +72,13 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
     }
 
     /**
+     * Clear the screen.
+     */
+    public static void clearScreen() {
+        ///clear
+    }
+
+    /**
      * @param o the other object to compare.
      * @return true if the CLIChangeConnectionScreen has the same commandMap, connectionManager and screenManager.
      */

@@ -38,7 +38,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+    CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
         super(networkManager, screenManager);
 
         this.clientCreateMessage = new ClientCreateMessage();
@@ -71,6 +71,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      */
     @Override
     public void startCLI() {
+        CLIBasicScreen.clearScreen();
         pauseCLI();
         BuildGraphic buildGraphic = new BuildGraphic();
 
@@ -112,8 +113,9 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
             String token = clientGetMessage.getToken(message);
 
             consoleListener.wakeUpCommandConsole();
-            screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager, gameName,
-                    new UserWrapper(username), token));
+            screenManager.replaceScreen(new CLISetupGameScreen(connectionManager, screenManager,
+                    new CLISinglePlayerScreen(connectionManager, screenManager, gameName, token),
+                    new UserWrapper(username)));
 
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
