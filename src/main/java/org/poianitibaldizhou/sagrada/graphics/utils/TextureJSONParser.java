@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.graphics.utils;
 
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -11,19 +12,23 @@ import java.io.InputStreamReader;
 
 public class TextureJSONParser {
 
-    private JSONObject frames;
+    private JSONObject root;
 
     private static final String ROOT_KEY = "frames";
     private static final String FRAME_KEY = "frame";
 
+    private static final String META_KEY = "meta";
+    private static final String SIZE_KEY = "size";
+
     public TextureJSONParser(String resourcePath) throws ParseException, IOException {
         JSONParser parser = new JSONParser();
-        JSONObject root = (JSONObject) parser.parse(new InputStreamReader(getClass().getClassLoader()
+        root = (JSONObject) parser.parse(new InputStreamReader(getClass().getClassLoader()
                 .getResourceAsStream(resourcePath)));
-        frames = (JSONObject) root.get(ROOT_KEY);
+
     }
 
     public Rectangle2D getRectangleView(String imageUrl){
+        JSONObject frames = (JSONObject) root.get(ROOT_KEY);
         JSONObject imageObject = (JSONObject) frames.get(imageUrl);
         JSONObject frameObject = (JSONObject) imageObject.get(FRAME_KEY);
         long x = (Long) frameObject.get("x");
@@ -33,4 +38,11 @@ public class TextureJSONParser {
         return new Rectangle2D(x, y, width, height);
     }
 
+    public Point2D getImageSize() {
+        JSONObject metaObject = (JSONObject) root.get(META_KEY);
+        JSONObject imageSize = (JSONObject) metaObject.get(SIZE_KEY);
+        long width = (Long) imageSize.get("w");
+        long height = (Long) imageSize.get("h");
+        return new Point2D(width, height);
+    }
 }

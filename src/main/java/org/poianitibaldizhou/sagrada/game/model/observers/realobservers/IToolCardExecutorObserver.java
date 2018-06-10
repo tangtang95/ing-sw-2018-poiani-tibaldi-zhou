@@ -88,4 +88,9 @@ public interface IToolCardExecutorObserver extends Remote {
      * @throws IOException network error
      */
     void notifyDiceReroll(String message) throws IOException;
+
+    /**
+     * Notify that the execution of the ToolCard is ended
+     */
+    void notifyExecutionEnded() throws IOException;
 }

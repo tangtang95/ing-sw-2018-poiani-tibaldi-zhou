@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.component;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DraftPoolWrapper;
 
@@ -32,7 +32,7 @@ public class DraftPoolView extends Pane{
     public DraftPoolView(double scale){
         this.scale = scale;
         diceViewList = new ArrayList<>();
-        draftPoolImage = TextureUtils.getSimpleImageView(IMAGE_PATH, scale);
+        draftPoolImage = GraphicsUtils.getSimpleImageView(IMAGE_PATH, scale);
 
         this.getChildren().add(draftPoolImage);
     }

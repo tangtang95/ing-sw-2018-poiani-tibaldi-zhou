@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.component;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
 
 public class PrivateObjectiveCardView extends Pane {
@@ -22,7 +22,7 @@ public class PrivateObjectiveCardView extends Pane {
      */
     public PrivateObjectiveCardView(double scale){
         privateObjectiveCardWrapper = null;
-        cardView = TextureUtils.getImageView( "retro.png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
+        cardView = GraphicsUtils.getImageView( "retro.png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
         this.getChildren().add(cardView);
     }
 
@@ -32,8 +32,8 @@ public class PrivateObjectiveCardView extends Pane {
 
     public PrivateObjectiveCardView(PrivateObjectiveCardWrapper privateObjectiveCard, double scale){
         this.privateObjectiveCardWrapper = privateObjectiveCard;
-        String cardKey = TextureUtils.convertNameIntoObjectiveCardKey(privateObjectiveCard.getName());
-        cardView = TextureUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
+        String cardKey = GraphicsUtils.convertNameIntoObjectiveCardKey(privateObjectiveCard.getName());
+        cardView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
         this.getChildren().add(cardView);
     }
 

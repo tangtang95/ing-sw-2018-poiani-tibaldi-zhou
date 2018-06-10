@@ -69,7 +69,7 @@ public class MultiPlayerModel {
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
-        String response =  connectionManager.getGameController().getSchemaCards(request);
+        String response = connectionManager.getGameController().getSchemaCards(request);
         // TODO HANDLE TERMINATE ERROR GAME
         return parser.getSchemaCards(response);
     }
@@ -121,7 +121,7 @@ public class MultiPlayerModel {
         connectionManager.getGameController().chooseAction(request);
     }
 
-    public Map<UserWrapper,Integer> getCoinsMap() throws IOException {
+    public Map<UserWrapper, Integer> getCoinsMap() throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
@@ -156,8 +156,57 @@ public class MultiPlayerModel {
         return parser.getPublicObjectiveCards(response);
     }
 
-    public List<ToolCardWrapper> getToolCards() {
+    public List<ToolCardWrapper> getToolCards() throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
-        return null;
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getToolCards(request);
+        return parser.getToolCards(response);
+    }
+
+    public List<UserWrapper> getUserList() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getListOfUser(request);
+        return parser.getListOfUserWrapper(response);
+    }
+
+    public void useToolCard(ToolCardWrapper toolCardWrapper, IToolCardExecutorObserver executorObserver) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String changeActionRequest = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createActionMessage(new UseToolCardStateWrapper()).buildMessage();
+        connectionManager.getGameController().chooseAction(changeActionRequest);
+        String useToolCardRequest = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        connectionManager.getGameController().useToolCard(useToolCardRequest, executorObserver);
+    }
+
+    public void sendDiceObject(DiceWrapper diceWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createDiceMessage(diceWrapper).buildMessage();
+        connectionManager.getGameController().setDice(request);
+    }
+
+    public void sendColorObject(ColorWrapper colorWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createColorMessage(colorWrapper).buildMessage();
+        connectionManager.getGameController().setColor(request);
+    }
+
+    public void sendPositionObject(PositionWrapper positionWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createPositionMessage(positionWrapper).buildMessage();
+        connectionManager.getGameController().setPosition(request);
+    }
+
+    public void sendAnswerObject(boolean answer) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createBooleanMessage(answer).buildMessage();
+        connectionManager.getGameController().setContinueAction(request);
     }
 }
