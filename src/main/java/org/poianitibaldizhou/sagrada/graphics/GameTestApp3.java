@@ -20,10 +20,10 @@ public class GameTestApp3 extends Application{
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        WindowSize size = WindowSize.BIG;
+        WindowSize fixedSize = WindowSize.BIG;
 
         StackPane scenes = new StackPane();
-        SceneManager sceneManager = new SceneManager(scenes, size);
+        SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/multi_game.fxml"));
 
@@ -35,13 +35,15 @@ public class GameTestApp3 extends Application{
         controller.setMultiPlayerModel(String.valueOf("cordero3".hashCode()), "cordero3", "corderoGame", connectionManager);
         sceneManager.pushScene(root);
 
-        Scene scene = new Scene(scenes, size.getWidth(), size.getHeight());
+        WindowSize startSize = WindowSize.MEDIUM;
+
+        Scene scene = new Scene(scenes, startSize.getWidth(), startSize.getHeight());
         scene.setCamera(new PerspectiveCamera());
         String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
         scene.getStylesheets().add(css);
 
-        root.scaleXProperty().bind(scene.widthProperty().divide(size.getWidth()));
-        root.scaleYProperty().bind(scene.widthProperty().divide(size.getWidth()));
+        root.scaleXProperty().bind(scene.widthProperty().divide(fixedSize.getWidth()));
+        root.scaleYProperty().bind(scene.widthProperty().divide(fixedSize.getWidth()));
 
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setFullScreenExitHint("");
