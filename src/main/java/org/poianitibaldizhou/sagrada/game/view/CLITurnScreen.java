@@ -64,7 +64,6 @@ public class CLITurnScreen extends CLIRoundScreen {
      * Quit the game
      */
     private void quitGame() {
-        endTurn();
         try {
             connectionManager.getGameController().quitGame(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
@@ -73,6 +72,7 @@ public class CLITurnScreen extends CLIRoundScreen {
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
         }
+        screenManager.popWithoutStartInScreen();
         screenManager.popScreen();
     }
 

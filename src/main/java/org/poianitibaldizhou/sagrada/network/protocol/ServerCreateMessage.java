@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -19,25 +20,50 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Class for creating a message to send to server.
+ */
 public class ServerCreateMessage {
 
+    /**
+     * network protocol.
+     */
     private JSONProtocol jsonServerProtocol;
 
+    /**
+     * ServerCreateMessage constructor.
+     */
     public ServerCreateMessage() {
         jsonServerProtocol = new JSONProtocol();
     }
 
-    public ServerCreateMessage createDiceMessage(Dice dice){
+    /**
+     * Create a dice message.
+     *
+     * @param dice the dice to send to client.
+     * @return the ServerCreateMessage with the message adds to packet.
+     */
+    public ServerCreateMessage createDiceMessage(@NotNull Dice dice){
         jsonServerProtocol.appendMessage(SharedConstants.DICE,dice);
         return this;
     }
 
+    /**
+     * Create a error message.
+     *
+     * @return the error message.
+     */
     public String getErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.GET_ERROR);
         return JSONObject.toJSONString(error);
     }
 
+    /**
+     * Check if the game is terminated.
+     *
+     * @return
+     */
     public String getGameTerminatedErrorMessage() {
         Map<String, String> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.ERROR_TERMINATE_GAME_KEY, SharedConstants.ERROR_TEMINATE_GAME);
@@ -50,50 +76,50 @@ public class ServerCreateMessage {
         return JSONObject.toJSONString(error);
     }
 
-    public ServerCreateMessage createTokenMessage(String token) {
+    public ServerCreateMessage createTokenMessage(@NotNull String token) {
         jsonServerProtocol.appendMessage(SharedConstants.TOKEN_KEY, token);
         return this;
     }
 
-    public ServerCreateMessage createDiceSwapMessage(Dice oldDice, Dice newDice) {
+    public ServerCreateMessage createDiceSwapMessage(@NotNull Dice oldDice,@NotNull  Dice newDice) {
         jsonServerProtocol.appendMessage(SharedConstants.OLD_DICE_KEY, oldDice);
         jsonServerProtocol.appendMessage(SharedConstants.NEW_DICE_KEY, newDice);
         return this;
     }
 
-    public ServerCreateMessage createDiceList(List<Dice> diceList) {
+    public ServerCreateMessage createDiceList(@NotNull List<Dice> diceList) {
         jsonServerProtocol.appendMessage(SharedConstants.DICE_LIST_KEY,
                 diceList);
         return this;
     }
 
-    public ServerCreateMessage createTimeoutMessage(String timeout) {
+    public ServerCreateMessage createTimeoutMessage(@NotNull String timeout) {
         jsonServerProtocol.appendMessage(SharedConstants.TIMEOUT_KEY, timeout);
         return this;
     }
 
-    public <T> ServerCreateMessage createElem(T elem) {
+    public <T> ServerCreateMessage createElem(@NotNull T elem) {
         jsonServerProtocol.appendMessage(SharedConstants.ELEM, elem);
         return this;
     }
 
-    public <T> ServerCreateMessage createElemList(List<T> elem) {
+    public <T> ServerCreateMessage createElemList(@NotNull List<T> elem) {
         jsonServerProtocol.appendMessage(SharedConstants.ELEM_LIST_KEY, elem);
         return this;
     }
 
-    public ServerCreateMessage createUserList(List<User> userList) {
+    public ServerCreateMessage createUserList(@NotNull List<User> userList) {
         jsonServerProtocol.appendMessage(SharedConstants.USER_LIST_KEY, userList);
         return this;
     }
 
-    public ServerCreateMessage createPublicObjectiveCardList(List<PublicObjectiveCard> publicObjectiveCards) {
+    public ServerCreateMessage createPublicObjectiveCardList(@NotNull List<PublicObjectiveCard> publicObjectiveCards) {
         jsonServerProtocol.appendMessage(SharedConstants.PUBLIC_OBJECTIVE_CARD_LIST_KEY, publicObjectiveCards);
         return this;
     }
 
-    public ServerCreateMessage createToolCardList(List<ToolCard> toolcards) {
-        jsonServerProtocol.appendMessage(SharedConstants.TOOL_CARD_LIST_KEY, toolcards);
+    public ServerCreateMessage createToolCardList(@NotNull List<ToolCard> toolCards) {
+        jsonServerProtocol.appendMessage(SharedConstants.TOOL_CARD_LIST_KEY, toolCards);
         return this;
     }
 
@@ -101,118 +127,118 @@ public class ServerCreateMessage {
         jsonServerProtocol = new JSONProtocol();
     }
 
-    public ServerCreateMessage createPrivateObjectiveCardList(List<PrivateObjectiveCard> privateObjectiveCards) {
+    public ServerCreateMessage createPrivateObjectiveCardList(@NotNull List<PrivateObjectiveCard> privateObjectiveCards) {
         jsonServerProtocol.appendMessage(SharedConstants.PRIVATE_OBJECTIVE_CARD_LIST_KEY, privateObjectiveCards);
         return this;
     }
 
-    public ServerCreateMessage createFrontBackSchemaCardList(List<FrontBackSchemaCard> frontBackSchemaCards) {
+    public ServerCreateMessage createFrontBackSchemaCardList(@NotNull List<FrontBackSchemaCard> frontBackSchemaCards) {
         jsonServerProtocol.appendMessage(SharedConstants.FRONT_CARD_LIST_KEY, frontBackSchemaCards);
         return this;
     }
 
-    public ServerCreateMessage createMessageValue(Integer value) {
+    public ServerCreateMessage createMessageValue(@NotNull Integer value) {
         jsonServerProtocol.appendMessage(SharedConstants.INTEGER, value);
         return this;
     }
 
-    public ServerCreateMessage createTurnValueMessage(Integer value) {
+    public ServerCreateMessage createTurnValueMessage(@NotNull Integer value) {
         jsonServerProtocol.appendMessage(SharedConstants.TURN_VALUE_KEY, value);
         return this;
     }
 
-    public ServerCreateMessage createOutcomeMessage(Outcome outcome) {
+    public ServerCreateMessage createOutcomeMessage(@NotNull Outcome outcome) {
         jsonServerProtocol.appendMessage(SharedConstants.OUTCOME, outcome);
         return this;
     }
 
-    public ServerCreateMessage createUserMessage(User user) {
+    public ServerCreateMessage createUserMessage(@NotNull User user) {
         jsonServerProtocol.appendMessage(SharedConstants.USER, user);
         return this;
     }
 
-    public ServerCreateMessage createRoundUserMessage(User user) {
+    public ServerCreateMessage createRoundUserMessage(@NotNull User user) {
         jsonServerProtocol.appendMessage(SharedConstants.ROUND_USER_KEY, user);
         return this;
     }
 
-    public ServerCreateMessage createTurnUserMessage(User user) {
+    public ServerCreateMessage createTurnUserMessage(@NotNull User user) {
         jsonServerProtocol.appendMessage(SharedConstants.TURN_USER_KEY, user);
         return this;
     }
 
-    public ServerCreateMessage createBooleanMessage(Boolean bool) {
+    public ServerCreateMessage createBooleanMessage(@NotNull Boolean bool) {
         jsonServerProtocol.appendMessage(SharedConstants.BOOLEAN, bool);
         return this;
     }
 
-    public ServerCreateMessage createPositionMessage(Position position) {
+    public ServerCreateMessage createPositionMessage(@NotNull Position position) {
         jsonServerProtocol.appendMessage(SharedConstants.POSITION, position);
         return this;
     }
 
-    public ServerCreateMessage createVictoryPointMapMessage(Map<User, Integer> map) {
+    public ServerCreateMessage createVictoryPointMapMessage(@NotNull Map<User, Integer> map) {
         jsonServerProtocol.appendMessage(SharedConstants.VICTORY_POINT_MAP_KEY, map);
         return this;
     }
 
-    public ServerCreateMessage createColorListMessage(List<Color> colors) {
+    public ServerCreateMessage createColorListMessage(@NotNull List<Color> colors) {
         jsonServerProtocol.appendMessage(SharedConstants.COLOR_LIST_KEY, colors);
         return this;
     }
 
-    public ServerCreateMessage createDiceValueMessage(Integer value) {
+    public ServerCreateMessage createDiceValueMessage(@NotNull Integer value) {
         jsonServerProtocol.appendMessage(SharedConstants.DICE_VALUE_KEY, value);
         return this;
     }
 
-    public ServerCreateMessage createRoundTrackMessage(RoundTrack roundTrack) {
+    public ServerCreateMessage createRoundTrackMessage(@NotNull RoundTrack roundTrack) {
         jsonServerProtocol.appendMessage(SharedConstants.ROUND_TRACK, roundTrack);
         return this;
     }
 
-    public ServerCreateMessage createColorMessage(Color color) {
+    public ServerCreateMessage createColorMessage(@NotNull Color color) {
         jsonServerProtocol.appendMessage(SharedConstants.COLOR, color);
         return this;
     }
 
-    public ServerCreateMessage createCommandFlowMessage(CommandFlow commandFlow) {
+    public ServerCreateMessage createCommandFlowMessage(@NotNull CommandFlow commandFlow) {
         jsonServerProtocol.appendMessage(SharedConstants.COMMAND_FLOW, commandFlow);
         return this;
     }
 
-    public ServerCreateMessage createGamenNameMessage(String gameName) {
+    public ServerCreateMessage createGameNameMessage(@NotNull String gameName) {
         jsonServerProtocol.appendMessage(SharedConstants.GAME_NAME_KEY, gameName);
         return this;
     }
 
-    public ServerCreateMessage createToolCardMessage(ToolCard toolcard) {
+    public ServerCreateMessage createToolCardMessage(@NotNull ToolCard toolcard) {
         jsonServerProtocol.appendMessage(SharedConstants.TOOL_CARD, toolcard);
         return this;
     }
 
-    public ServerCreateMessage createSchemaCardMessage(SchemaCard schemaCard) {
+    public ServerCreateMessage createSchemaCardMessage(@NotNull SchemaCard schemaCard) {
         jsonServerProtocol.appendMessage(SharedConstants.SCHEMA_CARD, schemaCard);
         return this;
     }
 
 
-    public ServerCreateMessage createSchemaCardMapMessage(Map<User, SchemaCard> stringSchemaCardMap) {
+    public ServerCreateMessage createSchemaCardMapMessage(@NotNull Map<User, SchemaCard> stringSchemaCardMap) {
         jsonServerProtocol.appendMessage(SharedConstants.MAP_SCHEMA_CARD_KEY, stringSchemaCardMap);
         return this;
     }
 
-    public ServerCreateMessage createDraftPoolMessage(DraftPool draftPool) {
+    public ServerCreateMessage createDraftPoolMessage(@NotNull DraftPool draftPool) {
         jsonServerProtocol.appendMessage(SharedConstants.DRAFT_POOL, draftPool);
         return this;
     }
 
-    public ServerCreateMessage createCoinsMessage(Integer coins) {
+    public ServerCreateMessage createCoinsMessage(@NotNull Integer coins) {
         jsonServerProtocol.appendMessage(SharedConstants.INTEGER, coins);
         return this;
     }
 
-    public ServerCreateMessage createPlayersCoinsMessage(Map<User, Integer> playersCoins) {
+    public ServerCreateMessage createPlayersCoinsMessage(@NotNull Map<User, Integer> playersCoins) {
         jsonServerProtocol.appendMessage(SharedConstants.MAP_PLAYERS_COINS_KEY, playersCoins);
         return this;
     }

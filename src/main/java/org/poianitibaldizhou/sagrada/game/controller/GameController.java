@@ -767,7 +767,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         gameManager.getGameByName(gameName.get()).getPlayers().forEach(player -> users.add(player.getUser()));
 
-        return serverCreateMessage.createGamenNameMessage(gameName.get()).createUserList(users).createTokenMessage(token).buildMessage();
+        return serverCreateMessage.createGameNameMessage(gameName.get()).createUserList(users).createTokenMessage(token).buildMessage();
     }
 
     /**
@@ -1148,7 +1148,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         String gameName = gameManager.createSinglePlayerGame(username, difficulty);
 
-        return serverCreateMessage.createGamenNameMessage(gameName).createTokenMessage(String.valueOf(username.hashCode())).buildMessage();
+        return serverCreateMessage.createGameNameMessage(gameName).createTokenMessage(String.valueOf(username.hashCode())).buildMessage();
     }
 
     /**

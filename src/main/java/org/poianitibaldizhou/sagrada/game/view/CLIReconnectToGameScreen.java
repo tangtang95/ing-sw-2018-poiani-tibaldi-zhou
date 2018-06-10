@@ -110,7 +110,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 );
                 if(clientGetMessage.hasTerminateGameError(response))
                     return;
-                Collection<SchemaCardWrapper> schemaCardWrappers = clientGetMessage.getSchemaCards(response).values();
+                Map<UserWrapper,SchemaCardWrapper> schemaCardWrappers = clientGetMessage.getSchemaCards(response);
 
                 for (UserWrapper u : userList)
                     cliPlayerViewMap.put(u.getUsername(), new CLIPlayerView(cliStateView));
@@ -118,8 +118,8 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 for (ToolCardWrapper t : toolCardWrappers)
                     cliToolCardViewMap.put(t.getName(), new CLIToolCardView(cliStateView, t.getName()));
 
-                for (SchemaCardWrapper s : schemaCardWrappers)
-                    cliSchemaCardViewMap.put(s.getName(), new CLISchemaCardView(cliStateView, s.getName()));
+                for (Map.Entry<UserWrapper,SchemaCardWrapper> s : schemaCardWrappers.entrySet())
+                    cliSchemaCardViewMap.put(s.getKey().getUsername(), new CLISchemaCardView(cliStateView, s.getValue().getName()));
 
                 connectionManager.getGameController().reconnect(
                         clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage(),

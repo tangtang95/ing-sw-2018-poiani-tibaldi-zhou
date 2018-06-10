@@ -61,7 +61,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onGameStart(String gameName) {
         Runnable runnable = () -> {
             try {
-                realObserver.onGameStart(serverCreateMessage.createGamenNameMessage(gameName).buildMessage());
+                realObserver.onGameStart(serverCreateMessage.createGameNameMessage(gameName).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
