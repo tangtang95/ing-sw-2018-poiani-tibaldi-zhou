@@ -21,6 +21,12 @@ public class GameManager {
     private final List<String> players;
     private final MediatorManager managerMediator;
 
+    /**
+     * Constructor.
+     * Creates a game manager for handling the various games active on the server.
+     *
+     * @param managerMediator manager mediator between this and lobby manager
+     */
     public GameManager(MediatorManager managerMediator) {
         this.managerMediator = managerMediator;
         gameMap = new HashMap<>();
@@ -28,6 +34,47 @@ public class GameManager {
         players = new ArrayList<>();
         gameObserverManagerMap = new HashMap<>();
     }
+
+    // GETTER
+
+    @Contract(pure = true)
+    public synchronized List<IGame> getGameList() {
+        return new ArrayList<>(gameMap.values());
+    }
+
+
+    @Contract(pure = true)
+    public synchronized boolean notContainsGame(final String gameName) {
+        return !gameMap.containsKey(gameName);
+    }
+
+    /**
+     * Returs the list of the player of a certain game.
+     * If none game with that name is present, return null
+     *
+     * @param gameName name of the game
+     * @return list of the player in gameName
+     */
+    @Contract(pure = true)
+    public synchronized List<String> getPlayersByGame(String gameName) {
+        return gameMap.containsKey(gameName)? new ArrayList<>(playersByGame.get(gameName)) : null;
+    }
+
+    public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
+        return gameObserverManagerMap.get(gameName);
+    }
+
+    /**
+     * Return the game associated with name.
+     *
+     * @param name name of the wanted game
+     * @return game associated with name
+     */
+    public synchronized IGame getGameByName(String name) {
+        return gameMap.get(name);
+    }
+
+    // MODIFIER
 
     /**
      * Creates a new single player game.
@@ -105,41 +152,5 @@ public class GameManager {
             playersByGame.remove(gameName);
             gameObserverManagerMap.remove(gameName);
         }
-    }
-
-    /**
-     * Return the game associated with name.
-     *
-     * @param name name of the wanted game
-     * @return game associated with name
-     */
-    public synchronized IGame getGameByName(String name) {
-        return gameMap.get(name);
-    }
-
-    /**
-     * Returs the list of the player of a certain game.
-     * If none game with that name is present, return null
-     *
-     * @param gameName name of the game
-     * @return list of the player in gameName
-     */
-    public synchronized List<String> getPlayersByGame(String gameName) {
-        return gameMap.containsKey(gameName)? new ArrayList<>(playersByGame.get(gameName)) : null;
-    }
-
-    public synchronized boolean containsGame(final String gameName) {
-        // TODO ?? perche non come nel commentato
-        //return gameMap.containsKey(gameName);
-        return gameMap.values().stream().map(IGame::getName).anyMatch(s -> s.equals(gameName));
-    }
-
-    public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
-        return gameObserverManagerMap.get(gameName);
-    }
-
-    @Contract(pure = true)
-    public synchronized List<IGame> getGameList() {
-        return new ArrayList<>(gameMap.values());
     }
 }

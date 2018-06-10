@@ -72,26 +72,41 @@ public class SinglePlayerGame extends Game{
         players.put(user.getToken(), new SinglePlayer(user, new ExpendableDice(this), schemaCard, privateObjectiveCards));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfToolCardForGame() {
         return getDifficulty();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfPublicObjectiveCardForGame() {
         return NUMBER_OF_PUBLIC_OBJECTIVE_CARDS;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfDicesToDraw() {
         return NUMBER_OF_DICES_TO_DRAW;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public int getNumberOfPrivateObjectiveCardForGame() {
         return NUMBER_OF_PRIVATE_OBJECTIVE_CARDS;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer) {
         int targetScore = getTargetScore();
@@ -99,26 +114,41 @@ public class SinglePlayerGame extends Game{
         setPlayerOutcome(currentRoundPlayer, outcome);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isSinglePlayer() {
         return true;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void forceGameTermination(Player winner) {
         throw new IllegalStateException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         setPlayer(user, schemaCard, privateObjectiveCards);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void handleEndGame() {
         for (Player player: players.values()) {getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());}
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Node<ICommand> getPreCommands(ToolCard toolCard) {
         Node<ICommand> useDiceCommand = new Node<>(new PayDice(toolCard.getColor()));

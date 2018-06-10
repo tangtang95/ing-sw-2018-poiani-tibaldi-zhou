@@ -18,7 +18,7 @@ import java.util.Objects;
  * Numbers are integer in the interval [MIN_VALUE, MAX_VALUE].
  */
 @Immutable
-public class Dice implements JSONable{
+public class Dice implements JSONable {
 
     private final NumberConstraint numberConstraint;
     private final ColorConstraint colorConstraint;
@@ -59,21 +59,34 @@ public class Dice implements JSONable{
     }
 
     // GETTER
+
+    /**
+     * @return number of this dice
+     */
     @Contract(pure = true)
     public int getNumber() {
         return numberConstraint.getNumber();
     }
 
+    /**
+     * @return color of this dice
+     */
     @Contract(pure = true)
     public Color getColor() {
         return colorConstraint.getColor();
     }
 
+    /**
+     * @return number constraint of this dice
+     */
     @Contract(pure = true)
     public NumberConstraint getNumberConstraint() {
         return numberConstraint;
     }
 
+    /**
+     * @return color constraint of this dice
+     */
     @Contract(pure = true)
     public ColorConstraint getColorConstraint() {
         return colorConstraint;
@@ -91,13 +104,25 @@ public class Dice implements JSONable{
                 this.getNumberConstraint().equals(other.getNumberConstraint());
     }
 
+    /**
+     * Returns true if this has the same color of other
+     *
+     * @param other dice compared
+     * @return true if this has the same color of other
+     */
     @Contract(pure = true)
     public boolean hasSameColor(Dice other) {
         return other != null && this.getColorConstraint().equals(other.getColorConstraint());
     }
 
+    /**
+     * Returns true if this has the same number of other
+     *
+     * @param other dice compared
+     * @return true if this has the same number of other
+     */
     @Contract(pure = true)
-    public boolean hasSameNumber(Dice other){
+    public boolean hasSameNumber(Dice other) {
         return other != null && this.getNumberConstraint().equals(other.getNumberConstraint());
     }
 
@@ -129,10 +154,9 @@ public class Dice implements JSONable{
         return "" + numberConstraint.toString() + "/" + colorConstraint.toString();
     }
 
+
     /**
-     * Convert a dice in a JSONObject.
-     *
-     * @return a JSONObject.
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings({"unchecked", "Duplicates"})
@@ -142,7 +166,7 @@ public class Dice implements JSONable{
         diceJSON.put(JSON_VALUE, this.getNumber());
         diceJSON.put(JSON_COLOR, this.getColor().name());
         main.put(SharedConstants.TYPE, SharedConstants.DICE);
-        main.put(SharedConstants.BODY,diceJSON);
+        main.put(SharedConstants.BODY, diceJSON);
         return main;
     }
 

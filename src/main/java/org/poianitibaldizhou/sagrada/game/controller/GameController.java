@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.controller;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -77,7 +76,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: joinGame");
 
-        if (!gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+        if (gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             view.err("The game doesn't exist or you are not signaled as an entering player");
             return;
         }
@@ -773,7 +772,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
 
@@ -799,7 +798,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
 
@@ -830,7 +829,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
 
@@ -863,7 +862,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -888,7 +887,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -914,7 +913,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -940,7 +939,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -967,7 +966,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + "accessed: getRoundTrack");
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
 
@@ -995,7 +994,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + "accessed: getToolCardByName");
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -1028,7 +1027,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + "accessed: getCurrentPlayer");
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -1060,7 +1059,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + "accessed: getSchemaCardByToken");
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -1093,7 +1092,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + "accessed: getListOfUser");
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -1120,7 +1119,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + " accessed: getTimeOut");
 
         if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
-                !gameManager.containsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
+                gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
         if (clearObservers(gameName)) {
@@ -1310,7 +1309,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private boolean initialCheck(String token, String gameName) {
         if (!viewMap.containsKey(token))
             return true;
-        if (!gameManager.getPlayersByGame(gameName).contains(token) || !gameManager.containsGame(gameName)) {
+        if (!gameManager.getPlayersByGame(gameName).contains(token) || gameManager.notContainsGame(gameName)) {
             try {
                 viewMap.get(token).err(INITIAL_CHECK_ERROR);
             } catch (IOException ignored) {
