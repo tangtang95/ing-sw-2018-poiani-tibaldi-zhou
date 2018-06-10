@@ -65,8 +65,11 @@ public class ServerCreateMessage {
      * @return the error message.
      */
     public String getGameTerminatedErrorMessage() {
-        Map<String, String> error = new HashMap<>();
-        error.putIfAbsent(SharedConstants.ERROR_TERMINATE_GAME_KEY, SharedConstants.ERROR_TEMINATE_GAME);
+        JSONObject main = new JSONObject();
+        main.put(SharedConstants.TYPE, SharedConstants.ERROR_TEMINATE_GAME);
+        main.put(SharedConstants.BODY, SharedConstants.ERROR_TEMINATE_GAME);
+        Map<String, JSONObject> error = new HashMap<>();
+        error.putIfAbsent(SharedConstants.ERROR_TERMINATE_GAME_KEY, main);
         return JSONObject.toJSONString(error);
     }
 
@@ -390,32 +393,66 @@ public class ServerCreateMessage {
         return this;
     }
 
+    /**
+     * Create a schemaCard message.
+     *
+     * @param schemaCard schema card to send to client.
+     * @return the ServerCreateMessage with the message adds to packet.
+     */
     public ServerCreateMessage createSchemaCardMessage(@NotNull SchemaCard schemaCard) {
         jsonServerProtocol.appendMessage(SharedConstants.SCHEMA_CARD, schemaCard);
         return this;
     }
 
-
+    /**
+     * Create a schemaCard map message.
+     *
+     * @param stringSchemaCardMap a map with user and schemaCard to send to client.
+     * @return the ServerCreateMessage with the message adds to packet.
+     */
     public ServerCreateMessage createSchemaCardMapMessage(@NotNull Map<User, SchemaCard> stringSchemaCardMap) {
         jsonServerProtocol.appendMessage(SharedConstants.MAP_SCHEMA_CARD_KEY, stringSchemaCardMap);
         return this;
     }
 
+    /**
+     * Create a DraftPool message.
+     *
+     * @param draftPool a draftPool to send to client.
+     * @return the ServerCreateMessage with the message adds to packet.
+     */
     public ServerCreateMessage createDraftPoolMessage(@NotNull DraftPool draftPool) {
         jsonServerProtocol.appendMessage(SharedConstants.DRAFT_POOL, draftPool);
         return this;
     }
 
+    /**
+     * Create a player's coins message.
+     *
+     * @param coins the player's coins to send to client.
+     * @return the ServerCreateMessage with the message adds to packet.
+     */
     public ServerCreateMessage createCoinsMessage(@NotNull Integer coins) {
         jsonServerProtocol.appendMessage(SharedConstants.INTEGER, coins);
         return this;
     }
 
+    /**
+     * Create a map o player's coins message
+     *
+     * @param playersCoins a map with user and coins to send to client.
+     * @return the ServerCreateMessage with the message adds to packet.
+     */
     public ServerCreateMessage createPlayersCoinsMessage(@NotNull Map<User, Integer> playersCoins) {
         jsonServerProtocol.appendMessage(SharedConstants.MAP_PLAYERS_COINS_KEY, playersCoins);
         return this;
     }
 
+    /**
+     * Make the current packet and it creates a new empty packet.
+     *
+     * @return the full packet to string for sending.
+     */
     public String buildMessage() {
         String temp = jsonServerProtocol.buildMessage();
         jsonServerProtocol = new JSONProtocol();
