@@ -19,6 +19,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -28,6 +29,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * OVERVIEW: Game represents a game, so it has all the references to the board game stuff of Sagrada. 
+ */
 public abstract class Game implements IGame, IGameStrategy {
 
     protected final List<User> users;
@@ -45,6 +49,13 @@ public abstract class Game implements IGame, IGameStrategy {
 
     private final TerminationGameManager terminationGameManager;
 
+    /**
+     * Constructor.
+     * Creates a game with a certain name and his termination manager
+     *
+     * @param name                   game's name
+     * @param terminationGameManager game's termination manager
+     */
     protected Game(String name, TerminationGameManager terminationGameManager) {
         this.name = name;
 
@@ -144,35 +155,57 @@ public abstract class Game implements IGame, IGameStrategy {
 
     // INTERFACE METHODS
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initGame() {
+        setState(new ResetState(this));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void forceSkipTurn() throws InvalidActionException {
         state.forceSkipTurn();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void forceStateChange() throws InvalidActionException {
         state.forceStateChange();
     }
 
     @Override
+    public void forceGameTerminationBeforeStarting() throws InvalidActionException {
+        state.forceGameTerminationBeforeStarting();
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public List<User> getTimedOutUsers() {
         List<User> timedOutUsers = getUsers().stream().filter(user -> !players.containsKey(user.getToken())).collect(Collectors.toList());
-        System.out.println("TIMEDOUTUSERS: " + timedOutUsers);
         return timedOutUsers;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userFireExecutorEvent(String token, ExecutorEvent event) throws InvalidActionException {
         state.fireExecutorEvent(event);
     }
 
     /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the roundTrack
-     * @throws RemoteException network error
+     * {@inheritDoc}
      */
-    @Contract(pure = true)
     @Override
     public RoundTrack getRoundTrack() {
         return RoundTrack.newInstance(roundTrack);
@@ -180,23 +213,16 @@ public abstract class Game implements IGame, IGameStrategy {
 
 
     /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the draftPool
-     * @throws RemoteException network error
+     * {@inheritDoc}
      */
-    @Contract(pure = true)
     @Override
     public DraftPool getDraftPool() {
         return DraftPool.newInstance(draftPool);
     }
 
     /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the list of toolCards
+     * {@inheritDoc}
      */
-    @Contract(pure = true)
     @Override
     public List<ToolCard> getToolCards() {
         List<ToolCard> copyToolCards = new ArrayList<>();
@@ -207,11 +233,8 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     /**
-     * DEEP-COPY
-     *
-     * @return the deep copy of the list of player
+     * {@inheritDoc}
      */
-    @Contract(pure = true)
     @Override
     public List<Player> getPlayers() {
         List<Player> copyPlayers = new ArrayList<>();
@@ -221,12 +244,18 @@ public abstract class Game implements IGame, IGameStrategy {
         return copyPlayers;
     }
 
-    @Contract(pure = true)
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<User> getUsers() {
         return new ArrayList<>(users);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void detachObservers(String token) {
         roundTrack.detachObserver(token);
         diceBag.detachObserver(token);
@@ -242,26 +271,42 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     // OBSERVER ATTACH (INTERFACE METHODS)
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachStateObserver(String token, IStateFakeObserver stateObserver) {
         stateObservers.put(token, stateObserver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachGameObserver(String userToken, IGameFakeObserver gameObserver) {
         gameObservers.put(userToken, gameObserver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachRoundTrackObserver(String token, IRoundTrackFakeObserver roundTrackObserver) {
         roundTrack.attachObserver(token, roundTrackObserver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachDraftPoolObserver(String token, IDraftPoolFakeObserver draftPoolObserver) {
         draftPool.attachObserver(token, draftPoolObserver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachToolCardObserver(String token, ToolCard toolCard, IToolCardFakeObserver toolCardObserver) {
         for (ToolCard card : toolCards) {
@@ -273,11 +318,17 @@ public abstract class Game implements IGame, IGameStrategy {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachDiceBagObserver(String token, IDrawableCollectionFakeObserver<Dice> drawableCollectionObserver) {
         diceBag.attachObserver(token, drawableCollectionObserver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachSchemaCardObserver(String token, SchemaCard schemaCard, ISchemaCardFakeObserver schemaCardObserver) {
         for (Player player : players.values()) {
@@ -289,6 +340,9 @@ public abstract class Game implements IGame, IGameStrategy {
         throw new IllegalArgumentException();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void attachPlayerObserver(String token, Player player, IPlayerFakeObserver playerObserver) {
         for (Player p : players.values()) {
@@ -298,6 +352,9 @@ public abstract class Game implements IGame, IGameStrategy {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userJoin(String token) throws InvalidActionException {
         if (!containsToken(token))
@@ -305,6 +362,9 @@ public abstract class Game implements IGame, IGameStrategy {
         state.readyGame(token);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userSelectSchemaCard(String token, SchemaCard schemaCard) throws InvalidActionException {
         if (!containsToken(token))
@@ -312,6 +372,9 @@ public abstract class Game implements IGame, IGameStrategy {
         state.ready(token, schemaCard);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userPlaceDice(String token, Dice dice, Position position) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token) || !draftPool.getDices().contains(dice))
@@ -325,8 +388,11 @@ public abstract class Game implements IGame, IGameStrategy {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorFakeObserver executorObserver) throws IllegalArgumentException, InvalidActionException {
+    public void userUseToolCard(String token, ToolCard toolCard, IToolCardExecutorFakeObserver executorObserver) throws InvalidActionException {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         Optional<ToolCard> toolCardRef = toolCards.stream().filter(card -> card.equals(toolCard)).findFirst();
@@ -335,11 +401,17 @@ public abstract class Game implements IGame, IGameStrategy {
         state.useCard(players.get(token), toolCardRef.get(), executorObserver);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<PrivateObjectiveCard> getPrivateObjectiveCardsByToken(String token) {
         return new ArrayList<>(players.get(token).getPrivateObjectiveCards());
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userChooseAction(String token, IActionCommand action) throws IllegalArgumentException, InvalidActionException {
         if (!containsToken(token))
@@ -347,51 +419,29 @@ public abstract class Game implements IGame, IGameStrategy {
         state.chooseAction(players.get(token), action);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws IllegalArgumentException, InvalidActionException {
-    /*
-        try {
-            players.get(token).placeDice(new Dice(1, Color.YELLOW), new Position(0, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(2, Color.BLUE), new Position(1, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(3, Color.YELLOW), new Position(2, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(4, Color.BLUE), new Position(3, 0), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-
-            players.get(token).placeDice(new Dice(2, Color.BLUE), new Position(0, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(3, Color.YELLOW), new Position(1, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(4, Color.BLUE), new Position(2, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(5, Color.YELLOW), new Position(3, 1), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-
-            players.get(token).placeDice(new Dice(3, Color.YELLOW), new Position(0, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(4, Color.BLUE), new Position(1, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(5, Color.YELLOW), new Position(2, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(6, Color.BLUE), new Position(3, 2), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-
-            players.get(token).placeDice(new Dice(1, Color.BLUE), new Position(0, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(2, Color.YELLOW), new Position(1, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(3, Color.BLUE), new Position(2, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(4, Color.YELLOW), new Position(3, 3), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-
-            players.get(token).placeDice(new Dice(2, Color.YELLOW), new Position(0, 4), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(3, Color.BLUE), new Position(1, 4), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-            players.get(token).placeDice(new Dice(4, Color.YELLOW), new Position(2, 4), PlacementRestrictionType.NONE, DiceRestrictionType.NORMAL);
-
-        } catch (RuleViolationException e) {
-            e.printStackTrace();
-        }
-        */
-
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean containsToken(String token) {
         Optional<String> optToken = users.stream().map(User::getToken).filter(tok -> tok.equals(token)).findFirst();
         return optToken.isPresent();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Player getCurrentPlayer() throws InvalidActionException {
         return state.getCurrentPlayer();
@@ -399,45 +449,93 @@ public abstract class Game implements IGame, IGameStrategy {
 
     //MODIFIER
 
-
+    /**
+     * Detach the game observers with a certain token
+     *
+     * @param token token of the observers that needs to be removed
+     */
     public void detachGameObserver(String token) {
         gameObservers.remove(token);
     }
 
+    /**
+     * Detach the game observers with a certain token
+     *
+     * @param token token of the observers that needs to be removed
+     */
     public void detachStateObserver(String token) {
         stateObservers.remove(token);
     }
 
+    /**
+     * Set and initialize a new state for the game
+     *
+     * @param state state that need to be set and initialized
+     */
     public void setState(IStateGame state) {
         this.state = state;
         this.state.init();
     }
 
+    /**
+     * Terminate the game
+     */
     public void terminateGame() {
         terminationGameManager.terminateGame();
     }
 
+    /**
+     * Set the outcome of the game for a certain player
+     *
+     * @param player  player that need to be related with outcome
+     * @param outcome player's outcome
+     */
     public void setPlayerOutcome(Player player, Outcome outcome) {
         players.get(player.getToken()).setOutcome(outcome);
     }
 
-    public void setPlayerSchemaCard(String userToken, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
+    /**
+     * Set a player with his schema card and the list of his private objective cards
+     *
+     * @param userToken             player's token
+     * @param schemaCard            player's schema card
+     * @param privateObjectiveCards player's private objective cards
+     */
+    public void setPlayer(String userToken, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         User user = getUserByToken(userToken);
         addNewPlayer(user, schemaCard, privateObjectiveCards);
     }
 
+    /**
+     * Add the remaining dice of the draft pool the the round track
+     *
+     * @param currentRound round of the round track on which the dices are added
+     */
     public void addRemainingDiceToRoundTrack(int currentRound) {
         roundTrack.addDicesToRound(draftPool.getDices(), currentRound);
     }
 
+    /**
+     * Add a tool card to the game
+     *
+     * @param toolCard tool card added
+     */
     public void addToolCard(ToolCard toolCard) {
         toolCards.add(toolCard);
     }
 
+    /**
+     * Add a public objective card to the game
+     *
+     * @param publicObjectiveCard public objective card added
+     */
     public void addPublicObjectiveCard(PublicObjectiveCard publicObjectiveCard) {
         publicObjectiveCards.add(publicObjectiveCard);
     }
 
+    /**
+     * Init the dice bag of the game
+     */
     public void initDiceBag() {
         GameInjector.injectDiceBag(diceBag);
     }
@@ -459,10 +557,6 @@ public abstract class Game implements IGame, IGameStrategy {
         return indexOfPlayer;
     }
 
-    protected Player getPlayerByIndex(int currentIndexOfPlayer) {
-        return players.get(users.get(currentIndexOfPlayer).getToken());
-    }
-
     /**
      * Return the next index of the player for the list of players
      *
@@ -475,31 +569,65 @@ public abstract class Game implements IGame, IGameStrategy {
         return (indexOfPlayer + direction.getIncrement() + getNumberOfPlayers()) % getNumberOfPlayers();
     }
 
+    /**
+     * Returns the next player of the game
+     *
+     * @param player    previous player
+     * @param direction direction of the turn (clock wise or anti clock wise)
+     * @return next player
+     */
     public Player getNextPlayer(Player player, Direction direction) {
         int indexOfNextPlayer = getNextIndexOfPlayer(player, direction);
         return players.get(users.get(indexOfNextPlayer).getToken());
     }
 
+    /**
+     * Set the private objective card for a certain player
+     *
+     * @param player               player related with privateObjectiveCard
+     * @param privateObjectiveCard player's private objective card
+     */
     public void selectPrivateObjectiveCard(Player player, PrivateObjectiveCard privateObjectiveCard) {
         player.setPrivateObjectiveCard(privateObjectiveCard);
     }
 
+    /**
+     * Set a draft pool for the game
+     *
+     * @param draftPool new draft pool
+     */
     public void setDraftPool(DraftPool draftPool) {
         this.draftPool = draftPool;
     }
 
+    /**
+     * Set a dice bag for the game
+     *
+     * @param diceBag new dice bag
+     */
     public void setDiceBag(DrawableCollection<Dice> diceBag) {
         this.diceBag = diceBag;
     }
 
+    /**
+     * Set a round track for the game
+     *
+     * @param roundTrack new round track
+     */
     public void setRoundTrack(RoundTrack roundTrack) {
         this.roundTrack = roundTrack;
     }
 
+    /**
+     * Clear the draft pool. After this call the draft pool will be empty
+     */
     public void clearDraftPool() {
         draftPool.clearPool();
     }
 
+    /**
+     * The number of dices that need to be thrown are removed from the dice bag and added to the draft pool
+     */
     public void addDicesToDraftPoolFromDiceBag() {
         for (int i = 0; i < getNumberOfDicesToDraw(); i++) {
             try {

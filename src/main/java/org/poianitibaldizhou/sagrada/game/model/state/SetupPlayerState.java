@@ -96,7 +96,7 @@ public class SetupPlayerState extends IStateGame {
     public void ready(String token, SchemaCard schemaCard) throws InvalidActionException {
         if (!isPlayerReady(token) && containsSchemaCard(token, schemaCard)) {
             playersReady.add(token);
-            game.setPlayerSchemaCard(token, schemaCard, privateObjectiveCardMap.get(token));
+            game.setPlayer(token, schemaCard, privateObjectiveCardMap.get(token));
             if (game.getNumberOfPlayers() == playersReady.size()) {
                 game.getGameObservers().forEach((key, value) -> value.onPlayersCreate(game.getUsers()));
                 game.setState(new SetupGameState(game));
@@ -114,7 +114,7 @@ public class SetupPlayerState extends IStateGame {
         game.getUsers().forEach(user -> {
             if(!playersReady.contains(user.getToken())) {
                 playersReady.add(user.getToken());
-                game.setPlayerSchemaCard(user.getToken(), playerFrontBackSchemaCards.get(user.getToken()).get(0).getFrontSchemaCard(),
+                game.setPlayer(user.getToken(), playerFrontBackSchemaCards.get(user.getToken()).get(0).getFrontSchemaCard(),
                         privateObjectiveCardMap.get(user.getToken()));
             }
         });

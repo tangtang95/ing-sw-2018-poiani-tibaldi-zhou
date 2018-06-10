@@ -239,4 +239,29 @@ public class StateFakeObserver implements IStateFakeObserver {
 
         observerManager.pushThreadInQueue(token, runnable);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onWaitingForPlayer() {
+        // DO NOTHING
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onGameTerminationBeforeStarting() {
+        Runnable runnable = () -> {
+            try {
+                realObserver.onGameTerminationBeforeStarting();
+            } catch(IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+    }
 }

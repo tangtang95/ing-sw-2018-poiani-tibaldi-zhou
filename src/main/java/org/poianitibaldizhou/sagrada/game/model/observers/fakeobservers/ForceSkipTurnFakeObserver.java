@@ -8,10 +8,21 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.Map;
 
+/**
+ * OVERVIEW: listen to the state of a certain game and
+ * handles the skip turn of the disconnected players
+ */
 public class ForceSkipTurnFakeObserver implements IStateFakeObserver {
 
     private GameObserverManager gameObserverManager;
 
+    /**
+     * Constructor.
+     * Creates a new state observer for handling the skip turn of disconnected
+     * players of a certain game
+     *
+     * @param gameObserverManager game observer manager of the specific game
+     */
     public ForceSkipTurnFakeObserver(GameObserverManager gameObserverManager) {
         this.gameObserverManager = gameObserverManager;
     }
@@ -115,6 +126,22 @@ public class ForceSkipTurnFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onResultGame(User winner) {
+        // DO NOTHING
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onWaitingForPlayer() {
+        // DO NOTHING
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onGameTerminationBeforeStarting() {
         // DO NOTHING
     }
 }

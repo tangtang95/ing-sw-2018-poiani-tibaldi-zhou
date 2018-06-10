@@ -104,4 +104,9 @@ public interface IStateObserver extends Remote {
      * @throws IOException network error
      */
     void onResultGame(String winner) throws IOException;
+
+    /**
+     * Notify that a game has terminated before starting because some player failed to join the game
+     */
+    void onGameTerminationBeforeStarting() throws IOException;
 }

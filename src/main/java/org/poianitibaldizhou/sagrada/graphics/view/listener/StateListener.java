@@ -362,6 +362,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         // TODO
     }
 
+    @Override
+    public void onGameTerminationBeforeStarting() throws IOException {
+        // TODO :)
+    }
+
     private Label createLabelMessage(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("state-message");

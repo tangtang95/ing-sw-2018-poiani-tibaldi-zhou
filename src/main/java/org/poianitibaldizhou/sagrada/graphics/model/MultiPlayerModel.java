@@ -57,7 +57,7 @@ public class MultiPlayerModel {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token)
                 .createGameNameMessage(gameModel.getGameName()).createSchemaCardMessage(schemaCardWrapper).buildMessage();
-        connectionManager.getGameController().chosenSchemaCard(request);
+        connectionManager.getGameController().chooseSchemaCard(request);
     }
 
 

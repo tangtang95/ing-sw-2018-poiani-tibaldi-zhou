@@ -11,6 +11,9 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * OVERVIEW: Strategy pattern implemented in order to handle the differences between single and multi player
+ */
 public interface IGameStrategy {
 
     /**
@@ -40,11 +43,6 @@ public interface IGameStrategy {
      * @param currentRoundPlayer the current round player who has the diceBag
      */
     void setPlayersOutcome(Map<Player, Integer> scoreMap, Player currentRoundPlayer);
-
-    /**
-     * @return true if the game is singlePlayerGame, otherwise false
-     */
-    boolean isSinglePlayer();
 
     /**
      * Add a new player to the map of players in the game

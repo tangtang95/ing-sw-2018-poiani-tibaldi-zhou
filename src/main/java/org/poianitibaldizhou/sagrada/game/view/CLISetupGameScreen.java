@@ -43,19 +43,18 @@ public class CLISetupGameScreen extends CLIBasicScreen {
     /**
      * @param connectionManager the network manager for connecting with the server.
      * @param screenManager manager for handler the changed of the screen.
-     * @param gameName name of current game.
+     * @param gameModeStrategy strategy for this game.
      * @param myUser my user in the the current game.
-     * @param token my token in the current game.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     public CLISetupGameScreen(ConnectionManager connectionManager, ScreenManager screenManager,
-                          String gameName, UserWrapper myUser, String token
+                          GameModeStrategy gameModeStrategy, UserWrapper myUser
     ) throws RemoteException {
         super(connectionManager, screenManager);
-        this.cliStateView = new CLIStateView(connectionManager,screenManager,gameName,myUser,token);
+        this.cliStateView = new CLIStateView(connectionManager,screenManager,gameModeStrategy,myUser);
 
-        this.token = token;
-        this.gameName = gameName;
+        this.token = gameModeStrategy.getToken();
+        this.gameName = gameModeStrategy.getGameName();
 
         this.cliGameView = new CLIGameView(cliStateView, connectionManager);
     }
@@ -73,6 +72,7 @@ public class CLISetupGameScreen extends CLIBasicScreen {
      */
     @Override
     public void startCLI() {
+        CLIBasicScreen.clearScreen();
         pauseCLI();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         consoleListener.setCommandMap(commandMap);
@@ -91,6 +91,7 @@ public class CLISetupGameScreen extends CLIBasicScreen {
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
                     BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            screenManager.popScreen();
         }
     }
 

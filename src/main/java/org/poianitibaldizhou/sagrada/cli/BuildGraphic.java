@@ -267,25 +267,25 @@ public class BuildGraphic {
      * @return the BuildGraphic with the stringBuilder changed.
      */
     public BuildGraphic buildGraphicLogo() {
-        int charNumber = 76;
+        int charNumber = 65;
 
-        stringBuilder.append((char) 9556);
+        stringBuilder.append(" ");
         for (int i = 0; i < charNumber; i++) {
-            stringBuilder.append((char) 9552);
+            stringBuilder.append("-");
         }
-        stringBuilder.append((char) 9559 + "\n" + (char) 9553);
-        for (int i = 0; i < (charNumber - 13) / 3; i++) {
+        stringBuilder.append(" \n" + "|");
+        for (int i = 0; i < 26; i++) {
             stringBuilder.append(" ");
         }
-        stringBuilder.append("     S A G R A D A     ");
-        for (int i = 0; i < (charNumber - 13) / 3; i++) {
+        stringBuilder.append("S A G R A D A");
+        for (int i = 0; i < 26; i++) {
             stringBuilder.append(" ");
         }
-        stringBuilder.append((char) 9553 + "\n" + (char) 9562);
+        stringBuilder.append("|" + "\n" + " ");
         for (int i = 0; i < charNumber; i++) {
-            stringBuilder.append((char) 9552);
+            stringBuilder.append("-");
         }
-        stringBuilder.append((char) 9565 + "\n");
+        stringBuilder.append("\n");
         return this;
     }
 

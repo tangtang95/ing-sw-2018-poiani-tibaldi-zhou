@@ -82,7 +82,7 @@ public class LobbyManagerTest {
         Thread.sleep(time1 / 6);
         long time2 = lobbyManager.getTimeToTimeout();
         assertTrue(time1 > time2);
-        assertTrue(lobbyManager.getDelayTime() >= time1);
+        assertTrue(lobbyManager.DELAY_TIME >= time1);
         Thread.sleep(time1 + (time1 / 6));
 
         assertTrue(lobbyManager.getLobbyUsers().size() == 1 && lobbyManager.getLobbyUsers().get(0).equals(user1));
@@ -97,7 +97,7 @@ public class LobbyManagerTest {
         lobbyManager.userJoinLobby(observers.get(0), user1);
         lobbyManager.userJoinLobby(observers.get(1), user2);
 
-        Thread.sleep(lobbyManager.getDelayTime() * 2);
+        Thread.sleep(lobbyManager.DELAY_TIME * 2);
 
         when(managerMediator.createMultiPlayerGame(lobbyManager.getLobbyUsers())).thenReturn("gamename");
 
@@ -120,7 +120,7 @@ public class LobbyManagerTest {
         User user1 = new User("u1", lobbyManager.login("u1"));
         lobbyManager.userJoinLobby(observers.get(0), user1);
         try {
-            Thread.sleep(lobbyManager.getDelayTime() / 2);
+            Thread.sleep(lobbyManager.DELAY_TIME / 2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

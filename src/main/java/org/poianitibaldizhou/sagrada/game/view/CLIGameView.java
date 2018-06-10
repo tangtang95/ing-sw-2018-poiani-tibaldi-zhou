@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
+import javafx.print.Printer;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
@@ -8,6 +9,7 @@ import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
@@ -130,8 +132,23 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
      * {@inheritDoc}
      */
     @Override
-    public void onChoosePrivateObjectiveCards(String privateObjectiveCards) {
-        /*SINGLE PLAYER*/
+    public void onChoosePrivateObjectiveCards(String message) throws IOException {
+        BuildGraphic buildGraphic = new BuildGraphic();
+        ConsoleListener consoleListener = ConsoleListener.getInstance();
+        List<PrivateObjectiveCardWrapper> privateObjectiveCards = clientGetMessage.getPrivateObjectiveCards(message);
+
+        buildGraphic.buildGraphicPrivateObjectiveCards(privateObjectiveCards);
+        buildGraphic.buildMessage("Choose a private objective card:");
+        PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
+
+        try {
+            connectionManager.getGameController().choosePrivateObjectiveCard(
+                    clientCreateMessage.createPrivateObjectiveCardMessage(privateObjectiveCards.get(consoleListener.readNumber(privateObjectiveCards.size()))).
+                            createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
+            );
+        } catch (TimeoutException e) {
+            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION,Level.INFORMATION);
+        }
     }
 
     /**
@@ -164,7 +181,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 
         try {
-            connectionManager.getGameController().chosenSchemaCard(
+            connectionManager.getGameController().chooseSchemaCard(
                     clientCreateMessage.createSchemaCardMessage(schemaCards.get(consoleListener.readNumber(schemaCards.size()))).
                             createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );

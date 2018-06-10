@@ -21,6 +21,16 @@ import java.util.Objects;
 public class CLIStateView extends UnicastRemoteObject implements IStateObserver {
 
     /**
+     * Strategy for round.
+     */
+    private final transient GameModeStrategy roundStrategy;
+
+    /**
+     * Strategy for turn.
+     */
+    private final transient GameModeStrategy turnStrategy;
+
+    /**
      * Reference to my user.
      */
     private final transient UserWrapper myUser;
@@ -63,34 +73,41 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     /**
      * lock object for synchronizing with the turn start.
      */
-    private final transient Object lock = new Object();
+    private static final transient Object lock = new Object();
 
     /**
      * Boolean value use to control the wait status.
      */
-    private boolean start;
+    private static boolean start;
 
     /**
      * Constructor.
      *
      * @param connectionManager the network manager for connecting with the server.
      * @param screenManager manager for handler the changed of the screen.
-     * @param gameName name of the current game.
-     * @param myUser my user in this game.
-     * @param token my token in this game.
+     * @param gameModeStrategy game mode strategy.
+     * @param myUser my user in game.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     public CLIStateView(ConnectionManager connectionManager, ScreenManager screenManager,
-                        String gameName, UserWrapper myUser, String token
-    ) throws RemoteException {
+                        GameModeStrategy gameModeStrategy, UserWrapper myUser
+                        ) throws RemoteException {
         super();
 
-        this.token = token;
+        this.token = gameModeStrategy.getToken();
         this.myUser = myUser;
-        this.gameName = gameName;
+        this.gameName = gameModeStrategy.getGameName();
         this.connectionManager = connectionManager;
         this.screenManager = screenManager;
-        this.start = true;
+        CLIStateView.setStart(false);
+
+        this.roundStrategy = gameModeStrategy;
+        if (gameModeStrategy.isSinglePlayer()){
+            this.turnStrategy = gameModeStrategy;
+        }else {
+            this.turnStrategy = new CLITurnMultiPlayerScreen(connectionManager,screenManager, gameName, token);
+        }
+
     }
 
     /**
@@ -143,19 +160,19 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     }
 
     /**
-     * @return a reference to teh lock object.
+     * @return the lock object.
      */
-    public Object getLock() {
+    public static Object getLock() {
         return lock;
     }
 
     /**
-     * Set the boolean value of start-
+     * Set the start value for the CLITurnScreen
      *
-     * @param start false for start the turn, true for block the start of turn.
+     * @param bool value to set.
      */
-    public void setStart(boolean start) {
-        this.start = start;
+    public static void setStart(boolean bool) {
+        start = !bool;
     }
 
     /**
@@ -183,10 +200,10 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             int round = clientGetMessage.getValue(jString);
             UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
             currentUser = roundUser;
-            PrinterManager.consolePrint("The round " + (round + 1) + " is started with player " +
+            PrinterManager.consolePrint("The roundStrategy " + (round + 1) + " is started with player " +
                     roundUser.getUsername() + "\n", Level.INFORMATION);
             if (round == 0)
-                screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, this));
+                screenManager.replaceScreen(roundStrategy);
             else {
                 start = false;
                 lock.notifyAll();
@@ -214,10 +231,10 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             if (turnUser.equals(myUser)) {
                 PrinterManager.consolePrint("----------------------------IS YOUR TURN---------------------------\n",
                         Level.STANDARD);
-                screenManager.pushScreen(new CLITurnScreen(connectionManager, screenManager, this));
+                screenManager.pushScreen(turnStrategy);
 
             } else
-                PrinterManager.consolePrint("Is the round " + (round + 1) + "," +
+                PrinterManager.consolePrint("Is the roundStrategy " + (round + 1) + "," +
                                 turnUser.getUsername() + " is playing\n",
                         Level.INFORMATION);
         }
@@ -229,8 +246,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onRoundEnd(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
-        PrinterManager.consolePrint("The round " + (round + 1) + "end\n", Level.STANDARD);
-        start = true;
+        PrinterManager.consolePrint("The roundStrategy " + (round + 1) + "end\n", Level.STANDARD);
+        CLIStateView.setStart(false);
     }
 
     /**
@@ -313,6 +330,16 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         } else {
             screenManager.popScreen();
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onGameTerminationBeforeStarting() throws IOException {
+        PrinterManager.consolePrint("The game has terminated before starting due to the fact that some" +
+                "players failed in joining the game", Level.ERROR);
+        screenManager.popScreen();
     }
 
     /**

@@ -71,7 +71,9 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
 
         getParameter();
 
-        this.cliStateView = new CLIStateView(connectionManager,screenManager, gameName, new UserWrapper(username),token);
+        this.cliStateView = new CLIStateView(connectionManager,screenManager,
+                new CLIMultiPlayerScreen(connectionManager, screenManager,gameName, token),
+                new UserWrapper(username));
 
         initializeCommands();
     }
@@ -137,7 +139,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                         new CLITimeoutView(cliStateView)
                 );
 
-                screenManager.replaceScreen(new CLIRoundScreen(connectionManager, screenManager, cliStateView));
+                screenManager.replaceScreen(new CLIMultiPlayerScreen(connectionManager, screenManager, gameName, token));
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
                         BuildGraphic.NETWORK_ERROR, Level.ERROR);

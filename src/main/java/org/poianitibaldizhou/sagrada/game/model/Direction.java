@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+/**
+ * OVERVIEW: represents a direction, clockwise has 1 as increment, while counter clockwise -1.
+ */
 public enum Direction {
     CLOCKWISE(1), COUNTER_CLOCKWISE(-1);
 
