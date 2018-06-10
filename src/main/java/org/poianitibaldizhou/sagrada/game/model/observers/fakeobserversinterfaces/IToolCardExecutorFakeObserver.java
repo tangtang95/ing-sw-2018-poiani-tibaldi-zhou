@@ -84,4 +84,9 @@ public interface IToolCardExecutorFakeObserver {
      * @param dice the dice after the re-roll
      */
     void notifyDiceReroll(Dice dice);
+
+    /**
+     * Notify that the execution of the ToolCard is ended
+     */
+    void notifyExecutionEnded() throws IOException;
 }

@@ -133,8 +133,9 @@ public class ToolCardExecutor extends Thread{
             throw new IllegalStateException("SEVERE ERROR: Need to set the commands before starting the thread");
         }
         try {
-            invokeCommands(preCommands);
             setTemporaryObjects();
+            invokeCommands(preCommands);
+            updateObjects();
             invokeCommands(coreCommands);
             updateObjects();
         } catch (InterruptedException e) {
