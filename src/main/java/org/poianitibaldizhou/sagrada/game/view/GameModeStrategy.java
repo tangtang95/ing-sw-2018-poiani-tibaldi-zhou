@@ -281,12 +281,12 @@ public abstract class GameModeStrategy implements IScreen{
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
-                        buildMessage("Choose a row:").toString(),
+                        buildMessage("Choose a row between 1 and 4 included:").toString(),
                 Level.STANDARD);
         try {
             int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
 
-            PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
+            PrinterManager.consolePrint("Choose a column between 1 and 5 included:\n", Level.STANDARD);
             int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
 
             return new PositionWrapper(row, column);

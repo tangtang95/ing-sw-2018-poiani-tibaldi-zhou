@@ -215,7 +215,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color"
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color "
                 + color.name()).
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         schemaCardPosition();
@@ -302,11 +302,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
-                        buildMessage("Choose a row:").toString(),
+                        buildMessage("Choose a row between 1 and 4 included:").toString(),
                 Level.STANDARD);
         try {
             int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
-            PrinterManager.consolePrint("Choose a column:\n", Level.STANDARD);
+            PrinterManager.consolePrint("Choose a column between 1 and 5 included:\n", Level.STANDARD);
             int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
 
             String setMessage = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).

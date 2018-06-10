@@ -166,8 +166,9 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      */
     @Override
     public void startCLI() {
+        CLIBasicScreen.clearScreen();
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint("-----------------------Welcome to the Lobby------------------------",
+        PrinterManager.consolePrint("-----------------------Welcome to the Lobby------------------------\n",
                 Level.STANDARD);
         login();
         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
