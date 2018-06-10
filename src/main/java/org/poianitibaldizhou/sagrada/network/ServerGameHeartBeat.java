@@ -17,7 +17,6 @@ public class ServerGameHeartBeat extends Thread {
 
     private final String gameName;
     private final GameManager gameManager;
-    private final NetworkManager networkManager;
     private static final long SLEEP_TIME = ServerSettings.getHearthBeatMillis();
 
     /**
@@ -28,10 +27,9 @@ public class ServerGameHeartBeat extends Thread {
      * @param gameManager game manager of the server
      * @param gameName name of the game on which the heart beat acts
      */
-    public ServerGameHeartBeat(GameManager gameManager, String gameName, NetworkManager networkManager) {
+    public ServerGameHeartBeat(GameManager gameManager, String gameName) {
         this.gameName = gameName;
         this.gameManager = gameManager;
-        this.networkManager = networkManager;
     }
 
     /**
@@ -43,7 +41,7 @@ public class ServerGameHeartBeat extends Thread {
             try {
                 Thread.sleep(SLEEP_TIME);
                 try {
-                    if (gameManager.clearObservers(gameName, networkManager))
+                    if (gameManager.clearObservers(gameName))
                         break;
                 } catch(NullPointerException npe) {
                     if(!gameManager.notContainsGame(gameName))

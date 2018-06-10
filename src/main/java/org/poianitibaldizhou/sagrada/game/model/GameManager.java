@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ForceSkipTurnFakeObserver;
@@ -9,7 +8,6 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutF
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.NetworkManager;
 import org.poianitibaldizhou.sagrada.network.ServerGameHeartBeat;
 
 import java.io.IOException;
@@ -21,7 +19,6 @@ import java.util.*;
 public class GameManager {
     private final Map<String, IGame> gameMap;
     private final Map<String, GameObserverManager> gameObserverManagerMap;
-    private final Map<String, NetworkManager> networkManagerMap;
     private final Map<String, ServerGameHeartBeat> serverGameHeartBeatMap;
 
     private final Map<String, List<String>> playersByGame;
@@ -42,7 +39,6 @@ public class GameManager {
         playersByGame = new HashMap<>();
         players = new ArrayList<>();
         gameObserverManagerMap = new HashMap<>();
-        networkManagerMap = new HashMap<>();
         serverGameHeartBeatMap = new HashMap<>();
     }
 
@@ -54,10 +50,6 @@ public class GameManager {
 
     public Map<String, IGameView> getGameViewMap() {
         return viewMap;
-    }
-
-    public synchronized NetworkManager getNetworkManagerByGame(String gameName) {
-        return networkManagerMap.get(gameName);
     }
 
     @Contract(pure = true)
@@ -142,8 +134,7 @@ public class GameManager {
         players.add(token);
         gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), singlePlayer));
 
-        networkManagerMap.putIfAbsent(gameName, new NetworkManager());
-        ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName, networkManagerMap.get(gameName));
+        ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName);
         serverGameHeartBeatMap.putIfAbsent(gameName, serverGameHeartBeat);
         serverGameHeartBeat.start();
 
@@ -176,10 +167,9 @@ public class GameManager {
             game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
             gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
             game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
-            networkManagerMap.putIfAbsent(gameName, new NetworkManager());
             game.initGame();
 
-            ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName, networkManagerMap.get(gameName));
+            ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName);
             serverGameHeartBeatMap.putIfAbsent(gameName, serverGameHeartBeat);
             serverGameHeartBeat.start();
         }
@@ -200,35 +190,6 @@ public class GameManager {
             gameObserverManagerMap.remove(gameName);
 
             serverGameHeartBeatMap.remove(gameName).interrupt();
-            networkManagerMap.remove(gameName);
-        }
-    }
-
-    public synchronized boolean clearObservers(String gameName, NetworkManager networkManager) {
-        System.out.println("Clearing observers");
-        synchronized (getGameByName(gameName)) {
-            GameObserverManager observerManager = getObserverManagerByGame(gameName);
-            Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
-            Set<String> disconnected = observerManager.getDisconnectedPlayer();
-            List<User> playerList = getGameByName(gameName).getUsers();
-
-            toNotifyDisconnect.forEach(disconnectedToken -> {
-                playerList.forEach(player -> {
-                    if (!disconnected.contains(player.getToken())) {
-                        Optional<User> user = playerList.stream().filter(u -> u.getToken().
-                                equals(disconnectedToken)).findFirst();
-                        if (user.isPresent())
-                            networkManager.getTokenINetworkFakeObserverMap().get(player.getToken()).notifyDisconnection(user.get());
-
-                    }
-                });
-
-                getGameByName(gameName).detachObservers(disconnectedToken);
-                observerManager.notifyDisconnection(disconnectedToken);
-                viewMap.remove(disconnectedToken);
-            });
-
-            return handleEndGame(getGameByName(gameName), observerManager);
         }
     }
 
@@ -240,7 +201,7 @@ public class GameManager {
      * @param gameName game's name
      * @return true if the game terminates, false otherwise
      */
-    public synchronized boolean clearObservers(String gameName, Map<String, IGameView> viewMap) {
+    public synchronized boolean clearObservers(String gameName) {
         synchronized (getGameByName(gameName)) {
             GameObserverManager observerManager = getObserverManagerByGame(gameName);
             Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
