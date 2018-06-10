@@ -68,6 +68,8 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
         super(connectionManager,screenManager);
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();
+        getParameter();
+
         this.cliStateView = new CLIStateView(connectionManager,screenManager, gameName, new UserWrapper(username),token);
 
         initializeCommands();
@@ -89,7 +91,6 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         consoleListener.setCommandMap(commandMap);
         PrinterManager.consolePrint("Re-connecting to your game...", Level.INFORMATION);
-        getParameter();
         if (userList != null && token != null && gameName != null) {
             try {
                 Map<String, IPlayerObserver> cliPlayerViewMap = new HashMap<>();
