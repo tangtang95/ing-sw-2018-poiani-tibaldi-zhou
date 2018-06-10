@@ -45,7 +45,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private static final transient String YOU_NEED_TO_RECONNECT = "You need to reconnect";
     private static final transient String GAME_TERMINATED = "The game has terminated";
 
-    private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
     private final transient GameManager gameManager;
 
     private final transient ServerGetMessage serverGetMessage;
@@ -106,7 +105,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 return;
             }
 
-            viewMap.put(token, view);
+            gameManager.putView(token, view);
         }
 
         try {
@@ -131,23 +130,24 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getNetworkManagerByGame(gameName))) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
             }
 
             try {
                 game.userSelectSchemaCard(token, schemaCard);
             } catch (InvalidActionException e) {
-                if (viewMap.containsKey(token)) {
+                if (gameManager.getGameViewMap().containsKey(token)) {
                     try {
-                        viewMap.get(token).err("The schema card selected is not valid");
+                        gameManager.getGameViewMap().get(token).err("The schema card selected is not valid");
                     } catch (IOException e1) {
                         handleIOException(token, gameName);
                         return;
@@ -158,7 +158,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
 
         try {
-            viewMap.get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
+            gameManager.getGameViewMap().get(token).ack("You have correctly selected the schema card: " + schemaCard.getName());
         } catch (IOException ioe) {
             handleIOException(token, gameName);
         }
@@ -180,15 +180,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -201,7 +202,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             if (!game.getPlayers().contains(player)) {
                 try {
-                    viewMap.get(token).err("You are trying to listening the actions of an non existing player");
+                    gameManager.getGameViewMap().get(token).err("You are trying to listening the actions of an non existing player");
                 } catch (IOException e) {
                     handleIOException(token, gameName);
                 }
@@ -214,7 +215,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
 
         try {
-            viewMap.get(token).ack("Binding to " + player.getUser().getName() + " successful");
+            gameManager.getGameViewMap().get(token).ack("Binding to " + player.getUser().getName() + " successful");
         } catch (IOException e) {
             handleIOException(token, gameName);
         }
@@ -235,21 +236,24 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.removeView(token);
+
                 return;
             }
 
             if (!game.getToolCards().contains(toolCard)) {
                 try {
-                    viewMap.get(token).err("You are trying to listening on a non existing toolcard");
+                    gameManager.getGameViewMap().get(token).err("You are trying to listening on a non existing toolcard");
                 } catch (IOException e) {
                     handleIOException(token, gameName);
                 }
@@ -260,7 +264,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
 
         try {
-            viewMap.get(token).ack("Binding to " + toolCard.getName() + " successful");
+            gameManager.getGameViewMap().get(token).ack("Binding to " + toolCard.getName() + " successful");
         } catch (IOException e) {
             handleIOException(token, gameName);
         }
@@ -281,15 +285,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -297,7 +302,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userChooseAction(token, actionCommand);
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err(INVALID_ACTION_ERR + " CHOOSE ACTION");
+                    gameManager.getGameViewMap().get(token).err(INVALID_ACTION_ERR + " CHOOSE ACTION");
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -305,7 +310,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         }
 
         try {
-            viewMap.get(token).ack("Action performed");
+            gameManager.getGameViewMap().get(token).ack("Action performed");
         } catch (IOException e) {
             handleIOException(token, gameName);
         }
@@ -327,15 +332,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -344,9 +350,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             } catch (InvalidActionException e) {
                 try {
                     if (e.getException() instanceof RuleViolationException)
-                        handleRuleViolationException(viewMap.get(token), (RuleViolationException) e.getException());
+                        handleRuleViolationException(gameManager.getGameViewMap().get(token), (RuleViolationException) e.getException());
                     else
-                        viewMap.get(token).err(INVALID_ACTION_ERR + " dice placing");
+                        gameManager.getGameViewMap().get(token).err(INVALID_ACTION_ERR + " dice placing");
                 } catch (IOException ioe) {
                     handleIOException(token, gameName);
                 }
@@ -369,15 +375,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -385,7 +392,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userUseToolCard(token, toolCard, new ToolCardExecutorFakeObserver(token, gameManager.getObserverManagerByGame(gameName), executorObserver));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("You cannot take any action right now");
+                    gameManager.getGameViewMap().get(token).err("You cannot take any action right now");
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -408,15 +415,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -424,7 +432,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userChoosePrivateObjectiveCard(token, privateObjectiveCard);
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("The private objective card chosen is invalid");
+                    gameManager.getGameViewMap().get(token).err("The private objective card chosen is invalid");
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -448,15 +456,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -464,7 +473,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new DiceExecutorEvent(dice));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err("Can't fire an event");
+                    gameManager.getGameViewMap().get(token).err("Can't fire an event");
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -488,15 +497,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -504,7 +514,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new ValueExecutorEvent(value));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err(FIRE_EVENT_ERROR);
+                    gameManager.getGameViewMap().get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -527,15 +537,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -543,7 +554,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new ColorExecutorEvent(color));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err(FIRE_EVENT_ERROR);
+                    gameManager.getGameViewMap().get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -566,15 +577,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -582,7 +594,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new PositionExecutorEvent(position));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err(FIRE_EVENT_ERROR);
+                    gameManager.getGameViewMap().get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -607,15 +619,16 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                viewMap.get(token).err(GAME_TERMINATED);
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameManager.getGameViewMap().get(token).err(GAME_TERMINATED);
+                gameManager.removeView(token);
                 return;
             }
 
             IGame game = gameManager.getGameByName(gameName);
 
             if (wasUserDisconnected(token, gameName)) {
-                viewMap.get(token).err(YOU_NEED_TO_RECONNECT);
+                gameManager.getGameViewMap().get(token).err(YOU_NEED_TO_RECONNECT);
                 return;
             }
 
@@ -623,7 +636,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 game.userFireExecutorEvent(token, new AnswerExecutorEvent(answer));
             } catch (InvalidActionException e) {
                 try {
-                    viewMap.get(token).err(FIRE_EVENT_ERROR);
+                    gameManager.getGameViewMap().get(token).err(FIRE_EVENT_ERROR);
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
@@ -662,8 +675,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
-            if (clearObservers(gameName)) {
-                gameView.err("The game has terminated");
+            if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
+                gameView.err(GAME_TERMINATED);
                 throw new IOException();
             }
 
@@ -682,10 +695,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             }
 
             // Attaching observer and view regarding the re-connected player
-            if (viewMap.containsKey(token)) {
-                viewMap.replace(token, gameView);
+            if (gameManager.getGameViewMap().containsKey(token)) {
+                gameManager.getGameViewMap().replace(token, gameView);
             } else {
-                viewMap.putIfAbsent(token, gameView);
+                gameManager.getGameViewMap().putIfAbsent(token, gameView);
             }
 
             //
@@ -723,12 +736,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private void notifyReconnection(String gameName, String reconnectingToken, String reconnectingUserName) {
         gameManager.getObserverManagerByGame(gameName).signalReconnect(reconnectingToken);
         try {
-            viewMap.get(reconnectingToken).ack("Reconnected succesfull");
+            gameManager.getGameViewMap().get(reconnectingToken).ack("Reconnected succesfull");
             final String finalGameName = gameName;
             gameManager.getPlayersByGame(gameName).forEach(playerToken -> {
                 if(!gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(playerToken)) {
                     try {
-                        viewMap.get(playerToken).ack("Player " + reconnectingUserName+ " has reconnected");
+                        gameManager.getGameViewMap().get(playerToken).ack("Player " + reconnectingUserName+ " has reconnected");
                     } catch (IOException e) {
                         handleIOException(playerToken, finalGameName);
                     }
@@ -771,12 +784,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
 
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -797,7 +810,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
@@ -806,7 +819,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return serverCreateMessage.getErrorMessage();
         }
 
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -828,7 +841,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
@@ -836,7 +849,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         if (gameManager.getGameByName(gameName).isSinglePlayer())
             return serverCreateMessage.getErrorMessage();
 
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -861,11 +874,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -886,11 +899,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -912,11 +925,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -938,11 +951,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -965,12 +978,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: getRoundTrack");
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
 
-        if (clearObservers(gameName))
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap()))
             return serverCreateMessage.getGameTerminatedErrorMessage();
 
         RoundTrack roundTrack;
@@ -993,11 +1006,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: getToolCardByName");
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -1026,11 +1039,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: getCurrentPlayer");
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -1058,11 +1071,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: getSchemaCardByToken");
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -1091,11 +1104,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: getListOfUser");
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -1118,11 +1131,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + " accessed: getTimeOut");
 
-        if ((!viewMap.containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
+        if ((!gameManager.getGameViewMap().containsKey(token) && !gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(token)) ||
                 gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
             return serverCreateMessage.getErrorMessage();
         }
-        if (clearObservers(gameName)) {
+        if (gameManager.clearObservers(gameName, gameManager.getGameViewMap())) {
             return serverCreateMessage.getGameTerminatedErrorMessage();
         }
 
@@ -1158,7 +1171,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         synchronized (gameManager.getGameByName(gameName)) {
             gameManager.getObserverManagerByGame(gameName).signalDisconnection(token);
-            if(clearObservers(gameName))
+            if(gameManager.clearObservers(gameName, gameManager.getGameViewMap()))
                 return;
 
             try {
@@ -1179,77 +1192,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private void handleIOException(String token, String gameName) {
         synchronized (gameManager.getGameByName(gameName)) {
             gameManager.getObserverManagerByGame(gameName).signalDisconnection(token);
-            viewMap.remove(token);
+            gameManager.getGameViewMap().remove(token);
         }
-    }
-
-    /**
-     * It cleans the observer of a certain game, with the notify disconnections.
-     * It also signals the disconnections of the various player.
-     * It also handles the game termination when there aren't enough user to continue the game
-     *
-     * @param gameName game's name
-     * @return true if the game terminates, false otherwise
-     */
-    private boolean clearObservers(String gameName) {
-        System.out.println("Clearing observers");
-        synchronized (gameManager.getGameByName(gameName)) {
-            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
-            Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
-            Set<String> disconnected = observerManager.getDisconnectedPlayer();
-            List<User> playerList = gameManager.getGameByName(gameName).getUsers();
-
-            toNotifyDisconnect.forEach(disconnectedToken -> {
-                playerList.forEach(player -> {
-                    if (!disconnected.contains(player.getToken())) {
-                        try {
-                            Optional<User> user = playerList.stream().filter(u -> u.getToken().
-                                    equals(disconnectedToken)).findFirst();
-                            if (user.isPresent())
-                                viewMap.get(player.getToken()).err(user.get().getName() + " disconnected");
-                        } catch (IOException e) {
-                            observerManager.signalDisconnection(player.getToken());
-                        }
-                    }
-                });
-
-                gameManager.getGameByName(gameName).detachObservers(disconnectedToken);
-                observerManager.notifyDisconnection(disconnectedToken);
-                viewMap.remove(disconnectedToken);
-            });
-
-            return handleEndGame(gameManager.getGameByName(gameName), observerManager);
-        }
-    }
-
-    /**
-     * Force the termination of the game.
-     * When the game is single player, if the only player present disconnects the game terminates.
-     * When the game is multi player, and there is only one player connected, it handles its victory.
-     *
-     * @param game            handle the termination of this game
-     * @param observerManager game observer manager of game
-     * @return true if the game gets terminated, false otherwise
-     */
-    private boolean handleEndGame(IGame game, GameObserverManager observerManager) {
-        if (!game.isSinglePlayer()) {
-            if (observerManager.getDisconnectedPlayer().size() == game.getUsers().size() - 1) {
-                // search for the player that it's not disconnected
-                for (Player player : game.getPlayers())
-                    if (!observerManager.getDisconnectedPlayer().contains(player.getToken())) {
-                        game.forceGameTermination(player);
-                    }
-                gameManager.terminateGame(game.getName());
-                return true;
-            } else if (observerManager.getDisconnectedPlayer().size() == game.getUsers().size()) {
-                gameManager.terminateGame(game.getName());
-                return true;
-            }
-        } else if (!observerManager.getDisconnectedPlayer().isEmpty()) {
-            gameManager.terminateGame(game.getName());
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -1307,19 +1251,18 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * @return true if the condition mentioned above are respected, false otherwise
      */
     private boolean initialCheck(String token, String gameName) {
-        if (!viewMap.containsKey(token))
+        if (!gameManager.getGameViewMap().containsKey(token))
             return true;
         if (!gameManager.getPlayersByGame(gameName).contains(token) || gameManager.notContainsGame(gameName)) {
             try {
-                viewMap.get(token).err(INITIAL_CHECK_ERROR);
+                gameManager.getGameViewMap().get(token).err(INITIAL_CHECK_ERROR);
             } catch (IOException ignored) {
                 return true;
             }
         }
         return false;
     }
-
-
+    
     /**
      * Format a certain time given as long in mm:ss
      *
@@ -1359,10 +1302,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         List<String> toolCarsdNameOnServer = game.getToolCards().stream().map(Card::getName).collect(Collectors.toList());
 
-        if (!(toolCarsdNameOnServer.containsAll(toolCardObserver.keySet()) && toolCardObserver.keySet().containsAll(toolCarsdNameOnServer))) {
-            return false;
-        }
-
-        return true;
+        return toolCarsdNameOnServer.containsAll(toolCardObserver.keySet()) && toolCardObserver.keySet().containsAll(toolCarsdNameOnServer);
     }
 }
