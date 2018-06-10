@@ -47,3 +47,25 @@
     -fx-scale-x: 110%;
     -fx-scale-y: 110%;
 }
+
+.on-board-schema-card{
+    -fx-effect: dropshadow(two-pass-box, black, 5, 0, 5, 5);
+}
+
+.on-board-card{
+    -fx-effect: dropshadow(two-pass-box, black, 5, 0, 5, 5);
+}
+
+.on-board-card:hover{
+    -fx-scale-x: 110%;
+    -fx-scale-y: 110%;
+}
+
+.on-notify-pane-card{
+    -fx-effect: dropshadow(two-pass-box, black, 5, 0, 5, 5);
+}
+
+.on-notify-pane-card:hover{
+    -fx-scale-x: 110%;
+    -fx-scale-y: 110%;
+}

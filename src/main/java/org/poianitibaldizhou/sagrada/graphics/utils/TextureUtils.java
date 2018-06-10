@@ -84,4 +84,8 @@ public class TextureUtils {
     }
 
 
+    public static Image getImage(String resourcefolderPath, String imageKey, double width, double height) {
+        return new Image(TextureUtils.class.getClassLoader().getResourceAsStream(resourcefolderPath + imageKey),
+                width, height, true, true);
+    }
 }

@@ -1,28 +1,33 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.animation.*;
+import javafx.animation.FadeTransition;
+import javafx.animation.Interpolator;
+import javafx.animation.SequentialTransition;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.ImageView;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
-import org.poianitibaldizhou.sagrada.graphics.view.component.DraftPoolView;
+import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
+import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -38,8 +43,12 @@ public class StateListener extends AbstractView implements IStateObserver {
     private transient HBox helperBox;
     private transient HBox topBarBox;
 
+    private boolean isDraggingDice = false;
+
     private static final double DURATION_IN_MILLIS = 1500;
 
+    private static final double SCHEMA_CARD_SHOW_SIZE = 0.45;
+    private static final double DICE_SHOW_SIZE = 0.3;
 
     public StateListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
@@ -134,7 +143,76 @@ public class StateListener extends AbstractView implements IStateObserver {
 
         helperPane.getChildren().addAll(spacer, cancelButton);
 
-        // TODO show draft pool dices and own schemaCard
+        DropShadow dropShadow = new DropShadow(4, 4, 4, Color.BLACK);
+
+        try {
+            SchemaCardWrapper mySchemaCard = controller.getOwnSchemaCard();
+            DraftPoolWrapper draftPool = controller.getDraftPool();
+
+            SchemaCardView schemaCardView = new SchemaCardView(mySchemaCard, SCHEMA_CARD_SHOW_SIZE);
+            schemaCardView.translateXProperty().bind(getPivotX(getCenterX(), schemaCardView.widthProperty(), 0.5));
+            schemaCardView.translateYProperty().bind(getPivotY(getCenterY(), schemaCardView.widthProperty(), 0.33));
+            schemaCardView.setEffect(dropShadow);
+
+            schemaCardView.setOnDragOver(event -> {
+                double x = event.getX();
+                double y = event.getY();
+                schemaCardView.drawShadow(x,y);
+                event.acceptTransferModes(TransferMode.MOVE);
+                event.consume();
+            });
+
+            schemaCardView.setOnDragDropped(event -> {
+                schemaCardView.removeShadow();
+                final Dragboard dragboard = event.getDragboard();
+                double x = event.getX();
+                double y = event.getY();
+                PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
+                JSONParser parser = new JSONParser();
+                try {
+                    JSONObject diceObject = (JSONObject) ((JSONObject) parser.parse(dragboard.getString())).get("body");
+                    DiceWrapper dice = DiceWrapper.toObject(diceObject);
+                    controller.placeDice(dice, positionWrapper);
+                    event.setDropCompleted(true);
+                    event.consume();
+                } catch (ParseException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
+                } catch (IOException e) {
+                    showCrashErrorMessage("Errore di connessione");
+                }
+            });
+
+            notifyPane.getChildren().add(schemaCardView);
+
+            DoubleBinding diceY = getCenterY().add(getHeight().divide(4));
+
+            for (int i = 0; i < draftPool.size(); i++) {
+                DiceView diceView = new DiceView(draftPool.getDice(i), DICE_SHOW_SIZE);
+                double totalWidth = diceView.getImageWidth() * (draftPool.size())
+                         + ((draftPool.size()-1)*PADDING*2);
+                double startDiceX = getCenterX().get() - totalWidth/2;
+                double x = startDiceX + (i*PADDING*2) + (diceView.getImageWidth()*i);
+
+                diceView.setTranslateX(x);
+                diceView.setTranslateY(diceY.get());
+                diceView.setEffect(dropShadow);
+
+                diceView.setOnDragDetected(event -> {
+                    Dragboard dragboard = diceView.startDragAndDrop(TransferMode.MOVE);
+                    ClipboardContent clipboardContent = new ClipboardContent();
+                    clipboardContent.putImage(diceView.getImage());
+                    clipboardContent.putString(diceView.getDiceWrapper().toJSON().toJSONString());
+                    dragboard.setContent(clipboardContent);
+                    event.consume();
+                });
+                notifyPane.getChildren().add(diceView);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showCrashErrorMessage("Errore di connessione");
+            return;
+        }
     }
 
     private void onUseCardButtonPressed(ActionEvent actionEvent){
@@ -167,7 +245,12 @@ public class StateListener extends AbstractView implements IStateObserver {
     }
 
     private void onEndTurnButtonPressed(ActionEvent actionEvent){
-        controller.endTurn();
+        try {
+            controller.endTurn();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showCrashErrorMessage("Errore di connessione");
+        }
     }
 
 

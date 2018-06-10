@@ -128,4 +128,31 @@ public class MultiPlayerModel {
         String response = connectionManager.getGameController().getPlayersCoins(request);
         return parser.getPlayersCoins(response);
     }
+
+    public SchemaCardWrapper getOwnSchemaCard() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getSchemaCardByToken(request);
+        return parser.getSchemaCard(response);
+
+    }
+
+    public void placeDice(DiceWrapper dice, PositionWrapper positionWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String changeActionRequest = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createActionMessage(new PlaceDiceStateWrapper()).buildMessage();
+        connectionManager.getGameController().chooseAction(changeActionRequest);
+        String placeDiceRequest = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createDiceMessage(dice).createPositionMessage(positionWrapper).buildMessage();
+        connectionManager.getGameController().placeDice(placeDiceRequest);
+    }
+
+    public List<PublicObjectiveCardWrapper> getPublicObjectiveCards() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response = connectionManager.getGameController().getPublicObjectiveCards(request);
+        return parser.getPublicObjectiveCards(response);
+    }
 }

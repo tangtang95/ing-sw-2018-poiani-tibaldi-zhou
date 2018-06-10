@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
@@ -41,9 +42,12 @@ public class GameTestApp extends Application{
         String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
         scene.getStylesheets().add(css);
 
+        root.scaleXProperty().bind(scene.widthProperty().divide(size.getWidth()));
+        root.scaleYProperty().bind(scene.widthProperty().divide(size.getWidth()));
+
         primaryStage.setTitle("Sagrada: il Gioco");
+        primaryStage.setFullScreenExitHint("");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }

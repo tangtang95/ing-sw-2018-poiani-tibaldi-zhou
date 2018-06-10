@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.graphics.view.component;
 
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PublicObjectiveCardWrapper;
 

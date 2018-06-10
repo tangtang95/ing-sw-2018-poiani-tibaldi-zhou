@@ -1,30 +1,49 @@
 package org.poianitibaldizhou.sagrada.graphics.view.component;
 
+import javafx.geometry.Point2D;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.TileWrapper;
+
+import java.awt.*;
+import java.io.IOException;
 
 public class SchemaCardView extends Pane {
 
     private ImageView schemaCardImage;
-
     private SchemaCardWrapper schemaCardWrapper;
+    private Canvas shadowImage;
+
+    private DiceView[][] diceViews;
+
+    private double scale;
+    private double offsetX;
+    private double offsetY;
+    private double tileWidth;
+    private double tileHeight;
 
     //Based on SchemaCard.png width
     private static final double OFFSET_X_PERCENT = 0.02439;
     private static final double OFFSET_Y_PERCENT = 0.02439;
 
-    //Based on SchemaCard.png width
+    //Based on SchemaCard.png widh
     private static final double WIDTH_TILE_PERCENT = 0.1707;
     private static final double HEIGHT_TILE_PERCENT = 0.1707;
 
-    //Based on SchemaCard.png height
+    //Based on SchemaCard.png tileHeight
     private static final double HEIGHT_NAME_PERCENT = 0.9;
+
+    private static final double DICE_SCALE = 0.75;
 
     private static final int NUMBER_OF_ROWS = 4;
     private static final int NUMBER_OF_COLUMNS = 5;
@@ -38,8 +57,9 @@ public class SchemaCardView extends Pane {
 
     public SchemaCardView(SchemaCardWrapper schemaCard, double scale) {
         super();
-
+        this.scale = scale;
         this.schemaCardWrapper = schemaCard;
+        this.diceViews = new DiceView[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
 
         Image image = new Image(getClass().getClassLoader()
                 .getResourceAsStream("images/schemaCards/SchemaCard.png"));
@@ -48,19 +68,28 @@ public class SchemaCardView extends Pane {
         schemaCardImage.setFitHeight(image.getHeight() * scale);
         this.getChildren().add(schemaCardImage);
 
-        double offsetX = Math.round(OFFSET_X_PERCENT * image.getWidth()) * scale;
-        double offsetY = Math.round(OFFSET_Y_PERCENT * image.getWidth()) * scale;
-        double width = Math.round(WIDTH_TILE_PERCENT * image.getWidth()) * scale;
-        double height = Math.round(HEIGHT_TILE_PERCENT * image.getWidth()) * scale;
+        offsetX = Math.round(OFFSET_X_PERCENT * image.getWidth()) * scale;
+        offsetY = Math.round(OFFSET_Y_PERCENT * image.getWidth()) * scale;
+        tileWidth = Math.round(WIDTH_TILE_PERCENT * image.getWidth()) * scale;
+        tileHeight = Math.round(HEIGHT_TILE_PERCENT * image.getWidth()) * scale;
 
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                String tileName = schemaCard.getTile(new PositionWrapper(i,j)).getConstraint() == null ?
-                        "empty" : schemaCard.getTile(new PositionWrapper(i,j)).getConstraint().toLowerCase();
+                TileWrapper tileWrapper = schemaCard.getTile(new PositionWrapper(i, j));
+
+                // DRAW TILE
+                String tileName = tileWrapper.getConstraint() == null ?
+                        "empty" : tileWrapper.getConstraint().toLowerCase();
                 ImageView tileView = TextureUtils.getImageView("tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
-                tileView.setTranslateX(offsetX * (j + 1) + width * j);
-                tileView.setTranslateY(offsetY * (i + 1) + height * i);
+                tileView.setTranslateX(offsetX * (j + 1) + tileWidth * j);
+                tileView.setTranslateY(offsetY * (i + 1) + tileHeight * i);
                 this.getChildren().add(tileView);
+
+                // DRAW DICE
+                DiceWrapper diceWrapper = tileWrapper.getDice();
+                if(diceWrapper != null){
+                    drawDice(diceWrapper, new PositionWrapper(i, j));
+                }
             }
         }
 
@@ -77,6 +106,13 @@ public class SchemaCardView extends Pane {
                 .subtract(label.widthProperty().divide(2)));
         label.setTranslateY(image.getHeight()*scale*HEIGHT_NAME_PERCENT);
         this.getChildren().add(label);
+
+        shadowImage = new Canvas(tileWidth*1.5, tileHeight*1.5);
+        GraphicsContext gc = shadowImage.getGraphicsContext2D();
+        gc.setFill(new Color(0, 0, 0, 0.3));
+        gc.fillOval(0,0, tileWidth*1.5, tileHeight*1.5);
+        this.getChildren().add(shadowImage);
+        shadowImage.setVisible(false);
     }
 
     private ImageView drawDifficultyToken(double scale){
@@ -97,10 +133,56 @@ public class SchemaCardView extends Pane {
         return schemaCardWrapper;
     }
 
-    public void drawDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
-        
+    public void drawDice(DiceWrapper diceWrapper, PositionWrapper pos) {
+        double centerX = offsetX * (pos.getColumn() + 1) + tileWidth * pos.getColumn() + tileWidth/2;
+        double centerY = offsetY * (pos.getRow() + 1) + tileHeight * pos.getRow() + tileHeight/2;
+
+        DiceView diceView = new DiceView(diceWrapper, scale*DICE_SCALE);
+        diceView.setTranslateX(centerX - diceView.getImageWidth()/2);
+        diceView.setTranslateY(centerY - diceView.getImageHeight()/2);
+        this.getChildren().add(diceView);
+        diceViews[pos.getRow()][pos.getColumn()] = diceView;
     }
 
-    public void removeDice(DiceWrapper diceWrapper, PositionWrapper positionWrapper) {
+    public void removeDice(DiceWrapper diceWrapper, PositionWrapper pos) throws IOException {
+        DiceView diceView = diceViews[pos.getRow()][pos.getColumn()];
+        if(diceView == null){
+            throw new IOException();
+        }
+        this.getChildren().remove(diceView);
+        diceViews[pos.getRow()][pos.getColumn()] = null;
+    }
+
+    public void drawShadow(double x, double y) {
+        PositionWrapper position = getTilePosition(x, y);
+        if(position != null){
+            shadowImage.setVisible(true);
+            Point2D topLeft = new Point2D(offsetX * (position.getColumn() + 1) + tileWidth * position.getColumn(),
+                    offsetY * (position.getRow() + 1) + tileHeight * position.getRow());
+            Point2D center = new Point2D(topLeft.getX() + tileWidth/2, topLeft.getY() + tileHeight/2);
+            shadowImage.setTranslateX(center.getX() - shadowImage.getWidth()/2);
+            shadowImage.setTranslateY(center.getY() - shadowImage.getHeight()/2);
+        }
+        else{
+            removeShadow();
+        }
+    }
+
+    public PositionWrapper getTilePosition(double x, double y){
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                Point2D topLeft = new Point2D(offsetX * (j + 1) + tileWidth * j,
+                        offsetY * (i + 1) + tileHeight * i);
+                Rectangle2D rectangle2D = new Rectangle2D(topLeft.getX(), topLeft.getY(), tileWidth, tileHeight);
+                if(rectangle2D.contains(x, y)){
+                    return new PositionWrapper(i, j);
+                }
+            }
+        }
+        return null;
+    }
+
+    public void removeShadow() {
+        shadowImage.setVisible(false);
     }
 }

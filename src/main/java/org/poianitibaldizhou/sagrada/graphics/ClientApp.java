@@ -37,10 +37,12 @@ public class ClientApp extends Application {
         sceneManager.pushScene(root);
 
         Scene scene = new Scene(scenes, sceneManager.getSceneWidth(), sceneManager.getSceneHeight());
+        root.scaleXProperty().bind(scene.widthProperty().divide(size.getWidth()));
+        root.scaleYProperty().bind(scene.widthProperty().divide(size.getWidth()));
+
         primaryStage.setTitle("Sagrada: il Gioco");
+        primaryStage.setFullScreen(true);
+        primaryStage.setFullScreenExitHint("");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.sizeToScene();
-        primaryStage.show();
     }
 }

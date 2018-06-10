@@ -95,7 +95,7 @@ public abstract class AbstractView extends UnicastRemoteObject{
         return topBarBox;
     }
 
-    public void showSevereErrorMessage(String text) {
+    public void showCrashErrorMessage(String text) {
         // TODO
     }
 

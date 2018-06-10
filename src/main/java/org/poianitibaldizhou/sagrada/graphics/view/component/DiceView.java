@@ -1,8 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.view.component;
 
-import javafx.event.Event;
-import javafx.geometry.Point2D;
 import javafx.scene.effect.Glow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
@@ -13,11 +12,6 @@ public class DiceView extends Pane {
     private ImageView diceImage;
     private DiceWrapper diceWrapper;
     private double scale;
-
-    private boolean isMovable;
-
-    private Point2D initialTranslate;
-    private Point2D mousePosition;
 
     private static final String DICE_IMAGE_PATH = "images/board/dices.png";
     private static final String DICE_JSON_PATH = "images/board/dices.json";
@@ -41,42 +35,6 @@ public class DiceView extends Pane {
             diceImage.setEffect(glow);
         });
 
-        setMovable(false);
-
-    }
-
-    public void setMovable(boolean movable){
-        isMovable = movable;
-        if(movable){
-            // TODO FIX
-            this.setOnMousePressed(event -> {
-                mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-                initialTranslate = new Point2D(this.getTranslateX(), this.getTranslateY());
-            });
-
-            this.setOnMouseDragged(event -> {
-                double mouseX = event.getSceneX();
-                double mouseY = event.getSceneY();
-                this.setLayoutX(mouseX - mousePosition.getX());
-                this.setLayoutY(mouseY - mousePosition.getY());
-                event.consume();
-            });
-
-            this.setOnDragDropped(event -> {
-                mousePosition = new Point2D(event.getSceneX(), event.getSceneY());
-            });
-        }
-        else{
-            this.setOnMousePressed(Event::consume);
-
-            this.setOnMouseDragged(Event::consume);
-
-            this.setOnDragDropped(Event::consume);
-        }
-    }
-
-    public boolean isMovable() {
-        return isMovable;
     }
 
     public double getImageWidth(){
@@ -98,5 +56,11 @@ public class DiceView extends Pane {
         String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
         TextureUtils.changeViewport(diceImage, imageKey, DICE_JSON_PATH, scale);
+    }
+
+    public Image getImage() {
+        String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
+                String.valueOf(diceWrapper.getNumber()));
+        return TextureUtils.getImage("images/dices/", imageKey, diceImage.getFitWidth(), diceImage.getFitHeight());
     }
 }

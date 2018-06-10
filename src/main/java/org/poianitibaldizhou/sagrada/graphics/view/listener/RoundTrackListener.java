@@ -1,7 +1,10 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
@@ -23,6 +26,11 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
 
     public RoundTrackListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
+        DropShadow dropShadow = new DropShadow(4, 4, 4, Color.GRAY);
+        roundTrackView = new RoundTrackView(ROUND_TRACK_SCALE);
+        roundTrackView.translateXProperty().bind(getPivotX(getCenterX(), roundTrackView.widthProperty(), 0.5));
+        roundTrackView.translateYProperty().bind(getPivotY(getCenterY(), roundTrackView.heightProperty(), 0.5));
+        roundTrackView.setEffect(dropShadow);
     }
 
     public RoundTrackView getRoundTrackView() {
@@ -30,42 +38,37 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
     }
 
     public void drawRoundTrack() {
-        roundTrackView = new RoundTrackView(ROUND_TRACK_SCALE);
-        roundTrackView.translateXProperty().bind(getPivotX(getCenterX(), roundTrackView.widthProperty(), 0.5));
-        roundTrackView.translateYProperty().bind(getPivotY(getCenterY(), roundTrackView.heightProperty(), 0.5));
         corePane.getChildren().add(roundTrackView);
     }
 
     @Override
     public void onDicesAddToRound(String message) throws IOException {
-        Platform.runLater(() -> {
-            RoundTrackWrapper roundTrack = controller.getRoundTrack();
-            roundTrackView.drawRoundTrack(roundTrack);
-        });
+        Platform.runLater(this::updateRoundTrack);
     }
 
     @Override
     public void onDiceAddToRound(String message) throws IOException {
-        Platform.runLater(() -> {
-            RoundTrackWrapper roundTrack = controller.getRoundTrack();
-            roundTrackView.drawRoundTrack(roundTrack);
-        });
+        Platform.runLater(this::updateRoundTrack);
     }
 
     @Override
     public void onDiceRemoveFromRound(String message) throws IOException {
-        Platform.runLater(() -> {
-            RoundTrackWrapper roundTrack = controller.getRoundTrack();
-            roundTrackView.drawRoundTrack(roundTrack);
-        });
+        Platform.runLater(this::updateRoundTrack);
     }
 
     @Override
     public void onDiceSwap(String message) throws IOException {
-        Platform.runLater(() -> {
+        Platform.runLater(this::updateRoundTrack);
+    }
+
+    private void updateRoundTrack(){
+        try {
             RoundTrackWrapper roundTrack = controller.getRoundTrack();
             roundTrackView.drawRoundTrack(roundTrack);
-        });
+        } catch (IOException e) {
+            e.printStackTrace();
+            showCrashErrorMessage("errore di connessione");
+        }
     }
 
     @Override

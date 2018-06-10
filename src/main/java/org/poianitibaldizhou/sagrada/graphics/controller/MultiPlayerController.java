@@ -28,8 +28,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MultiPlayerController extends Controller implements Initializable {
 
@@ -40,7 +38,7 @@ public class MultiPlayerController extends Controller implements Initializable {
     @FXML
     public Pane notifyPane;
 
-    private DraftPoolListener draftPoolView;
+    private DraftPoolListener draftPoolListener;
     private RoundTrackListener roundTrackView;
     private StateListener stateView;
     private GameListener gameListener;
@@ -53,7 +51,7 @@ public class MultiPlayerController extends Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         initNotifyPane();
         try {
-            draftPoolView = new DraftPoolListener(this, corePane, notifyPane);
+            draftPoolListener = new DraftPoolListener(this, corePane, notifyPane);
             roundTrackView = new RoundTrackListener(this, corePane, notifyPane);
             stateView = new StateListener(this, corePane, notifyPane);
             gameListener = new GameListener(this, corePane, notifyPane);
@@ -62,16 +60,9 @@ public class MultiPlayerController extends Controller implements Initializable {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-        //testFrontBackSchemaCardView();
-        /*testSchemaCardView();
-        testDiceView();
-        testRoundTrackView();
-        testToolCardView();
-        testPublicObjectiveCardView();
-        testPrivateObjectiveCardView();*/
     }
 
-    private void initNotifyPane(){
+    private void initNotifyPane() {
         notifyPane.setVisible(false);
         notifyPane.prefWidthProperty().bind(rootPane.widthProperty());
         notifyPane.prefHeightProperty().bind(rootPane.heightProperty());
@@ -82,7 +73,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
         try {
             multiPlayerModel.joinGame(gameListener, gameListener, stateView,
-                    roundTrackView, draftPoolView, diceBagView, timeoutListener);
+                    roundTrackView, draftPoolListener, diceBagView, timeoutListener);
         } catch (IOException e) {
             e.printStackTrace();
             AlertBox.displayBox("Errore di rete", "Sagrada è crashato: " + e.toString());
@@ -95,14 +86,14 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     public void setDraftPool() {
-        draftPoolView.drawDraftPool();
+        draftPoolListener.drawDraftPool();
     }
 
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
         multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
     }
 
-    private void testPrivateObjectiveCardView(){
+    private void testPrivateObjectiveCardView() {
         DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
         GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
 
@@ -112,7 +103,7 @@ public class MultiPlayerController extends Controller implements Initializable {
                     new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
             PrivateObjectiveCardView privateObjectiveCardView =
                     new PrivateObjectiveCardView(privateObjectiveCardWrapper.toObject(object), 0.3
-            );
+                    );
 
             this.corePane.getChildren().add(privateObjectiveCardView);
             privateObjectiveCardView.setTranslateX(100);
@@ -126,7 +117,7 @@ public class MultiPlayerController extends Controller implements Initializable {
 
     }
 
-    private void testPublicObjectiveCardView(){
+    private void testPublicObjectiveCardView() {
         DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
         GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
 
@@ -144,7 +135,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         }
     }
 
-    private void testToolCardView(){
+    private void testToolCardView() {
         ToolCard toolCard = new ToolCard(Color.PURPLE, "Pinza Sgrossatrice",
                 "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1." +
                         " Non puoi cambiare un 6 in 1 o un 1 in 6",
@@ -158,7 +149,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         toolCardView.setTranslateY(200);
     }
 
-    private void testFrontBackSchemaCardView(){
+    private void testFrontBackSchemaCardView() {
         DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
         GameInjector.injectSchemaCards(schemaCards);
 
@@ -185,12 +176,12 @@ public class MultiPlayerController extends Controller implements Initializable {
             PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
                     new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
             privateObjectiveCardList.add(privateObjectiveCardWrapper);
-        }catch (EmptyCollectionException e) {
+        } catch (EmptyCollectionException e) {
             e.printStackTrace();
         }
     }
 
-    private void testRoundTrackView(){
+    private void testRoundTrackView() {
         List<List<DiceWrapper>> dices = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             List<DiceWrapper> diceRound = new ArrayList<>();
@@ -212,7 +203,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         GameInjector.injectSchemaCards(schemaCards);
         JSONObject object = null;
         try {
-             object = (JSONObject) schemaCards.draw().getFrontSchemaCard().toJSON().get("body");
+            object = (JSONObject) schemaCards.draw().getFrontSchemaCard().toJSON().get("body");
         } catch (EmptyCollectionException e) {
             e.printStackTrace();
         }
@@ -224,7 +215,7 @@ public class MultiPlayerController extends Controller implements Initializable {
         schemaCardView1.setTranslateY(300);
     }
 
-    private void testDiceView(){
+    private void testDiceView() {
         DiceWrapper dice = new DiceWrapper(ColorWrapper.BLUE, 2);
         DiceView diceView = new DiceView(dice, 0.1);
 
@@ -245,64 +236,39 @@ public class MultiPlayerController extends Controller implements Initializable {
         return multiPlayerModel.getOwnPrivateObjectiveCard();
     }
 
-    public RoundTrackWrapper getRoundTrack() {
-        RoundTrackWrapper roundTrackWrapper;
-        try {
-            roundTrackWrapper =  multiPlayerModel.getRoundTrack();
-        } catch (IOException e) {
-            showCrashErrorMessage();
-            return null;
-        }
-        return roundTrackWrapper;
+    public RoundTrackWrapper getRoundTrack() throws IOException {
+        return multiPlayerModel.getRoundTrack();
     }
 
-    private void showCrashErrorMessage() {
-        Logger.getAnonymousLogger().log(Level.SEVERE, "Game crashed");
-        // TODO close program and show AlertBox
+    public void bindPlayer(UserWrapper user, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
+        multiPlayerModel.bindPlayer(user, playerObserver, schemaCardObserver);
     }
 
-    public void bindPlayer(UserWrapper user, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) {
-        try {
-            multiPlayerModel.bindPlayer(user, playerObserver, schemaCardObserver);
-        } catch (IOException e) {
-           showCrashErrorMessage();
-        }
+    public DraftPoolWrapper getDraftPool() throws IOException {
+        return multiPlayerModel.getDraftPool();
     }
 
-    public DraftPoolWrapper getDraftPool() {
-        DraftPoolWrapper draftPoolWrapper;
-        try {
-            draftPoolWrapper = multiPlayerModel.getDraftPool();
-        } catch (IOException e) {
-            showCrashErrorMessage();
-            return null;
-        }
-        return draftPoolWrapper;
+    public void bindToolCard(ToolCardWrapper toolCard, IToolCardObserver toolCardObserver) throws IOException {
+        multiPlayerModel.bindToolCard(toolCard, toolCardObserver);
     }
 
-    public void bindToolCard(ToolCardWrapper toolCard, IToolCardObserver toolCardObserver) {
-        try {
-            multiPlayerModel.bindToolCard(toolCard, toolCardObserver);
-        } catch (IOException e) {
-            showCrashErrorMessage();
-        }
+    public void endTurn() throws IOException {
+        multiPlayerModel.endTurn();
     }
 
-    public void endTurn() {
-        try {
-            multiPlayerModel.endTurn();
-        } catch (IOException e) {
-            showCrashErrorMessage();
-        }
+    public Map<UserWrapper, Integer> getCoinsMap() throws IOException {
+        return multiPlayerModel.getCoinsMap();
     }
 
-    public Map<UserWrapper,Integer> getCoinsMap() {
-        Map<UserWrapper, Integer> coinsMap = new HashMap<>();
-        try {
-            coinsMap =  multiPlayerModel.getCoinsMap();
-        } catch (IOException e) {
-            showCrashErrorMessage();
-        }
-        return coinsMap;
+    public SchemaCardWrapper getOwnSchemaCard() throws IOException {
+        return multiPlayerModel.getOwnSchemaCard();
+    }
+
+    public void placeDice(DiceWrapper dice, PositionWrapper positionWrapper) throws IOException {
+        multiPlayerModel.placeDice(dice, positionWrapper);
+    }
+
+    public List<PublicObjectiveCardWrapper> getPublicObjectiveCards() throws IOException {
+        return multiPlayerModel.getPublicObjectiveCards();
     }
 }

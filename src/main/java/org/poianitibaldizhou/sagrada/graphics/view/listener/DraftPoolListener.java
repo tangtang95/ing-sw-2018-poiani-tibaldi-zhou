@@ -2,7 +2,9 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
@@ -23,6 +25,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
 
     public DraftPoolListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
+        DropShadow dropShadow = new DropShadow(4, 4, 4, Color.GRAY);
         draftPoolView = new DraftPoolView(DRAFT_POOL_SCALE);
 
         DoubleBinding x = getWidth().subtract(draftPoolView.widthProperty().divide(1.5));
@@ -30,6 +33,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
 
         draftPoolView.translateXProperty().bind(getPivotX(x, draftPoolView.widthProperty(), 0.5));
         draftPoolView.translateYProperty().bind(getPivotX(y, draftPoolView.heightProperty(), 0.5));
+        draftPoolView.setEffect(dropShadow);
     }
 
     public DraftPoolView getDraftPoolView() {
