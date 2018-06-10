@@ -65,5 +65,4 @@ public interface IGameObserver extends Remote {
      * @throws IOException network error
      */
     void onSchemaCardsDraw(String schemaCards) throws IOException;
-
 }

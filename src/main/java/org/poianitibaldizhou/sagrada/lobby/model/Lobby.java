@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * OVERVIEW: Represents a lobby as a set of users waiting for the game to start
+ *
+ * This doesn't contains duplicates.
+ * userList.size() >= 0 && userList.size() <= MAX_PLAYER
+ * lobbyObserverMap.size() >= 0 && lobbyObserverMap.size() <= MAX_PLAYER
+ */
 public class Lobby implements Serializable {
     private List<User> userList;
     private String name;
@@ -23,7 +30,6 @@ public class Lobby implements Serializable {
     /**
      * Constructor.
      * Creates a new Lobby with a certain name.
-     * A lobby represents of user that can contains duplicate.
      *
      * @param name lobby's name
      */

@@ -19,6 +19,7 @@ import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterface
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -154,6 +155,15 @@ public abstract class Game implements IGame, IGameStrategy {
 
     // INTERFACE METHODS
 
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initGame() {
+        setState(new ResetState(this));
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -169,6 +179,12 @@ public abstract class Game implements IGame, IGameStrategy {
     public void forceStateChange() throws InvalidActionException {
         state.forceStateChange();
     }
+
+    @Override
+    public void forceGameTerminationBeforeStarting() throws InvalidActionException {
+        state.forceGameTerminationBeforeStarting();
+    }
+
 
     /**
      * {@inheritDoc}

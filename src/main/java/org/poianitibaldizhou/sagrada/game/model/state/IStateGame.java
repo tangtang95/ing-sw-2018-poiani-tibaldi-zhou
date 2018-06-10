@@ -180,4 +180,13 @@ public abstract class IStateGame {
     public void forceTermination(Player winner) {
         game.setState(new ForcedEndGameState(game, winner));
     }
+
+    /**
+     * Force the game to terminate because a timeout has experienced before the player join
+     *
+     * @throws InvalidActionException if state instance != ResetState
+     */
+    public void forceGameTerminationBeforeStarting() throws InvalidActionException {
+        throw new InvalidActionException();
+    }
 }

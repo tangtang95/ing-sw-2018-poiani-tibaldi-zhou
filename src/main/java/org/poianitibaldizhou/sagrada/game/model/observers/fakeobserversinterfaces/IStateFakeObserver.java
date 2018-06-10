@@ -92,4 +92,15 @@ public interface IStateFakeObserver {
      * @param winner the player who has won the game
      */
     void onResultGame(User winner) ;
+
+    /**
+     * Notify that the game is waiting the join of the players
+     */
+    void onWaitingForPlayer();
+
+    /**
+     * Notify that the game has terminated before starting due the experience of a timeout related to the player
+     * join
+     */
+    void onGameTerminationBeforeStarting();
 }
