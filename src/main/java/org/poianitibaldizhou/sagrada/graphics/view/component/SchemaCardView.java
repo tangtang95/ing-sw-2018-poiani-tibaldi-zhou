@@ -9,13 +9,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.TileWrapper;
 
-import java.awt.*;
 import java.io.IOException;
 
 public class SchemaCardView extends Pane {
@@ -48,6 +47,7 @@ public class SchemaCardView extends Pane {
     private static final int NUMBER_OF_ROWS = 4;
     private static final int NUMBER_OF_COLUMNS = 5;
 
+    private static final String SCHEMA_CARD_IMAGE_PATH = "images/schemaCards/SchemaCard.png";
     private static final String TILE_IMAGE_PATH = "images/schemaCards/tiles.png";
     private static final String TILE_JSON_PATH = "images/schemaCards/tiles.json";
 
@@ -62,7 +62,7 @@ public class SchemaCardView extends Pane {
         this.diceViews = new DiceView[NUMBER_OF_ROWS][NUMBER_OF_COLUMNS];
 
         Image image = new Image(getClass().getClassLoader()
-                .getResourceAsStream("images/schemaCards/SchemaCard.png"));
+                .getResourceAsStream(SCHEMA_CARD_IMAGE_PATH));
         schemaCardImage = new ImageView(image);
         schemaCardImage.setFitWidth(image.getWidth() * scale);
         schemaCardImage.setFitHeight(image.getHeight() * scale);
@@ -73,6 +73,13 @@ public class SchemaCardView extends Pane {
         tileWidth = Math.round(WIDTH_TILE_PERCENT * image.getWidth()) * scale;
         tileHeight = Math.round(HEIGHT_TILE_PERCENT * image.getWidth()) * scale;
 
+        Canvas canvas = new Canvas(tileWidth*NUMBER_OF_COLUMNS + offsetX*(NUMBER_OF_COLUMNS-1),
+                tileHeight*NUMBER_OF_ROWS + offsetY*(NUMBER_OF_ROWS-1));
+        canvas.setTranslateX(offsetX);
+        canvas.setTranslateY(offsetY);
+        this.getChildren().add(canvas);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 TileWrapper tileWrapper = schemaCard.getTile(new PositionWrapper(i, j));
@@ -80,11 +87,8 @@ public class SchemaCardView extends Pane {
                 // DRAW TILE
                 String tileName = tileWrapper.getConstraint() == null ?
                         "empty" : tileWrapper.getConstraint().toLowerCase();
-                ImageView tileView = TextureUtils.getImageView("tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
-                tileView.setTranslateX(offsetX * (j + 1) + tileWidth * j);
-                tileView.setTranslateY(offsetY * (i + 1) + tileHeight * i);
-                this.getChildren().add(tileView);
-
+                GraphicsUtils.drawImage(gc, offsetX * (j) + tileWidth * j,offsetY * (i) + tileHeight * i,
+                        "tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
                 // DRAW DICE
                 DiceWrapper diceWrapper = tileWrapper.getDice();
                 if(diceWrapper != null){
@@ -108,9 +112,9 @@ public class SchemaCardView extends Pane {
         this.getChildren().add(label);
 
         shadowImage = new Canvas(tileWidth*1.5, tileHeight*1.5);
-        GraphicsContext gc = shadowImage.getGraphicsContext2D();
-        gc.setFill(new Color(0, 0, 0, 0.3));
-        gc.fillOval(0,0, tileWidth*1.5, tileHeight*1.5);
+        GraphicsContext gc1 = shadowImage.getGraphicsContext2D();
+        gc1.setFill(new Color(0, 0, 0, 0.3));
+        gc1.fillOval(0,0, tileWidth*1.5, tileHeight*1.5);
         this.getChildren().add(shadowImage);
         shadowImage.setVisible(false);
     }
@@ -180,6 +184,12 @@ public class SchemaCardView extends Pane {
             }
         }
         return null;
+    }
+
+    public DiceWrapper getDiceByPosition(PositionWrapper positionWrapper){
+        if(diceViews[positionWrapper.getRow()][positionWrapper.getColumn()] == null)
+            return null;
+        return diceViews[positionWrapper.getRow()][positionWrapper.getColumn()].getDiceWrapper();
     }
 
     public void removeShadow() {

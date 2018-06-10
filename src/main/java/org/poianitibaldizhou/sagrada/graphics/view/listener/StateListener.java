@@ -8,9 +8,15 @@ import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -22,10 +28,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
+import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
+import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;
+import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.HistoryObject;
+import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.ObjectMessageType;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
@@ -48,6 +58,7 @@ public class StateListener extends AbstractView implements IStateObserver {
     private static final double DURATION_IN_MILLIS = 1500;
 
     private static final double SCHEMA_CARD_SHOW_SIZE = 0.45;
+    private static final double TOOL_CARD_SHOW_SIZE = 0.7;
     private static final double DICE_SHOW_SIZE = 0.3;
 
     public StateListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
@@ -102,9 +113,9 @@ public class StateListener extends AbstractView implements IStateObserver {
                 Region spacer = new Region();
                 HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-                JFXButton placeDiceButton = TextureUtils.getButton("Piazza un dado", "positive-button");
-                JFXButton useCardButton = TextureUtils.getButton("Usa una Carta Utensile", "positive-button");
-                JFXButton endTurnButton = TextureUtils.getButton("Termina il tuo turno", "negative-button");
+                JFXButton placeDiceButton = GraphicsUtils.getButton("Piazza un dado", "positive-button");
+                JFXButton useCardButton = GraphicsUtils.getButton("Usa una Carta Utensile", "positive-button");
+                JFXButton endTurnButton = GraphicsUtils.getButton("Termina il tuo turno", "negative-button");
 
                 placeDiceButton.setOnAction(this::onPlaceDiceButtonPressed);
                 useCardButton.setOnAction(this::onUseCardButtonPressed);
@@ -137,7 +148,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-        JFXButton cancelButton = TextureUtils.getButton("Annulla", "negative-button");
+        JFXButton cancelButton = GraphicsUtils.getButton("Annulla", "negative-button");
 
         cancelButton.setOnAction(this::onCancelButtonPressed);
 
@@ -163,23 +174,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             });
 
             schemaCardView.setOnDragDropped(event -> {
-                schemaCardView.removeShadow();
-                final Dragboard dragboard = event.getDragboard();
-                double x = event.getX();
-                double y = event.getY();
-                PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
-                JSONParser parser = new JSONParser();
-                try {
-                    JSONObject diceObject = (JSONObject) ((JSONObject) parser.parse(dragboard.getString())).get("body");
-                    DiceWrapper dice = DiceWrapper.toObject(diceObject);
-                    controller.placeDice(dice, positionWrapper);
-                    event.setDropCompleted(true);
-                    event.consume();
-                } catch (ParseException e) {
-                    Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
-                } catch (IOException e) {
-                    showCrashErrorMessage("Errore di connessione");
-                }
+                onSchemaCardDragDropped(event, schemaCardView);
             });
 
             notifyPane.getChildren().add(schemaCardView);
@@ -215,6 +210,26 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
+    private void onSchemaCardDragDropped(DragEvent event, SchemaCardView schemaCardView){
+        schemaCardView.removeShadow();
+        final Dragboard dragboard = event.getDragboard();
+        double x = event.getX();
+        double y = event.getY();
+        PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
+        JSONParser parser = new JSONParser();
+        try {
+            JSONObject diceObject = (JSONObject) ((JSONObject) parser.parse(dragboard.getString())).get("body");
+            DiceWrapper dice = DiceWrapper.toObject(diceObject);
+            controller.placeDice(dice, positionWrapper);
+            event.setDropCompleted(true);
+            event.consume();
+        } catch (ParseException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
+        } catch (IOException e) {
+            showCrashErrorMessage("Errore di connessione");
+        }
+    }
+
     private void onUseCardButtonPressed(ActionEvent actionEvent){
         clearNotifyPane();
         activateNotifyPane();
@@ -224,15 +239,28 @@ public class StateListener extends AbstractView implements IStateObserver {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-        JFXButton continueButton = TextureUtils.getButton("Continua", "positive-button");
-        JFXButton cancelButton = TextureUtils.getButton("Annulla", "negative-button");
+        JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+        JFXButton cancelButton = GraphicsUtils.getButton("Annulla", "negative-button");
 
-        continueButton.setOnAction(this::onUseCardContinueButtonPressed);
+
         cancelButton.setOnAction(this::onCancelButtonPressed);
 
         helperPane.getChildren().addAll(spacer, continueButton, cancelButton);
 
-        // TODO show toolCard
+        try {
+            List<ToolCardWrapper> toolCardWrappers = controller.getToolCards();
+            List<Pane> toolCardViews = new ArrayList<>();
+            toolCardWrappers.forEach(toolCard -> {
+                ToolCardView toolCardView = new ToolCardView(toolCard, TOOL_CARD_SHOW_SIZE);
+                toolCardViews.add(toolCardView);
+            });
+            drawCenteredPanes(notifyPane, toolCardViews, "on-notify-pane-card");
+            ToggleGroup toggleGroup = new ToggleGroup();
+            drawRadioButtons(toggleGroup, toolCardViews);
+            continueButton.setOnAction(event -> onUseCardContinueButtonPressed(event, toggleGroup));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void onCancelButtonPressed(ActionEvent actionEvent) {
@@ -240,8 +268,23 @@ public class StateListener extends AbstractView implements IStateObserver {
         deactivateNotifyPane();
     }
 
-    private void onUseCardContinueButtonPressed(ActionEvent actionEvent){
-
+    private void onUseCardContinueButtonPressed(ActionEvent actionEvent, ToggleGroup toggleGroup){
+        if (toggleGroup.getSelectedToggle() == null) {
+            showMessage(notifyPane, "Devi scegliere una Carta Utensile", MessageType.ERROR);
+            return;
+        }
+        ToolCardView toolCardView = (ToolCardView) toggleGroup.getSelectedToggle().getUserData();
+        ToolCardWrapper toolCardWrapper = toolCardView.getToolCardWrapper();
+        try {
+            ToolCardExecutorListener toolCardExecutorObserver = new ToolCardExecutorListener(controller,
+                    corePane, notifyPane);
+            toolCardExecutorObserver.addHistoryMessage(new HistoryObject(toolCardWrapper, ObjectMessageType.TOOL_CARD));
+            controller.useToolCard(toolCardWrapper, toolCardExecutorObserver);
+            toggleGroup.getToggles().forEach(toggle -> ((RadioButton)toggle).setDisable(true));
+            ((Button) actionEvent.getSource()).setDisable(true);
+        } catch (IOException e) {
+            showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+        }
     }
 
     private void onEndTurnButtonPressed(ActionEvent actionEvent){

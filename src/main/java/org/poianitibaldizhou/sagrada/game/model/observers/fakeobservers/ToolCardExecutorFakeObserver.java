@@ -217,4 +217,17 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
         observerManager.pushThreadInQueue(token, runnable);
 
     }
+
+    @Override
+    public void notifyExecutionEnded() throws IOException {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyExecutionEnded();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+    }
 }

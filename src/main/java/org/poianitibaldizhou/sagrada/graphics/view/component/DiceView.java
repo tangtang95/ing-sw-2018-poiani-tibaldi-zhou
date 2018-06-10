@@ -4,7 +4,7 @@ import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 
 public class DiceView extends Pane {
@@ -21,7 +21,7 @@ public class DiceView extends Pane {
         this.scale = scale;
         String imageKey = String.format("dice-%s-%s.png", dice.getColor().name().toLowerCase(),
                 String.valueOf(dice.getNumber()));
-        diceImage = TextureUtils.getImageView(imageKey, DICE_IMAGE_PATH, DICE_JSON_PATH, scale);
+        diceImage = GraphicsUtils.getImageView(imageKey, DICE_IMAGE_PATH, DICE_JSON_PATH, scale);
 
         this.getChildren().add(diceImage);
         this.setOnMouseEntered(event -> {
@@ -55,12 +55,12 @@ public class DiceView extends Pane {
         diceWrapper = new DiceWrapper(diceWrapper.getColor(), number);
         String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
-        TextureUtils.changeViewport(diceImage, imageKey, DICE_JSON_PATH, scale);
+        GraphicsUtils.changeViewport(diceImage, imageKey, DICE_JSON_PATH, scale);
     }
 
     public Image getImage() {
         String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
-        return TextureUtils.getImage("images/dices/", imageKey, diceImage.getFitWidth(), diceImage.getFitHeight());
+        return GraphicsUtils.getImage("images/dices/", imageKey, diceImage.getFitWidth(), diceImage.getFitHeight());
     }
 }

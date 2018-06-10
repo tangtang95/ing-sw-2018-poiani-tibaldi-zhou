@@ -15,6 +15,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjec
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
@@ -93,137 +94,6 @@ public class MultiPlayerController extends Controller implements Initializable {
         multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
     }
 
-    private void testPrivateObjectiveCardView() {
-        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
-        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-
-        try {
-            JSONObject object = (JSONObject) privateObjectiveCards.draw().toJSON().get("body");
-            PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
-                    new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
-            PrivateObjectiveCardView privateObjectiveCardView =
-                    new PrivateObjectiveCardView(privateObjectiveCardWrapper.toObject(object), 0.3
-                    );
-
-            this.corePane.getChildren().add(privateObjectiveCardView);
-            privateObjectiveCardView.setTranslateX(100);
-            privateObjectiveCardView.setTranslateY(400);
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-        }
-
-        PrivateObjectiveCardView retroView = new PrivateObjectiveCardView(0.3);
-        this.corePane.getChildren().add(retroView);
-
-    }
-
-    private void testPublicObjectiveCardView() {
-        DrawableCollection<PublicObjectiveCard> publicObjectiveCards = new DrawableCollection<>();
-        GameInjector.injectPublicObjectiveCards(publicObjectiveCards);
-
-        try {
-            JSONObject object = (JSONObject) publicObjectiveCards.draw().toJSON().get("body");
-            PublicObjectiveCardWrapper publicObjectiveCardWrapper =
-                    new PublicObjectiveCardWrapper("Varietà di Colore", "dsad", 1);
-            PublicObjectiveCardView publicObjectiveCardView = new PublicObjectiveCardView(
-                    publicObjectiveCardWrapper, 0.5);
-            this.corePane.getChildren().add(publicObjectiveCardView);
-            publicObjectiveCardView.setTranslateX(600);
-            publicObjectiveCardView.setTranslateY(300);
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void testToolCardView() {
-        ToolCard toolCard = new ToolCard(Color.PURPLE, "Pinza Sgrossatrice",
-                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1." +
-                        " Non puoi cambiare un 6 in 1 o un 1 in 6",
-                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][8-CA]"
-        );
-
-        JSONObject object = (JSONObject) toolCard.toJSON().get("body");
-        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("dasd", "dasd", ColorWrapper.BLUE, 3);
-        ToolCardView toolCardView = new ToolCardView((ToolCardWrapper) toolCardWrapper.toObject(object), 0.6);
-        corePane.getChildren().add(toolCardView);
-        toolCardView.setTranslateY(200);
-    }
-
-    private void testFrontBackSchemaCardView() {
-        DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
-        GameInjector.injectSchemaCards(schemaCards);
-
-        List<FrontBackSchemaCardWrapper> frontBackSchemaCardWrappers = new ArrayList<>();
-        JSONObject firstSchema = null;
-        JSONObject secondSchema = null;
-        try {
-            FrontBackSchemaCard frontBackSchemaCard = schemaCards.draw();
-            firstSchema = (JSONObject) frontBackSchemaCard.toJSON().get("body");
-            frontBackSchemaCardWrappers.add(FrontBackSchemaCardWrapper.toObject(firstSchema));
-            frontBackSchemaCard = schemaCards.draw();
-            secondSchema = (JSONObject) frontBackSchemaCard.toJSON().get("body");
-            frontBackSchemaCardWrappers.add(FrontBackSchemaCardWrapper.toObject(secondSchema));
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-        }
-
-        DrawableCollection<PrivateObjectiveCard> privateObjectiveCards = new DrawableCollection<>();
-        GameInjector.injectPrivateObjectiveCard(privateObjectiveCards);
-        List<PrivateObjectiveCardWrapper> privateObjectiveCardList = new ArrayList<>();
-
-        try {
-            JSONObject object = (JSONObject) privateObjectiveCards.draw().toJSON().get("body");
-            PrivateObjectiveCardWrapper privateObjectiveCardWrapper =
-                    new PrivateObjectiveCardWrapper("Sfumature Rosse - Privata", "dsad", ColorWrapper.BLUE);
-            privateObjectiveCardList.add(privateObjectiveCardWrapper);
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void testRoundTrackView() {
-        List<List<DiceWrapper>> dices = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            List<DiceWrapper> diceRound = new ArrayList<>();
-            Random rng = new Random();
-            diceRound.add(new DiceWrapper(ColorWrapper.values()[rng.nextInt(5)], rng.nextInt(6) + 1));
-            diceRound.add(new DiceWrapper(ColorWrapper.BLUE, 3));
-            dices.add(diceRound);
-        }
-
-        RoundTrackWrapper roundTrackWrapper = new RoundTrackWrapper(dices);
-        RoundTrackView roundTrackView = new RoundTrackView();
-        roundTrackView.drawRoundTrack(roundTrackWrapper);
-        corePane.getChildren().add(roundTrackView);
-        roundTrackView.setTranslateX(400);
-    }
-
-    private void testSchemaCardView() {
-        DrawableCollection<FrontBackSchemaCard> schemaCards = new DrawableCollection<>();
-        GameInjector.injectSchemaCards(schemaCards);
-        JSONObject object = null;
-        try {
-            object = (JSONObject) schemaCards.draw().getFrontSchemaCard().toJSON().get("body");
-        } catch (EmptyCollectionException e) {
-            e.printStackTrace();
-        }
-        SchemaCardWrapper schemaCard = new SchemaCardWrapper("test", 3, new TileWrapper[4][5]);
-        SchemaCardView schemaCardView1 = new SchemaCardView((SchemaCardWrapper) schemaCard.toObject(object), 0.3);
-
-        corePane.getChildren().addAll(schemaCardView1);
-        schemaCardView1.setTranslateX(300);
-        schemaCardView1.setTranslateY(300);
-    }
-
-    private void testDiceView() {
-        DiceWrapper dice = new DiceWrapper(ColorWrapper.BLUE, 2);
-        DiceView diceView = new DiceView(dice, 0.1);
-
-        corePane.getChildren().add(diceView);
-        diceView.setTranslateX(300);
-        diceView.setTranslateY(300);
-    }
-
     public Map<UserWrapper, SchemaCardWrapper> getSchemaCardMap() throws IOException {
         return multiPlayerModel.getSchemaCardMap();
     }
@@ -272,7 +142,31 @@ public class MultiPlayerController extends Controller implements Initializable {
         return multiPlayerModel.getPublicObjectiveCards();
     }
 
-    public List<ToolCardWrapper> getToolCards() {
+    public List<ToolCardWrapper> getToolCards() throws IOException {
         return multiPlayerModel.getToolCards();
+    }
+
+    public List<UserWrapper> getUserList() throws IOException {
+        return multiPlayerModel.getUserList();
+    }
+
+    public void useToolCard(ToolCardWrapper toolCardWrapper, IToolCardExecutorObserver executorObserver) throws IOException {
+        multiPlayerModel.useToolCard(toolCardWrapper, executorObserver);
+    }
+
+    public void sendDiceObject(DiceWrapper diceWrapper) throws IOException {
+        multiPlayerModel.sendDiceObject(diceWrapper);
+    }
+
+    public void sendColorObject(ColorWrapper colorWrapper) throws IOException {
+        multiPlayerModel.sendColorObject(colorWrapper);
+    }
+
+    public void sendPositionObject(PositionWrapper positionWrapper) throws IOException {
+        multiPlayerModel.sendPositionObject(positionWrapper);
+    }
+
+    public void sendAnswerObject(boolean answer) throws IOException {
+        multiPlayerModel.sendAnswerObject(answer);
     }
 }

@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXRadioButton;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.beans.binding.DoubleBinding;
@@ -7,16 +9,21 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 
-public abstract class AbstractView extends UnicastRemoteObject{
+public abstract class AbstractView extends UnicastRemoteObject {
 
     protected final transient MultiPlayerController controller;
     protected final transient Pane corePane;
@@ -59,7 +66,7 @@ public abstract class AbstractView extends UnicastRemoteObject{
         pane.getChildren().add(label);
     }
 
-    public HBox showHelperText(Pane pane, String text) {
+    protected HBox showHelperText(Pane pane, String text) {
         HBox helperPane = new HBox(10);
         helperPane.setAlignment(Pos.CENTER_LEFT);
         helperPane.setPadding(new Insets(0, 10, 0, 10));
@@ -77,7 +84,7 @@ public abstract class AbstractView extends UnicastRemoteObject{
         return helperPane;
     }
 
-    public HBox showTopBarText(Pane pane, String text){
+    protected HBox showTopBarText(Pane pane, String text) {
         HBox topBarBox = new HBox(10);
         topBarBox.setAlignment(Pos.CENTER_LEFT);
         topBarBox.setPadding(new Insets(0, 10, 0, 10));
@@ -95,21 +102,21 @@ public abstract class AbstractView extends UnicastRemoteObject{
         return topBarBox;
     }
 
-    public void showCrashErrorMessage(String text) {
+    protected void showCrashErrorMessage(String text) {
         // TODO
     }
 
-    public void clearNotifyPane() {
+    protected void clearNotifyPane() {
         notifyPane.getChildren().clear();
         notifyPane.getChildren().add(getBackgroundPane());
     }
 
-    public void activateNotifyPane() {
+    protected void activateNotifyPane() {
         notifyPane.toFront();
         notifyPane.setVisible(true);
     }
 
-    public void deactivateNotifyPane() {
+    protected void deactivateNotifyPane() {
         notifyPane.toBack();
         notifyPane.setVisible(false);
     }
@@ -123,11 +130,75 @@ public abstract class AbstractView extends UnicastRemoteObject{
         return backgroundPane;
     }
 
-    protected Pane getActivePane(){
-        if(notifyPane.isVisible())
+    protected Pane getActivePane() {
+        if (notifyPane.isVisible())
             return notifyPane;
         else
             return corePane;
+    }
+
+    protected void drawCenteredPanes(Pane targetPane, List<Pane> panes, String classCSS) {
+        DoubleBinding y = getCenterY();
+
+        for (int i = 0; i < panes.size(); i++) {
+            DoubleBinding padding = panes.get(i).widthProperty().divide(2);
+            DoubleBinding totalWidth = panes.get(i).widthProperty().multiply(panes.size())
+                    .add(padding.multiply(panes.size() - 1));
+            DoubleBinding x = getCenterX().subtract(totalWidth.divide(2))
+                    .add(panes.get(i).widthProperty().multiply(i)).add(padding.multiply(i));
+
+            panes.get(i).translateXProperty().bind(getPivotX(x, panes.get(i).widthProperty(), 1));
+            panes.get(i).translateYProperty().bind(getPivotY(y, panes.get(i).heightProperty(), 0.5));
+            if(!classCSS.isEmpty())
+                panes.get(i).getStyleClass().add(classCSS);
+            targetPane.getChildren().add(panes.get(i));
+        }
+    }
+
+    protected void drawCenteredPane(Pane targetPane, Pane pane, String classCSS) {
+        DoubleBinding x = getCenterX();
+        DoubleBinding y = getCenterY();
+
+        pane.translateXProperty().bind(getPivotX(x, pane.widthProperty(), 0.5));
+        pane.translateYProperty().bind(getPivotY(y, pane.heightProperty(), 0.5));
+        if(!classCSS.isEmpty())
+            pane.getStyleClass().add(classCSS);
+        targetPane.getChildren().add(pane);
+    }
+
+    protected void drawRadioButtons(ToggleGroup toggleGroup, List<Pane> panes) {
+        for (int i = 0; i < panes.size(); i++) {
+            Pane schemaCardPane = panes.get(i);
+            JFXRadioButton radioButton = GraphicsUtils.getRadioButton("",
+                    "radio-button-notify-pane", Color.WHITE, Color.DEEPSKYBLUE);
+            radioButton.setToggleGroup(toggleGroup);
+            radioButton.setUserData(schemaCardPane);
+
+            DoubleBinding x = schemaCardPane.translateXProperty().add(schemaCardPane.widthProperty().divide(2));
+            DoubleBinding y = schemaCardPane.translateYProperty().add(schemaCardPane.heightProperty()).add(PADDING * 4);
+
+            schemaCardPane.setOnMousePressed(event -> radioButton.setSelected(true));
+
+            radioButton.translateXProperty().bind(x);
+            radioButton.translateYProperty().bind(y);
+
+            notifyPane.getChildren().add(radioButton);
+        }
+    }
+
+    protected void drawSimpleCloseHelperBox(Pane pane, String text) {
+        HBox helperBox = showHelperText(pane, text);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.SOMETIMES);
+
+        JFXButton cancelButton = GraphicsUtils.getButton("Chiudi", "negative-button");
+        cancelButton.setOnAction(event -> {
+            clearNotifyPane();
+            deactivateNotifyPane();
+        });
+
+        helperBox.getChildren().addAll(spacer, cancelButton);
     }
 
     protected DoubleBinding getWidth() {

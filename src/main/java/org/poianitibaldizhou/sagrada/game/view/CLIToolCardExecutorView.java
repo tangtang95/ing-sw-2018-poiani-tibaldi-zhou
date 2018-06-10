@@ -302,6 +302,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been re-rolled: ").buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
+    @Override
+    public void notifyExecutionEnded() throws IOException {
+        /* NOT NEEDED */
+    }
+
     /**
      * Make the user input a row and a column (position) and sends it to the server
      *

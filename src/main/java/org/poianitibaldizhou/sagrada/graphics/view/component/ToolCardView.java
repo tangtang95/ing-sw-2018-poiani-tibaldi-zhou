@@ -8,11 +8,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.graphics.utils.TextureUtils;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
-
-import java.io.IOException;
 
 public class ToolCardView extends Pane{
 
@@ -31,8 +28,8 @@ public class ToolCardView extends Pane{
     public ToolCardView(ToolCardWrapper toolCard, double scale){
         this.toolCardWrapper = toolCard;
         this.scale = scale;
-        String cardKey = TextureUtils.convertNameIntoCardKey(toolCard.getName());
-        toolCardView = TextureUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
+        String cardKey = GraphicsUtils.convertNameIntoCardKey(toolCard.getName());
+        toolCardView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
 
         tokenView = drawToken(toolCard.getToken());
         tokenView.setTranslateX(toolCardView.getFitWidth() - tokenView.getWidth()/2);
@@ -74,5 +71,9 @@ public class ToolCardView extends Pane{
         tokenView.setTranslateY(- tokenView.getHeight()/2);
 
         this.getChildren().add(tokenView);
+    }
+
+    public ToolCardWrapper getToolCardWrapper() {
+        return toolCardWrapper;
     }
 }
