@@ -155,11 +155,22 @@ public abstract class IStateGame {
     }
 
     /**
+     * Force the state change to its next step in the finite state machine
+     * model of the game
      *
      * @throws InvalidActionException if the state instance != TurnState or
      * if the state instance != SetupPlayerState
      */
     public void forceStateChange() throws InvalidActionException {
+        throw new InvalidActionException();
+    }
+
+    /**
+     * Force a turn to being skipped
+     *
+     * @throws InvalidActionException if the state instance != TurnState
+     */
+    public void forceSkipTurn() throws InvalidActionException {
         throw new InvalidActionException();
     }
 

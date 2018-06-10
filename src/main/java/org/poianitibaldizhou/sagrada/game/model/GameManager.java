@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ForceSkipTurnFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
@@ -85,7 +86,7 @@ public class GameManager {
             if(!game.isSinglePlayer()) {
                 game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
                 gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
-                game.setGameObserverManager(gameObserverManagerMap.get(gameName));
+                game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
             }
         }
     }

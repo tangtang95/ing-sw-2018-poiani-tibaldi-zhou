@@ -44,7 +44,6 @@ public abstract class Game implements IGame, IGameStrategy {
     private final Map<String, IStateFakeObserver> stateObservers;
 
     private final TerminationGameManager terminationGameManager;
-    private GameObserverManager gameObserverManager;
 
     protected Game(String name, TerminationGameManager terminationGameManager) {
         this.name = name;
@@ -144,6 +143,12 @@ public abstract class Game implements IGame, IGameStrategy {
 
 
     // INTERFACE METHODS
+
+    @Override
+    public void forceSkipTurn() throws InvalidActionException {
+        state.forceSkipTurn();
+    }
+
     @Override
     public void forceStateChange() throws InvalidActionException {
         state.forceStateChange();
@@ -392,11 +397,6 @@ public abstract class Game implements IGame, IGameStrategy {
         return state.getCurrentPlayer();
     }
 
-    @Override
-    public void setGameObserverManager(GameObserverManager gameObserverManager) {
-        this.gameObserverManager = gameObserverManager;
-    }
-
     //MODIFIER
 
 
@@ -508,9 +508,5 @@ public abstract class Game implements IGame, IGameStrategy {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
             }
         }
-    }
-
-    public GameObserverManager getObserverManager() {
-        return gameObserverManager;
     }
 }

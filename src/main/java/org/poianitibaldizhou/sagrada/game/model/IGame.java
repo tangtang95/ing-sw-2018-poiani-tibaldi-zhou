@@ -80,5 +80,5 @@ public interface IGame {
 
     List<PrivateObjectiveCard> getPrivateObjectiveCardsByToken(String token);
 
-    void setGameObserverManager(GameObserverManager gameObserverManager);
+    void forceSkipTurn() throws InvalidActionException;
 }

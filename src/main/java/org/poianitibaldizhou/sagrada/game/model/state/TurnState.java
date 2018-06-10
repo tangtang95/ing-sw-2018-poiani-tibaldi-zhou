@@ -20,6 +20,7 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionSt
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.rmi.RemoteException;
 import java.util.HashMap;
@@ -98,14 +99,18 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
             nextTurn();
             return;
         }
-        if(!game.isSinglePlayer() && game.getObserverManager().getDisconnectedPlayer().contains(getCurrentTurnPlayer().getToken())) {
-            nextTurn();
-            return;
-        }
 
         game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound,
                     (isFirstTurn) ? FIRST_TURN : SECOND_TURN, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void forceSkipTurn() {
+        nextTurn();
     }
 
     /**
