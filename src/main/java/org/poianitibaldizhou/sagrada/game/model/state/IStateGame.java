@@ -166,7 +166,7 @@ public abstract class IStateGame {
     }
 
     /**
-     * Force a turn to being skipped
+     * Force a tur
      *
      * @throws InvalidActionException if the state instance != TurnState
      */
