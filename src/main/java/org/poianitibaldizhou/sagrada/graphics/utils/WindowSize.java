@@ -6,21 +6,21 @@ import org.jetbrains.annotations.NotNull;
 public enum WindowSize {
     SMALL(640, 360), MEDIUM(800, 450), BIG(1280, 720);
 
-    private int width;
-    private int height;
+    private double width;
+    private double height;
 
-    WindowSize(int width, int height){
+    WindowSize(double width, double height){
         this.width = width;
         this.height = height;
     }
 
     @Contract(pure = true)
-    public int getWidth(){
+    public double getWidth(){
         return width;
     }
 
     @Contract(pure = true)
-    public int getHeight(){
+    public double getHeight(){
         return height;
     }
 

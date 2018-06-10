@@ -421,7 +421,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     }
 
     private void onToolCardsPressed(MouseEvent event) {
-
+        controller.getToolCards();
     }
 
     private void drawPrivateObjectiveCard(List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,

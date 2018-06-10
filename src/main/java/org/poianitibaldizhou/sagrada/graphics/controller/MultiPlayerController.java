@@ -271,4 +271,8 @@ public class MultiPlayerController extends Controller implements Initializable {
     public List<PublicObjectiveCardWrapper> getPublicObjectiveCards() throws IOException {
         return multiPlayerModel.getPublicObjectiveCards();
     }
+
+    public List<ToolCardWrapper> getToolCards() {
+        return multiPlayerModel.getToolCards();
+    }
 }

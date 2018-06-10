@@ -155,4 +155,9 @@ public class MultiPlayerModel {
         String response = connectionManager.getGameController().getPublicObjectiveCards(request);
         return parser.getPublicObjectiveCards(response);
     }
+
+    public List<ToolCardWrapper> getToolCards() {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        return null;
+    }
 }

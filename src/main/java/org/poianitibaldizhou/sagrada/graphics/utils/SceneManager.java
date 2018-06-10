@@ -71,11 +71,11 @@ public class SceneManager {
         return (Stage) stackPane.getScene().getWindow();
     }
 
-    public int getSceneWidth() {
+    public double getSceneWidth() {
         return windowSize.getWidth();
     }
 
-    public int getSceneHeight() {
+    public double getSceneHeight() {
         return windowSize.getHeight();
     }
 

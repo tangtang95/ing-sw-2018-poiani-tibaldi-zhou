@@ -40,9 +40,12 @@ public class GameTestApp2 extends Application{
         String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
         scene.getStylesheets().add(css);
 
+        root.scaleXProperty().bind(scene.widthProperty().divide(size.getWidth()));
+        root.scaleYProperty().bind(scene.widthProperty().divide(size.getWidth()));
+
         primaryStage.setTitle("Sagrada: il Gioco");
+        primaryStage.setFullScreenExitHint("");
         primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }
