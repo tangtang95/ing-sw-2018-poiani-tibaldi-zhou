@@ -38,7 +38,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+    public CLISelectGameModeScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
         super(networkManager, screenManager);
 
         this.clientCreateMessage = new ClientCreateMessage();

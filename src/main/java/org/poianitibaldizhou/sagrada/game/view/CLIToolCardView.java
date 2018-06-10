@@ -32,7 +32,7 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
      * @param toolCardName the name of toolCard associated at this class.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLIToolCardView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
+    public CLIToolCardView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
         this.clientGetMessage = cliStateView.getClientGetMessage();
         this.toolCardName = toolCardName;

@@ -36,7 +36,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
      * @param cliStateView the CLI that contains all parameter.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLIRoundTrackView(CLIStateView cliStateView) throws RemoteException {
+    public CLIRoundTrackView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
         this.clientGetMessage = cliStateView.getClientGetMessage();

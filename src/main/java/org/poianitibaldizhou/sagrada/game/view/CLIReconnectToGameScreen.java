@@ -64,10 +64,11 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
      * @param screenManager manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
+    public CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
         super(connectionManager,screenManager);
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();
+
         getParameter();
 
         this.cliStateView = new CLIStateView(connectionManager,screenManager, gameName, new UserWrapper(username),token);
@@ -123,7 +124,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                     cliSchemaCardViewMap.put(s.getKey().getUsername(), new CLISchemaCardView(cliStateView, s.getValue().getName()));
 
                 connectionManager.getGameController().reconnect(
-                        clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage(),
+                        clientCreateMessage.createTokenMessage(token).createUsernameMessage(username).buildMessage(),
                         new CLIGameView(cliStateView, connectionManager),
                         cliStateView,
                         cliPlayerViewMap,

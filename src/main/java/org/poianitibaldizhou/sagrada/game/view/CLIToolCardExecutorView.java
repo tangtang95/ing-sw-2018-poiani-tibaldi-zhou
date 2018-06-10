@@ -62,7 +62,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * @param toolCardName the name of toolCard associated at this class.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLIToolCardExecutorView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
+    public CLIToolCardExecutorView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
         this.consoleListener = ConsoleListener.getInstance();
         this.cliStateView = cliStateView;

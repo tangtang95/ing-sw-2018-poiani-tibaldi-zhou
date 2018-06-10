@@ -86,7 +86,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
      * @param screenManager  manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
+    public CLIRoundScreen(ConnectionManager networkManager, ScreenManager screenManager, CLIStateView cliStateView)
             throws RemoteException {
         super(networkManager, screenManager);
         this.token = cliStateView.getToken();
@@ -369,6 +369,7 @@ public class CLIRoundScreen extends CLIBasicScreen {
             );
             if(clientGetMessage.hasTerminateGameError(response))
                 return;
+            System.out.println(response);
             roundTrackWrapper = clientGetMessage.getRoundTrack(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +

@@ -29,7 +29,7 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      *
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
+    public CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.clientGetMessage = new ClientGetMessage();
         this.cliStateView = cliStateView;
