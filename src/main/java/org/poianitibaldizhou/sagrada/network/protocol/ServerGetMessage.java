@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
+
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
@@ -15,18 +16,33 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCar
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class for getting a message from client.
+ */
 public class ServerGetMessage {
+
+    /**
+     * network protocol.
+     */
     private JSONProtocol serverNetworkProtocol;
 
+    /**
+     * ServerGetMessage constructor.
+     */
     public ServerGetMessage() {
         serverNetworkProtocol = new JSONProtocol();
     }
 
+    /**
+     * Get a player's token from client with key token.
+     *
+     * @param message json message from client.
+     * @return a player's token.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getToken(String message) throws IOException {
         String token;
         try {
@@ -39,6 +55,13 @@ public class ServerGetMessage {
         return token;
     }
 
+    /**
+     * Get a game name from client with key gameName.
+     *
+     * @param message json message from client.
+     * @return a game name.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getGameName(String message) throws IOException {
         String gameName;
         try {
@@ -50,6 +73,13 @@ public class ServerGetMessage {
         return gameName;
     }
 
+    /**
+     * Get schemaCard from client with key schemaCard.
+     *
+     * @param message json message from client.
+     * @return a schemaCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public SchemaCard getSchemaCard(String message) throws IOException {
         SchemaCard schemaCard;
         try {
@@ -61,6 +91,13 @@ public class ServerGetMessage {
         return schemaCard;
     }
 
+    /**
+     * Get a user from client with key user.
+     *
+     * @param message json message from client.
+     * @return a user.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public User getUser(String message) throws IOException {
         User user;
         try {
@@ -72,6 +109,13 @@ public class ServerGetMessage {
         return user;
     }
 
+    /**
+     * Get a position from client with key position.
+     *
+     * @param message json message fro client.
+     * @return a position.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Position getPosition(String message) throws IOException {
         Position position;
 
@@ -85,6 +129,13 @@ public class ServerGetMessage {
         return position;
     }
 
+    /**
+     * Get dice rom client with key dice.
+     *
+     * @param message json message from client.
+     * @return a dice.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Dice getDice(String message) throws IOException {
         Dice dice;
 
@@ -98,6 +149,13 @@ public class ServerGetMessage {
         return dice;
     }
 
+    /**
+     * Get toolCard from client with key toolCard.
+     *
+     * @param message json message from client.
+     * @return a toolCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public ToolCard getToolCard(String message) throws IOException {
         ToolCard toolCard;
 
@@ -111,6 +169,13 @@ public class ServerGetMessage {
         return toolCard;
     }
 
+    /**
+     * Get a acton command from client with key action
+     *
+     * @param message json message from client.
+     * @return an action command.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public IActionCommand getActionCommand(String message) throws IOException {
         IActionCommand actionCommand;
         try {
@@ -132,6 +197,13 @@ public class ServerGetMessage {
         return actionCommand;
     }
 
+    /**
+     * Get a privateObjectiveCard from client with key privateObjectiveCard.
+     *
+     * @param message json message from client.
+     * @return a privateObjectiveCard.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public PrivateObjectiveCard getPrivateObjectiveCard(String message) throws IOException {
         PrivateObjectiveCard privateObjectiveCard;
 
@@ -146,6 +218,13 @@ public class ServerGetMessage {
         return privateObjectiveCard;
     }
 
+    /**
+     * Get integer value from client with key integer.
+     *
+     * @param message json message from client
+     * @return a integer.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Integer getInteger(String message) throws IOException {
         Integer value;
 
@@ -159,6 +238,13 @@ public class ServerGetMessage {
         return value;
     }
 
+    /**
+     * Get a color from client with key color.
+     *
+     * @param message json message from client.
+     * @return a color.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public Color getColor(String message) throws IOException {
         Color color;
 
@@ -172,6 +258,13 @@ public class ServerGetMessage {
         return color;
     }
 
+    /**
+     * Get player's username from client with key username.
+     *
+     * @param message json message from client.
+     * @return a player's username.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public String getUserName(String message) throws IOException {
         String username;
         try {
@@ -183,6 +276,13 @@ public class ServerGetMessage {
         return username;
     }
 
+    /**
+     * Get a bool value from client with key boolean.
+     *
+     * @param message json message from client.
+     * @return a bool value.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
     public boolean getBoolean(String message) throws IOException {
         Boolean b;
         try {

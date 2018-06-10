@@ -24,7 +24,7 @@ public final class FrontBackSchemaCardWrapper implements JSONable{
     /**
      * Constructor.
      */
-    FrontBackSchemaCardWrapper() {
+    public FrontBackSchemaCardWrapper() {
         this.schemaCards = new ArrayList<>();
     }
 

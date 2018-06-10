@@ -1,93 +1,142 @@
 package org.poianitibaldizhou.sagrada.network.protocol;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
-import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
-import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import java.io.IOException;
+import static org.junit.Assert.*;
 
 public class ServerGetMessageTest {
 
     @DataPoint
-    public static List<Dice> diceList;
-
-    @DataPoint
-    public static JSONProtocol serverNetworkProtocol;
-
-    @DataPoint
-    public static Map<String, Dice> diceMap;
-
-    @DataPoint
-    public static SchemaCard schemaCard;
-
-    @BeforeClass
-    public static void setUpClass() {
-        diceList = new ArrayList<>();
-        diceMap = new HashMap<>();
-    }
+    public static ServerGetMessage serverGetMessage;
 
     @Before
-    public void setUp() {
-        serverNetworkProtocol = new JSONProtocol();
+    public void setUp() throws Exception {
+        serverGetMessage = new ServerGetMessage();
+    }
 
-        diceList.add(new Dice(1, Color.BLUE));
-        diceList.add(new Dice(2, Color.GREEN));
-        diceList.add(new Dice(3, Color.BLUE));
-        diceList.add(new Dice(4, Color.BLUE));
-        diceList.add(new Dice(5, Color.YELLOW));
+    @Test
+    public void getToken() throws IOException {
+        String token = "123456789";
+        String message = "{\"tokenKey\":{\"type\":\"string\",\"body\":\"123456789\"}}";
+        assertEquals(token, serverGetMessage.getToken(message));
+    }
 
-        diceMap.put("1", new Dice(1, Color.BLUE));
-        diceMap.put("3", new Dice(1, Color.YELLOW));
-        diceMap.put("4", new Dice(1, Color.RED));
-        diceMap.put("6", new Dice(1, Color.PURPLE));
+    @Test
+    public void getGameName() throws IOException {
+        String gameName = "Emperor";
+        String message = "{\"gameNameKey\":{\"type\":\"string\",\"body\":\"Emperor\"}}";
+        assertEquals(gameName, serverGetMessage.getGameName(message));
+    }
 
-        IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+    @Test
+    public void getSchemaCard() throws IOException {
+        Tile[][] constraints = new Tile[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
-                matrix[i][j] = new ColorConstraint(Color.YELLOW);
+                constraints[i][j] = new Tile(null);
             }
         }
-        schemaCard = new SchemaCard("TestToolCard", 100, matrix);
-        try {
-            schemaCard.setDice(new Dice(4, Color.YELLOW), 0, 0);
-        } catch (RuleViolationException e) {
-            e.printStackTrace();
-        }
-
+        SchemaCard emptySchemaCard = new SchemaCard("test1", 1, constraints);
+        String message = "{\"schemaCard\":{\"type\":\"schemaCard\",\"body\":" +
+                "{\"difficulty\":1,\"name\":\"test1\",\"matrix\":" +
+                "[[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]," +
+                "[{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
+                "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}}";
+        assertEquals(emptySchemaCard, serverGetMessage.getSchemaCard(message));
     }
 
     @Test
-    public void testDiceMessage() {
-        String message = "{\"test\":{\"type\":\"dice\",\"body\":{\"color\":\"YELLOW\",\"value\":3}}}";
-        serverNetworkProtocol.appendMessage("test", new Dice(3, Color.YELLOW));
-        assertEquals(message, serverNetworkProtocol.buildMessage());
+    public void getUser() {
+        //NOT USED//
     }
 
-
+    @Test
+    public void getPosition() throws IOException {
+        Position position = new Position(1,1);
+        String message = "{\"position\":{\"type\":\"position\",\"body\":{\"column\":1,\"row\":1}}}";
+        assertEquals(position, serverGetMessage.getPosition(message));
+    }
 
     @Test
-    public void booleanTest() {
-        serverNetworkProtocol.appendMessage("boolean", true);
-        String bool = serverNetworkProtocol.buildMessage();
-        try {
-            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(bool, "boolean");
-            assertEquals(true, Boolean.valueOf(jsonObject.get(SharedConstants.BODY).toString()));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+    public void getDice() throws IOException {
+        Dice dice = new Dice(5, Color.BLUE);
+        String message = "{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":5}}}";
+        assertEquals(dice, serverGetMessage.getDice(message));
+    }
+
+    @Test
+    public void getToolCard() throws IOException {
+        String message = "{\"toolCard\":{\"type\":\"toolCard\",\"body\":{\"name\":\"Pinza Sgrossatrice\",\"token\":0}}}";
+        ToolCard toolCard = new ToolCard(Color.PURPLE,"Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][16-CA]");
+        assertEquals(toolCard, serverGetMessage.getToolCard(message));
+    }
+
+    @Test
+    public void getActionCommand() throws IOException {
+        String message = "{\"actionKey\":{\"type\":\"useToolCardAction\",\"body\":{}}}";
+        IActionCommand iActionCommand = new UseCardAction();
+        assertEquals(iActionCommand, serverGetMessage.getActionCommand(message));
+    }
+
+    @Test
+    public void getPrivateObjectiveCard() {
+        //TODO
+    }
+
+    @Test
+    public void getInteger() throws IOException {
+        Integer value = 5;
+        String message = "{\"integer\":{\"type\":\"integer\",\"body\":\"5\"}}";
+        assertEquals(value, serverGetMessage.getInteger(message));
+    }
+
+    @Test
+    public void getColor() throws IOException {
+        String message = "{\"color\":{\"type\":\"color\",\"body\":\"GREEN\"}}";
+        Color color = Color.GREEN;
+        assertEquals(color, serverGetMessage.getColor(message));
+    }
+
+    @Test
+    public void getUserName() throws IOException {
+        String username = "test";
+        String message = "{\"usernameKey\":{\"type\":\"string\",\"body\":\"test\"}}";
+        assertEquals(username, serverGetMessage.getUserName(message));
+    }
+
+    @Test
+    public void getBoolean() throws IOException {
+        String message = "{\"boolean\":{\"type\":\"boolean\",\"body\":\"true\"}}";
+        assertEquals(true, serverGetMessage.getBoolean(message));
     }
 }

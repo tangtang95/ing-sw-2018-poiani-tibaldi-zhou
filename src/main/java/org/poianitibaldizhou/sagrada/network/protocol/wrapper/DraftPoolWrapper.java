@@ -32,7 +32,7 @@ public final class DraftPoolWrapper implements JSONable{
      *
      * @param dices list of dice in the draftPoolWrapper.
      */
-    DraftPoolWrapper(Collection<DiceWrapper> dices) {
+    public DraftPoolWrapper(Collection<DiceWrapper> dices) {
         this.dices = new ArrayList<>(dices);
     }
 
