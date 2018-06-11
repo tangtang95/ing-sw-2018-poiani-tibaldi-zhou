@@ -7,7 +7,11 @@ import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+/**
+ * Full card with front schemaCard and Back schemaCard.
+ */
 public class FrontBackSchemaCard implements JSONable{
 
     private List<SchemaCard> schemaCards;
@@ -17,7 +21,7 @@ public class FrontBackSchemaCard implements JSONable{
     }
 
     public void setSchemaCard(SchemaCard schemaCard) {
-        this.schemaCards.add(schemaCard);
+        this.schemaCards.add(SchemaCard.newInstance(schemaCard));
     }
 
     public int size() {
@@ -77,5 +81,20 @@ public class FrontBackSchemaCard implements JSONable{
     public static FrontBackSchemaCard toObject(JSONObject jsonObject) {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof FrontBackSchemaCard)) return false;
+        FrontBackSchemaCard that = (FrontBackSchemaCard) o;
+        return getFrontSchemaCard().equals(that.getFrontSchemaCard()) &&
+                getBackSchemaCard().equals(that.getBackSchemaCard());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getSchemaCards());
     }
 }

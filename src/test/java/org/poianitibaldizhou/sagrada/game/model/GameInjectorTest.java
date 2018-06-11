@@ -4,6 +4,7 @@ import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -29,7 +30,7 @@ import static org.junit.Assert.*;
 public class GameInjectorTest {
 
     @DataPoint
-    private static DrawableCollection<SchemaCard> schemaCardDrawableCollection;
+    private static DrawableCollection<FrontBackSchemaCard> schemaCardDrawableCollection;
     @DataPoint
     private static DrawableCollection<ToolCard> toolCardDrawableCollection, toolCardDrawableCollection1;
     @DataPoint
@@ -245,15 +246,54 @@ public class GameInjectorTest {
 
     @Test
     public void schemaCardInjectorTest() {
-        IConstraint[][] constraints1 = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        FrontBackSchemaCard frontBackSchemaCard = new FrontBackSchemaCard();
         Tile[][] constraints = new Tile[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 constraints[i][j] = new Tile(null);
             }
         }
+        constraints[0][0] = new Tile(new ColorConstraint(Color.YELLOW));
+        constraints[0][1] = new Tile(new ColorConstraint(Color.BLUE));
+        constraints[0][4] = new Tile(new NumberConstraint(1));
+        constraints[1][0] = new Tile(new ColorConstraint(Color.GREEN));
+        constraints[1][2] = new Tile(new NumberConstraint(5));
+        constraints[1][4] = new Tile(new NumberConstraint(4));
+        constraints[2][0] = new Tile(new NumberConstraint(3));
+        constraints[2][2] = new Tile(new ColorConstraint(Color.RED));
+        constraints[2][4] = new Tile(new ColorConstraint(Color.GREEN));
+        constraints[3][0] = new Tile(new NumberConstraint(2));
+        constraints[3][3] = new Tile(new ColorConstraint(Color.BLUE));
+        constraints[3][4] = new Tile(new ColorConstraint(Color.YELLOW));
         SchemaCard schemaCardFront = new SchemaCard("Kaleidoscopic Dream",
-                4, constraints1);
+                4, constraints);
+
+        frontBackSchemaCard.setSchemaCard(schemaCardFront);
+
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                constraints[i][j] = new Tile(null);
+            }
+        }
+        constraints[0][0] = new Tile(new NumberConstraint(4));
+        constraints[0][2] = new Tile(new NumberConstraint(2));
+        constraints[0][3] = new Tile(new NumberConstraint(5));
+        constraints[0][4] = new Tile(new ColorConstraint(Color.GREEN));
+        constraints[1][2] = new Tile(new NumberConstraint(6));
+        constraints[1][3] = new Tile(new ColorConstraint(Color.GREEN));
+        constraints[1][4] = new Tile(new NumberConstraint(2));
+        constraints[2][1] = new Tile(new NumberConstraint(3));
+        constraints[2][2] = new Tile(new ColorConstraint(Color.GREEN));
+        constraints[2][3] = new Tile(new NumberConstraint(4));
+        constraints[3][0] = new Tile(new NumberConstraint(5));
+        constraints[3][1] = new Tile(new ColorConstraint(Color.GREEN));
+        constraints[3][2] = new Tile(new NumberConstraint(1));
+        SchemaCard schemaCardBack = new SchemaCard("Virtus",
+                5, constraints);
+
+        frontBackSchemaCard.setSchemaCard(schemaCardBack);
+        GameInjector.injectSchemaCards(schemaCardDrawableCollection);
+        assertTrue(schemaCardDrawableCollection.getCollection().contains(frontBackSchemaCard));
     }
 
     @Test
