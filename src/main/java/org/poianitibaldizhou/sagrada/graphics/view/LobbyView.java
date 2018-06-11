@@ -133,6 +133,14 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         Logger.getAnonymousLogger().log(Level.FINEST, err);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void ping() throws IOException {
+        // DO NOTHING
+    }
+
     @Override
     public void onUserJoin(String message) throws IOException {
         Platform.runLater(() -> {

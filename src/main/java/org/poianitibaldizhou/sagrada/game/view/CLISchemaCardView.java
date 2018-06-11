@@ -38,7 +38,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      * Constructor.
      *
      * @param cliStateView the CLI that contains all parameter.
-     * @param username my username in the current game.
+     * @param username     my username in the current game.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     CLISchemaCardView(CLIStateView cliStateView, String username) throws RemoteException {
@@ -60,6 +60,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
                 Level.INFORMATION);
+
     }
 
     /**

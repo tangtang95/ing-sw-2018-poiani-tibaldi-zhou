@@ -164,5 +164,13 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
         PrinterManager.consolePrint(err + "\n", Level.INFORMATION);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void ping() throws IOException {
+        // DO NOTHING
+    }
+
 
 }

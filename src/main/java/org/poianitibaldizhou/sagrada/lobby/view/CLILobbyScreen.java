@@ -195,6 +195,14 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      * {@inheritDoc}
      */
     @Override
+    public void ping() {
+        // DO-NOTHING
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onUserJoin(String user) throws IOException {
         UserWrapper userWrapper = clientGetMessage.getUserWrapper(user);
         if (!userWrapper.getUsername().equals(username))

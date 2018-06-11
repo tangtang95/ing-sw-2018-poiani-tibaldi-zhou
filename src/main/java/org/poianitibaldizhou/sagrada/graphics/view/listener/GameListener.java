@@ -81,6 +81,14 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
      * {@inheritDoc}
      */
     @Override
+    public void ping() throws IOException {
+        // TODO :)
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void onPlayersCreate(String message) throws IOException {
         /* PLAYER CREATE MOVED TO ON PUBLIC OBJECTIVE CARDS DRAW*/
     }
