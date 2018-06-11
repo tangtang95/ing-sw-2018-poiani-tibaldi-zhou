@@ -675,6 +675,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         // check if the token is the one of a disconnected player
         synchronized (gameManager.getGameByName(gameName)) {
+            System.out.println("Reconnecting token: " + token);
             if (gameManager.clearObservers(gameName)) {
                 gameView.err(GAME_TERMINATED);
                 throw new IOException();

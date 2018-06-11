@@ -65,7 +65,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
      * @param connectionManager the network manager for connecting with the server.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIGameView(CLIStateView cliStateView, ConnectionManager connectionManager) throws RemoteException {
+    CLIGameView(CLIStateView cliStateView, ConnectionManager connectionManager) throws RemoteException {
         super();
         this.connectionManager = connectionManager;
         this.gameName = cliStateView.getGameName();
@@ -204,6 +204,14 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     @Override
     public void err(String err) {
         PrinterManager.consolePrint(err + "\n", Level.ERROR);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void ping() {
+        // DO NOTHING
     }
 
     /**

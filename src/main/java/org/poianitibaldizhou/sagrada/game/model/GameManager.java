@@ -266,8 +266,15 @@ public class GameManager {
     }
 
     private void ping(String gameName) {
-        getGameByName(gameName).getPlayers().stream().map(player -> player.getToken()).forEach(
-                token -> viewMap.get(token)
+        getGameByName(gameName).getPlayers().stream().map(player-> player.getToken()).forEach(
+                token -> {
+                    try {
+                        if(viewMap.get(token) != null)
+                            viewMap.get(token).ping();
+                    } catch(IOException e) {
+                        gameObserverManagerMap.get(gameName).signalDisconnection(token);
+                    }
+                }
         );
     }
 }
