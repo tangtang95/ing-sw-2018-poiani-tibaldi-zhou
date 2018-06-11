@@ -167,11 +167,12 @@ public class GameManager {
             game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
             gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
             game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
-            game.initGame();
 
             ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName);
             serverGameHeartBeatMap.putIfAbsent(gameName, serverGameHeartBeat);
             serverGameHeartBeat.start();
+
+            game.initGame();
         }
     }
 

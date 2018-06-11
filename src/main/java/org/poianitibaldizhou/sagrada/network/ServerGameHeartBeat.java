@@ -25,7 +25,7 @@ public class ServerGameHeartBeat extends Thread {
      * related to a certain game.
      *
      * @param gameManager game manager of the server
-     * @param gameName name of the game on which the heart beat acts
+     * @param gameName    name of the game on which the heart beat acts
      */
     public ServerGameHeartBeat(GameManager gameManager, String gameName) {
         this.gameName = gameName;
@@ -37,20 +37,21 @@ public class ServerGameHeartBeat extends Thread {
      */
     @Override
     public void run() {
-        while(true) {
-            try {
+        try {
+            while (true) {
                 Thread.sleep(SLEEP_TIME);
                 try {
                     if (gameManager.clearObservers(gameName))
                         break;
-                } catch(NullPointerException npe) {
-                    if(!gameManager.notContainsGame(gameName))
+                } catch (NullPointerException npe) {
+                    if (!gameManager.notContainsGame(gameName)) {
+                        System.out.println("Heath beat interrupted");
                         throw new IllegalStateException();
+                    }
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
             }
+        } catch (InterruptedException e) {
+            System.out.println("Hearth beat interrupted");
         }
     }
 }

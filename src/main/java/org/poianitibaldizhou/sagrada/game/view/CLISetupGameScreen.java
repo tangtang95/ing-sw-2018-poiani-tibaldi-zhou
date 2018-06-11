@@ -42,16 +42,16 @@ public class CLISetupGameScreen extends CLIBasicScreen {
 
     /**
      * @param connectionManager the network manager for connecting with the server.
-     * @param screenManager manager for handler the changed of the screen.
-     * @param gameModeStrategy strategy for this game.
-     * @param myUser my user in the the current game.
+     * @param screenManager     manager for handler the changed of the screen.
+     * @param gameModeStrategy  strategy for this game.
+     * @param myUser            my user in the the current game.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     public CLISetupGameScreen(ConnectionManager connectionManager, ScreenManager screenManager,
-                          GameModeStrategy gameModeStrategy, UserWrapper myUser
+                              GameModeStrategy gameModeStrategy, UserWrapper myUser
     ) throws RemoteException {
         super(connectionManager, screenManager);
-        this.cliStateView = new CLIStateView(connectionManager,screenManager,gameModeStrategy,myUser);
+        this.cliStateView = new CLIStateView(connectionManager, screenManager, gameModeStrategy, myUser);
 
         this.token = gameModeStrategy.getToken();
         this.gameName = gameModeStrategy.getGameName();

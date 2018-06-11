@@ -199,7 +199,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     @Override
     public void onWaitingForPlayer() {
         System.out.println("On waiting timeout start");
-        Runnable timeoutJoin = () -> {
+        Runnable runnable = () -> {
             try {
                 Thread.sleep(TIME_JOIN);
                 handleTimeoutJoin();
@@ -208,8 +208,9 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 Thread.currentThread().interrupt();
             }
         };
-        timeOutJoin = new Thread(timeoutJoin);
-        timeoutJoin.run();
+        timeOutJoin = new Thread(runnable);
+        timeOutJoin.start();
+        System.out.println("On waiting timeout start end method");
     }
 
     @Override
