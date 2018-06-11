@@ -99,7 +99,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         this.gameName = gameModeStrategy.getGameName();
         this.connectionManager = connectionManager;
         this.screenManager = screenManager;
-        CLIStateView.setStart(false);
+        CLIStateView.setStart(true);
 
         this.roundStrategy = gameModeStrategy;
         if (gameModeStrategy.isSinglePlayer()){
@@ -182,7 +182,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      * @param bool value to set.
      */
     public static void setStart(boolean bool) {
-        start = !bool;
+        start = bool;
     }
 
     /**
@@ -216,7 +216,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             if (round == 0)
                 screenManager.replaceScreen(roundStrategy);
             else {
-                start = false;
+                setStart(false);
                 lock.notifyAll();
             }
         }
@@ -259,7 +259,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public void onRoundEnd(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
         PrinterManager.consolePrint("The round " + (round + 1) + " end\n", Level.INFORMATION);
-        setStart(false);
+        setStart(true);
     }
 
     /**
@@ -267,15 +267,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onEndGame(String roundUser) {
-        System.out.println("ON END GAME");
         synchronized (lock) {
-            while (start) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
             try {
                 screenManager.replaceScreen(new CLIEndGame(connectionManager, screenManager));
             } catch (RemoteException e) {
@@ -325,7 +317,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
                 PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH-----------------------\n",
                         Level.STANDARD);
                 screenManager.popScreen();
-                start = true;
+                setStart(true);
             } else
                 PrinterManager.consolePrint("The turn of " + turnUser.getUsername() + " is ending\n",
                         Level.INFORMATION);
@@ -337,7 +329,6 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onVictoryPointsCalculated(String victoryPoints) throws IOException {
-        System.out.println("VIC POINT CALC");
         synchronized (lock) {
             start = false;
             lock.notifyAll();
