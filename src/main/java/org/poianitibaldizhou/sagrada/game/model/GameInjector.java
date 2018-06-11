@@ -25,18 +25,35 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
+/**
+ * Game injector reads all cards from files json and inject them in game.
+ */
 public class GameInjector {
+
+    /**
+     * Class logger.
+     */
     private static final Logger LOGGER = Logger.getLogger(GameInjector.class.getName());
 
+    /**
+     * GameInjector parameter.
+     */
     public static final String CARD_NAME = "cardName";
     public static final String CARD_DESCRIPTION = "cardDescription";
-    public static final String CARD_POINTS = "cardPoints";
-    public static final String CONSTRAINT_TYPE = "constraintType";
+    private static final String CARD_POINTS = "cardPoints";
+    private static final String CONSTRAINT_TYPE = "constraintType";
 
-    private static final String FILE_PATH = "resources/toolCards.json";
+    /**
+     * File path.
+     */
+    private static final String FILE_PATH_1 = "resources/toolCards.json";
+    private static final String FILE_PATH_2 = "resources/publicObjectiveCards.json";
+    private static final String FILE_PATH_3 = "resources/privateObjectiveCards.json";
+    private static final String FILE_PATH_4 = "resources/schemaCards.json";
 
-
+    /**
+     * Static constructor.
+     */
     @Contract(" -> fail")
     private GameInjector() {
         throw new IllegalStateException("Utility class");
@@ -54,7 +71,7 @@ public class GameInjector {
         jsonArray = null;
 
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_1));
         } catch (IOException | ParseException e) {
             LOGGER.log(Level.FINE, "Parse exception in injectToolCards", e);
         }
@@ -95,7 +112,7 @@ public class GameInjector {
         JSONArray jsonArray;
         jsonArray = null;
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/publicObjectiveCards.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_2));
         } catch (IOException | ParseException e) {
             LOGGER.log(Level.FINE, "Parse exception in injectPublicObjectiveCards", e);
         }
@@ -167,7 +184,7 @@ public class GameInjector {
         JSONArray jsonArray;
         jsonArray = null;
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/privateObjectiveCards.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_3));
         } catch (IOException | ParseException e) {
             LOGGER.log(Level.FINE, "Parse exception in injectPrivateObjectiveCards", e);
         }
@@ -195,7 +212,7 @@ public class GameInjector {
         List<FrontBackSchemaCard> frontBackSchemaCards = new ArrayList<>();
 
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/schemaCards.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_4));
             for (int i = 0; i < jsonArray.size() / 2; i++) {
                 frontBackSchemaCards.add(i, new FrontBackSchemaCard());
             }

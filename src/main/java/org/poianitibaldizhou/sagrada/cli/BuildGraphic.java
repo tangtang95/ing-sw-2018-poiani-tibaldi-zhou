@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
+import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.util.ArrayList;
@@ -240,6 +241,7 @@ public class BuildGraphic {
         Command command;
 
         if (commandMap != null) {
+            CLIBasicScreen.clearScreen();
             stringBuilder.append("Available commands:");
             stringBuilder.append("\n");
             for (Command com : commandMap.values())
