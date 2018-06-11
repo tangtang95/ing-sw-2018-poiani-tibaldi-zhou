@@ -95,5 +95,5 @@ public interface IToolCardExecutorFakeObserver {
     /**
      * Notify that the execution of the ToolCard is ended
      */
-    void notifyExecutionEnded() throws IOException;
+    void notifyExecutionEnded();
 }

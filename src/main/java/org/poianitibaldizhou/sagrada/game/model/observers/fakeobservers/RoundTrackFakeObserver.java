@@ -15,8 +15,6 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     private String token;
     private GameObserverManager observerManager;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the round track used to manage the asynchronous call made to various client
      * and network communication errors
@@ -29,8 +27,6 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -40,6 +36,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDicesAddToRound(List<Dice> diceList, int round) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDicesAddToRound(serverCreateMessage.createDiceList(diceList).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -56,6 +53,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDiceAddToRound(Dice dice, int round) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDiceAddToRound(serverCreateMessage.createDiceMessage(dice).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -72,6 +70,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDiceRemoveFromRound(Dice dice, int round) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDiceRemoveFromRound(serverCreateMessage.createDiceMessage(dice).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -88,6 +87,7 @@ public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
     public void onDiceSwap(Dice oldDice, Dice newDice, int round) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDiceSwap(serverCreateMessage.createDiceSwapMessage(oldDice, newDice).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

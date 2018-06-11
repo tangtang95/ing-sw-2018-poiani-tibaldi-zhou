@@ -14,8 +14,6 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     private GameObserverManager observerManager;
     private IPlayerObserver realObserver;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the player used to manage the asynchronous call made to various client
      * and network communication errors
@@ -28,8 +26,6 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -39,6 +35,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     public void onFavorTokenChange(int value)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onFavorTokenChange(serverCreateMessage.createMessageValue(value).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -55,6 +52,7 @@ public class PlayerFakeObserver implements IPlayerFakeObserver {
     public void onSetOutcome(Outcome outcome)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onSetOutcome(serverCreateMessage.createOutcomeMessage(outcome).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

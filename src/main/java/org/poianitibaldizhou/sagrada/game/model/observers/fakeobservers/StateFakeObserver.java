@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers;
 
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IStateObserver;
@@ -18,8 +17,6 @@ public class StateFakeObserver implements IStateFakeObserver {
     private GameObserverManager observerManager;
     private IStateObserver realObserver;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the state used to manage the asynchronous call made to various client
      * and network communication errors
@@ -32,8 +29,6 @@ public class StateFakeObserver implements IStateFakeObserver {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -73,9 +68,9 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onRoundStart(int round, User roundUser) {
-        System.out.println("ON ROUND START");
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onRoundStart(serverCreateMessage.createRoundUserMessage(roundUser).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -91,9 +86,9 @@ public class StateFakeObserver implements IStateFakeObserver {
     @Override
     public void onTurnState(int round, int turn, User roundUser, User turnUser) {
         if (!observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
-            System.out.println("ON TURN STATE " + turnUser.getName());
             Runnable runnable = () -> {
                 try {
+                    ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                     realObserver.onTurnState(serverCreateMessage.createMessageValue(round).createTurnValueMessage(turn).
                             createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
                 } catch (IOException e) {
@@ -110,9 +105,9 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onRoundEnd(int round, User roundUser) {
-        System.out.println("ON ROUND END " + roundUser.getName());
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onRoundEnd(serverCreateMessage.createRoundUserMessage(roundUser).createMessageValue(round).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -129,6 +124,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onEndGame(User roundUser) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onEndGame(serverCreateMessage.createRoundUserMessage(roundUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -145,6 +141,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onSkipTurnState(int round, boolean isFirstTurn, User roundUser, User turnUser) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onSkipTurnState(serverCreateMessage.createMessageValue(round).createBooleanMessage(isFirstTurn).
                         createRoundUserMessage(roundUser).createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
@@ -162,6 +159,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onPlaceDiceState(User turnUser) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onPlaceDiceState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -178,6 +176,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onUseCardState(User turnUser) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onUseCardState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -193,9 +192,9 @@ public class StateFakeObserver implements IStateFakeObserver {
     @Override
     public void onEndTurnState(User turnUser) {
         if (!observerManager.getDisconnectedPlayer().contains(turnUser.getToken())) {
-            System.out.println("ON END TURN STATEE " + turnUser.getName());
             Runnable runnable = () -> {
                 try {
+                    ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                     realObserver.onEndTurnState(serverCreateMessage.createTurnUserMessage(turnUser).buildMessage());
                 } catch (IOException e) {
                     observerManager.signalDisconnection(token);
@@ -211,9 +210,9 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) {
-        System.out.println("ON VIC POINT CALCULATED" + token);
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 HashMap<User, Integer> map = new HashMap<>();
                 victoryPoints.forEach((k, v) -> map.putIfAbsent(k.getUser(), v));
                 realObserver.onVictoryPointsCalculated(serverCreateMessage.createVictoryPointMapMessage(map).buildMessage());
@@ -232,6 +231,7 @@ public class StateFakeObserver implements IStateFakeObserver {
     public void onResultGame(User winner) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onResultGame(serverCreateMessage.createUserMessage(winner).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

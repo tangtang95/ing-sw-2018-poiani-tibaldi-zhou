@@ -14,8 +14,6 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     private String token;
     private GameObserverManager observerManager;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the draft pool used to manage the asynchronous call made to various client
      * and network communication errors
@@ -28,8 +26,6 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -39,6 +35,7 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     public void onDiceAdd(Dice dice) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDiceAdd(serverCreateMessage.createDiceMessage(dice).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -55,6 +52,7 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     public void onDiceRemove(Dice dice) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDiceRemove(serverCreateMessage.createDiceMessage(dice).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -71,6 +69,7 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     public void onDicesAdd(List<Dice> dices) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDicesAdd(serverCreateMessage.createDiceList(dices).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -87,6 +86,7 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     public void onDraftPoolReroll(List<Dice> dices) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDraftPoolReroll(serverCreateMessage.createDiceList(dices).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

@@ -32,8 +32,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
     private Thread timeOutThreadTurnState;
     private Long timeoutStart;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer for time out of players move: they can happen both in setup player or in turn state.
      *
@@ -43,7 +41,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         this.observerManager = observerManager;
 
         timeoutStart = null;
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     // GETTER
@@ -198,7 +195,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onWaitingForPlayer() {
-        System.out.println("On waiting timeout start");
         Runnable runnable = () -> {
             try {
                 Thread.sleep(TIME_JOIN);
@@ -210,7 +206,6 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         };
         timeOutJoin = new Thread(runnable);
         timeOutJoin.start();
-        System.out.println("On waiting timeout start end method");
     }
 
     /**
@@ -281,13 +276,12 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
      * Handles the timeout of the players joining the game
      */
     private void handleTimeoutJoin() {
-        System.out.println("Handle timeout join exp");
         synchronized (observerManager.getGame()) {
             if(timeOutJoin != null) {
                 try {
                     observerManager.getGame().forceGameTerminationBeforeStarting();
                 } catch (InvalidActionException e) {
-                    e.printStackTrace();
+                    throw new IllegalStateException();
                 }
             }
         }
@@ -301,6 +295,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         observerManager.getObserverTimeoutHashMap().forEach((token, obs) -> {
             Runnable notify = () -> {
                 try {
+                    ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                     obs.onTimeOut(serverCreateMessage.createUserMessage(timedOutPlayer).buildMessage());
                 } catch (IOException e) {
                     observerManager.notifyDisconnection(token);

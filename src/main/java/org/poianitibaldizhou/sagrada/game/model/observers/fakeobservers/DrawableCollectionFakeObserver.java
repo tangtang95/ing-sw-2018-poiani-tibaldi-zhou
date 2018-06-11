@@ -14,7 +14,6 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     private String token;
     private GameObserverManager observerManager;
 
-    private ServerCreateMessage serverCreateMessage;
 
     /**
      * Creates a fake observer of a drawable collection used to manage the asynchronous call made to various client
@@ -28,8 +27,6 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -39,6 +36,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     public void onElementAdd(T elem)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onElementAdd(serverCreateMessage.createElem(elem).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -55,6 +53,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     public void onElementsAdd(List<T> elemList)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onElementsAdd(serverCreateMessage.createElemList(elemList).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -71,6 +70,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
     public void onElementDraw(T elem)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onElementDraw(serverCreateMessage.createElem(elem).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

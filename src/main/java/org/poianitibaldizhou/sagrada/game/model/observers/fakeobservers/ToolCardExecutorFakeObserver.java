@@ -21,8 +21,6 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     private GameObserverManager observerManager;
     private IToolCardExecutorObserver realObserver;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the draft pool used to manage the asynchronous call made to various client
      * and network communication errors
@@ -35,8 +33,6 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -46,6 +42,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDice(List<Dice> diceList) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyNeedDice(serverCreateMessage.createDiceList(diceList).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -78,6 +75,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedColor(Set<Color> colors) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 ArrayList<Color> colorArrayList = new ArrayList<>(colors);
                 realObserver.notifyNeedColor(serverCreateMessage.createColorListMessage(colorArrayList).buildMessage());
             } catch (IOException e) {
@@ -95,6 +93,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedNewDeltaForDice(int diceValue, int value) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyNeedNewDeltaForDice(serverCreateMessage.createMessageValue(value).createDiceValueMessage(diceValue).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -111,6 +110,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDiceFromRoundTrack(RoundTrack roundTrack) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyNeedDiceFromRoundTrack(serverCreateMessage.createRoundTrackMessage(roundTrack).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -127,7 +127,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedPosition(SchemaCard schemaCard) {
         Runnable runnable = () -> {
             try {
-                System.out.println("IN NOTIFY THREAD: " + schemaCard.toString());
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyNeedPosition(serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -144,6 +144,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyNeedDicePositionOfCertainColor(Color color, SchemaCard schemaCard) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyNeedDicePositionOfCertainColor(serverCreateMessage.createSchemaCardMessage(schemaCard).createColorMessage(color).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -176,6 +177,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyCommandInterrupted(CommandFlow error) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyCommandInterrupted(serverCreateMessage.createCommandFlowMessage(error).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -208,6 +210,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyDiceReroll(Dice dice) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyDiceReroll(serverCreateMessage.createDiceMessage(dice).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -222,6 +225,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     public void notifyDicePouredOver(Dice dice) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.notifyDicePouredOver(serverCreateMessage.createDiceMessage(dice).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -235,7 +239,7 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
      * {@inheritDoc}
      */
     @Override
-    public void notifyExecutionEnded() throws IOException {
+    public void notifyExecutionEnded() {
         Runnable runnable = () -> {
             try {
                 realObserver.notifyExecutionEnded();

@@ -12,14 +12,10 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     private LobbyObserverManager observerManager;
     private ILobbyObserver realObserver;
 
-    private ServerCreateMessage serverCreateMessage;
-
     public LobbyFakeObserver(String token, ILobbyObserver realObserver, LobbyObserverManager observerManager) {
         this.token = token;
         this.realObserver = realObserver;
         this.observerManager = observerManager;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -29,6 +25,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onUserJoin(User user) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onUserJoin(serverCreateMessage.createUserMessage(user).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -45,6 +42,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onUserExit(User user) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onUserExit(serverCreateMessage.createUserMessage(user).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -61,6 +59,7 @@ public class LobbyFakeObserver implements ILobbyFakeObserver {
     public void onGameStart(String gameName) {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onGameStart(serverCreateMessage.createGameNameMessage(gameName).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

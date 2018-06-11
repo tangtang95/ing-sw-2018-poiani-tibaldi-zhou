@@ -12,8 +12,6 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
     private IToolCardObserver realObserver;
     private GameObserverManager observerManager;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the tool card used to manage the asynchronous call made to various client
      * and network communication errors
@@ -26,8 +24,6 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -37,6 +33,7 @@ public class ToolCardFakeObserver implements IToolCardFakeObserver{
     public void onTokenChange(int tokens)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onTokenChange(serverCreateMessage.createMessageValue(tokens).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);

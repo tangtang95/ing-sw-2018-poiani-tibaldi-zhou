@@ -15,8 +15,6 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     private GameObserverManager observerManager;
     private ISchemaCardObserver realObserver;
 
-    private ServerCreateMessage serverCreateMessage;
-
     /**
      * Creates a fake observer of the schema card used to manage the asynchronous call made to various client
      * and network communication errors
@@ -29,8 +27,6 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
         this.token = token;
         this.observerManager = observerManager;
         this.realObserver = realObserver;
-
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -40,6 +36,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onPlaceDice(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onPlaceDice(serverCreateMessage.createDiceMessage(dice).createPositionMessage(position).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
@@ -56,6 +53,7 @@ public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
     public void onDiceRemove(Dice dice, Position position)  {
         Runnable runnable = () -> {
             try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
                 realObserver.onDiceRemove(serverCreateMessage.createDiceMessage(dice).createPositionMessage(position).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
