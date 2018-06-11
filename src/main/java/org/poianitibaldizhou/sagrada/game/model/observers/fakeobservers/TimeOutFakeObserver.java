@@ -213,6 +213,9 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         System.out.println("On waiting timeout start end method");
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameTerminationBeforeStarting() {
         stopTimeout();

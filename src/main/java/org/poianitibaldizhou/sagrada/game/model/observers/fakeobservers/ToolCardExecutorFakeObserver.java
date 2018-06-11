@@ -219,6 +219,22 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
     }
 
     @Override
+    public void notifyDicePouredOver(Dice dice) {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyDicePouredOver(serverCreateMessage.createDiceMessage(dice).buildMessage());
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void notifyExecutionEnded() throws IOException {
         Runnable runnable = () -> {
             try {

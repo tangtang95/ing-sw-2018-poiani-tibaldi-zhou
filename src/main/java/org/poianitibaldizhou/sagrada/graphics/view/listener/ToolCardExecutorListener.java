@@ -367,6 +367,11 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         deactivateNotifyPane();
     }
 
+    @Override
+    public void notifyDicePouredOver(String message) throws IOException {
+        // TODO :)
+    }
+
     public void addHistoryMessage(HistoryObject message) {
         historyMessages.add(message);
     }

@@ -24,6 +24,7 @@ public class PourOverDice implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice chosenDice = toolCardExecutor.getNeededDice();
         toolCardExecutor.setNeededDice(chosenDice.pourOverDice());
+        toolCardExecutor.getObservers().forEach((obs) -> obs.notifyDicePouredOver(chosenDice.pourOverDice()));
         return CommandFlow.MAIN;
     }
 

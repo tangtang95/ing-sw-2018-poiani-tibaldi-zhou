@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+
 import java.io.IOException;
 import java.rmi.Remote;
 
@@ -93,4 +95,10 @@ public interface IToolCardExecutorObserver extends Remote {
      * Notify that the execution of the ToolCard is ended
      */
     void notifyExecutionEnded() throws IOException;
+
+    /**
+     * Notify a dice that has been poured over
+     * @param message protocol message containing the poured over dice
+     */
+    void notifyDicePouredOver(String message) throws IOException;
 }

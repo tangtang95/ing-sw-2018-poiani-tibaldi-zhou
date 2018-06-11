@@ -209,6 +209,8 @@ public class GameManager {
             Set<String> disconnected = observerManager.getDisconnectedPlayer();
             List<User> playerList = getGameByName(gameName).getUsers();
 
+            ping(gameName);
+
             toNotifyDisconnect.forEach(disconnectedToken -> {
                 playerList.forEach(player -> {
                     if (!disconnected.contains(player.getToken())) {
@@ -261,5 +263,11 @@ public class GameManager {
             return true;
         }
         return false;
+    }
+
+    private void ping(String gameName) {
+        getGameByName(gameName).getPlayers().stream().map(player -> player.getToken()).forEach(
+                token -> viewMap.get(token)
+        );
     }
 }

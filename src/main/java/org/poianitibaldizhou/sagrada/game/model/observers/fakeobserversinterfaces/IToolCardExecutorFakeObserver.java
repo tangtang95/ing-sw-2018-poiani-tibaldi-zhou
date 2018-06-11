@@ -86,6 +86,13 @@ public interface IToolCardExecutorFakeObserver {
     void notifyDiceReroll(Dice dice);
 
     /**
+     * Notify a dice that has been poured over
+     *
+     * @param dice poured over dice
+     */
+    void notifyDicePouredOver(Dice dice);
+
+    /**
      * Notify that the execution of the ToolCard is ended
      */
     void notifyExecutionEnded() throws IOException;

@@ -41,8 +41,10 @@ public class ServerGameHeartBeat extends Thread {
             while (true) {
                 Thread.sleep(SLEEP_TIME);
                 try {
+                    System.out.println("cleaning obs in heart beat");
                     if (gameManager.clearObservers(gameName))
                         break;
+                    System.out.println("End cleaning obs in hearth beat");
                 } catch (NullPointerException npe) {
                     if (!gameManager.notContainsGame(gameName)) {
                         System.out.println("Heath beat interrupted");

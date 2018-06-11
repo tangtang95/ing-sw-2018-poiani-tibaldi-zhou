@@ -4,6 +4,6 @@
   "socketPort": 9090,
   "rmiPort" : 1099,
   "hearBeatMillis": 1000,
-  "joinTimeout" : 20000
+  "joinTimeout" : 50000
 }
 
