@@ -267,6 +267,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onEndGame(String roundUser) {
+        System.out.println("ON END GAME");
         synchronized (lock) {
             while (start) {
                 try {
@@ -336,6 +337,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onVictoryPointsCalculated(String victoryPoints) throws IOException {
+        System.out.println("VIC POINT CALC");
         synchronized (lock) {
             start = false;
             lock.notifyAll();

@@ -132,19 +132,6 @@ public class LobbyManagerTest {
     }
 
     @Test
-    public void ping() throws Exception {
-        User user1 = new User("user1", lobbyManager.login("user1"));
-        User user2 = new User("user2", lobbyManager.login("user2"));
-        lobbyManager.userJoinLobby(observers.get(0), user1);
-        lobbyManager.userJoinLobby(observers.get(1), user2);
-
-        //lobbyManager.ping();
-
-        verify(observers.get(0), times(1)).onPing();
-        verify(observers.get(1), times(1)).onPing();
-    }
-
-    @Test
     public void lobbyActive() {
         User user1 = new User("user1", lobbyManager.login("user1"));
 

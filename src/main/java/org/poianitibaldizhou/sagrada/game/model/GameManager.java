@@ -171,7 +171,7 @@ public class GameManager {
             playersByGame.remove(gameName);
             gameObserverManagerMap.remove(gameName);
 
-            gameNetworkManager.startHearthBeat(gameName);
+            gameNetworkManager.stopHearthBeat(gameName);
         }
     }
 

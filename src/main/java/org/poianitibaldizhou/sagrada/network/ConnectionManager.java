@@ -6,7 +6,11 @@ import org.poianitibaldizhou.sagrada.network.strategycontroller.RMIStrategyContr
 import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
 
-public class ConnectionManager implements StrategyController{
+/**
+ * OVERVIEW: Manages the connection of a certain client to the server, allowing to switch the network connection
+ * type of client easily
+ */
+public class ConnectionManager implements StrategyController {
 
     private ConnectionType networkType;
     private StrategyController strategyController;
@@ -17,7 +21,7 @@ public class ConnectionManager implements StrategyController{
      * Constructor.
      * Create a Network Manager with which it's possible to change the network connection type (RMI or Socket)
      *
-     * @param ipAddress the ip address of the server
+     * @param ipAddress   the ip address of the server
      * @param networkType the network type of connection desired
      */
     public ConnectionManager(String ipAddress, int port, ConnectionType networkType) {
@@ -26,16 +30,25 @@ public class ConnectionManager implements StrategyController{
         setNetworkType(networkType);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ILobbyController getLobbyController() {
         return strategyController.getLobbyController();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public IGameController getGameController(){
+    public IGameController getGameController() {
         return strategyController.getGameController();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         strategyController.close();
@@ -49,13 +62,13 @@ public class ConnectionManager implements StrategyController{
      * @throws IllegalArgumentException if the network type is something different from RMI or SOCKET
      */
     public void setNetworkType(ConnectionType networkType) {
-        if(networkType == this.networkType)
+        if (networkType == this.networkType)
             return;
         this.networkType = networkType;
         this.port = networkType.getPort();
-        if(strategyController != null)
+        if (strategyController != null)
             strategyController.close();
-        switch (networkType){
+        switch (networkType) {
             case RMI:
                 strategyController = new RMIStrategyController(ipAddress, port);
                 break;
@@ -67,14 +80,25 @@ public class ConnectionManager implements StrategyController{
         }
     }
 
+    /**
+     * Returns the type of connection currently active
+     *
+     * @return type of connection that is currently active
+     */
     public ConnectionType getNetworkType() {
         return networkType;
     }
 
+    /**
+     * @return ip address of the server
+     */
     public String getIpAddress() {
         return ipAddress;
     }
 
+    /**
+     * @return port of the connection
+     */
     public int getPort() {
         return port;
     }

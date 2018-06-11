@@ -11,6 +11,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * OVERVIEW: Game observer manager that handles the observers of a specific game by using a thread queue of a single
+ * thread.
+ */
 public class GameObserverManager {
 
     Lock lock;
@@ -164,23 +168,12 @@ public class GameObserverManager {
     }
 
     /**
-     * Add the last notification thread for a certain token. Needed when the game ends
+     * Push the notification of the timeout of a a certain player identified by timedOutToken
      *
-     * @param token  player's token
-     * @param notify runnable interface that needs to be scheduled
+     * @param token token that identifies the thread queue
+     * @param notify notify the timeout
+     * @param timedOutToken token of the player who timed out
      */
-    public void pushLastThreadInQueue(String token, Runnable notify) {
-        synchronized (getGame()) {
-            lock.lock();
-            System.out.println("push last thread in queeu ((GAME OBS MAN)");
-            if (!disconnectedPlayer.contains(token)) {
-                executorHashMap.get(token).submit(notify);
-                executorHashMap.get(token).shutdown();
-            }
-            lock.unlock();
-        }
-    }
-
     public void pushTimeoutThread(String token, Runnable notify, String timedOutToken) {
         synchronized (getGame()) {
             lock.lock();

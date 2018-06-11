@@ -3,6 +3,9 @@ package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.ServerApp;
 
+/**
+ * OVERIVEW: representes the type of connections available for the various clients
+ */
 public enum ConnectionType {
     RMI(ServerApp.SERVER_RMI_PORT), SOCKET(ServerApp.SERVER_SOCKET_PORT);
 
@@ -17,6 +20,10 @@ public enum ConnectionType {
         this.port = port;
     }
 
+    /**
+     * Returns the port on which the connection will be active
+     * @return port on which the connection will be active
+     */
     public int getPort(){
         return port;
     }

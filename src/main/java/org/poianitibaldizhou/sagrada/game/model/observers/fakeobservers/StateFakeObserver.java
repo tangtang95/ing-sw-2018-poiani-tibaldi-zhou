@@ -211,6 +211,7 @@ public class StateFakeObserver implements IStateFakeObserver {
      */
     @Override
     public void onVictoryPointsCalculated(Map<Player, Integer> victoryPoints) {
+        System.out.println("ON VIC POINT CALCULATED" + token);
         Runnable runnable = () -> {
             try {
                 HashMap<User, Integer> map = new HashMap<>();

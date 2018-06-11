@@ -1,13 +1,12 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
-import org.poianitibaldizhou.sagrada.lobby.model.LobbyObserverManager;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.IView;
+import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
-import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -15,8 +14,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -28,8 +25,6 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
     private final transient LobbyManager lobbyManager;
 
     private final transient ServerGetMessage networkGetItem;
-
-    private final transient ServerCreateMessage serverCreateMessage;
 
     private final transient LobbyNetworkManager lobbyNetworkManager;
 
@@ -47,7 +42,6 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         this.lobbyManager = lobbyManager;
         this.lobbyNetworkManager = lobbyManager.getLobbyNetworkManager();
         networkGetItem = new ServerGetMessage();
-        serverCreateMessage = new ServerCreateMessage();
     }
 
     // INTERFACES METHOD
@@ -57,6 +51,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public synchronized String login(String message, IView view) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String username = networkGetItem.getUserName(message);
         String token;
 
@@ -74,7 +69,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         try {
             view.ack("You are now logged as: " + username);
         } catch (IOException e) {
-            handleIOException(token);
+            return serverCreateMessage.reconnectErrorMessage();
         }
         return serverCreateMessage.createTokenMessage(token).buildMessage();
     }
@@ -125,6 +120,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public String getUsersInLobby() {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         lobbyNetworkManager.clearObserver();
         return serverCreateMessage.createUserList(lobbyManager.getLobbyUsers()).buildMessage();
     }
@@ -134,20 +130,12 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      */
     @Override
     public String getTimeout() {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         lobbyNetworkManager.clearObserver();
         return serverCreateMessage.createTimeoutMessage(formatTimeout(lobbyManager.getTimeToTimeout())).buildMessage();
     }
 
     // PRIVATE METHODS
-
-    /**
-     * Handle the io exception with the clients by signaling them as disconnected
-     * @param token token of the client that will be signaled as disconnected
-     */
-    private void handleIOException(String token) {
-        LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
-        lobbyObserverManager.signalDisconnection(token);
-    }
 
 
     /**

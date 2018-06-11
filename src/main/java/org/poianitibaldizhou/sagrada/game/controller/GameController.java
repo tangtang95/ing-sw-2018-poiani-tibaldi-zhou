@@ -49,7 +49,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private final transient GameManager gameManager;
 
     private final transient ServerGetMessage serverGetMessage;
-    private final transient ServerCreateMessage serverCreateMessage;
 
     private final transient GameNetworkManager gameNetworkManager;
 
@@ -64,7 +63,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         this.gameManager = gameManager;
         this.gameNetworkManager = gameManager.getGameNetworkManager();
         this.serverGetMessage = new ServerGetMessage();
-        this.serverCreateMessage = new ServerCreateMessage();
     }
 
     /**
@@ -762,6 +760,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String attemptReconnect(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         final String username = serverGetMessage.getUserName(message);
         final String token = String.valueOf(username.hashCode());
         final Optional<String> gameName;
@@ -786,6 +785,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getToolCards(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -812,6 +812,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getPlayersCoins(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -843,6 +844,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getMyCoins(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -876,6 +878,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getPublicObjectiveCards(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -901,6 +904,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getPrivateObjectiveCardByToken(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -926,7 +930,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getSchemaCards(String message) throws IOException {
-
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String token = serverGetMessage.getToken(message);
         String gameName = serverGetMessage.getGameName(message);
 
@@ -953,6 +957,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getDraftPool(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
@@ -978,6 +983,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getRoundTrack(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
@@ -1005,6 +1011,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getToolCardByName(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
         String toolCardName = serverGetMessage.getToolCard(message).getName();
@@ -1039,6 +1046,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getCurrentPlayer(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String gameName = serverGetMessage.getGameName(message);
         String token = serverGetMessage.getToken(message);
 
@@ -1070,6 +1078,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getSchemaCardByToken(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
         SchemaCard schemaCard = null;
@@ -1104,6 +1113,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getListOfUser(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
 
@@ -1131,6 +1141,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String getTimeout(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         final String token = serverGetMessage.getToken(message);
         final String gameName = serverGetMessage.getGameName(message);
 
@@ -1158,6 +1169,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     @Override
     public String createSinglePlayer(String message) throws IOException {
+        ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String username = serverGetMessage.getUserName(message);
         int difficulty = serverGetMessage.getInteger(message);
 
