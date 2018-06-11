@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.lobby;
+package org.poianitibaldizhou.sagrada.lobby.model;
 
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;

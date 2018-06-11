@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.lobby;
+package org.poianitibaldizhou.sagrada.lobby.model;
 
 import org.junit.After;
 import org.junit.Before;
@@ -138,7 +138,7 @@ public class LobbyManagerTest {
         lobbyManager.userJoinLobby(observers.get(0), user1);
         lobbyManager.userJoinLobby(observers.get(1), user2);
 
-        lobbyManager.ping();
+        //lobbyManager.ping();
 
         verify(observers.get(0), times(1)).onPing();
         verify(observers.get(1), times(1)).onPing();

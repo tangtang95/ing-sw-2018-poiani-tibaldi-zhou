@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.ServerSettings;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.LobbyFakeObserver;
+import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -23,6 +24,8 @@ public class LobbyManager {
     private long timeoutStart;
     private MediatorManager managerMediator;
     private LobbyObserverManager lobbyObserverManager;
+
+    private LobbyNetworkManager lobbyNetworkManager;
 
     public static final long DELAY_TIME = ServerSettings.getLobbyTimeout();
 
@@ -48,6 +51,16 @@ public class LobbyManager {
             }
             handleTimeout();
         };
+
+        lobbyNetworkManager = new LobbyNetworkManager(this);
+    }
+
+    public Lobby getLobby() {
+        return lobby;
+    }
+
+    public LobbyNetworkManager getLobbyNetworkManager() {
+        return lobbyNetworkManager;
     }
 
     /**
@@ -261,12 +274,4 @@ public class LobbyManager {
         return DELAY_TIME - (currTime - timeoutStart);
     }
 
-    /**
-     * Pings the client in the lobby
-     */
-    public synchronized void ping() {
-        if (isLobbyActive()) {
-            lobby.getLobbyObserverMap().forEach((k, v) -> v.onPing());
-        }
-    }
 }

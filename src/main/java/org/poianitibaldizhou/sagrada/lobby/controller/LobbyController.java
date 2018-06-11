@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.IView;
+import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
@@ -18,22 +19,38 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Lobby controller of the MVC pattern for lobby stage of Sagrada.
+ * Clients interact with this class for accessing, logging, leaving the lobby, that is the place in which
+ * the players wait for the game to start
+ */
 public class LobbyController extends UnicastRemoteObject implements ILobbyController {
-    private final transient Map<String, IView> viewMap = new HashMap<>();
-
     private final transient LobbyManager lobbyManager;
 
     private final transient ServerGetMessage networkGetItem;
 
     private final transient ServerCreateMessage serverCreateMessage;
 
+    private final transient LobbyNetworkManager lobbyNetworkManager;
+
+    /**
+     * Constructor.
+     * Creates a new lobby controller with a lobby manager, that helps the controller in handling the interactions
+     * of the clients with the model
+     *
+     * @param lobbyManager lobby manager that helps the controller in handling the interactions of the clients
+     *                     with the model
+     * @throws RemoteException due to the UnicastRemoteObject
+     */
     public LobbyController(LobbyManager lobbyManager) throws RemoteException {
         super();
         this.lobbyManager = lobbyManager;
-
+        this.lobbyNetworkManager = lobbyManager.getLobbyNetworkManager();
         networkGetItem = new ServerGetMessage();
         serverCreateMessage = new ServerCreateMessage();
     }
+
+    // INTERFACES METHOD
 
     /**
      * {@inheritDoc}
@@ -43,20 +60,20 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         String username = networkGetItem.getUserName(message);
         String token;
 
-        clearObserver();
+        lobbyNetworkManager.clearObserver();
 
         try {
             token = lobbyManager.login(username);
-        } catch(IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             view.err("An user with this username already exists");
             return serverCreateMessage.createTokenMessage("").buildMessage();
         }
 
-        viewMap.put(token, view);
+        lobbyNetworkManager.putView(token, view);
 
         try {
             view.ack("You are now logged as: " + username);
-        } catch(IOException e) {
+        } catch (IOException e) {
             handleIOException(token);
         }
         return serverCreateMessage.createTokenMessage(token).buildMessage();
@@ -73,12 +90,12 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         if (!authorize(token, username))
             return;
 
-        clearObserver();
+        lobbyNetworkManager.clearObserver();
 
         lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
 
-        viewMap.get(token).ack("Lobby left");
-        viewMap.remove(token);
+        lobbyNetworkManager.getViewByToken(token).ack("Lobby left");
+        lobbyNetworkManager.removeView(token);
     }
 
     /**
@@ -93,12 +110,12 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
             throw new IOException("Authorization failed");
         }
 
-        clearObserver();
+        lobbyNetworkManager.clearObserver();
 
         lobbyManager.userJoinLobby(lobbyObserver, lobbyManager.getUserByToken(token));
         try {
-            viewMap.get(token).ack("You're now in the lobby");
-        } catch(IOException e) {
+            lobbyNetworkManager.getViewByToken(token).ack("You're now in the lobby");
+        } catch (IOException e) {
             lobbyManager.getLobbyObserverManager().signalDisconnection(token);
         }
     }
@@ -107,8 +124,8 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * {@inheritDoc}
      */
     @Override
-    public String getUsersInLobby() throws IOException {
-        clearObserver();
+    public String getUsersInLobby() {
+        lobbyNetworkManager.clearObserver();
         return serverCreateMessage.createUserList(lobbyManager.getLobbyUsers()).buildMessage();
     }
 
@@ -116,27 +133,22 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * {@inheritDoc}
      */
     @Override
-    public String getTimeout() throws IOException {
-        clearObserver();
+    public String getTimeout() {
+        lobbyNetworkManager.clearObserver();
         return serverCreateMessage.createTimeoutMessage(formatTimeout(lobbyManager.getTimeToTimeout())).buildMessage();
     }
 
+    // PRIVATE METHODS
+
+    /**
+     * Handle the io exception with the clients by signaling them as disconnected
+     * @param token token of the client that will be signaled as disconnected
+     */
     private void handleIOException(String token) {
         LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
         lobbyObserverManager.signalDisconnection(token);
     }
 
-    private void clearObserver() {
-        if(lobbyManager.isLobbyActive()) {
-            lobbyManager.ping();
-            LobbyObserverManager lobbyObserverManager = lobbyManager.getLobbyObserverManager();
-            lobbyObserverManager.getDisconnectedUserNotNotified().forEach(token -> {
-                lobbyManager.userDisconnects(token);
-                viewMap.remove(token);
-            });
-            lobbyObserverManager.getDisconnectedUserNotNotified().forEach(lobbyObserverManager::disconnectionNotified);
-        }
-    }
 
     /**
      * Returns true if token matches username, false otherwise.
@@ -169,12 +181,12 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         if (!(o instanceof LobbyController)) return false;
         if (!super.equals(o)) return false;
         LobbyController that = (LobbyController) o;
-        return Objects.equals(viewMap, that.viewMap) &&
+        return Objects.equals(lobbyNetworkManager, that.lobbyNetworkManager) &&
                 Objects.equals(lobbyManager, that.lobbyManager);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), viewMap, lobbyManager);
+        return Objects.hash(super.hashCode(), lobbyNetworkManager, lobbyManager);
     }
 }

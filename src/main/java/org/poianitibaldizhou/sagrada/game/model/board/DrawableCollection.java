@@ -5,8 +5,6 @@ import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
-
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -29,6 +27,10 @@ public class DrawableCollection<T extends JSONable>{
         observerMap = new HashMap<>();
     }
 
+    /**
+     * Constructor: create a new drawable collection, initialized with all the elements contained in list
+     * @param list all his elements are contained in the drawable collection after the creation
+     */
     public DrawableCollection(List<T> list) {
         collection = new ArrayList<>(list);
         observerMap = new HashMap<>();

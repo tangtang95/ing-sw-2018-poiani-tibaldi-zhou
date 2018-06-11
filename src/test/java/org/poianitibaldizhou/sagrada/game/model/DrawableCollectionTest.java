@@ -1,17 +1,20 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.*;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -23,6 +26,9 @@ public class DrawableCollectionTest {
         private static DrawableCollection<Dice> drawableCollection;
 
         private static List<Dice> diceList;
+
+        @Mock
+        private IDrawableCollectionFakeObserver observer1, observer2, observer3;
 
         @BeforeClass
         public static void setUpClass() {
@@ -37,11 +43,35 @@ public class DrawableCollectionTest {
 
         @Before
         public void setUp() throws Exception{
+            MockitoAnnotations.initMocks(this);
             for (int i = 0; i < 5; i++) {
                 diceList.add(new Dice(i+1, Color.GREEN));
             }
             drawableCollection = new DrawableCollection<>();
             drawableCollection.addElements(diceList);
+        }
+
+        @Test
+        public void testConstructorWithParam() {
+            DrawableCollection<Dice> testDrawable = new DrawableCollection<>(diceList);
+            assertEquals(drawableCollection, testDrawable);
+        }
+
+        @Test
+        public void testDetachObserver() {
+            drawableCollection.attachObserver("obs1", observer1);
+            drawableCollection.detachObserver("obs1");
+            assertTrue(drawableCollection.getObserverMap().isEmpty());
+        }
+
+        @Test
+        public void testAttachObserver() {
+            Map<String, IDrawableCollectionFakeObserver> expectedMap = new HashMap<>();
+            expectedMap.putIfAbsent("obs1", observer1);
+
+            drawableCollection.attachObserver("obs1", observer1);
+
+            assertEquals(expectedMap, drawableCollection.getObserverMap());
         }
 
         @After
