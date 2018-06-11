@@ -133,6 +133,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
      */
     @Override
     public void onChoosePrivateObjectiveCards(String message) throws IOException {
+        CLIBasicScreen.clearScreen();
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         List<PrivateObjectiveCardWrapper> privateObjectiveCards = clientGetMessage.getPrivateObjectiveCards(message);

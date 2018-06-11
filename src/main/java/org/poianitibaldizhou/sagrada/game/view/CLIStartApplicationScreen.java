@@ -63,8 +63,8 @@ public class CLIStartApplicationScreen extends CLIBasicScreen {
      */
     @Override
     public void startCLI() {
-        CLIBasicScreen.clearScreen();
         pauseCLI();
+        CLIBasicScreen.clearScreen();
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 

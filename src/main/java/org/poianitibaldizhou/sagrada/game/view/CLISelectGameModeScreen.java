@@ -72,7 +72,6 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
     @Override
     public void startCLI() {
         CLIBasicScreen.clearScreen();
-        pauseCLI();
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.

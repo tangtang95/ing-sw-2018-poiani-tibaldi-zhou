@@ -52,6 +52,8 @@ public class CLITurnMultiPlayerScreen extends CLIMultiPlayerScreen {
         commandMap.put(quit.getCommandText(), quit);
     }
 
+
+
     /**
      * Quit the game
      */

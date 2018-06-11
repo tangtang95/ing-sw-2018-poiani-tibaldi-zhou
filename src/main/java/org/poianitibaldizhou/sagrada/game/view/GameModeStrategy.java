@@ -114,7 +114,6 @@ public abstract class GameModeStrategy implements IScreen{
     @Override
     public synchronized void startCLI() {
         synchronized (lock) {
-            CLIBasicScreen.clearScreen();
             ConsoleListener consoleListener = ConsoleListener.getInstance();
             BuildGraphic buildGraphic = new BuildGraphic();
 
@@ -263,7 +262,7 @@ public abstract class GameModeStrategy implements IScreen{
             connectionManager.getGameController().quitGame(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + "You have left the game.\n", Level.STANDARD);
+            PrinterManager.consolePrint("You have left the game.\n", Level.INFORMATION);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
         }

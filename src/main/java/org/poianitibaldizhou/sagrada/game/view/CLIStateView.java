@@ -210,7 +210,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             int round = clientGetMessage.getValue(jString);
             UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
             currentUser = roundUser;
-            PrinterManager.consolePrint("The roundStrategy " + (round + 1) + " is started with player " +
+            CLIBasicScreen.clearScreen();
+            PrinterManager.consolePrint("The round " + (round + 1) + " is started with player " +
                     roundUser.getUsername() + "\n", Level.INFORMATION);
             if (round == 0)
                 screenManager.replaceScreen(roundStrategy);
@@ -239,12 +240,13 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             currentUser = turnUser;
 
             if (turnUser.equals(myUser)) {
+                CLIBasicScreen.clearScreen();
                 PrinterManager.consolePrint("----------------------------IS YOUR TURN---------------------------\n",
                         Level.STANDARD);
                 screenManager.pushScreen(turnStrategy);
 
             } else
-                PrinterManager.consolePrint("Is the roundStrategy " + (round + 1) + "," +
+                PrinterManager.consolePrint("Is the round " + (round + 1) + ", " +
                                 turnUser.getUsername() + " is playing\n",
                         Level.INFORMATION);
         }
@@ -256,8 +258,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onRoundEnd(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
-        PrinterManager.consolePrint("The roundStrategy " + (round + 1) + "end\n", Level.STANDARD);
-        CLIStateView.setStart(false);
+        PrinterManager.consolePrint("The round " + (round + 1) + " end\n", Level.INFORMATION);
+        setStart(false);
     }
 
     /**
@@ -265,7 +267,21 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onEndGame(String roundUser) {
-        PrinterManager.consolePrint("The game is ended\n", Level.STANDARD);
+        synchronized (lock) {
+            while (start) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            try {
+                screenManager.replaceScreen(new CLIEndGame(connectionManager, screenManager));
+            } catch (RemoteException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR,
+                        Level.ERROR);
+            }
+        }
     }
 
     /**
@@ -320,11 +336,18 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onVictoryPointsCalculated(String victoryPoints) throws IOException {
-        PrinterManager.consolePrint("Table of the points\n", Level.STANDARD);
+        synchronized (lock) {
+            start = false;
+            lock.notifyAll();
+        }
+        CLIBasicScreen.clearScreen();
+        PrinterManager.consolePrint("--------------------------TABLE OF POINTS--------------------------\n",
+                Level.STANDARD);
         Map<UserWrapper, Integer> points = clientGetMessage.getVictoryPoint(victoryPoints);
         Map<String,String> table = new HashMap<>();
         points.forEach((key, value) -> table.put(key.getUsername(), String.valueOf(value)));
         PrinterManager.consolePrint(new BuildGraphic().buildGraphicTable(table).toString(), Level.STANDARD);
+        CLIEndGame.end();
     }
 
     /**
@@ -334,12 +357,6 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public void onResultGame(String winner) throws IOException {
         UserWrapper user = clientGetMessage.getUserWrapper(winner);
         PrinterManager.consolePrint("The winner is " + user.getUsername() + "\n", Level.STANDARD);
-        if(myUser.equals(currentUser)) {
-            screenManager.popWithoutStartInScreen();
-            screenManager.popScreen();
-        } else {
-            screenManager.popScreen();
-        }
     }
 
     /**

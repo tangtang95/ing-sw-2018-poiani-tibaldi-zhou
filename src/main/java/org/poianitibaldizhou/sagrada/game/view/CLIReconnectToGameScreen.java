@@ -93,6 +93,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
     public void startCLI() {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         consoleListener.setCommandMap(commandMap);
+        CLIBasicScreen.clearScreen();
         PrinterManager.consolePrint("Re-connecting to your game...", Level.INFORMATION);
         if (userList != null && token != null && gameName != null) {
             try {

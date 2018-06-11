@@ -33,7 +33,7 @@ public abstract class CLIBasicScreen extends UnicastRemoteObject implements IScr
     /**
      * Time to sleep.
      */
-    private static final int TIME_SLEEP = 100;
+    private static final int TIME_SLEEP = 500;
 
     /**
      * constructor.

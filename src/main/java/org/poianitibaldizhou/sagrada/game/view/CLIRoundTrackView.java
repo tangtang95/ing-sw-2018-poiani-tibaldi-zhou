@@ -53,7 +53,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
                 " added a list of dices to the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDices(diceWrapperList).toString(),
-                Level.STANDARD);
+                Level.INFORMATION);
     }
 
     /**
@@ -67,7 +67,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
                 + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
-                Level.STANDARD);
+                Level.INFORMATION);
     }
 
     /**
@@ -80,7 +80,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         String printMessage = cliStateView.getCurrentUser().getUsername() + " removed a dice from the round track at round " + round + ".";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
-                Level.STANDARD);
+                Level.INFORMATION);
 
     }
 
@@ -99,7 +99,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         String message3 = "New dice (added to the round track) : ";
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildMessage(message2).
-                buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.STANDARD);
+                buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.INFORMATION);
     }
 
     /**

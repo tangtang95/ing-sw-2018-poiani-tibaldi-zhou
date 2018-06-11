@@ -72,8 +72,8 @@ public class CLISetupGameScreen extends CLIBasicScreen {
      */
     @Override
     public void startCLI() {
-        CLIBasicScreen.clearScreen();
         pauseCLI();
+        CLIBasicScreen.clearScreen();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         consoleListener.setCommandMap(commandMap);
         try {

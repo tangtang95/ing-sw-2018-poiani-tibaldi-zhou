@@ -54,7 +54,6 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
     @Override
     public void startCLI() {
         CLIBasicScreen.clearScreen();
-        pauseCLI();
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
