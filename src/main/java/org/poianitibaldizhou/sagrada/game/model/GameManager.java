@@ -5,7 +5,10 @@ import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ForceSkipTurnFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.TimeOutFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.ServerGameHeartBeat;
 
 import java.io.IOException;
 import java.util.*;
@@ -16,10 +19,13 @@ import java.util.*;
 public class GameManager {
     private final Map<String, IGame> gameMap;
     private final Map<String, GameObserverManager> gameObserverManagerMap;
+    private final Map<String, ServerGameHeartBeat> serverGameHeartBeatMap;
 
     private final Map<String, List<String>> playersByGame;
     private final List<String> players;
     private final MediatorManager managerMediator;
+
+    private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
 
     /**
      * Constructor.
@@ -33,9 +39,18 @@ public class GameManager {
         playersByGame = new HashMap<>();
         players = new ArrayList<>();
         gameObserverManagerMap = new HashMap<>();
+        serverGameHeartBeatMap = new HashMap<>();
     }
 
     // GETTER
+
+    public IGameView getViewByToken(String token) {
+        return viewMap.get(token);
+    }
+
+    public Map<String, IGameView> getGameViewMap() {
+        return viewMap;
+    }
 
     @Contract(pure = true)
     public synchronized List<IGame> getGameList() {
@@ -76,6 +91,18 @@ public class GameManager {
 
     // MODIFIER
 
+    public void removeView(String token) {
+        viewMap.remove(token);
+    }
+
+    public void replaceView(String token, IGameView gameView) {
+        viewMap.replace(token, gameView);
+    }
+
+    public void putView(String token, IGameView gameView) {
+        viewMap.put(token, gameView);
+    }
+
     /**
      * Creates a new single player game.
      *
@@ -107,6 +134,10 @@ public class GameManager {
         players.add(token);
         gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), singlePlayer));
 
+        ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName);
+        serverGameHeartBeatMap.putIfAbsent(gameName, serverGameHeartBeat);
+        serverGameHeartBeat.start();
+
         singlePlayer.initGame();
 
         return gameName;
@@ -132,11 +163,14 @@ public class GameManager {
             });
             gameObserverManagerMap.putIfAbsent(gameName, new GameObserverManager(playersByGame.get(gameName), game));
 
-            // Adding timeout
             TimeOutFakeObserver timeOutFakeObserver = new TimeOutFakeObserver(getObserverManagerByGame(gameName));
             game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
             gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
             game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
+
+            ServerGameHeartBeat serverGameHeartBeat = new ServerGameHeartBeat(this, gameName);
+            serverGameHeartBeatMap.putIfAbsent(gameName, serverGameHeartBeat);
+            serverGameHeartBeat.start();
 
             game.initGame();
         }
@@ -155,6 +189,77 @@ public class GameManager {
             players.removeAll(playersPlaying);
             playersByGame.remove(gameName);
             gameObserverManagerMap.remove(gameName);
+
+            serverGameHeartBeatMap.remove(gameName).interrupt();
         }
+    }
+
+    /**
+     * It cleans the observer of a certain game, with the notify disconnections.
+     * It also signals the disconnections of the various player.
+     * It also handles the game termination when there aren't enough user to continue the game
+     *
+     * @param gameName game's name
+     * @return true if the game terminates, false otherwise
+     */
+    public synchronized boolean clearObservers(String gameName) {
+        synchronized (getGameByName(gameName)) {
+            GameObserverManager observerManager = getObserverManagerByGame(gameName);
+            Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
+            Set<String> disconnected = observerManager.getDisconnectedPlayer();
+            List<User> playerList = getGameByName(gameName).getUsers();
+
+            toNotifyDisconnect.forEach(disconnectedToken -> {
+                playerList.forEach(player -> {
+                    if (!disconnected.contains(player.getToken())) {
+                        try {
+                            Optional<User> user = playerList.stream().filter(u -> u.getToken().
+                                    equals(disconnectedToken)).findFirst();
+                            if (user.isPresent())
+                                viewMap.get(player.getToken()).err(user.get().getName() + " disconnected");
+                        } catch (IOException e) {
+                            observerManager.signalDisconnection(player.getToken());
+                        }
+                    }
+                });
+
+                getGameByName(gameName).detachObservers(disconnectedToken);
+                observerManager.notifyDisconnection(disconnectedToken);
+                viewMap.remove(disconnectedToken);
+            });
+
+            return handleEndGame(getGameByName(gameName), observerManager);
+        }
+    }
+
+
+    /**
+     * Force the termination of the game.
+     * When the game is single player, if the only player present disconnects the game terminates.
+     * When the game is multi player, and there is only one player connected, it handles its victory.
+     *
+     * @param game            handle the termination of this game
+     * @param observerManager game observer manager of game
+     * @return true if the game gets terminated, false otherwise
+     */
+    private boolean handleEndGame(IGame game, GameObserverManager observerManager) {
+        if (!game.isSinglePlayer()) {
+            if (observerManager.getDisconnectedPlayer().size() == game.getUsers().size() - 1) {
+                // search for the player that it's not disconnected
+                for (Player player : game.getPlayers())
+                    if (!observerManager.getDisconnectedPlayer().contains(player.getToken())) {
+                        game.forceGameTermination(player);
+                    }
+                terminateGame(game.getName());
+                return true;
+            } else if (observerManager.getDisconnectedPlayer().size() == game.getUsers().size()) {
+                terminateGame(game.getName());
+                return true;
+            }
+        } else if (!observerManager.getDisconnectedPlayer().isEmpty()) {
+            terminateGame(game.getName());
+            return true;
+        }
+        return false;
     }
 }

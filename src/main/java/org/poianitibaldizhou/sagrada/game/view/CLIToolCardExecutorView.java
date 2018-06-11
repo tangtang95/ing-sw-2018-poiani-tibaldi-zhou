@@ -149,11 +149,12 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             maxNumber = temp;
         }
 
-        if (checkValidityDeltaValue(minNumber, diceValue, value)) {
+        if (!checkValidityDeltaValue(minNumber, diceValue, value)) {
             minNumber = maxNumber;
-        } else if (checkValidityDeltaValue(maxNumber, diceValue, value)) {
+        } else if (!checkValidityDeltaValue(maxNumber, diceValue, value)) {
             maxNumber = minNumber;
         }
+
         try {
             do {
                 if (minNumber != maxNumber)
@@ -272,9 +273,10 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             }
         } while (doAgain);
 
-
         String setMessage = clientCreateMessage.createGameNameMessage(gameModeStrategy.getGameName()).
                 createTokenMessage(gameModeStrategy.getToken()).createBooleanMessage(answer).buildMessage();
+
+        System.out.println("ANSWER IN VIEW: " + answer);
 
         connectionManager.getGameController().setContinueAction(setMessage);
         consoleListener.wakeUpCommandConsole();

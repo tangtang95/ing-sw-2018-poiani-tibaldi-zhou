@@ -36,7 +36,9 @@ public class MediatorManager {
     public String createMultiPlayerGame(List<User> users)  {
         String gameName = UUID.randomUUID().toString();
         IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
+        System.out.println("Starting creation in game manager");
         gameManager.createMultiPlayerGame(game, gameName);
+        System.out.println("Creation in game manager terminated");
         return gameName;
     }
 

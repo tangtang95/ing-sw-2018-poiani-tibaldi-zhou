@@ -287,6 +287,7 @@ public class ServerGetMessage {
         try {
             JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.BOOLEAN);
             b = Boolean.valueOf(jsonObject.get(SharedConstants.BODY).toString());
+
         } catch (ParseException | ClassCastException e) {
             throw new IOException();
         }
