@@ -290,7 +290,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     public void notifyDiceReroll(String message) throws IOException {
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
 
-
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been re-rolled: ").buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
@@ -298,6 +297,15 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     @Override
     public void notifyExecutionEnded() throws IOException {
         /* NOT NEEDED */
+    }
+
+    @Override
+    public void notifyDicePouredOver(String message) throws IOException {
+        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
+
+        BuildGraphic buildGraphic = new BuildGraphic();
+        PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been poured-over: ").
+                buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
     /**
