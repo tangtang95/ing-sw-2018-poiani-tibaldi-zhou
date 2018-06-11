@@ -267,14 +267,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onEndGame(String roundUser) {
-        synchronized (lock) {
-            try {
-                screenManager.replaceScreen(new CLIEndGame(connectionManager, screenManager));
-            } catch (RemoteException e) {
-                PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR,
-                        Level.ERROR);
-            }
-        }
+        setStart(false);
     }
 
     /**
@@ -330,17 +323,21 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onVictoryPointsCalculated(String victoryPoints) throws IOException {
         synchronized (lock) {
-            start = false;
-            lock.notifyAll();
+            while (start) {
+                try {
+                    lock.wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            CLIBasicScreen.clearScreen();
+            PrinterManager.consolePrint("--------------------------TABLE OF POINTS--------------------------\n",
+                    Level.STANDARD);
+            Map<UserWrapper, Integer> points = clientGetMessage.getVictoryPoint(victoryPoints);
+            Map<String, String> table = new HashMap<>();
+            points.forEach((key, value) -> table.put(key.getUsername(), String.valueOf(value)));
+            PrinterManager.consolePrint(new BuildGraphic().buildGraphicTable(table).toString(), Level.STANDARD);
         }
-        CLIBasicScreen.clearScreen();
-        PrinterManager.consolePrint("--------------------------TABLE OF POINTS--------------------------\n",
-                Level.STANDARD);
-        Map<UserWrapper, Integer> points = clientGetMessage.getVictoryPoint(victoryPoints);
-        Map<String,String> table = new HashMap<>();
-        points.forEach((key, value) -> table.put(key.getUsername(), String.valueOf(value)));
-        PrinterManager.consolePrint(new BuildGraphic().buildGraphicTable(table).toString(), Level.STANDARD);
-        CLIEndGame.end();
     }
 
     /**
@@ -348,8 +345,19 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onResultGame(String winner) throws IOException {
-        UserWrapper user = clientGetMessage.getUserWrapper(winner);
-        PrinterManager.consolePrint("The winner is " + user.getUsername() + "\n", Level.STANDARD);
+        synchronized (lock) {
+            UserWrapper user = clientGetMessage.getUserWrapper(winner);
+            PrinterManager.consolePrint("The winner is " + user.getUsername() + "\n", Level.STANDARD);
+
+            try {
+                if(screenManager.getNumberOfScreen() > 2)
+                    screenManager.popWithoutStartInScreen();
+                screenManager.replaceScreen(new CLIEndGame(connectionManager, screenManager));
+            } catch (RemoteException e) {
+                PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR,
+                        Level.ERROR);
+            }
+        }
     }
 
     /**

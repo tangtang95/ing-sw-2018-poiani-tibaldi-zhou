@@ -12,10 +12,6 @@ public class CLIEndGame extends CLIBasicScreen {
      */
     private static final String QUIT = "Quit game";
 
-    private static transient Boolean end = true;
-
-    private static final transient Object lock = new Object();
-
     /**
      * constructor.
      *
@@ -29,6 +25,9 @@ public class CLIEndGame extends CLIBasicScreen {
         initializeCommands();
     }
 
+    /**
+     * Initialize command.
+     */
     @Override
     protected void initializeCommands() {
         Command quit = new Command(QUIT, "Quit from current game");
@@ -36,30 +35,17 @@ public class CLIEndGame extends CLIBasicScreen {
         commandMap.put(quit.getCommandText(), quit);
     }
 
-    public static void end(){
-        synchronized (lock) {
-            end = false;
-            lock.notifyAll();
-        }
-    }
-
+    /**
+     * Start the EndGame screen.
+     */
     @Override
     public void startCLI() {
-        synchronized (lock) {
-            while (end) {
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
-            }
-            ConsoleListener.getInstance().setCommandMap(commandMap);
-            BuildGraphic buildGraphic = new BuildGraphic();
+        ConsoleListener.getInstance().setCommandMap(commandMap);
+        BuildGraphic buildGraphic = new BuildGraphic();
 
-            PrinterManager.consolePrint(buildGraphic.
-                    buildMessage("-----------------------------END GAME------------------------------").
-                    buildGraphicHelp(commandMap).
-                    buildMessage("Choose action: ").toString(), Level.STANDARD);
-        }
+        PrinterManager.consolePrint(buildGraphic.
+                buildMessage("-----------------------------END GAME------------------------------").
+                buildGraphicHelp(commandMap).
+                buildMessage("Choose action: ").toString(), Level.STANDARD);
     }
 }

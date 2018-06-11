@@ -133,22 +133,27 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
      */
     @Override
     public void onChoosePrivateObjectiveCards(String message) throws IOException {
-        CLIBasicScreen.clearScreen();
-        BuildGraphic buildGraphic = new BuildGraphic();
-        ConsoleListener consoleListener = ConsoleListener.getInstance();
-        List<PrivateObjectiveCardWrapper> privateObjectiveCards = clientGetMessage.getPrivateObjectiveCards(message);
-
-        buildGraphic.buildGraphicPrivateObjectiveCards(privateObjectiveCards);
-        buildGraphic.buildMessage("Choose a private objective card:");
-        PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
-
         try {
+            Thread.sleep(100);
+            CLIBasicScreen.clearScreen();
+
+            BuildGraphic buildGraphic = new BuildGraphic();
+            ConsoleListener consoleListener = ConsoleListener.getInstance();
+            List<PrivateObjectiveCardWrapper> privateObjectiveCards = clientGetMessage.getPrivateObjectiveCards(message);
+
+            buildGraphic.buildGraphicPrivateObjectiveCards(privateObjectiveCards);
+            buildGraphic.buildMessage("Choose a private objective card:");
+            PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
+
+
             connectionManager.getGameController().choosePrivateObjectiveCard(
                     clientCreateMessage.createPrivateObjectiveCardMessage(privateObjectiveCards.get(consoleListener.readNumber(privateObjectiveCards.size()))).
                             createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
         } catch (TimeoutException e) {
             PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION,Level.INFORMATION);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
