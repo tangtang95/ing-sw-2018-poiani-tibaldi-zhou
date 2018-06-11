@@ -121,6 +121,13 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      * @return a reference to the current user.
      */
     public UserWrapper getCurrentUser() {
+        try {
+            connectionManager.getGameController().getCurrentPlayer(clientCreateMessage.createGameNameMessage(gameName).
+                    createTokenMessage(token).buildMessage());
+        } catch (IOException e) {
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR,
+                    Level.ERROR);
+        }
         return currentUser;
     }
 
