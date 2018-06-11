@@ -20,12 +20,12 @@ public class ChooseDice implements ICommand {
      * @param toolCardExecutor toolCard that generated this effect
      * @param turnState state in which the card is executed
      * @return CommandFlow.MAIN
-     * @throws RemoteException due to network communication errors
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices();
+        System.out.println("notify dice");
         observerList.forEach(obs -> obs.notifyNeedDice(diceList));
         return CommandFlow.MAIN;
     }

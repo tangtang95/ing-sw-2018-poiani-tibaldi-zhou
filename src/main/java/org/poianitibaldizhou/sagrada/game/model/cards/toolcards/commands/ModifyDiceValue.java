@@ -29,7 +29,7 @@ public class ModifyDiceValue implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
-        observerList.forEach(IToolCardExecutorFakeObserver::notifyNeedNewValue);
+        observerList.forEach(observer -> observer.notifyNeedNewValue(dice));
         int integer = toolCardExecutor.getNeededValue();
         if (integer < Dice.MIN_VALUE || integer > Dice.MAX_VALUE)
             return CommandFlow.REPEAT;

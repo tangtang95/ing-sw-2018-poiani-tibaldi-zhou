@@ -6,7 +6,6 @@ import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -21,8 +20,9 @@ public interface IToolCardExecutorFakeObserver {
 
     /**
      * Notify the requirement of a value (from an interval of number)
+     * @param dice the dice to change the value
      */
-    void notifyNeedNewValue();
+    void notifyNeedNewValue(Dice dice);
 
     /**
      * Notify the requirement of a color
@@ -33,11 +33,10 @@ public interface IToolCardExecutorFakeObserver {
 
     /**
      * Notify the requirement of a new value for a dice that need to respect the delta variation
-     *
-     * @param diceValue the dice number to change
+     *  @param dice the dice number to change
      * @param value     the delta variation to apply (increment or decrement)
      */
-    void notifyNeedNewDeltaForDice(int diceValue, int value);
+    void notifyNeedNewDeltaForDice(Dice dice, int value);
 
     /**
      * Notify the requirement of a dice from the roundTrack
@@ -51,7 +50,7 @@ public interface IToolCardExecutorFakeObserver {
      *
      * @param schemaCard schema card on which to choose the position
      */
-    void notifyNeedPosition(SchemaCard schemaCard);
+    void notifyNeedPositionForRemoving(SchemaCard schemaCard);
 
     /**
      * Notify the requirement of a position of a dice on schemaCard of a certain color
@@ -96,4 +95,17 @@ public interface IToolCardExecutorFakeObserver {
      * Notify that the execution of the ToolCard is ended
      */
     void notifyExecutionEnded();
+
+    /**
+     * Notify that the ToolCard is waiting for TurnEnd
+     */
+    void notifyWaitTurnEnd();
+
+    /**
+     * Notify the requirement of a position on the schemaCard for placing a dice
+     *
+     * @param schemaCard schema card on which to choose the position
+     * @param dice the dice to be placed
+     */
+    void notifyNeedPositionForPlacement(SchemaCard schemaCard, Dice dice);
 }

@@ -75,7 +75,7 @@ public class PlaceDice implements ICommand {
         }
 
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
-        observerList.forEach(obs -> obs.notifyNeedPosition(toolCardExecutor.getTemporarySchemaCard()));
+        observerList.forEach(obs -> obs.notifyNeedPositionForPlacement(toolCardExecutor.getTemporarySchemaCard(), dice));
 
         position = toolCardExecutor.getNeededPosition();
 

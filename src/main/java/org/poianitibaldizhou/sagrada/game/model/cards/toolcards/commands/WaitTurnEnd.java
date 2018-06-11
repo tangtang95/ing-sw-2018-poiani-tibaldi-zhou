@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
+import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -21,7 +22,9 @@ public class WaitTurnEnd implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         turnState.releaseToolCardExecution();
+        toolCardExecutor.getObservers().forEach(IToolCardExecutorFakeObserver::notifyWaitTurnEnd);
         toolCardExecutor.waitForTurnEnd();
+        toolCardExecutor.setTemporaryObjects();
         return CommandFlow.MAIN;
     }
 

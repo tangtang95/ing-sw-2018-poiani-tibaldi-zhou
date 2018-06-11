@@ -60,6 +60,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DRAFTPOOL;
         }
+        System.out.println("swap dice done");
         return CommandFlow.MAIN;
     }
 

@@ -4,10 +4,14 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.TranslateTransition;
+import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
@@ -15,7 +19,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 
@@ -52,16 +58,22 @@ public abstract class AbstractView extends UnicastRemoteObject {
             label.setTextFill(Color.ORANGERED);
         else
             label.setTextFill(Color.DEEPSKYBLUE);
+        label.setTextAlignment(TextAlignment.CENTER);
+        label.setAlignment(Pos.CENTER);
         FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), label);
-        fadeTransition.setFromValue(0.3);
+        fadeTransition.setFromValue(0.5);
         fadeTransition.setToValue(1);
-        fadeTransition.setCycleCount((messageType == MessageType.ERROR) ? 6 : Animation.INDEFINITE);
+        fadeTransition.setCycleCount(6);
         fadeTransition.setAutoReverse(true);
         fadeTransition.play();
-        fadeTransition.setOnFinished(event -> pane.getChildren().remove(label));
 
-        label.translateXProperty().bind(getCenterX().subtract(label.widthProperty().divide(2)));
-        label.translateYProperty().bind(getCenterY().add(getCenterX().divide(2.5)));
+        label.setTranslateX(getSceneWidth()/2);
+        label.setTranslateY(getSceneHeight() - PADDING*5);
+
+        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(1000), label);
+        translateTransition.setByY(PADDING*4);
+        translateTransition.play();
+        translateTransition.setOnFinished(event -> pane.getChildren().remove(label));
 
         pane.getChildren().add(label);
     }
@@ -106,9 +118,9 @@ public abstract class AbstractView extends UnicastRemoteObject {
         // TODO
     }
 
-    protected void clearNotifyPane() {
+    protected void clearNotifyPane(boolean isFastCloseable) {
         notifyPane.getChildren().clear();
-        notifyPane.getChildren().add(getBackgroundPane());
+        notifyPane.getChildren().add(getBackgroundPane(isFastCloseable));
     }
 
     protected void activateNotifyPane() {
@@ -121,12 +133,17 @@ public abstract class AbstractView extends UnicastRemoteObject {
         notifyPane.setVisible(false);
     }
 
-    protected Pane getBackgroundPane() {
+    protected Pane getBackgroundPane(boolean isFastCloseable) {
         Pane backgroundPane = new Pane();
         backgroundPane.setOpacity(0.6);
         backgroundPane.setStyle("-fx-background-color: black");
         backgroundPane.prefWidthProperty().bind(notifyPane.widthProperty());
         backgroundPane.prefHeightProperty().bind(notifyPane.heightProperty());
+        if(isFastCloseable)
+            backgroundPane.setOnMousePressed(event -> {
+                clearNotifyPane(false);
+                deactivateNotifyPane();
+            });
         return backgroundPane;
     }
 
@@ -137,8 +154,12 @@ public abstract class AbstractView extends UnicastRemoteObject {
             return corePane;
     }
 
-    protected void drawCenteredPanes(Pane targetPane, List<Pane> panes, String classCSS) {
+    protected void drawCenteredPanes(@NotNull Pane targetPane, @NotNull List<Pane> panes, String classCSS) {
         DoubleBinding y = getCenterY();
+        drawCenteredPanes(targetPane, panes, classCSS, getPivotY(y, panes.get(0).heightProperty(), 0.5));
+    }
+
+    protected void drawCenteredPanes(Pane targetPane, List<Pane> panes, String classCSS, DoubleBinding y) {
 
         for (int i = 0; i < panes.size(); i++) {
             DoubleBinding padding = panes.get(i).widthProperty().divide(2);
@@ -148,7 +169,8 @@ public abstract class AbstractView extends UnicastRemoteObject {
                     .add(panes.get(i).widthProperty().multiply(i)).add(padding.multiply(i));
 
             panes.get(i).translateXProperty().bind(getPivotX(x, panes.get(i).widthProperty(), 1));
-            panes.get(i).translateYProperty().bind(getPivotY(y, panes.get(i).heightProperty(), 0.5));
+            panes.get(i).translateYProperty().bind(y);
+            panes.get(i).setOnMousePressed(Event::consume);
             if(!classCSS.isEmpty())
                 panes.get(i).getStyleClass().add(classCSS);
             targetPane.getChildren().add(panes.get(i));
@@ -161,6 +183,16 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
         pane.translateXProperty().bind(getPivotX(x, pane.widthProperty(), 0.5));
         pane.translateYProperty().bind(getPivotY(y, pane.heightProperty(), 0.5));
+        pane.setOnMousePressed(Event::consume);
+        if(!classCSS.isEmpty())
+            pane.getStyleClass().add(classCSS);
+        targetPane.getChildren().add(pane);
+    }
+
+    protected void drawPane(Pane targetPane, Pane pane, String classCSS, DoubleBinding x, DoubleBinding y) {
+        pane.translateXProperty().bind(x);
+        pane.translateYProperty().bind(y);
+        pane.setOnMousePressed(Event::consume);
         if(!classCSS.isEmpty())
             pane.getStyleClass().add(classCSS);
         targetPane.getChildren().add(pane);
@@ -168,16 +200,19 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
     protected void drawRadioButtons(ToggleGroup toggleGroup, List<Pane> panes) {
         for (int i = 0; i < panes.size(); i++) {
-            Pane schemaCardPane = panes.get(i);
+            Pane pane = panes.get(i);
             JFXRadioButton radioButton = GraphicsUtils.getRadioButton("",
                     "radio-button-notify-pane", Color.WHITE, Color.DEEPSKYBLUE);
             radioButton.setToggleGroup(toggleGroup);
-            radioButton.setUserData(schemaCardPane);
+            radioButton.setUserData(pane);
 
-            DoubleBinding x = schemaCardPane.translateXProperty().add(schemaCardPane.widthProperty().divide(2));
-            DoubleBinding y = schemaCardPane.translateYProperty().add(schemaCardPane.heightProperty()).add(PADDING * 4);
+            DoubleBinding x = pane.translateXProperty().add(pane.widthProperty().divide(2));
+            DoubleBinding y = pane.translateYProperty().add(pane.heightProperty()).add(PADDING * 4);
 
-            schemaCardPane.setOnMousePressed(event -> radioButton.setSelected(true));
+            pane.setOnMousePressed(event -> {
+                radioButton.setSelected(true);
+                event.consume();
+            });
 
             radioButton.translateXProperty().bind(x);
             radioButton.translateYProperty().bind(y);
@@ -194,7 +229,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
         JFXButton cancelButton = GraphicsUtils.getButton("Chiudi", "negative-button");
         cancelButton.setOnAction(event -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
             deactivateNotifyPane();
         });
 
@@ -231,6 +266,14 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
     protected DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
+    }
+
+    protected double getSceneHeight(){
+        return corePane.getScene().getWindow().getHeight();
+    }
+
+    protected double getSceneWidth(){
+        return corePane.getScene().getWindow().getWidth();
     }
 
 }

@@ -191,8 +191,7 @@ public abstract class Game implements IGame, IGameStrategy {
      */
     @Override
     public List<User> getTimedOutUsers() {
-        List<User> timedOutUsers = getUsers().stream().filter(user -> !players.containsKey(user.getToken())).collect(Collectors.toList());
-        return timedOutUsers;
+        return getUsers().stream().filter(user -> !players.containsKey(user.getToken())).collect(Collectors.toList());
     }
 
     /**

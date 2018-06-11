@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.observers.realobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-
 import java.io.IOException;
 import java.rmi.Remote;
 
@@ -17,9 +15,10 @@ public interface IToolCardExecutorObserver extends Remote {
     /**
      * Notify the requirement of a value (from an interval of number)
      *
+     * @param message protocol message containing the dice to change value
      * @throws IOException network error
      */
-    void notifyNeedNewValue() throws IOException;
+    void notifyNeedNewValue(String message) throws IOException;
 
     /**
      * Notify the requirement of a color
@@ -48,10 +47,10 @@ public interface IToolCardExecutorObserver extends Remote {
     /**
      * Notify the requirement of a position on the schemaCard
      *
-     * @message protocol message containing the schemacard
      * @throws IOException network error
+     * @message protocol message containing the schemacard
      */
-    void notifyNeedPosition(String message) throws IOException;
+    void notifyNeedPositionForRemoving(String message) throws IOException;
 
     /**
      * Notify the requirement of a position of a dice on schemaCard of a certain color
@@ -93,12 +92,29 @@ public interface IToolCardExecutorObserver extends Remote {
 
     /**
      * Notify that the execution of the ToolCard is ended
+     *
+     * @throws IOException network error
      */
     void notifyExecutionEnded() throws IOException;
 
     /**
      * Notify a dice that has been poured over
+     *
      * @param message protocol message containing the poured over dice
      */
     void notifyDicePouredOver(String message) throws IOException;
+
+    /**
+     * Notify that the ToolCard is waiting for turnEnd
+     *
+     * @throws IOException network error
+     */
+    void notifyWaitTurnEnd() throws IOException;
+
+    /**
+     * Notify the requirement of a position on the schemaCard for placing a dice
+     *
+     * @param message protocol message containing the schemaCard and the dice to be placed
+     */
+    void notifyNeedPositionForPlacement(String message) throws IOException;
 }

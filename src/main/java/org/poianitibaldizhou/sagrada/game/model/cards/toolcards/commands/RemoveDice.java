@@ -73,7 +73,7 @@ public class RemoveDice implements ICommand {
         } else {
             if (toolCardExecutor.getTemporarySchemaCard().isEmpty())
                 return CommandFlow.EMPTY_SCHEMACARD;
-            observerList.forEach(obs -> obs.notifyNeedPosition(toolCardExecutor.getTemporarySchemaCard()));
+            observerList.forEach(obs -> obs.notifyNeedPositionForRemoving(toolCardExecutor.getTemporarySchemaCard()));
             position = toolCardExecutor.getNeededPosition();
         }
 

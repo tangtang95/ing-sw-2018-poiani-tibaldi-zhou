@@ -109,7 +109,7 @@ public class ToolCardExecutor extends Thread{
     /**
      * Set all the temporary view
      */
-    private void setTemporaryObjects() {
+    public void setTemporaryObjects() {
         this.temporaryDraftPool = game.getDraftPool();
         this.temporaryDicebag = game.getDiceBag();
         this.temporaryRoundTrack = game.getRoundTrack();
@@ -148,6 +148,7 @@ public class ToolCardExecutor extends Thread{
             setIsExecutingCommands(false);
             turnState.releaseToolCardExecution();
         }
+        observers.forEach(IToolCardExecutorFakeObserver::notifyExecutionEnded);
     }
 
     /**

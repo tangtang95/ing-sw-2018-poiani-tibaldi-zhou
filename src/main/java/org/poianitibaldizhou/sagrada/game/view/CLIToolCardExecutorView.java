@@ -90,7 +90,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedNewValue() throws IOException {
+    public void notifyNeedNewValue(String diceMessage) throws IOException {
         PrinterManager.consolePrint("Choose a number between 1 and 6:\n", Level.STANDARD);
 
         try {
@@ -136,7 +136,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         int minNumber;
         int maxNumber;
 
-        int diceValue = clientGetMessage.getDiceValue(message);
+        int diceValue = clientGetMessage.getDice(message).getNumber();
         int value = clientGetMessage.getValue(message);
 
         minNumber = diceValue - value <= 0 ? (DiceWrapper.MAX_VALUE + 1) - value : diceValue - value;
@@ -194,7 +194,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedPosition(String message) throws IOException {
+    public void notifyNeedPositionForRemoving(String message) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
@@ -306,6 +306,22 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been poured-over: ").
                 buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+    }
+
+    public void notifyWaitTurnEnd() throws IOException {
+        /* NOT NEEDED */
+    }
+
+    @Override
+    public void notifyNeedPositionForPlacement(String message) throws IOException {
+        // TODO If you want add the print of the dice to be placed
+        BuildGraphic buildGraphic = new BuildGraphic();
+
+        SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
+
+        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card\n").
+                buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
+        schemaCardPosition();
     }
 
     /**

@@ -8,11 +8,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -78,7 +76,7 @@ public class ModifyDiceValueTest {
             when(executor.getNeededValue()).thenReturn(value);
             assertEquals(expected, command.executeCommand(invokerPlayer, executor, stateGame));
             for (IToolCardExecutorFakeObserver obs : observerList) {
-                verify(obs, times(1)).notifyNeedNewValue();
+                verify(obs, times(1)).notifyNeedNewValue(dice);
             }
         }
     }

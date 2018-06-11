@@ -91,7 +91,7 @@ public class ModifyDiceValueByDeltaTest {
             assertEquals(expected, command.executeCommand(invokerPlayer, executor, stateGame));
 
             for (IToolCardExecutorFakeObserver obs : observerList) {
-                verify(obs, times(1)).notifyNeedNewDeltaForDice(dice.getNumber(), delta);
+                verify(obs, times(1)).notifyNeedNewDeltaForDice(dice, delta);
             }
         }
     }

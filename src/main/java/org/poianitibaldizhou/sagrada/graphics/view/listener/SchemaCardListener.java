@@ -36,7 +36,7 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
         Platform.runLater(() -> {
             schemaCardView.drawDice(diceWrapper, positionWrapper);
             if(getActivePane() == notifyPane){
-                clearNotifyPane();
+                clearNotifyPane(false);
                 deactivateNotifyPane();
             }
         });

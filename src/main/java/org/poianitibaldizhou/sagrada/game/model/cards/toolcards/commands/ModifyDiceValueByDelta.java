@@ -49,7 +49,7 @@ public class ModifyDiceValueByDelta implements ICommand {
         Dice dice = toolCardExecutor.getNeededDice();
 
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
-        observerList.forEach(obs -> obs.notifyNeedNewDeltaForDice(dice.getNumber(), getValue()));
+        observerList.forEach(obs -> obs.notifyNeedNewDeltaForDice(dice, getValue()));
 
         int newValue = toolCardExecutor.getNeededValue();
 

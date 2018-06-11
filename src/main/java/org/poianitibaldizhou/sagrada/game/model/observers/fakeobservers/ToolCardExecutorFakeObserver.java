@@ -54,12 +54,14 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
 
     /**
      * {@inheritDoc}
+     * @param dice
      */
     @Override
-    public void notifyNeedNewValue() {
+    public void notifyNeedNewValue(Dice dice) {
         Runnable runnable = () -> {
             try {
-                realObserver.notifyNeedNewValue();
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
+                realObserver.notifyNeedNewValue(serverCreateMessage.createDiceMessage(dice).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -90,11 +92,11 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedNewDeltaForDice(int diceValue, int value) {
+    public void notifyNeedNewDeltaForDice(Dice dice, int value) {
         Runnable runnable = () -> {
             try {
                 ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
-                realObserver.notifyNeedNewDeltaForDice(serverCreateMessage.createMessageValue(value).createDiceValueMessage(diceValue).buildMessage());
+                realObserver.notifyNeedNewDeltaForDice(serverCreateMessage.createMessageValue(value).createDiceMessage(dice).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -124,11 +126,12 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
      * {@inheritDoc}
      */
     @Override
-    public void notifyNeedPosition(SchemaCard schemaCard) {
+    public void notifyNeedPositionForRemoving(SchemaCard schemaCard) {
         Runnable runnable = () -> {
             try {
                 ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
-                realObserver.notifyNeedPosition(serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage());
+                System.out.println("IN NOTIFY THREAD: " + schemaCard.toString());
+                realObserver.notifyNeedPositionForRemoving(serverCreateMessage.createSchemaCardMessage(schemaCard).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }
@@ -249,5 +252,34 @@ public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserv
         };
 
         observerManager.pushThreadInQueue(token, runnable);
+    }
+
+    @Override
+    public void notifyWaitTurnEnd() {
+        Runnable runnable = () -> {
+            try {
+                realObserver.notifyWaitTurnEnd();
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+    }
+
+    @Override
+    public void notifyNeedPositionForPlacement(SchemaCard schemaCard, Dice dice) {
+        Runnable runnable = () -> {
+            try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
+                realObserver.notifyNeedPositionForPlacement(serverCreateMessage.createSchemaCardMessage(schemaCard)
+                        .createDiceMessage(dice).buildMessage());
+            } catch (IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+
     }
 }

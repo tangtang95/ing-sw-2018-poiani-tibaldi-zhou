@@ -22,13 +22,13 @@ import java.util.*;
 public abstract class Player implements IVictoryPoints, JSONable {
 
     protected final ICoin coin;
-    private final User user;
-    protected transient SchemaCard schemaCard;
-    protected final transient List<PrivateObjectiveCard> privateObjectiveCards;
+    protected final User user;
+    protected SchemaCard schemaCard;
+    protected final List<PrivateObjectiveCard> privateObjectiveCards;
     protected int indexOfPrivateObjectiveCard;
-    private Outcome outcome;
+    protected Outcome outcome;
 
-    private transient Map<String, IPlayerFakeObserver> observerMap;
+    protected Map<String, IPlayerFakeObserver> observerMap;
 
     /**
      * Constructor.
@@ -220,7 +220,6 @@ public abstract class Player implements IVictoryPoints, JSONable {
             newPlayer = SinglePlayer.newInstance(player);
         else
             newPlayer = MultiPlayer.newInstance(player);
-
         return newPlayer;
     }
 
@@ -232,4 +231,7 @@ public abstract class Player implements IVictoryPoints, JSONable {
         return false;
     }
 
+    public ICoin getCoinStrategy() {
+        return coin;
+    }
 }

@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class SinglePlayer extends Player {
@@ -20,6 +21,13 @@ public class SinglePlayer extends Player {
     public SinglePlayer(User user, ExpendableDice expendableDice, SchemaCard schemaCard,
                         List<PrivateObjectiveCard> privateObjectiveCards) {
         super(user, expendableDice, schemaCard, privateObjectiveCards);
+    }
+
+    private SinglePlayer(Player player) {
+        super(player.user, player.coin, SchemaCard.newInstance(player.schemaCard), new ArrayList<>(player.privateObjectiveCards));
+        this.outcome = player.outcome;
+        this.indexOfPrivateObjectiveCard = player.indexOfPrivateObjectiveCard;
+        this.observerMap = new HashMap<>(player.observerMap);
     }
 
     /**
@@ -34,10 +42,7 @@ public class SinglePlayer extends Player {
     public static SinglePlayer newInstance(@NotNull Player player) {
         if(!(player instanceof SinglePlayer))
             throw new IllegalArgumentException("SEVERE ERROR: player is not a single player, do not call this method directly");
-        SinglePlayer newPlayer = new SinglePlayer(player.getUser(), (ExpendableDice) player.coin, SchemaCard.newInstance(player.schemaCard),
-                new ArrayList<>(player.privateObjectiveCards));
-        player.getObserverMap().forEach(newPlayer::attachObserver);
-        return newPlayer;
+        return new SinglePlayer(player);
     }
 
     @Override

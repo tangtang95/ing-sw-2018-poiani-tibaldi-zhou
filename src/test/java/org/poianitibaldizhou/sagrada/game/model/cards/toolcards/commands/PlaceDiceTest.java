@@ -13,9 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -93,7 +91,7 @@ public class PlaceDiceTest {
         verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position,
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPosition(schemaCard);
+            verify(obs, times(1)).notifyNeedPositionForRemoving(schemaCard);
         }
     }
 
@@ -105,7 +103,7 @@ public class PlaceDiceTest {
                 PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
         assertEquals(CommandFlow.REPEAT, command.executeCommand(invokerPlayer, executor, stateGame));
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPosition(schemaCard);
+            verify(obs, times(1)).notifyNeedPositionForRemoving(schemaCard);
         }
     }
 

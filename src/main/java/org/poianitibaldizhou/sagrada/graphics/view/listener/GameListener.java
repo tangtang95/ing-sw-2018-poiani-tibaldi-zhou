@@ -41,12 +41,13 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private transient Map<UserWrapper, SchemaCardView> schemaCardViewMap;
 
     private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.3;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.4;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.4;
     private static final double SCHEMA_CARD_SCALE = 0.25;
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.25;
     private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.35;
     private static final double TOOL_CARD_SCALE = 0.35;
     private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 0.7;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.7;
     private static final double TOOL_CARD_SHOW_SCALE = 0.7;
 
     private static final double PADDING = 10;
@@ -82,7 +83,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
      */
     @Override
     public void ping() throws IOException {
-        // TODO :)
+        /*NOT IMPORTANT FOR GUI*/
     }
 
     /**
@@ -147,7 +148,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         List<PrivateObjectiveCardWrapper> privateObjectiveCards = parser.getPrivateObjectiveCards(message);
 
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
             activateNotifyPane();
             this.showChoosePrivateObjectiveCards(privateObjectiveCards);
         });
@@ -224,7 +225,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         for (int i = 0; i < privateObjectiveCards.size(); i++) {
             PrivateObjectiveCardWrapper privateObjectiveCardWrapper = privateObjectiveCards.get(i);
             PrivateObjectiveCardView objectiveCardView = new PrivateObjectiveCardView(privateObjectiveCardWrapper,
-                    PRIVATE_OBJECTIVE_CARD_SHOW_SCALE);
+                    PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST);
             DoubleBinding y = startY.add(objectiveCardView.heightProperty().add(PADDING).multiply(i));
 
             objectiveCardView.translateXProperty().bind(getPivotX(x, objectiveCardView.widthProperty(), 0));
@@ -353,7 +354,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
 
     private void onPublicObjectiveCardsPressed(MouseEvent event) {
-        clearNotifyPane();
+        clearNotifyPane(true);
         activateNotifyPane();
 
         try {
@@ -370,6 +371,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
         }
+        event.consume();
     }
 
     private void drawToolCards(List<ToolCardWrapper> toolCardWrappers) {
@@ -404,7 +406,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     }
 
     private void onToolCardsPressed(MouseEvent event) {
-        clearNotifyPane();
+        clearNotifyPane(true);
         activateNotifyPane();
 
         try {
@@ -419,6 +421,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
         }
+        event.consume();
     }
 
     private void drawPrivateObjectiveCard(List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
@@ -447,8 +450,31 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             cardView.translateXProperty().bind(getPivotX(cardX, cardView.widthProperty(), 0.5));
             cardView.translateYProperty().bind(getPivotY(y, cardView.heightProperty(), 0.5));
         }
-        cardView.setRotate(angle * 180.0 / Math.PI - 90);
+        cardView.setRotate(Math.round(angle * 180.0 / Math.PI - 90));
+        cardView.getStyleClass().add("on-board-card");
+        if(cardView.rotateProperty().get() == 0)
+            cardView.setOnMousePressed(this::onPrivateObjectivePressed);
         corePane.getChildren().add(cardView);
+    }
+
+    private void onPrivateObjectivePressed(MouseEvent event) {
+        clearNotifyPane(true);
+        activateNotifyPane();
+
+        try {
+            List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers = controller.getOwnPrivateObjectiveCard();
+            List<Pane> privateObjectiveCardViewList = new ArrayList<>();
+            privateObjectiveCardWrappers.forEach(privateObjectiveCardWrapper -> {
+                PrivateObjectiveCardView cardView =
+                        new PrivateObjectiveCardView(privateObjectiveCardWrapper, PRIVATE_OBJECTIVE_CARD_SHOW_SCALE);
+                privateObjectiveCardViewList.add(cardView);
+            });
+            drawCenteredPanes(notifyPane, privateObjectiveCardViewList, "on-notify-pane-card");
+            drawSimpleCloseHelperBox(notifyPane, "Carte obiettivo private");
+        } catch (IOException e) {
+            showCrashErrorMessage("Errore di connessione");
+        }
+        event.consume();
     }
 
     private List<UserWrapper> getUsersOrdered(final List<UserWrapper> users) {

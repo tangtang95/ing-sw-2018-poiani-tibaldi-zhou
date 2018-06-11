@@ -2,13 +2,14 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
@@ -16,10 +17,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
@@ -27,6 +28,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 import org.poianitibaldizhou.sagrada.graphics.view.component.ColorView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
+import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.HistoryObject;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.ObjectMessageType;
@@ -42,6 +44,7 @@ import java.util.logging.Logger;
 
 public class ToolCardExecutorListener extends AbstractView implements IToolCardExecutorObserver {
 
+    private static final double ROUND_TRACK_SHOW_SCALE = 1;
     private final transient List<HistoryObject> historyMessages;
 
     private static final double DICE_SHOW_SCALE = 0.5;
@@ -59,7 +62,8 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         ClientGetMessage parser = new ClientGetMessage();
         List<DiceWrapper> diceWrapperList = parser.getDiceList(message);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
+            activateNotifyPane();
             HBox helperBox = showHelperText(notifyPane, "Scegli uno dei dadi nella lista: ");
             List<Pane> diceViewList = new ArrayList<>();
             diceWrapperList.forEach(diceWrapper -> {
@@ -82,33 +86,29 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
 
     @Override
-    public void notifyNeedNewValue() throws IOException {
+    public void notifyNeedNewValue(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        DiceWrapper diceWrapper = parser.getDice(message);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
+            activateNotifyPane();
             HBox helperBox = showHelperText(notifyPane, "Scegli il nuovo valore del dado: ");
-            try {
-                HistoryObject historyObject = getMostRecentDiceMessage();
-                DiceWrapper diceWrapper = (DiceWrapper) historyObject.getObject();
-                List<Pane> diceViewList = new ArrayList<>();
-                for (int i = DiceWrapper.MIN_VALUE; i <= DiceWrapper.MAX_VALUE; i++) {
-                    DiceView diceView = new DiceView(new DiceWrapper(diceWrapper.getColor(), i), DICE_SHOW_SCALE);
-                    diceViewList.add(diceView);
-                }
-                drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
-                ToggleGroup toggleGroup = new ToggleGroup();
-                drawRadioButtons(toggleGroup, diceViewList);
-
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.SOMETIMES);
-
-                JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
-                continueButton.setOnAction(event -> fireDiceEvent(event, toggleGroup));
-
-                helperBox.getChildren().addAll(spacer, continueButton);
-            } catch (IOException e) {
-                showCrashErrorMessage("Errore di sincronizzazione");
-                e.printStackTrace();
+            List<Pane> diceViewList = new ArrayList<>();
+            for (int i = DiceWrapper.MIN_VALUE; i <= DiceWrapper.MAX_VALUE; i++) {
+                DiceView diceView = new DiceView(new DiceWrapper(diceWrapper.getColor(), i), DICE_SHOW_SCALE);
+                diceViewList.add(diceView);
             }
+            drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
+            ToggleGroup toggleGroup = new ToggleGroup();
+            drawRadioButtons(toggleGroup, diceViewList);
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.SOMETIMES);
+
+            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            continueButton.setOnAction(event -> fireValueEvent(event, toggleGroup));
+
+            helperBox.getChildren().addAll(spacer, continueButton);
         });
     }
 
@@ -117,7 +117,8 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         ClientGetMessage parser = new ClientGetMessage();
         List<ColorWrapper> colorWrapperList = parser.getColorList(colors);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
+            activateNotifyPane();
             HBox helperBox = showHelperText(notifyPane, "Scegli uno dei colori indicati per la mossa successiva: ");
             List<Pane> colorViewList = new ArrayList<>();
             colorWrapperList.forEach(colorWrapper -> {
@@ -142,35 +143,30 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     @Override
     public void notifyNeedNewDeltaForDice(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
+        DiceWrapper diceWrapper = parser.getDice(message);
         int deltaValue = parser.getValue(message);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
+            activateNotifyPane();
             HBox helperBox = showHelperText(notifyPane, "Scegli il nuovo valore del dado: ");
-            try {
-                HistoryObject historyObject = getMostRecentDiceMessage();
-                DiceWrapper diceWrapper = (DiceWrapper) historyObject.getObject();
-                List<Pane> diceViewList = new ArrayList<>();
-                if (diceWrapper.getNumber() + deltaValue <= DiceWrapper.MAX_VALUE)
-                    diceViewList.add(new DiceView(new DiceWrapper(diceWrapper.getColor(),
-                            diceWrapper.getNumber() + deltaValue), DICE_SHOW_SCALE));
-                if (diceWrapper.getNumber() - deltaValue >= DiceWrapper.MIN_VALUE)
-                    diceViewList.add(new DiceView(new DiceWrapper(diceWrapper.getColor(),
-                            diceWrapper.getNumber() - deltaValue), DICE_SHOW_SCALE));
-                drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
-                ToggleGroup toggleGroup = new ToggleGroup();
-                drawRadioButtons(toggleGroup, diceViewList);
+            List<Pane> diceViewList = new ArrayList<>();
+            if (diceWrapper.getNumber() + deltaValue <= DiceWrapper.MAX_VALUE)
+                diceViewList.add(new DiceView(new DiceWrapper(diceWrapper.getColor(),
+                        diceWrapper.getNumber() + deltaValue), DICE_SHOW_SCALE));
+            if (diceWrapper.getNumber() - deltaValue >= DiceWrapper.MIN_VALUE)
+                diceViewList.add(new DiceView(new DiceWrapper(diceWrapper.getColor(),
+                        diceWrapper.getNumber() - deltaValue), DICE_SHOW_SCALE));
+            drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
+            ToggleGroup toggleGroup = new ToggleGroup();
+            drawRadioButtons(toggleGroup, diceViewList);
 
-                Region spacer = new Region();
-                HBox.setHgrow(spacer, Priority.SOMETIMES);
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-                JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
-                continueButton.setOnAction(event -> fireDiceEvent(event, toggleGroup));
+            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            continueButton.setOnAction(event -> fireValueEvent(event, toggleGroup));
 
-                helperBox.getChildren().addAll(spacer, continueButton);
-            } catch (IOException e) {
-                showCrashErrorMessage("Errore di sincronizzazione");
-                e.printStackTrace();
-            }
+            helperBox.getChildren().addAll(spacer, continueButton);
         });
     }
 
@@ -180,97 +176,185 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         RoundTrackWrapper roundTrackWrapper = parser.getRoundTrack(message);
 
         Platform.runLater(() -> {
-            clearNotifyPane();
-            showHelperText(notifyPane, "Scegli un dado dal Tracciato dei round: ");
-            // TODO print round track
+            clearNotifyPane(false);
+            activateNotifyPane();
+            HBox helperBox = showHelperText(notifyPane, "Scegli un dado dal Tracciato dei round: ");
+            RoundTrackView copyRoundTrackView = new RoundTrackView(roundTrackWrapper, ROUND_TRACK_SHOW_SCALE);
+
+            drawPane(notifyPane, copyRoundTrackView, "on-notify-pane-card",
+                    getPivotX(getCenterX(), copyRoundTrackView.widthProperty(), 0.5),
+                    getPivotY(getCenterY(), copyRoundTrackView.heightProperty(), 0));
+
+            List<Pane> diceViews = new ArrayList<>();
+            Label roundLabel = new Label();
+            roundLabel.setFont(Font.font(ROUND_TRACK_SHOW_SCALE * 60));
+            roundLabel.setTextFill(Color.WHITE);
+
+            ToggleGroup toggleGroup = new ToggleGroup();
+
+            for (int i = 0; i < RoundTrackWrapper.NUMBER_OF_TRACK; i++) {
+                int round = i;
+                copyRoundTrackView.setDicePressedEvent(round, (event1 -> {
+                    toggleGroup.getToggles().clear();
+                    toggleGroup.setUserData(round);
+                    notifyPane.getChildren().removeAll(diceViews);
+                    notifyPane.getChildren().removeAll(roundLabel);
+                    diceViews.clear();
+
+                    List<DiceWrapper> diceList = roundTrackWrapper.getDicesPerRound(round);
+                    diceList.forEach(diceWrapper -> diceViews.add(new DiceView(diceWrapper, DICE_SCHEMA_SHOW_SCALE)));
+                    DoubleBinding y = copyRoundTrackView.translateYProperty()
+                            .add(copyRoundTrackView.heightProperty()).add(PADDING * 3);
+                    roundLabel.setText(String.format("Round %s", String.valueOf(round + 1)));
+                    roundLabel.translateXProperty().bind(getPivotX(getCenterX(), roundLabel.widthProperty(), 0.5));
+                    roundLabel.translateYProperty().bind(y);
+                    notifyPane.getChildren().add(roundLabel);
+
+                    drawCenteredPanes(notifyPane, diceViews, "on-notify-pane-card",
+                            roundLabel.translateYProperty().add(roundLabel.heightProperty().add(PADDING * 3)));
+
+                    drawRadioButtons(toggleGroup, diceViews);
+
+                    event1.consume();
+                }));
+            }
+
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.SOMETIMES);
+
+            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            continueButton.setOnAction(event -> {
+                if (toggleGroup.getSelectedToggle() != null)
+                    fireValueEvent(event, (Integer) toggleGroup.getUserData());
+                fireDiceEvent(event, toggleGroup);
+            });
+
+            helperBox.getChildren().addAll(spacer, continueButton);
         });
+
     }
 
     @Override
-    public void notifyNeedPosition(String message) throws IOException {
+    public void notifyNeedPositionForRemoving(String message) throws IOException {
         ClientGetMessage protocolParser = new ClientGetMessage();
         SchemaCardWrapper schemaCardWrapper = protocolParser.getSchemaCard(message);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
+            activateNotifyPane();
             DropShadow dropShadow = new DropShadow(4, 4, 4, Color.BLACK);
             SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
             schemaCardView.translateXProperty().bind(getPivotX(getCenterX(), schemaCardView.widthProperty(), 0.5));
             schemaCardView.translateYProperty().bind(getPivotY(getCenterY(), schemaCardView.widthProperty(), 0.33));
             schemaCardView.setEffect(dropShadow);
             notifyPane.getChildren().add(schemaCardView);
-            HistoryObject historyObject = getMostRecentMessage();
-            String helperMessage;
-            if (historyObject.getObjectMessageType() == ObjectMessageType.DICE) {
-                helperMessage = "Piazza il dado in una cella rispettando le restrizioni di piazzamento della Carta" +
-                        "Utensile";
-                DiceWrapper diceWrapper = (DiceWrapper) historyObject.getObject();
-                DiceView diceView = new DiceView(diceWrapper, DICE_SCHEMA_SHOW_SCALE);
+            String helperMessage = "Rimuovi un dado dalla Carta Schema rispettando la Carta Utensile";
 
-                schemaCardView.setOnDragOver(event -> {
-                    double x = event.getX();
-                    double y = event.getY();
-                    schemaCardView.drawShadow(x, y);
-                    event.acceptTransferModes(TransferMode.MOVE);
-                    event.consume();
-                });
+            schemaCardView.setOnMousePressed(event -> {
+                double x = event.getX();
+                double y = event.getY();
+                schemaCardView.removeShadow();
+                schemaCardView.drawShadow(x, y);
+                PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
+                schemaCardView.setUserData(positionWrapper);
+                event.consume();
+            });
 
-                schemaCardView.setOnDragDropped(event -> {
-                    schemaCardView.removeShadow();
-                    final Dragboard dragboard = event.getDragboard();
-                    double x = event.getX();
-                    double y = event.getY();
-                    PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
-                    schemaCardView.setUserData(positionWrapper);
-                    JSONParser parser = new JSONParser();
-                    try {
-                        JSONObject diceObject = (JSONObject) ((JSONObject) parser.parse(dragboard.getString())).get("body");
-                        DiceWrapper dice = DiceWrapper.toObject(diceObject);
-                        schemaCardView.drawDice(dice, positionWrapper);
-                        event.setDropCompleted(true);
-                        event.consume();
-                    } catch (ParseException e) {
-                        Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
-                    }
-                });
-
-                diceView.translateXProperty().bind(getCenterX().subtract(diceView.widthProperty().divide(2)));
-                diceView.translateYProperty().bind(schemaCardView.translateYProperty()
-                        .add(schemaCardView.widthProperty()).add(PADDING * 3));
-                diceView.setEffect(dropShadow);
-                notifyPane.getChildren().add(diceView);
-
-                diceView.setOnDragDetected(event -> {
-                    Dragboard dragboard = diceView.startDragAndDrop(TransferMode.MOVE);
-                    ClipboardContent clipboardContent = new ClipboardContent();
-                    clipboardContent.putImage(diceView.getImage());
-                    clipboardContent.putString(diceView.getDiceWrapper().toJSON().toJSONString());
-                    dragboard.setContent(clipboardContent);
-                    event.consume();
-                });
-            } else {
-                helperMessage = "Rimuovi un dado dalla Carta Schema rispettando la Carta Utensile";
-
-                schemaCardView.setOnMousePressed(event -> {
-                    double x = event.getX();
-                    double y = event.getY();
-                    schemaCardView.removeShadow();
-                    schemaCardView.drawShadow(x, y);
-                    PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
-                    schemaCardView.setUserData(positionWrapper);
-                });
-
-            }
             HBox helperBox = showHelperText(notifyPane, helperMessage);
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
             JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
-            continueButton.setOnAction(event -> {
-                firePositionEvent(event, schemaCardView);
-            });
+            continueButton.setOnAction(event -> firePositionEvent(event, schemaCardView));
 
             helperBox.getChildren().addAll(spacer, continueButton);
 
+        });
+    }
+
+
+    @Override
+    public void notifyNeedPositionForPlacement(String message) throws IOException {
+        ClientGetMessage protocolParser = new ClientGetMessage();
+        SchemaCardWrapper schemaCardWrapper = protocolParser.getSchemaCard(message);
+        DiceWrapper diceWrapper = protocolParser.getDice(message);
+        Platform.runLater(() -> {
+            clearNotifyPane(false);
+            activateNotifyPane();
+            DropShadow dropShadow = new DropShadow(4, 4, 4, Color.BLACK);
+            SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
+            schemaCardView.translateXProperty().bind(getPivotX(getCenterX(), schemaCardView.widthProperty(), 0.5));
+            schemaCardView.translateYProperty().bind(getPivotY(getCenterY(), schemaCardView.widthProperty(), 0.33));
+            schemaCardView.setEffect(dropShadow);
+            notifyPane.getChildren().add(schemaCardView);
+            String helperMessage = "Piazza il dado in una cella rispettando le restrizioni di piazzamento della Carta" +
+                    "Utensile";
+            DiceView diceView = new DiceView(diceWrapper, DICE_SCHEMA_SHOW_SCALE);
+
+            schemaCardView.setOnDragOver(event -> {
+                double x = event.getX();
+                double y = event.getY();
+                schemaCardView.drawShadow(x, y);
+                event.acceptTransferModes(TransferMode.MOVE);
+                event.consume();
+            });
+
+            schemaCardView.setOnDragDropped(event -> {
+                schemaCardView.removeShadow();
+                final Dragboard dragboard = event.getDragboard();
+                double x = event.getX();
+                double y = event.getY();
+                if (schemaCardView.getUserData() != null) {
+                    PositionWrapper oldPositionWrapper = (PositionWrapper) schemaCardView.getUserData();
+                    try {
+                        schemaCardView.removeDice(diceWrapper, oldPositionWrapper);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        showCrashErrorMessage("Errore di sincronizzazione");
+                        return;
+                    }
+                }
+
+                PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
+                if (schemaCardView.getDiceByPosition(positionWrapper) != null) {
+                    showMessage(notifyPane, "Non puoi piazzare il dado su una cella piena", MessageType.ERROR);
+                    return;
+                }
+                schemaCardView.setUserData(positionWrapper);
+                JSONParser parser = new JSONParser();
+                try {
+                    JSONObject diceObject = (JSONObject) ((JSONObject) parser.parse(dragboard.getString())).get("body");
+                    DiceWrapper dice = DiceWrapper.toObject(diceObject);
+                    schemaCardView.drawDice(dice, positionWrapper);
+                    event.setDropCompleted(true);
+                    event.consume();
+                } catch (ParseException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
+                }
+            });
+
+            diceView.translateXProperty().bind(getPivotX(getCenterX(), diceView.widthProperty(), 0.5));
+            diceView.translateYProperty().bind(schemaCardView.translateYProperty()
+                    .add(schemaCardView.heightProperty()).add(PADDING * 2));
+            diceView.setEffect(dropShadow);
+
+            diceView.setOnDragDetected(event -> {
+                Dragboard dragboard = diceView.startDragAndDrop(TransferMode.MOVE);
+                ClipboardContent clipboardContent = new ClipboardContent();
+                clipboardContent.putImage(diceView.getImage());
+                clipboardContent.putString(diceView.getDiceWrapper().toJSON().toJSONString());
+                dragboard.setContent(clipboardContent);
+                event.consume();
+            });
+            notifyPane.getChildren().add(diceView);
+
+            HBox helperBox = showHelperText(notifyPane, helperMessage);
+            Region spacer = new Region();
+            HBox.setHgrow(spacer, Priority.SOMETIMES);
+
+            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            continueButton.setOnAction(event -> firePositionEvent(event, schemaCardView));
+
+            helperBox.getChildren().addAll(spacer, continueButton);
         });
     }
 
@@ -280,7 +364,8 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         ColorWrapper colorWrapper = protocolParser.getColor(message);
         SchemaCardWrapper schemaCardWrapper = protocolParser.getSchemaCard(message);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
+            activateNotifyPane();
             SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
             drawCenteredPane(notifyPane, schemaCardView, "");
             String helperMessage = String.format("Rimuovi un dado del color %s dalla Carta Schema rispettando la " +
@@ -292,12 +377,13 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                 schemaCardView.removeShadow();
                 schemaCardView.drawShadow(x, y);
                 PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
-                if(schemaCardView.getDiceByPosition(positionWrapper) == null)
+                if (schemaCardView.getDiceByPosition(positionWrapper) == null)
                     showMessage(notifyPane, "Nessun dado selezionato", MessageType.ERROR);
-                else if(schemaCardView.getDiceByPosition(positionWrapper).getColor() != colorWrapper)
+                else if (schemaCardView.getDiceByPosition(positionWrapper).getColor() != colorWrapper)
                     showMessage(notifyPane, "Il dado selezionato è del colore sbagliato", MessageType.ERROR);
                 else
                     schemaCardView.setUserData(positionWrapper);
+                event.consume();
             });
 
             HBox helperBox = showHelperText(notifyPane, helperMessage);
@@ -314,10 +400,8 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     @Override
     public void notifyRepeatAction() throws IOException {
         Platform.runLater(() -> {
-            if (getActivePane() != notifyPane) {
-                activateNotifyPane();
-            }
             showMessage(notifyPane, "Hai sbagliato mossa, ripeti", MessageType.ERROR);
+            historyMessages.remove(historyMessages.size() - 1);
         });
     }
 
@@ -326,7 +410,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         ClientGetMessage parser = new ClientGetMessage();
         String error = parser.getCommandFlow(message);
         Platform.runLater(() -> {
-            clearNotifyPane();
+            clearNotifyPane(false);
             deactivateNotifyPane();
             showMessage(corePane, "L'esecuzione della Carta Utensile è stata interrotta per errore: " + error,
                     MessageType.ERROR);
@@ -336,10 +420,8 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     @Override
     public void notifyNeedContinueAnswer() throws IOException {
         Platform.runLater(() -> {
-            if (getActivePane() != notifyPane) {
-                clearNotifyPane();
-                activateNotifyPane();
-            }
+            clearNotifyPane(false);
+            activateNotifyPane();
             HBox helperBox = showHelperText(notifyPane, "Vuoi continuare l'esecuzione della Carta Utensile?");
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
@@ -358,18 +440,37 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     public void notifyDiceReroll(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         DiceWrapper diceWrapper = parser.getDice(message);
-        Platform.runLater(() -> historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE)));
+        Platform.runLater(() -> {
+            historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE));
+        });
     }
 
     @Override
     public void notifyExecutionEnded() throws IOException {
-        clearNotifyPane();
-        deactivateNotifyPane();
+        Platform.runLater(() -> {
+            clearNotifyPane(false);
+            deactivateNotifyPane();
+            showMessage(corePane, "Carta Utensile eseguita con successo", MessageType.INFO);
+        });
+    }
+
+    @Override
+    public void notifyWaitTurnEnd() throws IOException {
+        Platform.runLater(() -> {
+            clearNotifyPane(false);
+            deactivateNotifyPane();
+            showMessage(corePane, "A fine turno la ToolCard si attiverà", MessageType.INFO);
+        });
+
     }
 
     @Override
     public void notifyDicePouredOver(String message) throws IOException {
-        // TODO :)
+        ClientGetMessage parser = new ClientGetMessage();
+        DiceWrapper diceWrapper = parser.getDice(message);
+        Platform.runLater(() -> {
+            historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE));
+        });
     }
 
     public void addHistoryMessage(HistoryObject message) {
@@ -384,11 +485,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         DiceView diceView = (DiceView) toggleGroup.getSelectedToggle().getUserData();
         DiceWrapper diceWrapper = diceView.getDiceWrapper();
         try {
+            historyMessages.add(new HistoryObject(diceView.getDiceWrapper(), ObjectMessageType.DICE));
             controller.sendDiceObject(diceWrapper);
             toggleGroup.getToggles().forEach((toggle -> ((RadioButton) toggle).setDisable(true)));
             ((Button) actionEvent.getSource()).setDisable(true);
-            historyMessages.add(new HistoryObject(diceView.getDiceWrapper(), ObjectMessageType.DICE));
         } catch (IOException e) {
+            historyMessages.remove(historyMessages.size() - 1);
             showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
         }
     }
@@ -401,38 +503,60 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         ColorView colorView = (ColorView) toggleGroup.getSelectedToggle().getUserData();
         ColorWrapper colorWrapper = colorView.getColorWrapper();
         try {
+            historyMessages.add(new HistoryObject(colorWrapper, ObjectMessageType.COLOR));
             controller.sendColorObject(colorWrapper);
             toggleGroup.getToggles().forEach((toggle -> ((RadioButton) toggle).setDisable(true)));
             ((Button) actionEvent.getSource()).setDisable(true);
-            historyMessages.add(new HistoryObject(colorWrapper, ObjectMessageType.COLOR));
         } catch (IOException e) {
+            historyMessages.remove(historyMessages.size() - 1);
             showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
         }
     }
 
     private void firePositionEvent(ActionEvent actionEvent, SchemaCardView schemaCardView) {
         try {
-            if(schemaCardView.getUserData() == null){
+            if (schemaCardView.getUserData() == null) {
                 showMessage(notifyPane, "Devi scegliere una posizione", MessageType.ERROR);
                 return;
             }
             PositionWrapper positionWrapper = (PositionWrapper) schemaCardView.getUserData();
+            historyMessages.add(new HistoryObject(positionWrapper, ObjectMessageType.POSITION));
             controller.sendPositionObject(positionWrapper);
             ((Button) actionEvent.getSource()).setDisable(true);
-            schemaCardView.removeEventHandler(DragEvent.DRAG_DROPPED, schemaCardView.getOnDragDone());
-            historyMessages.add(new HistoryObject(positionWrapper, ObjectMessageType.POSITION));
         } catch (IOException e) {
+            historyMessages.remove(historyMessages.size() - 1);
             showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
         }
     }
 
     private void fireAnswerEvent(ActionEvent event, boolean answer, Button otherButton) {
         try {
+            historyMessages.add(new HistoryObject(answer, ObjectMessageType.ANSWER));
             controller.sendAnswerObject(answer);
             ((Button) event.getSource()).setDisable(true);
             otherButton.setDisable(true);
-            historyMessages.add(new HistoryObject(answer, ObjectMessageType.ANSWER));
         } catch (IOException e) {
+            historyMessages.remove(historyMessages.size() - 1);
+            showCrashErrorMessage("Errore di connessione");
+        }
+    }
+
+    private void fireValueEvent(ActionEvent event, ToggleGroup toggleGroup) {
+        if (toggleGroup.getSelectedToggle() == null) {
+            showMessage(notifyPane, "Devi scegliere un valore", MessageType.ERROR);
+            return;
+        }
+        int value = ((DiceView) toggleGroup.getSelectedToggle().getUserData()).getDiceWrapper().getNumber();
+        fireValueEvent(event, value);
+    }
+
+    private void fireValueEvent(ActionEvent event, int value) {
+        try {
+            historyMessages.add(new HistoryObject(value, ObjectMessageType.VALUE));
+            controller.sendValueObject(value);
+            ((Button) event.getSource()).setDisable(true);
+        } catch (IOException e) {
+            historyMessages.remove(historyMessages.size() - 1);
             showCrashErrorMessage("Errore di connessione");
         }
     }
@@ -450,5 +574,15 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         if (historyMessages.isEmpty())
             return new HistoryObject(null, ObjectMessageType.NONE);
         return historyMessages.get(historyMessages.size() - 1);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ToolCardExecutorListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
     }
 }

@@ -47,23 +47,27 @@ public class FrontBackSchemaCardView extends Pane {
         DropShadow effect = new DropShadow(6, Color.AQUA);
         frontSchemaCard.getImageView().setEffect(effect);
         backSchemaCard.getImageView().setEffect(effect);
+        event.consume();
     }
 
     private void onMouseExited(MouseEvent event){
         frontSchemaCard.getImageView().setEffect(null);
         backSchemaCard.getImageView().setEffect(null);
+        event.consume();
     }
 
     private void onMousePressed(MouseEvent event){
         if(transition != null)
             transition.stop();
         initialX = event.getSceneX();
+        event.consume();
     }
 
     private void onMouseDragged(MouseEvent event){
         double distance = event.getSceneX() - initialX;
         this.setRotate(this.getRotate() + distance * ROTATE_AMPLIFY);
         initialX = event.getSceneX();
+        event.consume();
     }
 
     private void onRotateListener(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {

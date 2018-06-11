@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.Nullable;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
@@ -87,8 +88,10 @@ public class SchemaCardView extends Pane {
                 // DRAW TILE
                 String tileName = tileWrapper.getConstraint() == null ?
                         "empty" : tileWrapper.getConstraint().toLowerCase();
-                GraphicsUtils.drawImage(gc, offsetX * (j) + tileWidth * j,offsetY * (i) + tileHeight * i,
-                        "tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
+                ImageView tileView = GraphicsUtils.getImageView("tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
+                tileView.setTranslateX(offsetX * (j + 1) + tileWidth * j);
+                tileView.setTranslateY(offsetY * (i + 1) + tileHeight * i);
+                this.getChildren().add(tileView);
                 // DRAW DICE
                 DiceWrapper diceWrapper = tileWrapper.getDice();
                 if(diceWrapper != null){
@@ -150,7 +153,7 @@ public class SchemaCardView extends Pane {
 
     public void removeDice(DiceWrapper diceWrapper, PositionWrapper pos) throws IOException {
         DiceView diceView = diceViews[pos.getRow()][pos.getColumn()];
-        if(diceView == null){
+        if(diceView == null || !diceView.getDiceWrapper().equals(diceWrapper)){
             throw new IOException();
         }
         this.getChildren().remove(diceView);
@@ -186,6 +189,7 @@ public class SchemaCardView extends Pane {
         return null;
     }
 
+    @Nullable
     public DiceWrapper getDiceByPosition(PositionWrapper positionWrapper){
         if(diceViews[positionWrapper.getRow()][positionWrapper.getColumn()] == null)
             return null;

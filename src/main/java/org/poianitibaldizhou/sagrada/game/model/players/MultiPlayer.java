@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MultiPlayer extends Player {
@@ -18,6 +19,14 @@ public class MultiPlayer extends Player {
      */
     public MultiPlayer(User user, FavorToken favorToken, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
         super(user, favorToken, schemaCard, privateObjectiveCards);
+    }
+
+    public MultiPlayer(Player player) {
+        super(player.user, new FavorToken(player.getCoins()), SchemaCard.newInstance(player.schemaCard),
+                new ArrayList<>(player.privateObjectiveCards));
+        this.outcome = player.outcome;
+        this.indexOfPrivateObjectiveCard = player.indexOfPrivateObjectiveCard;
+        this.observerMap = new HashMap<>(player.observerMap);
     }
 
     /**
@@ -32,9 +41,7 @@ public class MultiPlayer extends Player {
     public static MultiPlayer newInstance(@NotNull Player player) {
         if(!(player instanceof MultiPlayer))
             throw new IllegalArgumentException("SEVERE ERROR: player is not a MultiPlayer, do not call this method from MultiPlayer");
-        MultiPlayer newPlayer = new MultiPlayer(player.getUser(), new FavorToken(player.getCoins()), SchemaCard.newInstance(player.schemaCard), new ArrayList<>(player.privateObjectiveCards));
-        player.getObserverMap().forEach(newPlayer::attachObserver);
-        return newPlayer;
+        return new MultiPlayer(player);
     }
 
     @Override

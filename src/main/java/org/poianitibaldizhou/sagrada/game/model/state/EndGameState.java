@@ -59,7 +59,8 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         calculateScorePlayers(game.getPlayers(), game.getPublicObjectiveCards());
         game.getStateObservers().forEach((key, value) -> value.onVictoryPointsCalculated(scoreMap));
         game.setPlayersOutcome(scoreMap, currentRoundPlayer);
-        Optional<Player> winner = game.getPlayers().stream().filter(player -> player.getOutcome().equals(Outcome.WIN)).findFirst();
+        Optional<Player> winner = game.getPlayers().stream().filter(player -> player.getOutcome() == Outcome.WIN).findFirst();
+        game.getPlayers().forEach(player -> System.out.println(player.getOutcome()));
         if(winner.isPresent())
             game.getStateObservers().forEach((key, value) -> value.onResultGame(winner.get().getUser()));
         else

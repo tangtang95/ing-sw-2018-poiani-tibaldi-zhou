@@ -11,6 +11,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -208,5 +211,12 @@ public class MultiPlayerModel {
         String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
                 .createBooleanMessage(answer).buildMessage();
         connectionManager.getGameController().setContinueAction(request);
+    }
+
+    public void sendValueObject(int value) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createValueMessage(value).buildMessage();
+        connectionManager.getGameController().setNewValue(request);
     }
 }

@@ -172,7 +172,7 @@ public class MultiPlayerGame extends Game{
      */
     private List<Player> getWinnersByPrivateCard(List<Player> winners) {
         if (winners.size() == 1)
-            return winners;
+            return new ArrayList<>(winners);
         List<Player> privateCardWinners = new ArrayList<>();
         int maxPrivateCardPoints = Integer.MIN_VALUE;
         for (Player player : winners) {
@@ -193,7 +193,7 @@ public class MultiPlayerGame extends Game{
      */
     private List<Player> getWinnersByFavorTokens(List<Player> winners) {
         if (winners.size() == 1)
-            return winners;
+            return new ArrayList<>(winners);
         OptionalInt maxFavorTokens = winners.stream().mapToInt(Player::getCoins).max();
         if(!maxFavorTokens.isPresent())
             throw new IllegalStateException();

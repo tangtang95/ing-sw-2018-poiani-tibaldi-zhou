@@ -169,4 +169,8 @@ public class MultiPlayerController extends Controller implements Initializable {
     public void sendAnswerObject(boolean answer) throws IOException {
         multiPlayerModel.sendAnswerObject(answer);
     }
+
+    public void sendValueObject(int value) throws IOException {
+        multiPlayerModel.sendValueObject(value);
+    }
 }
