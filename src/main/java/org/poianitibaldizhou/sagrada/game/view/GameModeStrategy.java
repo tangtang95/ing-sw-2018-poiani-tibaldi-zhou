@@ -122,7 +122,7 @@ public abstract class GameModeStrategy implements IScreen{
                             buildMessage("Choose the action: ").toString(),
                     Level.STANDARD);
             consoleListener.setCommandMap(commandMap);
-            CLIStateView.setStart(true);
+            CLIStateView.setStart(false);
             lock.notifyAll();
         }
     }
