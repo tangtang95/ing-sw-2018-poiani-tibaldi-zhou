@@ -24,7 +24,10 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
-public class SinglePlayerGame extends Game{
+/**
+ * OVERVIEW: Single player game for Sagrada
+ */
+public class SinglePlayerGame extends Game {
 
     public static final int NUMBER_OF_PUBLIC_OBJECTIVE_CARDS = 2;
     public static final int NUMBER_OF_DICES_TO_DRAW = 4;
@@ -35,8 +38,9 @@ public class SinglePlayerGame extends Game{
     /**
      * Constructor.
      * Create a single player game based on difficulty and playerToken
-     * @param name the name of the game
-     * @param user the single user
+     *
+     * @param name       the name of the game
+     * @param user       the single user
      * @param difficulty the difficulty of the game
      */
     public SinglePlayerGame(String name, User user, int difficulty, TerminationGameManager terminationGameManager) throws RemoteException {
@@ -45,7 +49,10 @@ public class SinglePlayerGame extends Game{
         this.difficulty = difficulty;
     }
 
-    public int getDifficulty(){
+    /**
+     * @return the difficulty of the single player game
+     */
+    public int getDifficulty() {
         return difficulty;
     }
 
@@ -59,7 +66,7 @@ public class SinglePlayerGame extends Game{
         int targetScore = 0;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             List<Dice> dices = getRoundTrack().getDices(i);
-            for (Dice dice: dices) {
+            for (Dice dice : dices) {
                 targetScore += dice.getNumber();
             }
         }
@@ -141,7 +148,9 @@ public class SinglePlayerGame extends Game{
      */
     @Override
     public void handleEndGame() {
-        for (Player player: players.values()) {getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());}
+        for (Player player : players.values()) {
+            getGameObservers().get(player.getToken()).onChoosePrivateObjectiveCards(player.getPrivateObjectiveCards());
+        }
     }
 
     /**

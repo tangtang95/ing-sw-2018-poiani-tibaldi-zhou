@@ -79,6 +79,10 @@ public abstract class Game implements IGame, IGameStrategy {
         return name;
     }
 
+    /**
+     * Get the list of players in the game by reference
+     * @return list of game's player by references
+     */
     public List<Player> getPlayerListReferences() {
         ArrayList<Player> playerArrayList = new ArrayList<>();
         players.forEach((key, value) -> playerArrayList.add(value));
@@ -375,7 +379,7 @@ public abstract class Game implements IGame, IGameStrategy {
      * {@inheritDoc}
      */
     @Override
-    public void userPlaceDice(String token, Dice dice, Position position) throws IllegalArgumentException, InvalidActionException {
+    public void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException {
         if (!containsToken(token) || !draftPool.getDices().contains(dice))
             throw new InvalidActionException();
 
@@ -412,7 +416,7 @@ public abstract class Game implements IGame, IGameStrategy {
      * {@inheritDoc}
      */
     @Override
-    public void userChooseAction(String token, IActionCommand action) throws IllegalArgumentException, InvalidActionException {
+    public void userChooseAction(String token, IActionCommand action) throws  InvalidActionException {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.chooseAction(players.get(token), action);
@@ -422,7 +426,7 @@ public abstract class Game implements IGame, IGameStrategy {
      * {@inheritDoc}
      */
     @Override
-    public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws IllegalArgumentException, InvalidActionException {
+    public void userChoosePrivateObjectiveCard(String token, PrivateObjectiveCard privateObjectiveCard) throws InvalidActionException {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
@@ -633,6 +637,7 @@ public abstract class Game implements IGame, IGameStrategy {
                 draftPool.addDice(diceBag.draw());
             } catch (EmptyCollectionException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "diceBag is empty", e);
+                throw new IllegalStateException();
             }
         }
     }

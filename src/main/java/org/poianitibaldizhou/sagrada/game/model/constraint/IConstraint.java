@@ -5,7 +5,7 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import java.io.Serializable;
 
 @Immutable
-public interface IConstraint extends Serializable{
+public interface IConstraint {
     /**
      * @param other another constraint to match
      * @return false only if has the same constraint type and its value is different,

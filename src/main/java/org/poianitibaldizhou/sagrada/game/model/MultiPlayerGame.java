@@ -22,6 +22,9 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
+/**
+ * OVERVIEW: Multi-player game: a game the contains more than one player.
+ */
 public class MultiPlayerGame extends Game{
 
     public static final int NUMBER_OF_TOOL_CARDS = 3;
@@ -155,6 +158,8 @@ public class MultiPlayerGame extends Game{
         List<Player> victoryPointWinners = new ArrayList<>();
         int maxVictoryPoints = Integer.MIN_VALUE;
         for (Player player : players) {
+            System.out.println(player);
+            System.out.print(scoreMap.get(player) == null);
             maxVictoryPoints = Math.max(maxVictoryPoints, scoreMap.get(player));
         }
         for (Player player : players) {
@@ -217,8 +222,6 @@ public class MultiPlayerGame extends Game{
                 return nextPlayer;
             nextPlayer = getNextPlayer(currentRoundPlayer, Direction.COUNTER_CLOCKWISE);
         }
-        if (winners.contains(currentRoundPlayer))
-            return currentRoundPlayer;
         throw new IllegalStateException("SEVERE ERROR: No winners founded");
     }
 }
