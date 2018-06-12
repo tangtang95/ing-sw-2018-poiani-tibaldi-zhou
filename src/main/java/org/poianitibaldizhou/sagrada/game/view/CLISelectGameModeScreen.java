@@ -104,7 +104,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
             }
 
             PrinterManager.consolePrint("Provide a difficulty ranging from 1 to 5: \n", Level.STANDARD);
-            int difficulty = consoleListener.readNumber(5);
+            int difficulty = consoleListener.readValue(5);
 
             String message = connectionManager.getGameController().createSinglePlayer(clientCreateMessage.
                     createUsernameMessage(username).createValueMessage(difficulty).buildMessage());

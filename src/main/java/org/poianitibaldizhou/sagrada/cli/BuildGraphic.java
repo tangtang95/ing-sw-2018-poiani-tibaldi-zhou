@@ -241,7 +241,6 @@ public class BuildGraphic {
         Command command;
 
         if (commandMap != null) {
-            CLIBasicScreen.clearScreen();
             stringBuilder.append("Available commands:");
             stringBuilder.append("\n");
             for (Command com : commandMap.values())

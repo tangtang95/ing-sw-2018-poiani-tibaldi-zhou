@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.cli;
 
 import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
+import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -168,8 +169,10 @@ public class ConsoleListener {
                 try {
                     consoleReady();
                     String read = console.readLine();
-                    if (read.equals("help"))
+                    if (read.equals("help")) {
+                        CLIBasicScreen.clearScreen();
                         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.STANDARD);
+                    }
                     else {
                         key = Integer.parseInt(read);
                         if (key > 0 && key <= commandMap.keySet().size()) {

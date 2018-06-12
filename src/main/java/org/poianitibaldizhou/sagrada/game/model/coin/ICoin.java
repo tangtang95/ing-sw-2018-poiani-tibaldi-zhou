@@ -1,10 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.coin;
 
-import org.poianitibaldizhou.sagrada.exception.*;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 
 
 public interface ICoin extends Serializable {

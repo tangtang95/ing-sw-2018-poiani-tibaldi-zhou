@@ -75,7 +75,7 @@ public class PositionTest {
             String message = "{\"column\":4,\"row\":2}";
             org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
             try {
-                assertTrue((position.toObject((JSONObject) jsonParser.parse(message))).equals(position));
+                assertTrue((Position.toObject((JSONObject) jsonParser.parse(message))).equals(position));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

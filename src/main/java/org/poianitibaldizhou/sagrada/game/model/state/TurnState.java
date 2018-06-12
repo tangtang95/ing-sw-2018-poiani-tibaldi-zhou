@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.exception.NoCoinsExpendableException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
@@ -144,12 +143,8 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
         if (player != currentTurnPlayer)
             throw new InvalidActionException();
-        try {
-            if (!playerState.useCard(player, toolCard))
-                throw new InvalidActionException();
-        } catch (NoCoinsExpendableException e) {
-            throw new InvalidActionException(e);
-        }
+        if (!playerState.useCard(player, toolCard))
+            throw new InvalidActionException();
         Node<ICommand> preCommands = game.getPreCommands(toolCard);
         toolCardExecutor.setPreCommands(preCommands);
         toolCardExecutor.setCoreCommands(toolCard.getCommands());

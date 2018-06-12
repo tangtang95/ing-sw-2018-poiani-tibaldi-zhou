@@ -4,8 +4,6 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
-
 public class UseCardState extends IPlayerState {
 
     public UseCardState(TurnState turnState) {

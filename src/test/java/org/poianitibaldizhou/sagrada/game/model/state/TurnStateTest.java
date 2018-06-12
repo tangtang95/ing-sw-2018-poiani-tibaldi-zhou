@@ -134,7 +134,7 @@ public class TurnStateTest {
 
     @Test
     public void testNextTurnWhenIsFirstTurn() throws Exception {
-        TurnState turnState = spy(new TurnState(game, 0,player1, player1, true));
+        TurnState turnState = new TurnState(game, 0,player1, player1, true);
         turnState.init();
         when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
         when(game.getNextPlayer(player1, Direction.CLOCKWISE)).thenReturn(player2);
