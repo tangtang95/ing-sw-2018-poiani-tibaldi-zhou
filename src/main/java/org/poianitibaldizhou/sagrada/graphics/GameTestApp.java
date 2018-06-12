@@ -5,8 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
@@ -25,9 +25,10 @@ public class GameTestApp extends Application{
         WindowSize fixedSize = WindowSize.BIG;
 
         StackPane scenes = new StackPane();
+        scenes.setBackground(Background.EMPTY);
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/multi_game.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         Parent root = loader.load();
         MultiPlayerController controller = loader.getController();

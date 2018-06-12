@@ -65,6 +65,11 @@ public class StateListener extends AbstractView implements IStateObserver {
     }
 
     @Override
+    public void updateView() {
+        /* NOTHING TO UPDATE */
+    }
+
+    @Override
     public void onSetupGame() throws IOException {
         Platform.runLater(() -> {
             clearNotifyPane(false);
@@ -370,7 +375,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         label.setOpacity(1);
 
         FadeTransition transition = new FadeTransition(Duration.millis(DURATION_IN_MILLIS), label);
-        transition.setFromValue(0);
+        transition.setFromValue(0.6);
         transition.setToValue(1);
         transition.setInterpolator(Interpolator.LINEAR);
         transition.setCycleCount(6);

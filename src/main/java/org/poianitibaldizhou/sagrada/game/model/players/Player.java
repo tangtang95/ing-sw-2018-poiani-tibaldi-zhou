@@ -230,8 +230,4 @@ public abstract class Player implements IVictoryPoints, JSONable {
         }
         return false;
     }
-
-    public ICoin getCoinStrategy() {
-        return coin;
-    }
 }

@@ -219,4 +219,21 @@ public class MultiPlayerModel {
                 .createValueMessage(value).buildMessage();
         connectionManager.getGameController().setNewValue(request);
     }
+
+    public int getOwnToken() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName()).buildMessage();
+        String response =  connectionManager.getGameController().getMyCoins(request);
+        return parser.getMyCoins(response);
+    }
+
+    public ToolCardWrapper getToolCardByName(ToolCardWrapper toolCardWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameModel.getGameName())
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        String response =  connectionManager.getGameController().getToolCardByName(request);
+        return parser.getToolCard(response);
+    }
 }

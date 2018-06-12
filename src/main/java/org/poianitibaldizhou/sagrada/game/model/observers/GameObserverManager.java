@@ -111,7 +111,6 @@ public class GameObserverManager {
     public void pushThreadInQueue(String token, Runnable notify) {
         synchronized (getGame()) {
             lock.lock();
-            //System.out.println("Pushing thread in queue (GAME OBS MAN)");
             if (!disconnectedPlayer.contains(token))
                 executorHashMap.get(token).submit(notify);
             lock.unlock();
@@ -126,7 +125,6 @@ public class GameObserverManager {
     public void notifyDisconnection(String token) {
         synchronized (getGame()) {
             lock.lock();
-            System.out.println("Disconnection of a certain user has been notified (GAME OBS MAN)");
             disconnectedPlayerNotNotified.remove(token);
             lock.unlock();
         }
@@ -141,7 +139,6 @@ public class GameObserverManager {
     public void signalDisconnection(String token) {
         synchronized (getGame()) {
             lock.lock();
-            System.out.println("Disconnection signaled (GAME OBS MAN)");
             executorHashMap.get(token).shutdownNow();
             disconnectedPlayerNotNotified.add(token);
             disconnectedPlayer.add(token);
@@ -159,7 +156,6 @@ public class GameObserverManager {
     public void signalReconnect(String token) {
         synchronized (getGame()) {
             lock.lock();
-            System.out.println("Reconnection signaled (GAME OBS MAN)");
             executorHashMap.replace(token, Executors.newScheduledThreadPool(1));
             disconnectedPlayer.remove(token);
             disconnectedPlayerNotNotified.remove(token);
@@ -177,7 +173,6 @@ public class GameObserverManager {
     public void pushTimeoutThread(String token, Runnable notify, String timedOutToken) {
         synchronized (getGame()) {
             lock.lock();
-            System.out.println("push timeout thread in queue (GAME OBS MAN)");
             if (!disconnectedPlayer.contains(token)) {
                 if (token.equals(timedOutToken)) {
                     executorHashMap.get(token).shutdownNow();

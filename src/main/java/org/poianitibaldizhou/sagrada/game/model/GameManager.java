@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.TestOnly;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ForceSkipTurnFakeObserver;
@@ -149,7 +150,6 @@ public class GameManager {
             game.attachStateObserver(GameObserverManager.TIME_OUT, timeOutFakeObserver);
             gameObserverManagerMap.get(gameName).setTimeOutFakeObserver(timeOutFakeObserver);
             game.attachStateObserver(UUID.randomUUID().toString(), new ForceSkipTurnFakeObserver(gameObserverManagerMap.get(gameName)));
-
 
             gameNetworkManager.startHearthBeat(gameName);
 

@@ -42,6 +42,15 @@ public class ToolCardView extends Pane{
         this(toolCard, 1);
     }
 
+    public void redrawToken(int token) {
+        this.getChildren().remove(tokenView);
+        tokenView = drawToken(token);
+        tokenView.setTranslateX(toolCardView.getFitWidth() - tokenView.getWidth()/2);
+        tokenView.setTranslateY(- tokenView.getHeight()/2);
+
+        this.getChildren().add(tokenView);
+    }
+
     private Canvas drawToken(int numbersOfToken){
         Canvas canvas = new Canvas(toolCardView.getFitWidth()*ICON_PERCENT_RADIUS,
                 toolCardView.getFitWidth()*ICON_PERCENT_RADIUS);

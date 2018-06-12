@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.model.LobbyModel;
 import org.poianitibaldizhou.sagrada.graphics.view.LobbyView;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class LobbyController extends Controller implements Initializable {
 
     @FXML
-    public GridPane usersGrid;
+    public Pane corePane;
 
     private LobbyModel lobbyModel;
     private LobbyView lobbyView;
@@ -31,7 +31,7 @@ public class LobbyController extends Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            lobbyView = new LobbyView(this, usersGrid);
+            lobbyView = new LobbyView(this, corePane);
         } catch (RemoteException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
@@ -66,7 +66,7 @@ public class LobbyController extends Controller implements Initializable {
         } catch (IOException e) {
             AlertBox.displayBox("Errore di connessione", "L'operazione è fallita per problemi di connessione");
         }
-        playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.popScene());
+        playSceneTransition(corePane, event -> sceneManager.popScene());
     }
 
     public String getMyUsername() {
@@ -74,7 +74,7 @@ public class LobbyController extends Controller implements Initializable {
     }
 
     public void gameStart(String gameName) {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/multi_game.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         try {
             Parent root = loader.load();
@@ -82,7 +82,7 @@ public class LobbyController extends Controller implements Initializable {
             controller.setStage(stage);
             controller.setSceneManager(sceneManager);
             controller.setMultiPlayerModel(lobbyModel.getToken(), lobbyModel.getUsername(), gameName, lobbyModel.getConnectionManager());
-            playSceneTransition(usersGrid.getParent(), (event) -> sceneManager.pushScene(root));
+            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.pushScene(root));
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
         }

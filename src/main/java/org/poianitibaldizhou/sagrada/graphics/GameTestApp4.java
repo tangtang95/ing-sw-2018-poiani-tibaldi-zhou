@@ -25,7 +25,7 @@ public class GameTestApp4 extends Application {
         StackPane scenes = new StackPane();
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/multi_game.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         Parent root = loader.load();
         MultiPlayerController controller = loader.getController();

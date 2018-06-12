@@ -4,6 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
@@ -610,9 +611,27 @@ public class ClientGetMessage {
     }
 
     /**
+     * Get a toolCard from server with key toolCard.
+     *
+     * @param message json message from server.
+     * @return a value.
+     * @throws IOException thrown when there is an error in reading message with protocol.
+     */
+    public ToolCardWrapper getToolCard(String message) throws IOException {
+        ToolCardWrapper toolCardWrapper;
+        try {
+            JSONObject jsonObject = jsonClientProtocol.getResponseByKey(message, SharedConstants.TOOL_CARD);
+            toolCardWrapper = ToolCardWrapper.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
+        } catch (ParseException | ClassCastException e) {
+            throw new IOException();
+        }
+        return toolCardWrapper;
+    }
+
+    /**
      * Get a value from server with key turnValue.
      *
-     * @param message json message rom server.
+     * @param message json message from server.
      * @return a value.
      * @throws IOException thrown when there is an error in reading message with protocol.
      */
@@ -660,4 +679,5 @@ public class ClientGetMessage {
         }
         return true;
     }
+
 }

@@ -74,13 +74,6 @@ public class SchemaCardView extends Pane {
         tileWidth = Math.round(WIDTH_TILE_PERCENT * image.getWidth()) * scale;
         tileHeight = Math.round(HEIGHT_TILE_PERCENT * image.getWidth()) * scale;
 
-        Canvas canvas = new Canvas(tileWidth*NUMBER_OF_COLUMNS + offsetX*(NUMBER_OF_COLUMNS-1),
-                tileHeight*NUMBER_OF_ROWS + offsetY*(NUMBER_OF_ROWS-1));
-        canvas.setTranslateX(offsetX);
-        canvas.setTranslateY(offsetY);
-        this.getChildren().add(canvas);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 TileWrapper tileWrapper = schemaCard.getTile(new PositionWrapper(i, j));
@@ -198,5 +191,26 @@ public class SchemaCardView extends Pane {
 
     public void removeShadow() {
         shadowImage.setVisible(false);
+    }
+
+    public void drawSchemaCard(SchemaCardWrapper schemaCardWrapper) {
+        clearAllDice();
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if(schemaCardWrapper.getTile(new PositionWrapper(i, j)).getDice() != null)
+                    drawDice(schemaCardWrapper.getTile(new PositionWrapper(i, j)).getDice(), new PositionWrapper(i,j));
+            }
+        }
+    }
+
+    private void clearAllDice() {
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if(diceViews[i][j] != null){
+                    this.getChildren().remove(diceViews[i][j]);
+                    diceViews[i][j] = null;
+                }
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IRoundTrackObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
@@ -51,6 +52,17 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
         roundTrackView.setOnMousePressed(this::onRoundTrackPressed);
     }
 
+    @Override
+    public void updateView() {
+        try {
+            RoundTrackWrapper roundTrackWrapper = controller.getRoundTrack();
+            roundTrackView.drawRoundTrack(roundTrackWrapper);
+        } catch (IOException e) {
+            showCrashErrorMessage("Errore di connessione");
+            e.printStackTrace();
+        }
+    }
+
     public void onRoundTrackPressed(MouseEvent mouseEvent){
         clearNotifyPane(true);
         activateNotifyPane();
@@ -82,8 +94,8 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
                 roundLabel.translateYProperty().bind(y);
                 notifyPane.getChildren().add(roundLabel);
 
-                drawCenteredPanes(notifyPane, diceViews, "on-notify-pane-card",
-                        roundLabel.translateYProperty().add(roundLabel.heightProperty().add(PADDING*3)));
+                GraphicsUtils.drawCenteredPanes(notifyPane, diceViews, "on-notify-pane-card",
+                        getCenterX(), roundLabel.translateYProperty().add(roundLabel.heightProperty().add(PADDING*3)));
             }));
         }
         mouseEvent.consume();

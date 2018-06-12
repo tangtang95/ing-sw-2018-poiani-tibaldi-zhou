@@ -17,6 +17,11 @@ public class DiceBagListener extends AbstractView implements IDrawableCollection
     }
 
     @Override
+    public void updateView() {
+        /*NOT IMPORTANT FOR THE GUI*/
+    }
+
+    @Override
     public void onElementAdd(String elem) throws IOException {
         /*NOT IMPORTANT FOR THE GUI*/
     }

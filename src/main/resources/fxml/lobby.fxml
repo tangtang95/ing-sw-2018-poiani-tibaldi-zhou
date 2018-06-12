@@ -1,53 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 
-<HBox prefHeight="720.0" prefWidth="1280.0" stylesheets="@../stylesheet/visible-big.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.poianitibaldizhou.sagrada.graphics.controller.LobbyController">
+
+<StackPane styleClass="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="org.poianitibaldizhou.sagrada.graphics.controller.LobbyController">
    <children>
-      <GridPane fx:id="usersGrid" gridLinesVisible="true" prefHeight="594.0" prefWidth="953.0" HBox.hgrow="SOMETIMES">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-      </GridPane>
-      <VBox alignment="TOP_CENTER" spacing="30.0" HBox.hgrow="SOMETIMES">
-         <children>
-            <Label styleClass="title" text="Lobby">
-               <font>
-                  <Font size="52.0" />
-               </font>
-               <VBox.margin>
-                  <Insets top="20.0" />
-               </VBox.margin>
-            </Label>
-            <Label styleClass="title" text="60">
-               <font>
-                  <Font size="52.0" />
-               </font>
-            </Label>
-            <Region prefHeight="200.0" prefWidth="200.0" VBox.vgrow="SOMETIMES" />
-            <JFXButton buttonType="RAISED" onAction="#onLeaveLobbyButton" style="-fx-background-color: white;" text="Lascia la lobby">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </JFXButton>
-         </children>
-         <padding>
-            <Insets bottom="50.0" left="20.0" right="20.0" top="20.0" />
-         </padding>
-      </VBox>
+      <Pane fx:id="corePane" prefHeight="200.0" prefWidth="200.0" />
    </children>
-</HBox>
+</StackPane>

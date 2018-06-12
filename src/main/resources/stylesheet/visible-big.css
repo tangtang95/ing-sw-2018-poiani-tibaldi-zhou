@@ -1,14 +1,48 @@
 .button-menu{
     -fx-font-size: 3em;
     -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.button-menu:hover{
+    -fx-scale-x: 120%;
+    -fx-scale-y: 120%;
+    -fx-text-fill: tomato;
+}
+
+.background{
+    -fx-background-image: url("../images/background-texture.png");
+    -fx-background-size: 20%;
+    -fx-background-repeat: repeat;
 }
 
 .label{
     -fx-font-size: 1.1em;
 }
 
+.label-on-background{
+    -fx-text-fill: white;
+}
+
+.player-label{
+    -fx-text-fill: white;
+}
+
 .title{
     -fx-font-size: 2em;
+    -fx-text-fill: white;
+}
+
+.big-title{
+    -fx-font-size: 4em;
+    -fx-font-style: oblique;
+    -fx-text-fill: white;
+}
+
+.user-view{
+    -fx-border-width: 0.2em;
+    -fx-border-color: black;
+    -fx-border-insets: -0.2em;
 }
 
 .state-message{

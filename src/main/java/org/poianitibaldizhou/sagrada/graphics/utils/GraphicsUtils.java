@@ -2,16 +2,22 @@ package org.poianitibaldizhou.sagrada.graphics.utils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.event.Event;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -95,6 +101,24 @@ public class GraphicsUtils {
         return (textureParser == null) ? new Point2D(0, 0) : textureParser.getImageSize();
     }
 
+    public static void drawCenteredPanes(Pane targetPane, List<Pane> panes, String classCSS,
+                                         DoubleBinding centerX, DoubleBinding posY) {
+        for (int i = 0; i < panes.size(); i++) {
+            DoubleBinding padding = panes.get(i).widthProperty().divide(2);
+            DoubleBinding totalWidth = panes.get(i).widthProperty().multiply(panes.size())
+                    .add(padding.multiply(panes.size() - 1));
+            DoubleBinding x = centerX.subtract(totalWidth.divide(2))
+                    .add(panes.get(i).widthProperty().multiply(i)).add(padding.multiply(i));
+
+            panes.get(i).translateXProperty().bind(getPivotX(x, panes.get(i).widthProperty(), 1));
+            panes.get(i).translateYProperty().bind(posY);
+            panes.get(i).setOnMousePressed(Event::consume);
+            if(!classCSS.isEmpty())
+                panes.get(i).getStyleClass().add(classCSS);
+            targetPane.getChildren().add(panes.get(i));
+        }
+    }
+
 
     public static Image getImage(String resourceFolderPath, String imageKey, double width, double height) {
         return new Image(GraphicsUtils.class.getClassLoader().getResourceAsStream(resourceFolderPath + imageKey),
@@ -120,5 +144,21 @@ public class GraphicsUtils {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Parse failed");
         }
 
+    }
+
+    protected static DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
+        return x.subtract(width.multiply(1 - pivotX));
+    }
+
+    protected static DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
+        return x.subtract(width.multiply(1 - pivotX));
+    }
+
+    protected static DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
+        return y.subtract(height.multiply(1 - pivotY));
+    }
+
+    protected static DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
+        return y.subtract(height.multiply(1 - pivotY));
     }
 }

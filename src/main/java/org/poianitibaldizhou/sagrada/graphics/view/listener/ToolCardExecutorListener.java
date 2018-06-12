@@ -58,6 +58,11 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     }
 
     @Override
+    public void updateView() {
+        /* NOTHING TO UPDATE */
+    }
+
+    @Override
     public void notifyNeedDice(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         List<DiceWrapper> diceWrapperList = parser.getDiceList(message);
@@ -210,8 +215,8 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                     roundLabel.translateYProperty().bind(y);
                     notifyPane.getChildren().add(roundLabel);
 
-                    drawCenteredPanes(notifyPane, diceViews, "on-notify-pane-card",
-                            roundLabel.translateYProperty().add(roundLabel.heightProperty().add(PADDING * 3)));
+                    GraphicsUtils.drawCenteredPanes(notifyPane, diceViews, "on-notify-pane-card",
+                            getCenterX(), roundLabel.translateYProperty().add(roundLabel.heightProperty().add(PADDING * 3)));
 
                     drawRadioButtons(toggleGroup, diceViews);
 
@@ -414,6 +419,11 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             deactivateNotifyPane();
             showMessage(corePane, "L'esecuzione della Carta Utensile è stata interrotta per errore: " + error,
                     MessageType.ERROR);
+            try {
+                controller.updateAllViews();
+            } catch (IOException e) {
+                showCrashErrorMessage("Errore di connessione");
+            }
         });
     }
 
