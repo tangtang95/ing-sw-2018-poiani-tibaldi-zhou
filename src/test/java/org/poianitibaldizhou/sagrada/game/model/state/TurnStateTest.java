@@ -7,14 +7,21 @@ import org.mockito.*;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IStateFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -27,9 +34,21 @@ public class TurnStateTest {
 
     @Mock
     private Game game;
+
     @Mock
     private Player player1, player2, player3, player4;
 
+    @Mock
+    private IStateFakeObserver iStateFakeObserver1, iStateFakeObserver2;
+
+    @Mock
+    private ICommand command1;
+
+    @Mock
+    private IToolCardExecutorFakeObserver iToolCardExecutorFakeObserver;
+
+    @Mock
+    private ToolCard toolCard;
 
     @Before
     public void setUp() throws Exception {
@@ -49,6 +68,14 @@ public class TurnStateTest {
         when(game.getNextPlayer(player2, Direction.COUNTER_CLOCKWISE)).thenReturn(player1);
         when(game.getNextPlayer(player1, Direction.COUNTER_CLOCKWISE)).thenReturn(player4);
 
+        Node<ICommand> iCommands = new Node<>(command1);
+
+        when(game.getPreCommands(toolCard)).thenReturn(iCommands);
+
+        Map<String, IStateFakeObserver> iStateFakeObserverMap = new HashMap<>();
+        iStateFakeObserverMap.put("1", iStateFakeObserver1);
+        iStateFakeObserverMap.put("2", iStateFakeObserver2);
+        when(game.getStateObservers()).thenReturn(iStateFakeObserverMap);
     }
 
     @After
@@ -107,25 +134,7 @@ public class TurnStateTest {
     }
 
     @Test
-    public void useCardTest() throws Exception {
-        // TODO FIX
-        /*TurnState turnState = new TurnState(game, 0, player1, player1, true);
-        turnState.init();
-        turnState.chooseAction(player1, new UseCardAction());
-        ToolCard card = new ToolCard(ColorWrapper.BLUE,"name", "description",
-                "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
-        when(player1.isCardUsable(card)).thenReturn(true);
-        when(game.getPreCommands(card)).thenReturn(new Node<>(new ClearAll()));
-        turnState.useCard(player1, card, mock(IToolCardExecutorObserver.class));*/
-    }
-
-    @Test
-    public void placeDiceTest() throws Exception {
-        //TODO
-    }
-
-    @Test
-    public void nextTurnSinglePlayerTest() throws Exception{
+    public void nextTurnSinglePlayerTest(){
         List<Player> players = new ArrayList<>();
         players.add(player1);
         when(game.getPlayers()).thenReturn(players);
@@ -186,7 +195,7 @@ public class TurnStateTest {
     }
 
     @Test
-    public void getCurrentPlayer() throws Exception {
+    public void getCurrentPlayer() {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);
         turnState.init();
         assertEquals(player1, turnState.getCurrentRoundPlayer());
@@ -194,4 +203,62 @@ public class TurnStateTest {
     }
 
 
+    @Test
+    public void forceSkipTurn() {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.forceSkipTurn();
+        verify(game).setState(any());
+    }
+
+    @Test(expected = Exception.class)
+    public void useCard() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        when(toolCard.getCommands()).thenReturn(new Node<>(command1));
+        turnState.useCard(player2,toolCard, iToolCardExecutorFakeObserver);
+    }
+
+    @Test
+    public void placeDice() {
+    }
+
+    @Test
+    public void fireExecutorEvent() {
+    }
+
+    @Test
+    public void interruptToolCardExecution() {
+    }
+
+    @Test
+    public void forceStateChange() {
+    }
+
+    @Test
+    public void releaseToolCardExecution() {
+    }
+
+    @Test
+    public void hasActionUsed() {
+    }
+
+    @Test
+    public void getSkipTurnPlayers() {
+    }
+
+    @Test
+    public void setSkipTurnPlayers() {
+    }
+
+    @Test
+    public void addSkipTurnPlayer() {
+    }
+
+    @Test
+    public void notifyOnPlaceDiceState() {
+    }
+
+
+    @Test
+    public void notifyOnEndTurnState() {
+    }
 }

@@ -63,7 +63,7 @@ public class RoundStartStateTest {
     }
 
     @Test(expected = InvalidActionException.class)
-    public void throwDicesTestException() throws Exception{
+    public void throwDicesTestException() {
         when(game.isSinglePlayer()).thenReturn(true);
         when(game.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGame.NUMBER_OF_DICES_TO_DRAW);
         roundStartState = new RoundStartState(game, 0, currentPlayer);

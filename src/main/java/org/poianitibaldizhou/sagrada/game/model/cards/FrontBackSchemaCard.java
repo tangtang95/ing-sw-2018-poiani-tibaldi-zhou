@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;

@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.network.observers.fakeobservers;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;

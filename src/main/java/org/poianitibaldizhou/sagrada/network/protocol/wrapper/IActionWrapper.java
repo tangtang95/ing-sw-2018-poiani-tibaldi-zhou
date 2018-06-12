@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 
 /**
  * Interface for action command in game. The classes that implement this interface are

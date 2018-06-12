@@ -8,6 +8,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.StateFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IStateFakeObserver;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,7 +22,7 @@ public class ResetStateTest {
     private Game game;
 
     @Mock
-    
+    private StateFakeObserver gameFakeObserver1, gameFakeObserver2, gameFakeObserver3;
 
     private ResetState resetState;
 
@@ -53,6 +58,15 @@ public class ResetStateTest {
 
     @Test
     public void forceGameTerminationBeforeStarting() {
+        Map<String, IStateFakeObserver> iGameObserverMap = new HashMap<>();
+        iGameObserverMap.put("test1", gameFakeObserver1);
+        iGameObserverMap.put("test2", gameFakeObserver2);
+        iGameObserverMap.put("test3", gameFakeObserver3);
+        when(game.getStateObservers()).thenReturn(iGameObserverMap);
         resetState.forceGameTerminationBeforeStarting();
+        verify(gameFakeObserver1).onGameTerminationBeforeStarting();
+        verify(gameFakeObserver2).onGameTerminationBeforeStarting();
+        verify(gameFakeObserver3).onGameTerminationBeforeStarting();
+
     }
 }
