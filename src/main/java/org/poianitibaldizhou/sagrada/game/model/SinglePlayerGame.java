@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -13,14 +12,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAl
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
-import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;
-import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Map;
 
@@ -39,12 +35,12 @@ public class SinglePlayerGame extends Game {
      * Constructor.
      * Create a single player game based on difficulty and playerToken
      *
-     * @param name       the name of the game
+     * @param gameName   the name of the game
      * @param user       the single user
      * @param difficulty the difficulty of the game
      */
-    public SinglePlayerGame(String name, User user, int difficulty, TerminationGameManager terminationGameManager) throws RemoteException {
-        super(name, terminationGameManager);
+    public SinglePlayerGame(String gameName, User user, int difficulty, TerminationGameManager terminationGameManager) {
+        super(gameName, terminationGameManager);
         this.users.add(user);
         this.difficulty = difficulty;
     }
@@ -58,6 +54,7 @@ public class SinglePlayerGame extends Game {
 
     /**
      * Return the target score for a single player game. The player score has to be higher than this to win
+     * The target is core is equals to the sum of all the values of the dices present in the round track
      *
      * @return the target score
      */
@@ -73,17 +70,13 @@ public class SinglePlayerGame extends Game {
         return targetScore;
     }
 
-    public void setPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        players.put(user.getToken(), new SinglePlayer(user, new ExpendableDice(this), schemaCard, privateObjectiveCards));
-    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     public int getNumberOfToolCardForGame() {
         return getDifficulty();
-    }
+        }
 
     /**
      * {@inheritDoc}
@@ -140,7 +133,7 @@ public class SinglePlayerGame extends Game {
      */
     @Override
     public void addNewPlayer(User user, SchemaCard schemaCard, List<PrivateObjectiveCard> privateObjectiveCards) {
-        setPlayer(user, schemaCard, privateObjectiveCards);
+        players.put(user.getToken(), new SinglePlayer(user, new ExpendableDice(this), schemaCard, privateObjectiveCards));
     }
 
     /**
