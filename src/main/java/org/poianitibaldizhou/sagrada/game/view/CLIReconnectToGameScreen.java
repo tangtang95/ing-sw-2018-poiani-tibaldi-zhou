@@ -1,9 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;

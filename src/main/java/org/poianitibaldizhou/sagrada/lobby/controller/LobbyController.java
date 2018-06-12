@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.lobby.controller;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;

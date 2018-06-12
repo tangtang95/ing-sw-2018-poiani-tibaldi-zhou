@@ -20,6 +20,7 @@ public class FrontBackSchemaCardTest {
     @DataPoint
     public static FrontBackSchemaCard frontBackSchemaCard;
 
+
     @Test
     public void toJsonTest() {
         String message = "{\"type\":\"frontBackSchemaCard\",\"body\":{\"type\":\"collection\",\"body\":[" +
@@ -146,5 +147,28 @@ public class FrontBackSchemaCardTest {
         SchemaCard fullSchemaCard = new SchemaCard("test3", 2, constraints);
         frontBackSchemaCard.setSchemaCard(emptySchemaCard);
         frontBackSchemaCard.setSchemaCard(fullSchemaCard);
+    }
+
+
+    @Test
+    public void testSize() {
+        assertEquals(2, frontBackSchemaCard.size());
+    }
+
+    @Test
+    public void testHashCode() {
+        assertEquals(frontBackSchemaCard.hashCode(), FrontBackSchemaCard.newInstance(frontBackSchemaCard).hashCode());
+
+        FrontBackSchemaCard newFront = new FrontBackSchemaCard();
+        IConstraint[][] constraints = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                constraints[i][j] = new NoConstraint();
+            }
+        }
+        newFront.setSchemaCard(new SchemaCard("name", 5, constraints));
+        newFront.setSchemaCard(new SchemaCard("name", 5, constraints));
+
+        assertNotEquals(frontBackSchemaCard, newFront);
     }
 }

@@ -5,7 +5,7 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DraftPoolView;

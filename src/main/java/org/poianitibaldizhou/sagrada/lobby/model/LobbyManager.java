@@ -2,8 +2,9 @@ package org.poianitibaldizhou.sagrada.lobby.model;
 
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.ServerSettings;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.LobbyFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.LobbyObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.LobbyFakeObserver;
 import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
 
 import java.util.*;

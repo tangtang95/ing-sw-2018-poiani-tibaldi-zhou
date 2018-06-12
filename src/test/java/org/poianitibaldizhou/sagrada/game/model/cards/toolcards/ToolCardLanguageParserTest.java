@@ -79,6 +79,12 @@ public class ToolCardLanguageParserTest {
         }
     }
 
+    @Test(expected = Exception.class)
+    public void testNotRecognizedCommand() {
+        String description = "[1-THIS IS NOT A COMMAND]";
+        toolCardLanguageParser.parseToolCard(description);
+    }
+
     @Test
     public void testNotPresentCommand() {
         String command = "thisIsNotACommand";

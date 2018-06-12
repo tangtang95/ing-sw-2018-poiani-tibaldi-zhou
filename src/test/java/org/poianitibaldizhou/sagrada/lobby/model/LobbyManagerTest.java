@@ -7,13 +7,8 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.MediatorManager;
-import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 
-import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +16,6 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.cards;
 
+import jdk.nashorn.internal.parser.JSONParser;
+import org.json.simple.JSONObject;
 import org.junit.Test;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.exception.RuleViolationType;
@@ -8,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.Plac
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
+import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import static org.junit.Assert.*;
 
@@ -67,5 +70,21 @@ public class TileIntegrationTest {
             assertEquals(RuleViolationType.TILE_UNMATCHED, e.getViolationType());
             assertTrue(tile.getDice() == null);
         }
+    }
+
+    @Test
+    public void testToObject() throws Exception{
+        Tile tile = new Tile();
+        tile.setDice(new Dice(4, Color.BLUE));
+        assertEquals(tile, Tile.toObject((JSONObject) tile.toJSON().get(SharedConstants.BODY)));
+    }
+
+    @Test
+    public void testToObjectFail() throws Exception {
+        String message = "{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":3}},\"constraint\":\"PURPLE\"}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        JSONObject jsonObject = (JSONObject) jsonParser.parse(message);
+        Tile returnTIle = Tile.toObject(jsonObject);
+        assertNull(returnTIle);
     }
 }

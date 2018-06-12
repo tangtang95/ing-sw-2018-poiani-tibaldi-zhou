@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.MediatorManager;
-import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;

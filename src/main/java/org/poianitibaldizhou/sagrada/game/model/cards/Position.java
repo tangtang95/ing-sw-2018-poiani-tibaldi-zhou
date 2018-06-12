@@ -2,12 +2,16 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents a position on the schema card.
+ * @see SchemaCard for the numbers allowed
+ */
 @Immutable
 public class Position implements JSONable {
     private int row;
@@ -77,7 +81,6 @@ public class Position implements JSONable {
     public int hashCode() {
         return Objects.hash(row, column);
     }
-
 
     /**
      * Convert a Position in a JSONObject.

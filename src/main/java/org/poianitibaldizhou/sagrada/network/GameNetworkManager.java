@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
-import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 

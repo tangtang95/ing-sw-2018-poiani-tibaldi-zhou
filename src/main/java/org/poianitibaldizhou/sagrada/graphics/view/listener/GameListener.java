@@ -14,7 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IGameObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;

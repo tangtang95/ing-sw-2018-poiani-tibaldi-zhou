@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
-import org.poianitibaldizhou.sagrada.lobby.model.LobbyObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.LobbyObserverManager;
 
 import java.util.HashMap;
 import java.util.Map;

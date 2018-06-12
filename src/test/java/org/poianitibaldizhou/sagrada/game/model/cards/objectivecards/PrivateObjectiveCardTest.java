@@ -142,4 +142,13 @@ public class PrivateObjectiveCardTest {
             e.printStackTrace();
         }
     }
+
+    @Test(expected = Exception.class)
+    public void testToObjectObserver() {
+        Dice dice = new Dice(2, Color.PURPLE);
+        JSONObject jsonObject = dice.toJSON();
+
+        PrivateObjectiveCard.toObject(jsonObject);
+    }
+    
 }

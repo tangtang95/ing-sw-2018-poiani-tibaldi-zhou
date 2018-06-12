@@ -54,9 +54,8 @@ public class GameInjector {
     /**
      * Static constructor.
      */
-    @Contract(" -> fail")
     private GameInjector() {
-        throw new IllegalStateException("Utility class");
+        // DO NOTHING
     }
 
     /**

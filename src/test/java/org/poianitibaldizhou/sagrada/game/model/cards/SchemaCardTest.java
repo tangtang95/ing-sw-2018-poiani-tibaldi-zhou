@@ -13,6 +13,8 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
+import javax.xml.validation.Schema;
+
 import static org.junit.Assert.*;
 
 public class SchemaCardTest {
@@ -163,7 +165,8 @@ public class SchemaCardTest {
         }
 
         try{
-            schemaCard.setDice(d3,0,2);
+            System.out.print(schemaCard);
+            schemaCard.setDice(d3,0,0);
             fail("no exception launched");
         } catch(RuleViolationException e){
             assertEquals(RuleViolationType.NO_DICE_NEAR, e.getViolationType());
@@ -426,5 +429,68 @@ public class SchemaCardTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testIsDicePositionable2() {
+        assertEquals(true, schemaCard.isDicePositionable(new Dice(2, Color.BLUE), PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL));;
+
+        IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                matrix[i][j] = new ColorConstraint(Color.BLUE);
+            }
+        }
+
+        SchemaCard blueSchemaCard = new SchemaCard("blueschema", 2, matrix);
+
+        assertFalse(blueSchemaCard.isDicePositionable(new Dice(4, Color.GREEN), PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL ));
+    }
+
+    @Test(expected = Exception.class)
+    public void setDiceException() throws Exception{
+        IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                matrix[i][j] = new ColorConstraint(Color.BLUE);
+            }
+        }
+
+        SchemaCard blueSchemaCard = new SchemaCard("blueschema", 2, matrix);
+
+        blueSchemaCard.setDice(new Dice(4, Color.GREEN), new Position(0,0), PlacementRestrictionType.NUMBER_COLOR,
+                DiceRestrictionType.NORMAL);
+    }
+
+    @Test
+    public void hasOrthogonalDiceTest() throws Exception {
+        IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                matrix[i][j] = new NoConstraint();
+            }
+        }
+
+        SchemaCard schemaCardtemp = new SchemaCard("schema", 2, matrix);
+        schemaCardtemp.setDice(new Dice(2, Color.BLUE), new Position(0,0));
+        schemaCardtemp.isDicePositionable(new Dice(2, Color.GREEN), new Position(1, 0), PlacementRestrictionType.NUMBER_COLOR,
+                DiceRestrictionType.NORMAL);
+    }
+
+    @Test(expected = RuleViolationException.class)
+    public void testSetDice() throws Exception{
+        IConstraint[][] matrix = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                matrix[i][j] = new ColorConstraint(Color.BLUE);
+            }
+        }
+
+        SchemaCard blueSchemaCard = new SchemaCard("blueschema", 2, matrix);
+
+        blueSchemaCard.setDice(new Dice(4, Color.BLUE), new Position(0,0 ), PlacementRestrictionType.NUMBER_COLOR,
+                DiceRestrictionType.NORMAL);
+        blueSchemaCard.setDice(new Dice(4, Color.GREEN), new Position(1,1), PlacementRestrictionType.NUMBER_COLOR,
+                DiceRestrictionType.NORMAL);
     }
 }

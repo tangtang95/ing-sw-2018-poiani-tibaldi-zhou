@@ -12,7 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
@@ -217,10 +217,11 @@ public class Tile implements JSONable{
         } catch (NumberFormatException e) {
             tile = new Tile( new ColorConstraint(Color.valueOf((String) jsonObject.get(JSON_CONSTRAINT))));
         }
+
         try {
             if (jsonObject.containsKey(SharedConstants.DICE)) {
-                Dice readDice = Dice.toObject(
-                        (JSONObject) jsonObject.get(SharedConstants.DICE));
+                Dice readDice = Dice.toObject( (JSONObject)
+                        ((JSONObject) jsonObject.get(SharedConstants.DICE)).get(SharedConstants.BODY));
                 tile.setDice(readDice);
             }
         } catch (RuleViolationException e) {

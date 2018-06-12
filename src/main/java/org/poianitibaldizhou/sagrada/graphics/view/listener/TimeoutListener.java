@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
