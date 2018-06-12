@@ -16,6 +16,9 @@ public class ResetStateTest {
     @Mock
     private Game game;
 
+    @Mock
+    
+
     private ResetState resetState;
 
     @Before
@@ -48,4 +51,8 @@ public class ResetStateTest {
         resetState.readyGame("player1");
     }
 
+    @Test
+    public void forceGameTerminationBeforeStarting() {
+        resetState.forceGameTerminationBeforeStarting();
+    }
 }

@@ -21,16 +21,22 @@ public class EndTurnState extends IPlayerState {
     @Override
     public void endTurn() {
         turnState.getToolCardExecutor().setTurnEnded(true);
-        Thread thread = new Thread(()->{
-            try {
-                turnState.getToolCardExecutor().waitToolCardExecutionEnd();
-            } catch (InterruptedException e) {
-                Logger.getAnonymousLogger().log(Level.INFO, "toolCardExecution ended");
-                Thread.currentThread().interrupt();
-            }
+        if(turnState.getToolCardExecutor().isExecutingCommands()) {
+            Thread thread = new Thread(() -> {
+                try {
+                    turnState.getToolCardExecutor().waitToolCardExecutionEnd();
+                } catch (InterruptedException e) {
+                    Logger.getAnonymousLogger().log(Level.INFO, "toolCardExecution ended");
+                    Thread.currentThread().interrupt();
+                }
+                turnState.notifyOnEndTurnState();
+                turnState.nextTurn();
+            });
+            thread.start();
+        }
+        else {
             turnState.notifyOnEndTurnState();
             turnState.nextTurn();
-        });
-        thread.start();
+        }
     }
 }

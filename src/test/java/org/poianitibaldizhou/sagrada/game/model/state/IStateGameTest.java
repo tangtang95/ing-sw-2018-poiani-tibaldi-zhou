@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
+import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
@@ -12,7 +13,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObje
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
@@ -22,6 +22,9 @@ public class IStateGameTest {
 
     @Mock
     private Game game;
+
+    @Mock
+    private Player player;
 
     private IStateGame stateGame;
 
@@ -42,7 +45,7 @@ public class IStateGameTest {
     }
 
     @Test(expected = Exception.class)
-    public void nextRoundTest() throws Exception {
+    public void nextRoundTest(){
         stateGame.nextRound();
     }
 
@@ -67,7 +70,7 @@ public class IStateGameTest {
     }
 
     @Test(expected = Exception.class)
-    public void calculateVictoryPoints() throws Exception {
+    public void calculateVictoryPoints(){
         stateGame.calculateVictoryPoints();
     }
 
@@ -97,5 +100,29 @@ public class IStateGameTest {
     }
 
 
+    @Test(expected = Exception.class)
+    public void getCurrentPlayer() throws InvalidActionException {
+        stateGame.getCurrentPlayer();
 
+    }
+
+    @Test(expected = Exception.class)
+    public void forceStateChange() throws InvalidActionException {
+        stateGame.forceStateChange();
+    }
+
+    @Test(expected = Exception.class)
+    public void forceSkipTurn() throws InvalidActionException {
+        stateGame.forceSkipTurn();
+    }
+
+    @Test(expected = Exception.class)
+    public void forceTermination() {
+        stateGame.forceTermination(player);
+    }
+
+    @Test(expected = Exception.class)
+    public void forceGameTerminationBeforeStarting() throws InvalidActionException {
+        stateGame.forceGameTerminationBeforeStarting();
+    }
 }
