@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.Objects;
 /**
  * Full card with front schemaCard and Back schemaCard.
  */
-public class FrontBackSchemaCard implements JSONable{
+public class FrontBackSchemaCard implements JSONable {
 
     private List<SchemaCard> schemaCards;
 
@@ -36,11 +36,11 @@ public class FrontBackSchemaCard implements JSONable{
         return schemaCards.contains(schemaCard);
     }
 
-    public static FrontBackSchemaCard newInstance( FrontBackSchemaCard frontBackSchemaCard) {
-       FrontBackSchemaCard schemaCardList = new FrontBackSchemaCard();
-       for (SchemaCard s : frontBackSchemaCard.getSchemaCards())
-           schemaCardList.setSchemaCard(SchemaCard.newInstance(s));
-       return schemaCardList;
+    public static FrontBackSchemaCard newInstance(FrontBackSchemaCard frontBackSchemaCard) {
+        FrontBackSchemaCard schemaCardList = new FrontBackSchemaCard();
+        for (SchemaCard s : frontBackSchemaCard.getSchemaCards())
+            schemaCardList.setSchemaCard(SchemaCard.newInstance(s));
+        return schemaCardList;
     }
 
     public SchemaCard getFrontSchemaCard() {
@@ -66,9 +66,9 @@ public class FrontBackSchemaCard implements JSONable{
         for (SchemaCard s : this.getSchemaCards())
             jsonArray.add(s.toJSON());
         frontBack.put(SharedConstants.TYPE, SharedConstants.COLLECTION);
-        frontBack.put(SharedConstants.BODY,jsonArray);
+        frontBack.put(SharedConstants.BODY, jsonArray);
         main.put(SharedConstants.TYPE, SharedConstants.FRONT_BACK_SCHEMA_CARD);
-        main.put(SharedConstants.BODY,frontBack);
+        main.put(SharedConstants.BODY, frontBack);
         return main;
     }
 
@@ -94,7 +94,6 @@ public class FrontBackSchemaCard implements JSONable{
 
     @Override
     public int hashCode() {
-
         return Objects.hash(getSchemaCards());
     }
 }

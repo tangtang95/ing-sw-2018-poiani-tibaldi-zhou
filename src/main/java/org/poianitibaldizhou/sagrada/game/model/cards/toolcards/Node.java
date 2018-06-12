@@ -55,14 +55,6 @@ public class Node<T> {
         leftChild.setParent(parent);
     }
 
-    public void setData(T data) {
-        this.data = data;
-    }
-
-    public void removeParent() {
-        this.parent = null;
-    }
-
     public void setParent(Node<T> parent) {
         this.parent = parent;
     }
@@ -134,19 +126,6 @@ public class Node<T> {
     @Override
     public int hashCode() {
         return Objects.hash(rightChild, leftChild, data);
-    }
-
-    @Override
-    public String toString() {
-        String s;
-        s = this.getData().toString();
-
-        if(this.getRightChild() != null)
-            s = s+this.getRightChild().toString();
-        if(this.getLeftChild() != null)
-            s = s+this.getLeftChild().toString();
-
-        return s;
     }
 }
 

@@ -7,7 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
@@ -92,7 +92,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     @Override
     public void init() {
         if ((skipTurnPlayers.containsKey(getCurrentTurnPlayer())
-                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN))){
+                && skipTurnPlayers.get(getCurrentTurnPlayer()) == (isFirstTurn ? FIRST_TURN : SECOND_TURN))) {
             game.getStateObservers().forEach((key, value) ->
                     value.onSkipTurnState(currentRound, isFirstTurn, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
             nextTurn();
@@ -100,7 +100,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         }
 
         game.getStateObservers().forEach((key, value) -> value.onTurnState(currentRound,
-                    (isFirstTurn) ? FIRST_TURN : SECOND_TURN, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
+                (isFirstTurn) ? FIRST_TURN : SECOND_TURN, currentRoundPlayer.getUser(), currentTurnPlayer.getUser()));
 
     }
 
@@ -145,6 +145,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
             throw new InvalidActionException();
         if (!playerState.useCard(player, toolCard))
             throw new InvalidActionException();
+
         Node<ICommand> preCommands = game.getPreCommands(toolCard);
         toolCardExecutor.setPreCommands(preCommands);
         toolCardExecutor.setCoreCommands(toolCard.getCommands());

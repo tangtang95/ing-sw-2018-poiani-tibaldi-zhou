@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDrawableCollectionObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 

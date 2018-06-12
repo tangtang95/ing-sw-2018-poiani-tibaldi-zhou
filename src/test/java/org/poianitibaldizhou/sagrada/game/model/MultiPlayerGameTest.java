@@ -18,10 +18,10 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.Executo
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
-import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.DrawableCollectionFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.DrawableCollectionFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.*;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDrawableCollectionObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;

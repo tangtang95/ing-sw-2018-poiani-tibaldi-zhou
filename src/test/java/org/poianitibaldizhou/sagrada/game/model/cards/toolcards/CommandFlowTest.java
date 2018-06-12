@@ -35,4 +35,16 @@ public class CommandFlowTest {
     public void setUp() throws Exception {
         commandFlow = CommandFlow.REPEAT;
     }
+
+    @Test
+    public void testGetProtocolNumber() {
+        for(CommandFlow commandFlow : CommandFlow.values()) {
+            if(commandFlow.toString().equals(CommandFlow.REPEAT.toString()) || commandFlow.toString().equals(CommandFlow.MAIN.toString()) ||
+                    commandFlow.toString().equals(CommandFlow.SUB.toString())) {
+                assertEquals(200, commandFlow.getProtocolNumber());
+            } else {
+                assertEquals(400, commandFlow.getProtocolNumber());
+            }
+        }
+    }
 }

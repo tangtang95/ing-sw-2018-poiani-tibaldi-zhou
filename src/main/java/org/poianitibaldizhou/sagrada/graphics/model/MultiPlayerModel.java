@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.*;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.TimeoutListener;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;

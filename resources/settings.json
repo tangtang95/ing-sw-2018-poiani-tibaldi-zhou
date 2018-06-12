@@ -1,6 +1,6 @@
 {
-  "lobbyTimeout": 7000,
-  "playerTimeout": 300000,
+  "lobbyTimeout": 2000,
+  "playerTimeout": 30000,
   "socketPort": 9090,
   "rmiPort" : 1099,
   "hearBeatMillis": 1000,

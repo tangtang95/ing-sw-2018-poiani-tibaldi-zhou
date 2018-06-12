@@ -1,12 +1,9 @@
 package org.poianitibaldizhou.sagrada.lobby.model;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyFakeObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.ILobbyFakeObserver;
 
-import java.io.IOException;
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

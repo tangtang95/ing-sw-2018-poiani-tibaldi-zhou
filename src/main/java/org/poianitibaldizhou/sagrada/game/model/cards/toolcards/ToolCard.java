@@ -10,8 +10,8 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.FileReader;
@@ -93,7 +93,6 @@ public class ToolCard extends Card implements JSONable{
     }
 
     public Node<ICommand> getCommands() {
-        // TODO deep copy (the best option)
         return commands;
     }
 

@@ -4,9 +4,7 @@ import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyFakeObserver;
-import org.poianitibaldizhou.sagrada.lobby.model.Lobby;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.ILobbyFakeObserver;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDrawableCollectionObserver;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

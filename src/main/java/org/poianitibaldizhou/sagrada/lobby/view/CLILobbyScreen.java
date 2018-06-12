@@ -5,7 +5,7 @@ import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.game.view.CLIMultiPlayerScreen;
 import org.poianitibaldizhou.sagrada.game.view.CLISetupGameScreen;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;

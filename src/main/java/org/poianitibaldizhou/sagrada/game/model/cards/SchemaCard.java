@@ -11,12 +11,15 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.*;
 
+/**
+ * OVERVIEW: Represents a schema card of Sagrada
+ */
 public class SchemaCard implements JSONable {
     private final String name;
     private final int difficulty;
@@ -136,7 +139,7 @@ public class SchemaCard implements JSONable {
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
-    private boolean isDicePositionable(Dice dice, Position position, PlacementRestrictionType restriction,
+    public boolean isDicePositionable(Dice dice, Position position, PlacementRestrictionType restriction,
                                       DiceRestrictionType diceRestriction) {
         if (isEmpty()) {
             return isBorderPosition(position) &&
@@ -173,7 +176,7 @@ public class SchemaCard implements JSONable {
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
-    private boolean isDicePositionable(Dice dice, Position position) {
+    public boolean isDicePositionable(Dice dice, Position position) {
         return isDicePositionable(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 

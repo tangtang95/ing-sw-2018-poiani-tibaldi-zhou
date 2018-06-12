@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IDraftPoolObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 

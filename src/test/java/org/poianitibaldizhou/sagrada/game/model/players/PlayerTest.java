@@ -16,9 +16,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.PlayerFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.SchemaCardFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IPlayerFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.PlayerFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.SchemaCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;

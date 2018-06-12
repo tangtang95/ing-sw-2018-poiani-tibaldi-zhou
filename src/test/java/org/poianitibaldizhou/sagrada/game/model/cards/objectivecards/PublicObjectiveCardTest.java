@@ -14,10 +14,9 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class PublicObjectiveCardTest {
     @DataPoint
@@ -65,6 +64,13 @@ public class PublicObjectiveCardTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Test(expected = Exception.class)
+    public void testConstructorFail() throws Exception{
+        List<IConstraint> constraints = new ArrayList<>();
+        constraints.add(new NumberConstraint(4));
+        PublicObjectiveCard publicObjectiveCard = new SetPublicObjectiveCard("name", "descr", 4, constraints, ObjectiveCardType.COLOR);
     }
 
     /**
@@ -115,5 +121,15 @@ public class PublicObjectiveCardTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testHashCode() {
+        PublicObjectiveCard publicObjectiveCard1 = new RowPublicObjectiveCard("name", "descr", 2, ObjectiveCardType.COLOR);
+        PublicObjectiveCard publicObjectiveCard2 = new ColumnPublicObjectiveCard("name", "descr", 2, ObjectiveCardType.NUMBER);
+        PublicObjectiveCard publicObjectiveCard3 = new RowPublicObjectiveCard("name", "descr", 2, ObjectiveCardType.COLOR);
+
+        assertNotEquals(publicObjectiveCard1.hashCode(),publicObjectiveCard2.hashCode());
+        assertEquals(publicObjectiveCard1.hashCode(), publicObjectiveCard3.hashCode());
     }
 }

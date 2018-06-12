@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;

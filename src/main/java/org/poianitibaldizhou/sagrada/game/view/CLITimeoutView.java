@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
-import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ITimeOutObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 
 import java.io.IOException;

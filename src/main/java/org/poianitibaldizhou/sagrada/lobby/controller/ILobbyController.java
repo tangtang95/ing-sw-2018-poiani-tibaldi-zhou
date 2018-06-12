@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
-import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.IView;
 
 import java.io.IOException;

@@ -59,17 +59,6 @@ public class ToolCardLanguageParser {
     }
 
     /**
-     * Preprocesses the string, dividing sentences separeted with ";".
-     *
-     * @param text string that needs to be preprocessed
-     * @return a list of string contained in text separeted by ";"
-     */
-    @Deprecated
-    private ArrayList<String> preprocessing(String text){
-        return new ArrayList<>(Arrays.asList(text.split(";")));
-    }
-
-    /**
      * Sets the grammar of the language
      */
     private static void setGrammar(){

@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 /**

@@ -10,16 +10,14 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobservers.ToolCardFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.ToolCardFakeObserver;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.verify;
 
 public class ToolCardTest {
@@ -187,5 +185,22 @@ public class ToolCardTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testToObjectException () throws Exception{
+        String message = "{\"name\":\"Martelletto\",\"token\":\"aaa\"}";
+        JSONParser jsonParser = new JSONParser();
+
+        assertNull(ToolCard.toObject((JSONObject) jsonParser.parse(message)));
+    }
+
+    @Test
+    public void testNewInstance() {
+        assertEquals(toolCard, ToolCard.newInstance(toolCard));
+
+        ToolCard tempToolCard = new ToolCard(Color.GREEN, "name", "descr", "[1-CA]");
+
+        assertNotEquals(toolCard, tempToolCard);
     }
 }
