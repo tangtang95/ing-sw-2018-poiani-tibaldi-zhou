@@ -50,6 +50,13 @@ public class LobbyTest {
         observers.add(lobbyObserver6);
     }
 
+    @Test
+    public void testGetName() {
+        String lobbyName = "lobbyName";
+        Lobby tempLobby = new Lobby(lobbyName);
+        assertEquals(lobbyName, tempLobby.getName());
+    }
+
     /**
      * Tests the call on the fake observers when an user join the lobby
      */

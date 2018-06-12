@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardFakeObserver;
@@ -21,6 +22,7 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.util.*;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -111,6 +113,24 @@ public class ChooseColorWrapperFromRoundTrackTest {
             ICommand command = new ChooseColorFromRoundTrack();
             assertEquals(new ChooseColorFromRoundTrack(), command);
             assertNotEquals(new Object(), command);
+        }
+
+        @Test
+        public void testEmptyRoundTrack() throws Exception {
+            ICommand command = new ChooseColorFromRoundTrack();
+            ToolCardExecutor toolCardExecutor = mock(ToolCardExecutor.class);
+            Player player = mock(MultiPlayer.class);
+            TurnState turnState = mock(TurnState.class);
+            RoundTrack roundTrack = new RoundTrack();
+            when(toolCardExecutor.getTemporaryRoundTrack()).thenReturn(roundTrack);
+
+            assertEquals(CommandFlow.EMPTY_ROUNDTRACK, command.executeCommand(player, toolCardExecutor, turnState));
+        }
+
+        @Test
+        public void testHashCode() {
+            assertEquals(new ChooseColorFromRoundTrack().hashCode(), new ChooseColorFromRoundTrack().hashCode());
+            assertNotEquals(new ChooseColorFromRoundTrack().hashCode(), new AddDiceToDiceBag().hashCode());
         }
     }
 }

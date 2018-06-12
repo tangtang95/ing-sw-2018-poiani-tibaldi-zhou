@@ -64,4 +64,10 @@ public class AddDiceToDiceBagTest {
         assertNotEquals(new Object(), command);
     }
 
+    @Test
+    public void hashCodeTest() {
+        assertEquals(new AddDiceToDiceBag().hashCode(), new AddDiceToDiceBag().hashCode());
+        assertNotEquals(new AddDiceToDiceBag().hashCode(), new AddDiceToDraftPool().hashCode());
+    }
+
 }

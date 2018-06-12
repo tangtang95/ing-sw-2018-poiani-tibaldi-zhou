@@ -10,9 +10,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Immutable
-public class User implements Serializable, JSONable {
+public class User implements JSONable {
     private String name;
-    private transient String token;
+    private String token;
 
     /**
      * User param for network protocol.
@@ -31,16 +31,6 @@ public class User implements Serializable, JSONable {
         this.token = token;
     }
 
-    /**
-     * Constructor.
-     * Creates a new User with a certain name and token.
-     *
-     * @param name User's name
-     */
-    public User(String name) {
-        this.name = name;
-    }
-
     @Contract(pure = true)
     public String getToken() {
         return token;
@@ -56,7 +46,7 @@ public class User implements Serializable, JSONable {
         if(!(object instanceof User))
             return false;
         User u = (User)object;
-        return u.getName().equals(this.name);
+        return u.getName().equals(this.name) && u.getToken().equals(this.getToken());
     }
 
     @Override
@@ -92,7 +82,6 @@ public class User implements Serializable, JSONable {
      * @return a User object.
      */
     public static User toObject(JSONObject jsonObject) {
-        return new User(jsonObject.get(JSON_USER_NAME).toString());
+        return new User(jsonObject.get(JSON_USER_NAME).toString(), String.valueOf(jsonObject.get(JSON_USER_NAME).toString().hashCode()));
     }
-
 }

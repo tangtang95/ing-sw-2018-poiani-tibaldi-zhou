@@ -115,8 +115,6 @@ public class LobbyManager {
             createLobby();
         if (lobby.getUserList().contains(user))
             throw new IllegalArgumentException("User has already joined the lobby.");
-        if (lobby.isGameStarted())
-            createLobby();
         if (!users.contains(user))
             throw new IllegalArgumentException("Need to login");
 
@@ -138,8 +136,6 @@ public class LobbyManager {
     public synchronized void userLeaveLobby(User user) {
         if (lobby == null || !lobby.getUserList().contains(user))
             throw new IllegalArgumentException("Can't leave because user is not in the lobby");
-        if (lobby.isGameStarted())
-            throw new IllegalStateException("The lobby is started");
         lobby.leave(user);
         lobbyObserverManager.removeToken(user.getToken());
         lobby.detachObserver(user.getToken());
@@ -161,8 +157,6 @@ public class LobbyManager {
     public synchronized void userDisconnects(String token) {
         if (lobby == null || !lobby.getUserList().contains(getUserByToken(token)))
             throw new IllegalArgumentException("Can't leave because user is not in the lobby");
-        if (lobby.isGameStarted())
-            throw new IllegalStateException("The lobby is started");
         lobby.detachObserver(token);
         lobby.leave(getUserByToken(token));
         logout(token);
@@ -197,25 +191,17 @@ public class LobbyManager {
      * If the user is in a lobby, it leaves.
      *
      * @param token user's token
-     * @throws IllegalArgumentException if no user with token exists
      */
     private synchronized void logout(String token) {
-        User user = this.getUserByToken(token);
-
-        if (lobby != null && lobby.getUserList().contains(user))
-            this.userLeaveLobby(user);
         for (User u : users) {
             if (u.getToken().equals(token)) {
                 users.remove(u);
                 return;
             }
         }
-
-        throw new IllegalArgumentException("No user with this token exists. Impossible to logout");
     }
 
     /**
-     *
      * @return list of the user in the lobby
      */
     public List<User> getLobbyUsers() {
@@ -225,7 +211,6 @@ public class LobbyManager {
     }
 
     /**
-     *
      * @return list of the player that have logged in
      */
     public List<User> getLoggedUser() {
@@ -239,14 +224,14 @@ public class LobbyManager {
      * @return true if there a lobby active, false otherwise.
      */
     public boolean isLobbyActive() {
-        return !(lobby == null);
+        return lobby != null;
     }
 
     /**
      * Handles timeout. When timeout is signaled, if the number of players in the lobby
      * are greater or equal then 2, the game starts, otherwise timeout gets restarted.
      */
-    public synchronized void handleTimeout() {
+    private synchronized void handleTimeout() {
         if (lobby != null && lobby.getUserList().size() >= 2) {
             createGame();
             createLobby();
@@ -256,7 +241,6 @@ public class LobbyManager {
     }
 
     /**
-     *
      * @return lobby observer manager for the lobby
      */
     public LobbyObserverManager getLobbyObserverManager() {

@@ -7,7 +7,10 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ColumnPublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
@@ -18,10 +21,7 @@ import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -163,4 +163,44 @@ public class SinglePlayerGameTest {
 
         verify(gameFakeObserver, times(1)).onChoosePrivateObjectiveCards(privateObjectiveCards);
     }
+
+    @Test
+    public void testSelectPrivateObjectiveCard() {
+        SinglePlayer singlePlayer = new SinglePlayer(user, new ExpendableDice(singlePlayerGame), schemaCard, privateObjectiveCards);
+        singlePlayer.setPrivateObjectiveCard(privateObjectiveCards.get(0));
+        singlePlayerGame.addNewPlayer(user, schemaCard, privateObjectiveCards);
+        singlePlayerGame.selectPrivateObjectiveCard(singlePlayer, privateObjectiveCards.get(0));
+
+        assertEquals(singlePlayer.getPrivateObjectiveCard(), singlePlayerGame.getPlayers().get(0).getPrivateObjectiveCard());
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetIndexOfPlayerException() {
+        singlePlayerGame.getNextPlayer(new SinglePlayer(user, new ExpendableDice(singlePlayerGame), schemaCard, privateObjectiveCards),
+                Direction.COUNTER_CLOCKWISE);
+    }
+
+    @Test
+    public void testAddPublicObjectiveCard() {
+        PublicObjectiveCard publicObjectiveCard = new ColumnPublicObjectiveCard("name", "descr", 2, ObjectiveCardType.NUMBER);
+        singlePlayerGame.addPublicObjectiveCard(publicObjectiveCard);
+        assertEquals(Collections.singletonList(publicObjectiveCard), singlePlayerGame.getPublicObjectiveCards());
+    }
+
+    @Test(expected = Exception.class)
+    public void testUserChoosePrivateObjectiveCardException() throws Exception {
+        PrivateObjectiveCard privateObjectiveCard = mock(PrivateObjectiveCard.class);
+        singlePlayerGame.userChoosePrivateObjectiveCard("notExistingToken", privateObjectiveCard);
+    }
+
+    @Test
+    public void testUserChoosePrivateObjectiveCard() throws Exception {
+        PrivateObjectiveCard privateObjectiveCard = new PrivateObjectiveCard("name", "descr", Color.BLUE);
+        SinglePlayer singlePlayer = new SinglePlayer(user, new ExpendableDice(singlePlayerGame), schemaCard, privateObjectiveCards);
+        singlePlayerGame.addNewPlayer(user, schemaCard, privateObjectiveCards);
+        singlePlayerGame.setState(stateGame);
+        singlePlayerGame.userChoosePrivateObjectiveCard(user.getToken(), privateObjectiveCard);
+        verify(stateGame, times(1)).choosePrivateObjectiveCard(singlePlayer, privateObjectiveCard);
+    }
+
 }

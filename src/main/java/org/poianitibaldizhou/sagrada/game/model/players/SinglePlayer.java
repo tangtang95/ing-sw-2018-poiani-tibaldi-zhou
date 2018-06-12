@@ -45,6 +45,10 @@ public class SinglePlayer extends Player {
         return new SinglePlayer(player);
     }
 
+    /**
+     *
+     * @return null
+     */
     @Override
     public JSONObject toJSON() {
         return null;

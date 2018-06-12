@@ -183,6 +183,7 @@ public class PlayerTest {
 
         //Different class
         assertFalse(player.equals(p));
+        assertFalse(player.equals(1));
 
         //Equals
         p = new MultiPlayer(user, favorToken, schemaCard, privateObjectiveCardList);

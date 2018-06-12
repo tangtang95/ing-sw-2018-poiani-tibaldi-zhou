@@ -74,4 +74,9 @@ public class MultiPlayerTest {
         Player p = MultiPlayer.newInstance(new SinglePlayer(user, new ExpendableDice(mock(Game.class)),
                 schemaCard, privateObjectiveCardList));
     }
+
+    @Test
+    public void testToJSON() {
+        assertNull(player.toJSON());
+    }
 }

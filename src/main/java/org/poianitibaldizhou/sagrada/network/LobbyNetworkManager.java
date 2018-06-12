@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class LobbyNetworkManager {
 
-    private final transient Map<String, IView> viewMap = new HashMap<>();
+    private final Map<String, IView> viewMap = new HashMap<>();
     private final LobbyManager lobbyManager;
 
     /**

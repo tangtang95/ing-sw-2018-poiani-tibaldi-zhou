@@ -77,4 +77,10 @@ public class ChooseDiceTest {
         assertNotEquals(new Object(), command);
     }
 
+    @Test
+    public void testHashCode() {
+        assertEquals(new ChooseDice().hashCode(), new ChooseDice().hashCode());
+        assertNotEquals(new ChooseDice().hashCode(), new AddDiceToDiceBag().hashCode());
+    }
+
 }

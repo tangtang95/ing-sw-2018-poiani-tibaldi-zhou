@@ -171,4 +171,11 @@ public class RemoveDiceTest {
             }
         }
     }
+
+    @Test
+    public void testHashCode() {
+        assertEquals(new RemoveDice(PlacementRestrictionType.COLOR).hashCode(), new RemoveDice(PlacementRestrictionType.COLOR).hashCode());
+        assertNotEquals(new RemoveDice(PlacementRestrictionType.COLOR).hashCode(), new RemoveDice(PlacementRestrictionType.NUMBER_COLOR).hashCode());
+        assertNotEquals(new RemoveDice(PlacementRestrictionType.COLOR).hashCode(), new RemoveDice(PlacementRestrictionType.NUMBER).hashCode());
+    }
 }

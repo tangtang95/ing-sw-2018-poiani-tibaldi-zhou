@@ -68,6 +68,7 @@ public class PayDiceTest {
         assertEquals(CommandFlow.REPEAT, command.executeCommand(invokerPlayer, executor, stateGame));
     }
 
+
     @Test
     public void executeCommandTestFailNoDiceInDraftPool() throws Exception{
         when(executor.getTemporaryDraftPool()).thenReturn(draftPool);

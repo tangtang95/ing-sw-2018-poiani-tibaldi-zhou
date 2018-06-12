@@ -81,4 +81,13 @@ public class SkipTurnTest {
             }
         }
     }
+
+    @Test
+    public void testHashCode() {
+        assertEquals(new SkipTurn(1).hashCode(), new SkipTurn(1).hashCode());
+        assertEquals(new SkipTurn(2).hashCode(), new SkipTurn(2).hashCode());
+        assertNotEquals(new SkipTurn(1).hashCode(), new SkipTurn(2).hashCode());
+        assertNotEquals(new SkipTurn(1).hashCode(), new AddDiceToDiceBag().hashCode());
+
+    }
 }

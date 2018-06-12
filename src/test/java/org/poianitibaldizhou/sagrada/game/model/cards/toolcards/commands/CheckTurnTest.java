@@ -54,6 +54,23 @@ public class CheckTurnTest {
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
     }
 
+    @Test(expected = Exception.class)
+    public void testConstructorException() {
+        new CheckTurn(-1);
+    }
+
+    @Test(expected = Exception.class)
+    public void testConstructorException2() {
+        new CheckTurn(3);
+    }
+
+    @Test
+    public void testHashCode() {
+        assertEquals(new CheckTurn(1).hashCode(), new CheckTurn(1).hashCode());
+        assertNotEquals(new CheckTurn(1).hashCode(), new CheckTurn(2).hashCode());
+        assertEquals(new CheckTurn(1), new AddDiceToDiceBag());
+    }
+
     @Test
     public void equals() throws Exception {
         command = new CheckTurn(1);
@@ -63,6 +80,7 @@ public class CheckTurnTest {
         assertEquals(new CheckTurn(2), command);
         assertNotEquals(new CheckTurn(1), command);
         assertNotEquals(new Object(), command);
+        assertNotEquals(command, new AddDiceToDiceBag());
     }
 
 }

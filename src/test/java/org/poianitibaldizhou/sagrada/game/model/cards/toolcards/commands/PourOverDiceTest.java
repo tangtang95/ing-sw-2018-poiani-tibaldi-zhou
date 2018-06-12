@@ -59,4 +59,10 @@ public class PourOverDiceTest {
         assert(command.equals(new PourOverDice()));
         assertNotEquals(command, new AddDiceToDiceBagTest());
     }
+
+    @Test
+    public void hashCodeTest() {
+        assertEquals(new PourOverDice().hashCode(), new PourOverDice().hashCode());
+        assertNotEquals(new PourOverDice().hashCode(), new RerollDice().hashCode());
+    }
 }

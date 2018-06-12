@@ -56,4 +56,10 @@ public class RerollDiceTest {
         assertEquals(command, new RerollDice());
         assertNotEquals(command, new AddDiceToDiceBag());
     }
+
+    @Test
+    public void hashCodeTest() {
+        assertEquals(new RerollDice().hashCode(), new RerollDice().hashCode());
+        assertNotEquals(new RerollDice().hashCode(), new AddDiceToDiceBag().hashCode());
+    }
 }

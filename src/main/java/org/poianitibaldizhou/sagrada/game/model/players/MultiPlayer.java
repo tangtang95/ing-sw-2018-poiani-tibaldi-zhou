@@ -44,6 +44,11 @@ public class MultiPlayer extends Player {
         return new MultiPlayer(player);
     }
 
+
+    /**
+     *
+     * @return null
+     */
     @Override
     public JSONObject toJSON() {
         return null;

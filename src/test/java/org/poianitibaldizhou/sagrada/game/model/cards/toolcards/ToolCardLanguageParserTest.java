@@ -54,7 +54,6 @@ public class ToolCardLanguageParserTest {
         commands.addAtIndex(new CheckTurn(2), 32768);
         commands.addAtIndex(new CheckTurn(1), 65536);
         commands.addAtIndex(new CheckBeforeDiceChosen(), 131072);
-        commands.addAtIndex(new CheckTurnEnd(),262144);
         commands.addAtIndex(new SkipTurn(2), 524288);
         commands.addAtIndex(new SkipTurn(1), 1048576);
         commands.addAtIndex(new PourOverDice(),2097152);
@@ -66,8 +65,8 @@ public class ToolCardLanguageParserTest {
                 " constraints][256-Place old dice ignoring color constraints][512-Place isolated old dice]" +
                 "[1024-Add dice to DraftPool][2048-Add dice to Dicebag][4096-Draw dice from Dicebag]" +
                 "[8192-Modify dice value][16384-Reroll DraftPool][32768-Check second turn][65536-Check first turn]" +
-                "[131072-Check before choose dice][262144-Check turn over][524288-Skip second turn][1048576-Skip first turn]" +
-                "[2097152-Pour over dice][4194304-Choose color from RoundTrack]");
+                "[131072-Check before choose dice][262144-Skip second turn][524288-Skip first turn]" +
+                "[1048576-Pour over dice][2097152-Choose color from RoundTrack]");
 
 
         try {

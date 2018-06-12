@@ -93,7 +93,6 @@ public class ToolCardLanguageParser {
         grammar.put("Check second turn", new CheckTurn(2));
         grammar.put("Check first turn", new CheckTurn(1));
         grammar.put("Check before choose dice", new CheckBeforeDiceChosen());
-        grammar.put("Check turn over", new CheckTurnEnd());
         grammar.put("Skip second turn", new SkipTurn(2));
         grammar.put("Skip first turn", new SkipTurn(1));
         grammar.put("Pour over dice", new PourOverDice());

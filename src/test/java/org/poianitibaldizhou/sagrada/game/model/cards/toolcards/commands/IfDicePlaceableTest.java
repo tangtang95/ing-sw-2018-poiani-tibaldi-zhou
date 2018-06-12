@@ -67,4 +67,10 @@ public class IfDicePlaceableTest {
         assertNotEquals(new Object(), command);
     }
 
+    @Test
+    public void testHashCode() {
+        assertEquals(new IfDicePlaceable().hashCode(), command.hashCode());
+        assertNotEquals(command.hashCode(), new AddDiceToDiceBag().hashCode());
+    }
+
 }

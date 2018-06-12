@@ -57,4 +57,10 @@ public class CheckBeforeDiceChosenTest {
         assertNotEquals(new Object(), command);
     }
 
+    @Test
+    public void testHashCode() {
+        assertEquals(new CheckBeforeDiceChosen().hashCode(), new CheckBeforeDiceChosen().hashCode());
+        assertNotEquals(new CheckBeforeDiceChosen().hashCode(), new AddDiceToDiceBag().hashCode());
+    }
+
 }

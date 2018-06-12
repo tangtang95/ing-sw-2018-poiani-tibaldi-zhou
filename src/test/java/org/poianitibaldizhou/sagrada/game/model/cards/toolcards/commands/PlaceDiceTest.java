@@ -91,8 +91,21 @@ public class PlaceDiceTest {
         verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position,
                 PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPositionForRemoving(schemaCard);
+            verify(obs, times(1)).notifyNeedPositionForPlacement(schemaCard,dice);
         }
+    }
+
+    @Test
+    public void executeCommandNewPlacemant() throws Exception {
+        command = new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER_COLOR, true);
+        when(schemaCard.isDicePositionable(dice, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL)).thenReturn(true);
+        assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
+        verify(executor.getTemporarySchemaCard(), times(1)).setDice(dice, position,
+                PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
+        for (IToolCardExecutorFakeObserver obs : observerList) {
+            verify(obs, times(1)).notifyNeedPositionForPlacement(schemaCard,dice);
+        }
+        verify(stateGame, times(1)).addActionUsed(new PlaceDiceAction());
     }
 
     @Test
@@ -103,7 +116,7 @@ public class PlaceDiceTest {
                 PlacementRestrictionType.NUMBER, DiceRestrictionType.NORMAL);
         assertEquals(CommandFlow.REPEAT, command.executeCommand(invokerPlayer, executor, stateGame));
         for (IToolCardExecutorFakeObserver obs : observerList) {
-            verify(obs, times(1)).notifyNeedPositionForRemoving(schemaCard);
+            verify(obs, times(1)).notifyNeedPositionForPlacement(schemaCard, dice);
         }
     }
 
@@ -121,6 +134,23 @@ public class PlaceDiceTest {
         assertNotEquals(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER, false), command);
         assertNotEquals(new PlaceDice(DiceRestrictionType.ISOLATED, PlacementRestrictionType.NONE, false), command);
         assertNotEquals(new Object(), command);
+        assertNotEquals(command, new AddDiceToDiceBag());
+    }
+
+    @Test
+    public void testHashCode() {
+        assertEquals(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NONE, true).hashCode(),
+                new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NONE, true).hashCode());
+
+        assertNotEquals(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NONE, true).hashCode(),
+                new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NONE, false).hashCode());
+
+        assertNotEquals(new PlaceDice(DiceRestrictionType.ISOLATED, PlacementRestrictionType.NONE, true).hashCode(),
+                new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NONE, true).hashCode());
+
+        assertNotEquals(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NONE, true).hashCode(),
+                new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.COLOR, true).hashCode());
+
     }
 
 }

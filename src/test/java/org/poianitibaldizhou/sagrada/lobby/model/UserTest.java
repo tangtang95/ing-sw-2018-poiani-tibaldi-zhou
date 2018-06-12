@@ -22,7 +22,7 @@ public class UserTest {
 
     @Before
     public void setUp() throws Exception {
-        user = new User("test", "123456789");
+        user = new User("test", String.valueOf("test".hashCode()));
     }
 
     @Test
@@ -34,5 +34,31 @@ public class UserTest {
         } catch (ParseException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void equalsTest() {
+        User user = new User("name", String.valueOf("name".hashCode()));
+
+        assertFalse(user.equals(null));
+        assertEquals(user, new User("name", String.valueOf("name".hashCode())));
+        assertNotEquals(user, new User("name", "name"));
+        assertNotEquals(user, new User("notEqualsName", String.valueOf("name".hashCode())));
+    }
+
+    @Test
+    public void testHashCode() {
+        User user = new User("name", String.valueOf("name".hashCode()));
+
+        assertEquals(user.hashCode(), new User("name", String.valueOf("name".hashCode())).hashCode());
+        assertNotEquals(user.hashCode(), new User("name", "name").hashCode());
+        assertNotEquals(user.hashCode(), new User("notEqualsName", String.valueOf("name".hashCode())).hashCode());
+    }
+
+    @Test
+    public void testToString() {
+        String message = "Username: username ;token";
+
+        assertEquals(message, new User("username", "token").toString());
     }
 }

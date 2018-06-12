@@ -13,9 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -43,6 +41,36 @@ public class LobbyManagerTest {
         observers.add(lobbyObserver4);
         observers.add(lobbyObserver5);
         observers.add(lobbyObserver6);
+    }
+
+    @Test
+    public void testGetLobbyNetworkManager() {
+        assertNotNull(lobbyManager.getLobbyNetworkManager());
+    }
+
+    @Test
+    public void testGetLobby(){
+        String token1 = lobbyManager.login("u1");
+        String token2 = lobbyManager.login("u2");
+
+        Lobby lobbyExpected = new Lobby("randomName");
+        lobbyExpected.join(new User("u1", token1));
+        lobbyExpected.join(new User("u2", token2));
+
+        lobbyManager.userJoinLobby(lobbyObserver1, new User("u1", token1));
+        lobbyManager.userJoinLobby(lobbyObserver2, new User("u2", token2));
+
+        Lobby lobbyInManager = lobbyManager.getLobby();
+
+        assertEquals(lobbyExpected.getUserList(), lobbyInManager.getUserList());
+    }
+
+    @Test
+    public void testLobbyObserverManager() {
+        assertNull(lobbyManager.getLobbyObserverManager());
+        String token = lobbyManager.login("username");
+        lobbyManager.userJoinLobby(lobbyObserver1, new User("username", token));
+        assertTrue(lobbyManager.getLobbyObserverManager().getDisconnectedUserNotNotified().isEmpty());
     }
 
     @After

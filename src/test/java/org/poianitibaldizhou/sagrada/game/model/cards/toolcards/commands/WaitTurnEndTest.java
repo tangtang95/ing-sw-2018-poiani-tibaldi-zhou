@@ -56,4 +56,10 @@ public class WaitTurnEndTest {
         assertEquals(command, new WaitTurnEnd());
         assertNotEquals(command, new RemoveDiceFromDraftPool());
     }
+
+    @Test
+    public void hashCodeTest() {
+        assertEquals(command.hashCode(), new WaitTurnEnd().hashCode());
+        assertNotEquals(command.hashCode(), new AddDiceToDraftPool().hashCode());
+    }
 }

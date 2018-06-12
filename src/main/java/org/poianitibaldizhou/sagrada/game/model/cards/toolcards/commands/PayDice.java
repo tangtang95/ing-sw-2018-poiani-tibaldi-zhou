@@ -26,8 +26,6 @@ public class PayDice implements ICommand {
         toolCardExecutor.getObservers().forEach(obs -> {obs.notifyNeedDice(diceList);});
 
         Dice dice = toolCardExecutor.getNeededDice();
-        if(!toolCardExecutor.getTemporaryDraftPool().getDices().contains(dice))
-            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
         if(dice.getColor() != color)
             return CommandFlow.REPEAT;
         try {

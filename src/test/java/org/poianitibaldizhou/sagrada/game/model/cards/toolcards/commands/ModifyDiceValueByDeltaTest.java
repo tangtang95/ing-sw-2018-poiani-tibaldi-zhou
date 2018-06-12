@@ -116,5 +116,12 @@ public class ModifyDiceValueByDeltaTest {
             assertNotEquals(new ModifyDiceValueByDelta(2), command);
             assertNotEquals(command, null);
         }
+
+        @Test
+        public void testHashCode() {
+            assertEquals(new ModifyDiceValueByDelta(4).hashCode(), new ModifyDiceValueByDelta(4).hashCode());
+            assertNotEquals(new ModifyDiceValueByDelta(2).hashCode(), new ModifyDiceValueByDelta(4).hashCode());
+            assertEquals(new ModifyDiceValueByDelta(4).hashCode(), new ModifyDiceValue().hashCode());
+        }
     }
 }

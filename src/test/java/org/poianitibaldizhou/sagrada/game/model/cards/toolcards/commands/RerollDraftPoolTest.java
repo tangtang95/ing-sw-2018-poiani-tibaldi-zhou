@@ -59,4 +59,10 @@ public class RerollDraftPoolTest {
         assertEquals(command, new RerollDraftPool());
         assertNotEquals(command, new SkipTurn(1));
     }
+
+    @Test
+    public void hashCodeTest() {
+        assertEquals(new RerollDraftPool().hashCode(), new RerollDraftPool().hashCode());
+        assertNotEquals(new RerollDraftPool().hashCode(), new RerollDice().hashCode());
+    }
 }

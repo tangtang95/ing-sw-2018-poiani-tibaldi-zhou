@@ -102,8 +102,21 @@ public class SwapDiceWithRoundTrackTest {
     }
 
     @Test
+    public void executeCommandEmptyRoundTrack() throws Exception {
+        RoundTrack roundTrack = new RoundTrack();
+        when(executor.getTemporaryRoundTrack()).thenReturn(roundTrack);
+        assertEquals(CommandFlow.EMPTY_ROUNDTRACK, command.executeCommand(player, executor, stateGame));
+    }
+
+    @Test
     public void testEquals() {
         assertEquals(command, new SwapDiceWithRoundTrack());
         assertNotEquals(command, new RerollDice());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        assertEquals(command.hashCode(), new SwapDiceWithRoundTrack().hashCode());
+        assertNotEquals(command.hashCode(), new AddDiceToDraftPool().hashCode());
     }
 }

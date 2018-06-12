@@ -41,8 +41,10 @@ public class ClearCommandsTest {
         command = new ClearAll();
         assertEquals(command, new ClearAll());
         assertNotEquals(command, new AddDiceToDiceBagTest());
+        assertEquals(command.hashCode(), new ClearAll().hashCode());
+        assertNotEquals(command.hashCode(), new ClearDice().hashCode());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
-        ;
+
         verify(executor, times(1)).setTurnEnded(false);
         verify(executor, times(1)).setNeededPosition(null);
         verify(executor, times(1)).setNeededDice(null);
@@ -56,8 +58,11 @@ public class ClearCommandsTest {
         assertEquals(command, new ClearColor());
         assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
-        ;
+
         verify(executor, times(1)).setNeededColor(null);
+
+        assertEquals(command.hashCode(), new ClearColor().hashCode());
+        assertNotEquals(command.hashCode(), new ClearDice().hashCode());
     }
 
     @Test
@@ -66,8 +71,11 @@ public class ClearCommandsTest {
         assertEquals(command, new ClearValue());
         assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
-        ;
+
         verify(executor, times(1)).setNeededValue(null);
+
+        assertEquals(command.hashCode(), new ClearValue().hashCode());
+        assertNotEquals(command.hashCode(), new ClearDice().hashCode());
     }
 
     @Test
@@ -77,15 +85,23 @@ public class ClearCommandsTest {
         assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
         verify(executor, times(1)).setNeededPosition(null);
+        assertEquals(command.hashCode(), new ClearPosition().hashCode());
+        assertNotEquals(command.hashCode(), new ClearDice().hashCode());
     }
 
     @Test
-    public void clearTurnEndCondition() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void clearTurnEndCondition() throws Exception {
         command = new ClearTurnEndCondition();
         assertEquals(command, new ClearTurnEndCondition());
         assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
         verify(executor, times(1)).setTurnEnded(false);
+        assertEquals(command.hashCode(), new ClearTurnEndCondition().hashCode());
+        assertNotEquals(command.hashCode(), new ClearDice().hashCode());
+
+        assertEquals(command.hashCode(), new ClearTurnEndCondition().hashCode());
+        assertNotEquals(command.hashCode(), new ClearDice().hashCode());
+
     }
 
     @Test
@@ -95,6 +111,8 @@ public class ClearCommandsTest {
         assertNotEquals(command, new AddDiceToDiceBagTest());
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor, stateGame));
         verify(executor, times(1)).setNeededDice(null);
+        assertEquals(command.hashCode(), new ClearDice().hashCode());
+        assertNotEquals(command.hashCode(), new ClearAll().hashCode());
 
     }
 }
