@@ -1,12 +1,9 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCardObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -24,7 +21,7 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
     private transient SchemaCardView schemaCardView;
     private transient UserWrapper user;
 
-    protected SchemaCardListener(SchemaCardView schemaCardView, MultiPlayerController controller,
+    public SchemaCardListener(SchemaCardView schemaCardView, GameController controller,
                                  Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.user = userWrapper;

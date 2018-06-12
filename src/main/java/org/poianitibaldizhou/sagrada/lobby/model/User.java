@@ -33,7 +33,7 @@ public class User implements Serializable, JSONable {
 
     /**
      * Constructor.
-     * Creates a new User with a certain name and token.
+     * Creates a new User with a certain name.
      *
      * @param name User's name
      */

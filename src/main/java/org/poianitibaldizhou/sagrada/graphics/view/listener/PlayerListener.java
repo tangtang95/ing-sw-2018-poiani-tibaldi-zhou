@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.PlayerView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -19,7 +19,7 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
     private final transient PlayerView playerView;
     private final transient UserWrapper user;
 
-    public PlayerListener(PlayerView playerView, MultiPlayerController controller, Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
+    public PlayerListener(PlayerView playerView, GameController controller, Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.playerView = playerView;
         this.user = userWrapper;

@@ -6,7 +6,6 @@ import com.jfoenix.validation.NumberValidator;
 import com.jfoenix.validation.RequiredFieldValidator;
 import com.jfoenix.validation.base.ValidatorBase;
 import javafx.animation.FadeTransition;
-import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,18 +14,17 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import org.poianitibaldizhou.sagrada.exception.NetworkException;
 import org.poianitibaldizhou.sagrada.graphics.model.ConnectionModel;
-import org.poianitibaldizhou.sagrada.graphics.utils.IPAddressValidator;
-import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
-import org.poianitibaldizhou.sagrada.graphics.utils.UsernameValidator;
+import org.poianitibaldizhou.sagrada.graphics.utils.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 
@@ -64,6 +62,8 @@ public class StartMenuController extends Controller implements Initializable {
     public JFXTextField usernameTextField;
 
     //SinglePlayerPane
+    @FXML
+    public JFXTextField singlePlayerUsernameTextField;
     @FXML
     public JFXRadioButton radioButtonVeryEasy;
     @FXML
@@ -145,7 +145,20 @@ public class StartMenuController extends Controller implements Initializable {
     }
 
     private void initializeSinglePlayerView(){
+        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
+        requiredValidator.setMessage("Obbligatorio");
+
+        ValidatorBase usernameValidator = new UsernameValidator();
+        usernameValidator.setMessage("Solo caratteri alfanumerici");
+
+        singlePlayerUsernameTextField.setValidators(requiredValidator, usernameValidator);
+
         difficultyToggleGroup = new ToggleGroup();
+        radioButtonVeryEasy.setUserData(Difficulty.VERY_EASY);
+        radioButtonEasy.setUserData(Difficulty.EASY);
+        radioButtonMedium.setUserData(Difficulty.MEDIUM);
+        radioButtonHard.setUserData(Difficulty.HARD);
+        radioButtonHell.setUserData(Difficulty.HELL);
         radioButtonVeryEasy.setToggleGroup(difficultyToggleGroup);
         radioButtonEasy.setToggleGroup(difficultyToggleGroup);
         radioButtonMedium.setToggleGroup(difficultyToggleGroup);
@@ -225,13 +238,14 @@ public class StartMenuController extends Controller implements Initializable {
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
-                controller.setConnectionManager(usernameTextField.getText(), connectionManager);
+                controller.initLobbyModel(usernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 e.printStackTrace();
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
-            }
-            finally {
+            } catch (NetworkException e) {
+                AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
+            } finally {
                 onMultiPlayerCloseButton(actionEvent);
             }
         }
@@ -245,7 +259,30 @@ public class StartMenuController extends Controller implements Initializable {
 
     @FXML
     public void onSinglePlayerPlayButton(ActionEvent actionEvent) {
+        if(difficultyToggleGroup.getSelectedToggle() == null)
+            return;
+        if(singlePlayerUsernameTextField.validate()) {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
+            try {
+                Pane root = loader.load();
+                GameController controller = loader.getController();
+                controller.setStage(stage);
+                controller.setSceneManager(sceneManager);
+                ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
+                        connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                Difficulty difficulty = (Difficulty) difficultyToggleGroup.getSelectedToggle().getUserData();
+                controller.initSinglePlayerGame(singlePlayerUsernameTextField.getText(), difficulty, connectionManager);
+                playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+            } catch (NetworkException e) {
+                AlertBox.displayBox("Errore di connessione", "Non è possibile collegarsi al server");
+            } finally {
+                onMultiPlayerCloseButton(actionEvent);
+            }
+        }
     }
 
     @FXML

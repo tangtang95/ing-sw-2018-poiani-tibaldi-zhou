@@ -8,8 +8,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IRoundTrackObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
@@ -34,7 +35,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
     private static final double ROUND_TRACK_SHOW_SCALE = 1;
     private static final double DICE_SCALE = 0.3;
 
-    public RoundTrackListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public RoundTrackListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         copyRoundTrackViews = new ArrayList<>();
         diceViews = new ArrayList<>();
@@ -44,8 +45,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
 
         DropShadow dropShadow = new DropShadow(4, 4, 4, Color.GRAY);
         roundTrackView = new RoundTrackView(ROUND_TRACK_SCALE);
-        roundTrackView.translateXProperty().bind(getPivotX(getCenterX(), roundTrackView.widthProperty(), 0.5));
-        roundTrackView.translateYProperty().bind(getPivotY(getCenterY(), roundTrackView.heightProperty(), 0.5));
+
         roundTrackView.setEffect(dropShadow);
         roundTrackView.getStyleClass().add("on-board-card");
 
@@ -106,6 +106,11 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
     }
 
     public void drawRoundTrack() {
+        IGameViewStrategy gameViewStrategy = controller.getGameViewStrategy();
+        roundTrackView.translateXProperty().bind(getPivotX(gameViewStrategy.getRoundTrackCenterX(),
+                roundTrackView.widthProperty(), 0.5));
+        roundTrackView.translateYProperty().bind(getPivotY(gameViewStrategy.getRoundTrackCenterY(),
+                roundTrackView.heightProperty(), 0.5));
         corePane.getChildren().add(roundTrackView);
     }
 

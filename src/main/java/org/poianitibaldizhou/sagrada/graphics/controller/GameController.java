@@ -4,23 +4,33 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import org.poianitibaldizhou.sagrada.exception.NetworkException;
+import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
+import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
+import org.poianitibaldizhou.sagrada.graphics.utils.Difficulty;
+import org.poianitibaldizhou.sagrada.graphics.view.MultiPlayerGameViewStrategy;
+import org.poianitibaldizhou.sagrada.graphics.view.SinglePlayerGameViewStrategy;
+import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
+import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
-import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
-import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
-import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
-import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class MultiPlayerController extends Controller implements Initializable {
+public class GameController extends Controller implements Initializable {
 
     @FXML
     public StackPane rootPane;
@@ -36,7 +46,9 @@ public class MultiPlayerController extends Controller implements Initializable {
     private DiceBagListener diceBagListener;
     private TimeoutListener timeoutListener;
 
-    private MultiPlayerModel multiPlayerModel;
+    private IGameViewStrategy gameViewStrategy;
+
+    private GameModel gameModel;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -49,7 +61,7 @@ public class MultiPlayerController extends Controller implements Initializable {
             diceBagListener = new DiceBagListener(this, corePane, notifyPane);
             timeoutListener = new TimeoutListener(this, corePane, notifyPane);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 
@@ -60,14 +72,32 @@ public class MultiPlayerController extends Controller implements Initializable {
         notifyPane.toBack();
     }
 
-    public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
-        multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
+    public void initMultiPlayerGame(String token, String username, String gameName, ConnectionManager connectionManager) throws NetworkException {
+        gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        gameModel = new GameModel(username, token, gameName, connectionManager);
         try {
-            multiPlayerModel.joinGame(gameListener, gameListener, stateListener,
+            gameModel.joinGame(gameListener, gameListener, stateListener,
                     roundTrackListener, draftPoolListener, diceBagListener, timeoutListener);
         } catch (IOException e) {
-            e.printStackTrace();
-            AlertBox.displayBox("Errore di rete", "Sagrada è crashato: " + e.toString());
+            throw new NetworkException(e);
+        }
+    }
+
+    public void initSinglePlayerGame(String username, Difficulty difficulty, ConnectionManager connectionManager) throws NetworkException {
+        gameViewStrategy = new SinglePlayerGameViewStrategy(this, corePane, notifyPane);
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createUsernameMessage(username).createValueMessage(difficulty.getDifficulty()).buildMessage();
+        String response = null;
+        try {
+            response = connectionManager.getGameController().createSinglePlayer(request);
+            String token = parser.getToken(response);
+            String gameName = parser.getGameName(response);
+            gameModel = new GameModel(username, token, gameName, connectionManager);
+            gameModel.joinGame(gameListener, gameListener, stateListener, roundTrackListener, draftPoolListener,
+                    diceBagListener, timeoutListener);
+        } catch (IOException e) {
+            throw new NetworkException(e);
         }
 
     }
@@ -81,87 +111,93 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
-        multiPlayerModel.chooseSchemaCard(schemaCardWrapper);
+        gameModel.chooseSchemaCard(schemaCardWrapper);
     }
 
     public Map<UserWrapper, SchemaCardWrapper> getSchemaCardMap() throws IOException {
-        return multiPlayerModel.getSchemaCardMap();
+        return gameModel.getSchemaCardMap();
     }
 
     public String getUsername() {
-        return multiPlayerModel.getUsername();
+        return gameModel.getUsername();
     }
 
     public List<PrivateObjectiveCardWrapper> getOwnPrivateObjectiveCard() throws IOException {
-        return multiPlayerModel.getOwnPrivateObjectiveCard();
+        return gameModel.getOwnPrivateObjectiveCard();
     }
 
     public RoundTrackWrapper getRoundTrack() throws IOException {
-        return multiPlayerModel.getRoundTrack();
+        return gameModel.getRoundTrack();
     }
 
     public void bindPlayer(UserWrapper user, IPlayerObserver playerObserver, ISchemaCardObserver schemaCardObserver) throws IOException {
-        multiPlayerModel.bindPlayer(user, playerObserver, schemaCardObserver);
+        gameModel.bindPlayer(user, playerObserver, schemaCardObserver);
     }
 
     public DraftPoolWrapper getDraftPool() throws IOException {
-        return multiPlayerModel.getDraftPool();
+        return gameModel.getDraftPool();
     }
 
     public void bindToolCard(ToolCardWrapper toolCard, IToolCardObserver toolCardObserver) throws IOException {
-        multiPlayerModel.bindToolCard(toolCard, toolCardObserver);
+        gameModel.bindToolCard(toolCard, toolCardObserver);
     }
 
     public void endTurn() throws IOException {
-        multiPlayerModel.endTurn();
+        gameModel.endTurn();
     }
 
     public Map<UserWrapper, Integer> getCoinsMap() throws IOException {
-        return multiPlayerModel.getCoinsMap();
+        List<UserWrapper> userWrappers = gameModel.getUserList();
+        if(userWrappers.size() == 1) {
+            Map<UserWrapper, Integer> fakeCoin = new HashMap<>();
+            fakeCoin.putIfAbsent(userWrappers.get(0), -1);
+            return fakeCoin;
+        }
+        return gameModel.getCoinsMap();
     }
 
     public SchemaCardWrapper getOwnSchemaCard() throws IOException {
-        return multiPlayerModel.getOwnSchemaCard();
+        return gameModel.getOwnSchemaCard();
     }
 
     public void placeDice(DiceWrapper dice, PositionWrapper positionWrapper) throws IOException {
-        multiPlayerModel.placeDice(dice, positionWrapper);
+        gameModel.placeDice(dice, positionWrapper);
     }
 
     public List<PublicObjectiveCardWrapper> getPublicObjectiveCards() throws IOException {
-        return multiPlayerModel.getPublicObjectiveCards();
+        return gameModel.getPublicObjectiveCards();
     }
 
     public List<ToolCardWrapper> getToolCards() throws IOException {
-        return multiPlayerModel.getToolCards();
+        return gameModel.getToolCards();
     }
 
     public List<UserWrapper> getUserList() throws IOException {
-        return multiPlayerModel.getUserList();
+        return gameModel.getUserList();
     }
 
     public void useToolCard(ToolCardWrapper toolCardWrapper, IToolCardExecutorObserver executorObserver) throws IOException {
-        multiPlayerModel.useToolCard(toolCardWrapper, executorObserver);
+        gameModel.useToolCard(toolCardWrapper, executorObserver);
     }
 
     public void sendDiceObject(DiceWrapper diceWrapper) throws IOException {
-        multiPlayerModel.sendDiceObject(diceWrapper);
+        gameModel.sendDiceObject(diceWrapper);
     }
 
     public void sendColorObject(ColorWrapper colorWrapper) throws IOException {
-        multiPlayerModel.sendColorObject(colorWrapper);
+        gameModel.sendColorObject(colorWrapper);
     }
 
     public void sendPositionObject(PositionWrapper positionWrapper) throws IOException {
-        multiPlayerModel.sendPositionObject(positionWrapper);
+        gameModel.sendPositionObject(positionWrapper);
     }
 
     public void sendAnswerObject(boolean answer) throws IOException {
-        multiPlayerModel.sendAnswerObject(answer);
+        gameModel.sendAnswerObject(answer);
     }
 
     public void sendValueObject(int value) throws IOException {
-        multiPlayerModel.sendValueObject(value);
+        gameModel.sendValueObject(value);
     }
 
     public void updateAllViews() throws IOException {
@@ -174,10 +210,14 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     public int getOwnToken() throws IOException {
-        return multiPlayerModel.getOwnToken();
+        return gameModel.getOwnToken();
     }
 
     public ToolCardWrapper getToolCardByName(ToolCardWrapper toolCardWrapper) throws IOException {
-        return multiPlayerModel.getToolCardByName(toolCardWrapper);
+        return gameModel.getToolCardByName(toolCardWrapper);
+    }
+
+    public IGameViewStrategy getGameViewStrategy() {
+        return gameViewStrategy;
     }
 }

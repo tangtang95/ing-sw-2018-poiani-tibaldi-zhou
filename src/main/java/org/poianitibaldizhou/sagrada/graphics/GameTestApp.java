@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
@@ -31,11 +31,11 @@ public class GameTestApp extends Application{
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         Parent root = loader.load();
-        MultiPlayerController controller = loader.getController();
+        GameController controller = loader.getController();
         controller.setStage(primaryStage);
         controller.setSceneManager(sceneManager);
         ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.RMI.getPort(), ConnectionType.RMI);
-        controller.setMultiPlayerModel(String.valueOf("cordero1".hashCode()), "cordero1", "corderoGame", connectionManager);
+        controller.initMultiPlayerGame(String.valueOf("cordero1".hashCode()), "cordero1", "corderoGame", connectionManager);
         sceneManager.pushScene(root);
 
         WindowSize startSize = WindowSize.MEDIUM;

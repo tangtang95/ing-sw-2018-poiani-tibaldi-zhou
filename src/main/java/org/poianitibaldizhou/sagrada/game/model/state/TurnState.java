@@ -140,8 +140,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
         if (player != currentTurnPlayer)
             throw new InvalidActionException();
-        if (!playerState.useCard(player, toolCard))
+        if (!playerState.useCard(player, toolCard)) {
+            playerState.releaseToolCardExecution();
             throw new InvalidActionException();
+        }
 
         Node<ICommand> preCommands = game.getPreCommands(toolCard);
         toolCardExecutor.setPreCommands(preCommands);

@@ -1,13 +1,11 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 
@@ -18,7 +16,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
 
     private transient ToolCardView toolCardView;
 
-    protected ToolCardListener(ToolCardView toolCardView, MultiPlayerController controller,
+    public ToolCardListener(ToolCardView toolCardView, GameController controller,
                                Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.toolCardView = toolCardView;
