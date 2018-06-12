@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
 import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
@@ -11,14 +12,13 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
@@ -53,29 +53,31 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
 
     protected void showMessage(Pane pane, String text, MessageType messageType) {
+        VBox container = new VBox();
+        container.setAlignment(Pos.CENTER);
+        container.prefWidthProperty().bind(pane.widthProperty());
+        container.setFillWidth(true);
         Label label = new Label(text);
+        label.setStyle("-fx-font-size: 1.6em");
+        container.getChildren().add(label);
         if (messageType == MessageType.ERROR)
             label.setTextFill(Color.ORANGERED);
         else
             label.setTextFill(Color.DEEPSKYBLUE);
-        label.setTextAlignment(TextAlignment.CENTER);
-        label.setAlignment(Pos.CENTER);
-        FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), label);
-        fadeTransition.setFromValue(0.5);
-        fadeTransition.setToValue(1);
-        fadeTransition.setCycleCount(6);
-        fadeTransition.setAutoReverse(true);
-        fadeTransition.play();
+        ParallelTransition parallelTransition = new ParallelTransition(label);
+        Duration duration = Duration.millis(1500);
+        FadeTransition fadeTransition = new FadeTransition(duration, label);
+        fadeTransition.setFromValue(1);
+        fadeTransition.setToValue(0);
 
-        label.setTranslateX(getSceneWidth()/2);
-        label.setTranslateY(getSceneHeight() - PADDING*5);
+        TranslateTransition translateTransition = new TranslateTransition(duration, container);
+        translateTransition.fromYProperty().bind(getHeight().subtract(getHeight().divide(8)));
+        translateTransition.toYProperty().bind(getHeight().subtract(PADDING*2));
+        parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
+        parallelTransition.setOnFinished(event -> pane.getChildren().remove(container));
+        parallelTransition.play();
 
-        TranslateTransition translateTransition = new TranslateTransition(Duration.millis(1000), label);
-        translateTransition.setByY(PADDING*4);
-        translateTransition.play();
-        translateTransition.setOnFinished(event -> pane.getChildren().remove(label));
-
-        pane.getChildren().add(label);
+        pane.getChildren().add(container);
     }
 
     protected HBox showHelperText(Pane pane, String text) {
@@ -156,25 +158,8 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
     protected void drawCenteredPanes(@NotNull Pane targetPane, @NotNull List<Pane> panes, String classCSS) {
         DoubleBinding y = getCenterY();
-        drawCenteredPanes(targetPane, panes, classCSS, getPivotY(y, panes.get(0).heightProperty(), 0.5));
-    }
-
-    protected void drawCenteredPanes(Pane targetPane, List<Pane> panes, String classCSS, DoubleBinding y) {
-
-        for (int i = 0; i < panes.size(); i++) {
-            DoubleBinding padding = panes.get(i).widthProperty().divide(2);
-            DoubleBinding totalWidth = panes.get(i).widthProperty().multiply(panes.size())
-                    .add(padding.multiply(panes.size() - 1));
-            DoubleBinding x = getCenterX().subtract(totalWidth.divide(2))
-                    .add(panes.get(i).widthProperty().multiply(i)).add(padding.multiply(i));
-
-            panes.get(i).translateXProperty().bind(getPivotX(x, panes.get(i).widthProperty(), 1));
-            panes.get(i).translateYProperty().bind(y);
-            panes.get(i).setOnMousePressed(Event::consume);
-            if(!classCSS.isEmpty())
-                panes.get(i).getStyleClass().add(classCSS);
-            targetPane.getChildren().add(panes.get(i));
-        }
+        GraphicsUtils.drawCenteredPanes(targetPane, panes, classCSS, getCenterX(),
+                getPivotY(y, panes.get(0).heightProperty(), 0.5));
     }
 
     protected void drawCenteredPane(Pane targetPane, Pane pane, String classCSS) {
@@ -264,7 +249,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
-    protected DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
+    public static DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
@@ -275,5 +260,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
     protected double getSceneWidth(){
         return corePane.getScene().getWindow().getWidth();
     }
+
+    public abstract void updateView();
 
 }

@@ -25,7 +25,6 @@ public class ChooseDice implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices();
-        System.out.println("notify dice");
         observerList.forEach(obs -> obs.notifyNeedDice(diceList));
         return CommandFlow.MAIN;
     }

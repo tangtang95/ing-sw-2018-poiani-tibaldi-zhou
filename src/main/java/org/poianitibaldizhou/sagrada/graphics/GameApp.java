@@ -24,7 +24,7 @@ public class GameApp extends Application {
         StackPane scenes = new StackPane();
         SceneManager sceneManager = new SceneManager(scenes, size);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/multi_game.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         Parent root = loader.load();
         Controller controller = loader.getController();

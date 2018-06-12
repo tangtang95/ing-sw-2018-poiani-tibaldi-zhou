@@ -12,6 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
+import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -141,7 +142,6 @@ public class ToolCardExecutor extends Thread{
         } catch (InterruptedException e) {
             System.out.println("Interrupted exception");
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
-            // TODO notify everyone that the toolCard has been interrupted
             Thread.currentThread().interrupt();
         } finally {
             System.out.println("");

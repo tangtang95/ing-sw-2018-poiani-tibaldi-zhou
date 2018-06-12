@@ -18,6 +18,11 @@ public class TimeoutListener extends AbstractView implements ITimeOutObserver {
     }
 
     @Override
+    public void updateView() {
+        /* NOTHING TO UPDATE */
+    }
+
+    @Override
     public void onTimeOut(String message) throws IOException {
         Platform.runLater(() -> {
             showMessage(getActivePane(), "Scaduto il tempo", MessageType.ERROR);

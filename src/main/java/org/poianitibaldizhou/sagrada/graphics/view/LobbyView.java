@@ -1,22 +1,32 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextBoundsType;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
+import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.graphics.controller.LobbyController;
+import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.lobby.model.observers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
@@ -31,64 +41,60 @@ import java.util.logging.Logger;
 
 public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObserver{
 
+
     private transient LobbyController controller;
-    private transient GridPane usersPane;
-    private transient List<Canvas> userViews;
+    private transient Pane corePane;
+
+    private transient List<Pane> userViews;
     private transient int numberOfUsers;
 
     private static final int COLUMNS = 4;
 
-    private static final double RETRO_IMAGE_SCALE = 0.7;
+    private static final double RETRO_IMAGE_SCALE = 0.6;
+    private static final double BUTTON_FONT_SCALE = 0.3;
+    private static final double PADDING = 10;
 
-    public LobbyView(LobbyController controller, GridPane usersPane) throws RemoteException {
+    public LobbyView(LobbyController controller, Pane corePane) throws RemoteException {
         this.controller = controller;
-        this.usersPane = usersPane;
+        this.corePane = corePane;
         this.userViews = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
-            Canvas container = getUserContainer(i + 1);
-            this.userViews.add(container);
-            this.usersPane.add(container, i%COLUMNS, i/COLUMNS);
-            this.usersPane.getColumnConstraints().forEach(columnConstraints -> columnConstraints.setHalignment(HPos.CENTER));
-            this.usersPane.getRowConstraints().forEach(rowConstraints -> rowConstraints.setValignment(VPos.CENTER));
+            UserView userView = new UserView(RETRO_IMAGE_SCALE);
+            this.userViews.add(userView);
         }
+        GraphicsUtils.drawCenteredPanes(corePane, userViews, "on-board-pane", getCenterX(),
+                getPivotY(getCenterY(), userViews.get(0).heightProperty(), 0.5));
+        // TODO Hbox for title label
+        Label titleLabel = new Label("Stanza Lobby");
+        titleLabel.getStyleClass().add("big-title");
+        titleLabel.translateXProperty().bind(getPivotX(getCenterX(), titleLabel.widthProperty(), 0.5));
 
+        JFXButton button = GraphicsUtils.getButton("Lascia la lobby", "negative-button");
+        button.setFont(Font.font(corePane.getPrefHeight()/6));
+        button.setOnAction(this::onLeaveButtonPressed);
+        button.translateXProperty().bind(getPivotX(getCenterX(), button.widthProperty(), 0.5));
+        button.translateYProperty().bind(getHeight().subtract(PADDING*10).subtract(button.heightProperty()));
+        corePane.getChildren().addAll(titleLabel, button);
         this.numberOfUsers = 0;
     }
 
-    public void addUser(String username) {
-        Canvas canvas = userViews.get(numberOfUsers);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+    private void onLeaveButtonPressed(ActionEvent actionEvent) {
+        controller.onLeaveLobbyButton(actionEvent);
+    }
 
-        RotateTransition rotator = new RotateTransition(Duration.millis(500), canvas);
+    public void addUser(UserWrapper user) {
+        UserView userView = (UserView) userViews.get(numberOfUsers);
+        userView.drawRetro();
+        RotateTransition rotator = new RotateTransition(Duration.millis(500), userView);
         rotator.setAxis(Rotate.Y_AXIS);
-        rotator.setByAngle(90);
+        rotator.setFromAngle(0);
+        rotator.setToAngle(90);
         rotator.setInterpolator(Interpolator.LINEAR);
         rotator.setCycleCount(1);
         rotator.play();
         rotator.setOnFinished(event -> {
-            gc.setTextAlign(TextAlignment.CENTER);
-            gc.setTextBaseline(VPos.CENTER);
-
-            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-            gc.setFill(Color.WHITE);
-            gc.fillRect(0,0 , canvas.getWidth(), canvas.getHeight());
-            Image userImage = new Image(getClass().getClassLoader().getResourceAsStream("images/user.png"));
-            gc.drawImage(userImage, canvas.getWidth()/2, canvas.getHeight()/2,
-                    userImage.getWidth()*0.3, userImage.getHeight()*0.3);
-            gc.setFill(Color.BLACK);
-            gc.setFont(Font.font(40));
-
-            gc.fillText(username, canvas.getWidth()/2, canvas.getHeight()/3);
-            gc.fillText("READY!", canvas.getWidth()/2, canvas.getHeight()*2/3);
-
-
-            DropShadow dropShadowEffect = new DropShadow();
-            dropShadowEffect.setOffsetY(3.0);
-            dropShadowEffect.setOffsetX(3.0);
-            dropShadowEffect.setColor(Color.GRAY);
-            gc.applyEffect(dropShadowEffect);
-
-            RotateTransition secondRotator = new RotateTransition(Duration.millis(500), canvas);
+            userView.drawUserCanvas(user);
+            RotateTransition secondRotator = new RotateTransition(Duration.millis(500), userView);
             secondRotator.setAxis(Rotate.Y_AXIS);
             secondRotator.setFromAngle(270);
             secondRotator.setToAngle(360);
@@ -100,26 +106,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         numberOfUsers++;
     }
 
-    private Canvas getUserContainer(int numberOfUser){
-        Image retroImage = new Image(getClass().getClassLoader().getResourceAsStream("images/userRetro.png"));
-        double width = retroImage.getWidth()*RETRO_IMAGE_SCALE;
-        double height = retroImage.getHeight()* RETRO_IMAGE_SCALE;
-
-        Canvas canvas = new Canvas( width, height);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-
-        gc.drawImage(retroImage, 0, 0, width, height);
-        gc.setFont(Font.font(80));
-        gc.setTextAlign(TextAlignment.CENTER);
-        gc.setTextBaseline(VPos.CENTER);
-        gc.fillText(String.valueOf(numberOfUser), width/2, height/2);
-
-        return canvas;
-    }
-
     private void clearGrid(){
-
         numberOfUsers = 0;
     }
 
@@ -146,7 +133,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         Platform.runLater(() -> {
             clearGrid();
             List<UserWrapper> users = controller.getUsers();
-            users.stream().map(UserWrapper::getUsername).forEach(this::addUser);
+            users.stream().forEach(this::addUser);
         });
 
     }
@@ -159,7 +146,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
             Platform.runLater(() -> {
                 clearGrid();
                 List<UserWrapper> users = controller.getUsers();
-                users.stream().map(UserWrapper::getUsername).forEach(this::addUser);
+                users.stream().forEach(this::addUser);
             });
         }
     }
@@ -188,4 +175,37 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();
     }
+
+    protected DoubleBinding getWidth() {
+        return corePane.widthProperty().divide(1);
+    }
+
+    protected DoubleBinding getHeight() {
+        return corePane.heightProperty().divide(1);
+    }
+
+    protected DoubleBinding getCenterX() {
+        return corePane.widthProperty().divide(2);
+    }
+
+    protected DoubleBinding getCenterY() {
+        return corePane.heightProperty().divide(2);
+    }
+
+    protected DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
+        return x.subtract(width.multiply(1 - pivotX));
+    }
+
+    protected DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
+        return x.subtract(width.multiply(1 - pivotX));
+    }
+
+    protected DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
+        return y.subtract(height.multiply(1 - pivotY));
+    }
+
+    protected DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
+        return y.subtract(height.multiply(1 - pivotY));
+    }
+
 }

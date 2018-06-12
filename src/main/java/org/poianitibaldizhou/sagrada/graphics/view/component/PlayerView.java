@@ -22,6 +22,7 @@ public class PlayerView extends Pane {
         this.favorTokens = favorTokens;
         nameLabel = new Label(userWrapper.getUsername());
         nameLabel.setFont(Font.font(fontSize));
+        nameLabel.getStyleClass().add("player-label");
         drawFavorTokens(favorTokens);
 
         this.getChildren().add(nameLabel);
@@ -49,6 +50,12 @@ public class PlayerView extends Pane {
 
     public void decreaseFavorToken(Integer favorTokenUsed) {
         favorTokens -= favorTokenUsed;
+        this.getChildren().remove(coinCanvas);
+        drawFavorTokens(favorTokens);
+    }
+
+    public void drawFavorToken(int token) {
+        favorTokens = token;
         this.getChildren().remove(coinCanvas);
         drawFavorTokens(favorTokens);
     }

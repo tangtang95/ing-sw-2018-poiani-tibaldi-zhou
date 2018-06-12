@@ -36,6 +36,17 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         draftPoolView.setEffect(dropShadow);
     }
 
+    @Override
+    public void updateView() {
+        try {
+            DraftPoolWrapper draftPoolWrapper = controller.getDraftPool();
+            draftPoolView.drawDraftPool(draftPoolWrapper);
+        } catch (IOException e) {
+
+            e.printStackTrace();
+        }
+    }
+
     public DraftPoolView getDraftPoolView() {
         return draftPoolView;
     }

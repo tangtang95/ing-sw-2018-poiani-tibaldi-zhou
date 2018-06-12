@@ -4,15 +4,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
-import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.GameInjector;
-import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
-import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.ISchemaCardObserver;
 import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCardExecutorObserver;
@@ -20,7 +11,6 @@ import org.poianitibaldizhou.sagrada.game.model.observers.realobservers.IToolCar
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.model.MultiPlayerModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
-import org.poianitibaldizhou.sagrada.graphics.view.component.*;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
@@ -40,10 +30,10 @@ public class MultiPlayerController extends Controller implements Initializable {
     public Pane notifyPane;
 
     private DraftPoolListener draftPoolListener;
-    private RoundTrackListener roundTrackView;
-    private StateListener stateView;
+    private RoundTrackListener roundTrackListener;
+    private StateListener stateListener;
     private GameListener gameListener;
-    private DiceBagListener diceBagView;
+    private DiceBagListener diceBagListener;
     private TimeoutListener timeoutListener;
 
     private MultiPlayerModel multiPlayerModel;
@@ -53,10 +43,10 @@ public class MultiPlayerController extends Controller implements Initializable {
         initNotifyPane();
         try {
             draftPoolListener = new DraftPoolListener(this, corePane, notifyPane);
-            roundTrackView = new RoundTrackListener(this, corePane, notifyPane);
-            stateView = new StateListener(this, corePane, notifyPane);
+            roundTrackListener = new RoundTrackListener(this, corePane, notifyPane);
+            stateListener = new StateListener(this, corePane, notifyPane);
             gameListener = new GameListener(this, corePane, notifyPane);
-            diceBagView = new DiceBagListener(this, corePane, notifyPane);
+            diceBagListener = new DiceBagListener(this, corePane, notifyPane);
             timeoutListener = new TimeoutListener(this, corePane, notifyPane);
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -73,8 +63,8 @@ public class MultiPlayerController extends Controller implements Initializable {
     public void setMultiPlayerModel(String token, String username, String gameName, ConnectionManager connectionManager) {
         multiPlayerModel = new MultiPlayerModel(username, token, new GameModel(gameName), connectionManager);
         try {
-            multiPlayerModel.joinGame(gameListener, gameListener, stateView,
-                    roundTrackView, draftPoolListener, diceBagView, timeoutListener);
+            multiPlayerModel.joinGame(gameListener, gameListener, stateListener,
+                    roundTrackListener, draftPoolListener, diceBagListener, timeoutListener);
         } catch (IOException e) {
             e.printStackTrace();
             AlertBox.displayBox("Errore di rete", "Sagrada è crashato: " + e.toString());
@@ -83,7 +73,7 @@ public class MultiPlayerController extends Controller implements Initializable {
     }
 
     public void setRoundTrack() {
-        roundTrackView.drawRoundTrack();
+        roundTrackListener.drawRoundTrack();
     }
 
     public void setDraftPool() {
@@ -172,5 +162,22 @@ public class MultiPlayerController extends Controller implements Initializable {
 
     public void sendValueObject(int value) throws IOException {
         multiPlayerModel.sendValueObject(value);
+    }
+
+    public void updateAllViews() throws IOException {
+        draftPoolListener.updateView();
+        roundTrackListener.updateView();
+        gameListener.updateView();
+        stateListener.updateView();
+        timeoutListener.updateView();
+        diceBagListener.updateView();
+    }
+
+    public int getOwnToken() throws IOException {
+        return multiPlayerModel.getOwnToken();
+    }
+
+    public ToolCardWrapper getToolCardByName(ToolCardWrapper toolCardWrapper) throws IOException {
+        return multiPlayerModel.getToolCardByName(toolCardWrapper);
     }
 }

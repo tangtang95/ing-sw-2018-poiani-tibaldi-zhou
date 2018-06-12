@@ -12,16 +12,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.graphics.model.ConnectionModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.IPAddressValidator;
+import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.UsernameValidator;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
@@ -38,10 +42,13 @@ public class StartMenuController extends Controller implements Initializable {
     public Parent rootPane;
 
     @FXML
-    public BorderPane rightPane;
+    public StackPane rightPane;
 
     @FXML
     public Label connectionType;
+
+    @FXML
+    public VBox menuButtonPane;
 
     @FXML
     public VBox connectionPane;
@@ -148,6 +155,14 @@ public class StartMenuController extends Controller implements Initializable {
         difficultyToggleGroup.selectToggle(radioButtonMedium);
     }
 
+    @Override
+    public void setSceneManager(SceneManager sceneManager){
+        super.setSceneManager(sceneManager);
+        menuButtonPane.setPrefWidth(sceneManager.getSceneWidth()*0.4);
+        menuButtonPane.setPadding(new Insets(sceneManager.getSceneHeight()/10, 0, 0, sceneManager.getSceneWidth()/20));
+        rightPane.setPrefWidth(sceneManager.getSceneWidth()*0.6);
+    }
+
 
     @FXML
     public void startMultiPlayerGame(ActionEvent actionEvent) {
@@ -176,8 +191,8 @@ public class StartMenuController extends Controller implements Initializable {
 
     private void playOpenMenuPaneTransition(Node node){
         TranslateTransition translateTransition = new TranslateTransition(Duration.millis(500), node);
-        translateTransition.setFromX(node.getTranslateX() - 150);
-        translateTransition.setToX(node.getTranslateX());
+        translateTransition.fromXProperty().bind(rightPane.translateXProperty().subtract(rightPane.widthProperty().divide(3)));
+        translateTransition.toXProperty().bind(rightPane.translateXProperty());
         translateTransition.play();
 
         FadeTransition fadeTransition = new FadeTransition(Duration.millis(500), node);
@@ -201,22 +216,24 @@ public class StartMenuController extends Controller implements Initializable {
     public void onMultiPlayerPlayButton(ActionEvent actionEvent) {
         if(usernameTextField.validate()){
 
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/new_lobby.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/lobby.fxml"));
 
             try {
-                Parent root = loader.load();
+                Pane root = loader.load();
                 LobbyController controller = loader.getController();
                 controller.setStage(stage);
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
                 controller.setConnectionManager(usernameTextField.getText(), connectionManager);
-                playSceneTransition(rootPane, (event) -> sceneManager.pushScene(root));
+                playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 e.printStackTrace();
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             }
-            onMultiPlayerCloseButton(actionEvent);
+            finally {
+                onMultiPlayerCloseButton(actionEvent);
+            }
         }
     }
 

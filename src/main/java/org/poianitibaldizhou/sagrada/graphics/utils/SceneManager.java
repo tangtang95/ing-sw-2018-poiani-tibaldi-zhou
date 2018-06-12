@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.utils;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -34,6 +34,7 @@ public class SceneManager {
      * @param newScene the new scene to add (the new scene goes in front)
      */
     public void pushScene(Parent newScene) {
+        newScene.setStyle("-fx-background-color: white");
         sceneStack.push(newScene);
         stackPane.getChildren().forEach(node -> node.setVisible(false));
         stackPane.getChildren().add(newScene);
@@ -51,9 +52,9 @@ public class SceneManager {
         Parent oldScene = sceneStack.pop();
         stackPane.getChildren().remove(oldScene);
         stackPane.getChildren().forEach(node -> node.setVisible(false));
-        sceneStack.peek().toFront();
-        sceneStack.peek().setVisible(true);
-        sceneStack.peek().setOpacity(1);
+        sceneStack.peekFirst().toFront();
+        sceneStack.peekFirst().setVisible(true);
+        sceneStack.peekFirst().setOpacity(1);
         return oldScene;
     }
 
@@ -79,7 +80,7 @@ public class SceneManager {
         return windowSize.getHeight();
     }
 
-    public Node getCurrentScene() {
-        return sceneStack.peek();
+    public Pane getCurrentScene() {
+        return (Pane)sceneStack.peek();
     }
 }

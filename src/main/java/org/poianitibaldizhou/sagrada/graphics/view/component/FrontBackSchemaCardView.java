@@ -35,7 +35,7 @@ public class FrontBackSchemaCardView extends Pane {
 
         this.setOnMouseEntered(this::onMouseEntered);
         this.setOnMouseExited(this::onMouseExited);
-        this.setOnMousePressed(this::onMousePressed);
+        this.setOnMouseClicked(this::onMouseClicked);
         this.setOnMouseDragged(this::onMouseDragged);
         this.rotateProperty().addListener(this::onRotateListener);
         this.setOnMouseReleased(this::onMouseReleased);
@@ -56,7 +56,7 @@ public class FrontBackSchemaCardView extends Pane {
         event.consume();
     }
 
-    private void onMousePressed(MouseEvent event){
+    private void onMouseClicked(MouseEvent event){
         if(transition != null)
             transition.stop();
         initialX = event.getSceneX();
