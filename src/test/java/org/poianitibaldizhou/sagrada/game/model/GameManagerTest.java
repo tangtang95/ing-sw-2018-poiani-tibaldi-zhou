@@ -1,19 +1,22 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
+import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.MediatorManager;
+import org.poianitibaldizhou.sagrada.game.model.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 public class GameManagerTest {
@@ -43,7 +46,7 @@ public class GameManagerTest {
 
         when(game1.isSinglePlayer()).thenReturn(false);
         when(game2.isSinglePlayer()).thenReturn(false);
-        when(game3.isSinglePlayer()).thenReturn(false);
+        when(game3.isSinglePlayer()).thenReturn(true);
 
         playerList = new ArrayList<>();
         playerList.add("player1");
@@ -83,11 +86,11 @@ public class GameManagerTest {
         List<User> list2 = new ArrayList<>();
         list2.add(new User(playerList.get(2), String.valueOf(playerList.get(2).hashCode())));
 
-        gameManager.createMultiPlayerGame(game1, "game1");
-        gameManager.createMultiPlayerGame(game2, game2.getName());
-
         when(game1.getUsers()).thenReturn(list1);
         when(game2.getUsers()).thenReturn(list2);
+
+        gameManager.createMultiPlayerGame(game1, "game1");
+        gameManager.createMultiPlayerGame(game2, game2.getName());
 
         assertEquals(list1.stream().map(user -> user.getToken()).collect(Collectors.toList()), gameManager.getPlayersByGame(game1.getName()));
         assertEquals(list2.stream().map(user -> user.getToken()).collect(Collectors.toList()), gameManager.getPlayersByGame(game2.getName()));
@@ -97,18 +100,14 @@ public class GameManagerTest {
     public void testAdd() {
         gameManager.createMultiPlayerGame(game1, "game1");
         gameManager.createMultiPlayerGame(game2, "game2");
-        gameManager.createMultiPlayerGame(game3, "game3");
-        gameManager.createMultiPlayerGame(game3, "game3");
         List<IGame> curr = gameManager.getGameList();
-        assertEquals(3, curr.size());
+        assertEquals(2, curr.size());
         int[] flags = new int[3];
         for (IGame g : curr) {
             if (g.getName().equals("game1"))
                 flags[0] += 1;
             if (g.getName().equals("game2"))
                 flags[1] += 1;
-            if (g.getName().equals("game3"))
-                flags[2] += 1;
         }
 
         for (int i = 0; i < 3; i++) {
@@ -136,4 +135,121 @@ public class GameManagerTest {
         }
     }
 
+    @Test(expected = Exception.class)
+    public void testCreateMultiPlayerException() {
+        gameManager.createMultiPlayerGame(game3, game3.getName());
+    }
+
+    @Test
+    public void testContainsGameName() {
+        gameManager.createMultiPlayerGame(game1, game1.getName());
+
+        assertFalse(gameManager.notContainsGame(game1.getName()));
+        assertTrue(gameManager.notContainsGame(game2.getName()));
+
+        assertNull(gameManager.getGameByName(game2.getName()));
+    }
+
+    @Test(expected = Exception.class)
+    public void testCreateSinglePlayerAlreadyWaiting() throws Exception {
+        String username = "username";
+        when(managerMediator.isAlreadyWaitingInALobby(username)).thenReturn(true);
+        gameManager.createSinglePlayerGame(username, 2);
+    }
+
+    @Test(expected = Exception.class)
+    public void testCreateSinglePlayerAlreadyInGame() throws Exception{
+        List<User> list1 = new ArrayList<>();
+        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
+        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+
+        when(game1.getUsers()).thenReturn(list1);
+        gameManager.createMultiPlayerGame(game1, game1.getName());
+
+        gameManager.createSinglePlayerGame(list1.get(0).getName(), 4);
+    }
+
+    @Test
+    public void testCreateSinglePlayer() throws Exception {
+        String username = "username";
+        String token = String.valueOf(username.hashCode());
+        String gameName = gameManager.createSinglePlayerGame("username", 2);
+
+        assertEquals(Collections.singletonList(token), gameManager.getPlayersByGame(gameName));
+    }
+
+    @Test
+    public void testHandleEndGameSinglePlayerTrue() throws Exception {
+        String username  = "username";
+        String token = String.valueOf(username.hashCode());
+        String gameName = gameManager.createSinglePlayerGame(username, 2);
+
+        GameObserverManager gameObserverManager = gameManager.getObserverManagerByGame(gameName);
+        gameObserverManager.signalDisconnection(token);
+
+        assertTrue(gameManager.handleEndGame(gameManager.getGameByName(gameName), gameObserverManager));
+
+        assertNull(gameManager.getGameByName(gameName));
+    }
+
+    @Test
+    public void testHandleEndGameFalse() throws Exception {
+        String username  = "username";
+        String gameName = gameManager.createSinglePlayerGame(username, 2);
+
+        assertFalse(gameManager.handleEndGame(gameManager.getGameByName(gameName), gameManager.getObserverManagerByGame(gameName)));
+
+        assertNotNull(gameManager.getGameByName(gameName));
+    }
+
+    @Test
+    public void testHandleEndGameMultiPlayerNoPlayerLeft() throws Exception {
+        List<User> list1 = new ArrayList<>();
+        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
+        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+
+        when(game1.getUsers()).thenReturn(list1);
+        gameManager.createMultiPlayerGame(game1, game1.getName());
+
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(0).hashCode()));
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(1).hashCode()));
+
+        assertTrue(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
+
+        assertNull(gameManager.getGameByName(game1.getName()));
+    }
+
+    @Test
+    public void testHandleEndGameMultiPlayerOnePlayerLeft() throws Exception {
+        List<User> list1 = new ArrayList<>();
+        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
+        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+
+        when(game1.getUsers()).thenReturn(list1);
+        gameManager.createMultiPlayerGame(game1, game1.getName());
+
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(0).hashCode()));
+
+        assertTrue(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
+
+        assertNull(gameManager.getGameByName(game1.getName()));
+    }
+
+    @Test
+    public void testHandleEndGameMultiPlayerFalse() throws Exception {
+        List<User> list1 = new ArrayList<>();
+        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
+        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+        list1.add(new User(playerList.get(2), String.valueOf(playerList.get(2).hashCode())));
+
+        when(game1.getUsers()).thenReturn(list1);
+        gameManager.createMultiPlayerGame(game1, game1.getName());
+
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(0).hashCode()));
+
+        assertFalse(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
+
+        assertNotNull(gameManager.getGameByName(game1.getName()));
+
+    }
 }
