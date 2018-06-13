@@ -236,4 +236,11 @@ public class GameModel {
         String response =  connectionManager.getGameController().getToolCardByName(request);
         return parser.getToolCard(response);
     }
+
+    public void choosePrivateObjectiveCard(PrivateObjectiveCardWrapper privateObjectiveCardWrapper) throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token)
+                .createGameNameMessage(gameName).createPrivateObjectiveCardMessage(privateObjectiveCardWrapper).buildMessage();
+        connectionManager.getGameController().choosePrivateObjectiveCard(request);
+    }
 }

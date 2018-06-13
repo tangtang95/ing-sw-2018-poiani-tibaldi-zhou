@@ -31,11 +31,10 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
     private transient List<Pane> diceViews;
     private transient Label roundLabel;
 
-    private static final double ROUND_TRACK_SCALE = 0.5;
-    private static final double ROUND_TRACK_SHOW_SCALE = 1;
+    private static final double ROUND_TRACK_SHOW_SCALE = 1.3;
     private static final double DICE_SCALE = 0.3;
 
-    public RoundTrackListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public RoundTrackListener(GameController controller, Pane corePane, Pane notifyPane, RoundTrackView trackView) throws RemoteException {
         super(controller, corePane, notifyPane);
         copyRoundTrackViews = new ArrayList<>();
         diceViews = new ArrayList<>();
@@ -44,7 +43,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
         roundLabel.setTextFill(Color.WHITE);
 
         DropShadow dropShadow = new DropShadow(4, 4, 4, Color.GRAY);
-        roundTrackView = new RoundTrackView(ROUND_TRACK_SCALE);
+        roundTrackView = trackView;
 
         roundTrackView.setEffect(dropShadow);
         roundTrackView.getStyleClass().add("on-board-card");

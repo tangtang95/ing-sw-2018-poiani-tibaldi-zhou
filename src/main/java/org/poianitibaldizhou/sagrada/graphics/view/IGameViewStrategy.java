@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.beans.binding.DoubleBinding;
+import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
@@ -16,11 +17,10 @@ public interface IGameViewStrategy {
 
     DoubleBinding getRoundTrackCenterY();
 
-    DoubleBinding getSchemaCardCenterX(DoubleBinding offsetX);
+    SchemaCardView drawSchemaCardView(Pane corePane, SchemaCardWrapper schemaCardWrapper, double angle);
 
-    DoubleBinding getSchemaCardCenterY(DoubleBinding offsetY);
+    double getPublicObjectiveCardScale();
 
-    SchemaCardView drawSchemaCardView(SchemaCardWrapper schemaCardWrapper, double angle);
-
+    double getToolCardScale();
 
 }
