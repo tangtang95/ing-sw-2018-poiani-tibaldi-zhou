@@ -17,12 +17,12 @@ import java.util.logging.Logger;
 public class PlayerListener extends AbstractView implements IPlayerObserver {
 
     private final transient PlayerView playerView;
-    private final transient UserWrapper user;
+    private final String username;
 
     public PlayerListener(PlayerView playerView, GameController controller, Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.playerView = playerView;
-        this.user = userWrapper;
+        this.username = userWrapper.getUsername();
     }
 
     @Override
@@ -56,12 +56,12 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
         if(this == obj) return true;
         if(!(obj instanceof PlayerListener)) return false;
 
-        return user.equals(((PlayerListener) obj).user);
+        return username.equals(((PlayerListener) obj).username);
     }
 
     @Override
     public int hashCode() {
-        return this.getClass().getSimpleName().concat(user.getUsername()).hashCode();
+        return this.getClass().getSimpleName().concat(username).hashCode();
     }
 }
 

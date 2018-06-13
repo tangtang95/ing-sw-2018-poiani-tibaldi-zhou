@@ -79,12 +79,13 @@ public class SchemaCardView extends Pane {
                 TileWrapper tileWrapper = schemaCard.getTile(new PositionWrapper(i, j));
 
                 // DRAW TILE
-                String tileName = tileWrapper.getConstraint() == null ?
-                        "empty" : tileWrapper.getConstraint().toLowerCase();
-                ImageView tileView = GraphicsUtils.getImageView("tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
-                tileView.setTranslateX(offsetX * (j + 1) + tileWidth * j);
-                tileView.setTranslateY(offsetY * (i + 1) + tileHeight * i);
-                this.getChildren().add(tileView);
+                if(tileWrapper.getConstraint() != null) {
+                    String tileName = tileWrapper.getConstraint().toLowerCase();
+                    ImageView tileView = GraphicsUtils.getImageView("tile-" + tileName + ".png", TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
+                    tileView.setTranslateX(offsetX * (j + 1) + tileWidth * j);
+                    tileView.setTranslateY(offsetY * (i + 1) + tileHeight * i);
+                    this.getChildren().add(tileView);
+                }
                 // DRAW DICE
                 DiceWrapper diceWrapper = tileWrapper.getDice();
                 if(diceWrapper != null){

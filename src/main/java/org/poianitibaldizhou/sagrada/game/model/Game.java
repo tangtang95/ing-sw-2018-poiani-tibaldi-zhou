@@ -528,6 +528,15 @@ public abstract class Game implements IGame, IGameStrategy {
     }
 
     /**
+     * Remove the toolcard from the game
+     *
+     * @param toolCard tool card to be removed
+     */
+    public void removeToolCard(ToolCard toolCard) {
+        toolCards.remove(toolCard);
+    }
+
+    /**
      * Add a public objective card to the game
      *
      * @param publicObjectiveCard public objective card added
@@ -641,4 +650,5 @@ public abstract class Game implements IGame, IGameStrategy {
             }
         }
     }
+
 }

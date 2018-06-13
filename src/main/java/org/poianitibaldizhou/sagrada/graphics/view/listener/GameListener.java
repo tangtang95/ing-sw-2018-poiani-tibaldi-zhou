@@ -14,15 +14,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IGameObserver;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
+import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 import org.poianitibaldizhou.sagrada.graphics.view.component.*;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IGameObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
@@ -412,17 +411,26 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
         try {
             List<ToolCardWrapper> toolCardList = controller.getToolCards();
-            List<Pane> toolCardViews = new ArrayList<>();
-            toolCardList.forEach(toolCardWrapper -> {
-                Pane cardView = new ToolCardView(toolCardWrapper, TOOL_CARD_SHOW_SCALE);
-                toolCardViews.add(cardView);
-            });
-            drawCenteredPanes(notifyPane, toolCardViews, "on-notify-pane-card");
-            drawSimpleCloseHelperBox(notifyPane, "Carte utensili");
+            if(!toolCardList.isEmpty()) {
+                List<Pane> toolCardViews = new ArrayList<>();
+                toolCardList.forEach(toolCardWrapper -> {
+                    Pane cardView = new ToolCardView(toolCardWrapper, TOOL_CARD_SHOW_SCALE);
+                    toolCardViews.add(cardView);
+                });
+                drawCenteredPanes(notifyPane, toolCardViews, "on-notify-pane-card");
+                drawSimpleCloseHelperBox(notifyPane, "Carte utensili");
+            }
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
         }
         event.consume();
+    }
+
+    public void destroyToolCard(ToolCardListener toolCardListener) {
+        toolCardsContainer.getChildren().remove(toolCardListener.getToolCardView());
+        toolCardListeners.remove(toolCardListener);
+        if(toolCardListeners.isEmpty())
+            corePane.getChildren().remove(toolCardsContainer);
     }
 
     private void drawPrivateObjectiveCard(List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
@@ -495,5 +503,4 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();
     }
-
 }

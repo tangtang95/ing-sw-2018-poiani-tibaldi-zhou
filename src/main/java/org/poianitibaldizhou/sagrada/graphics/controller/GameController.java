@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.utils.Difficulty;
 import org.poianitibaldizhou.sagrada.graphics.view.MultiPlayerGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.view.SinglePlayerGameViewStrategy;
+import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
@@ -219,5 +220,9 @@ public class GameController extends Controller implements Initializable {
 
     public IGameViewStrategy getGameViewStrategy() {
         return gameViewStrategy;
+    }
+
+    public void destroyToolCard(ToolCardListener toolCardListener) {
+        gameListener.destroyToolCard(toolCardListener);
     }
 }

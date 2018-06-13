@@ -316,6 +316,10 @@ public class StateListener extends AbstractView implements IStateObserver {
 
         try {
             List<ToolCardWrapper> toolCardWrappers = controller.getToolCards();
+            if(toolCardWrappers.isEmpty()){
+                continueButton.setDisable(true);
+                return;
+            }
             List<Pane> toolCardViews = new ArrayList<>();
             toolCardWrappers.forEach(toolCard -> {
                 ToolCardView toolCardView = new ToolCardView(toolCard, TOOL_CARD_SHOW_SIZE);

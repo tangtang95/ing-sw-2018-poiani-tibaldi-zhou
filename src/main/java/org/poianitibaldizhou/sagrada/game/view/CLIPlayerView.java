@@ -27,17 +27,21 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      */
     private final transient ClientGetMessage clientGetMessage;
 
+    private final String username;
+
 
     /**
      * Constructor.
      *
      * @param cliStateView the CLI that contains all parameter.
+     * @param username
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIPlayerView(CLIStateView cliStateView) throws RemoteException {
+    public CLIPlayerView(CLIStateView cliStateView, String username) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
         this.clientGetMessage = cliStateView.getClientGetMessage();
+        this.username = username;
     }
 
     /**
@@ -79,7 +83,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      */
     @Override
     public int hashCode() {
-        return this.getClass().getSimpleName().hashCode();
+        return this.getClass().getSimpleName().concat(username).hashCode();
     }
 
 }

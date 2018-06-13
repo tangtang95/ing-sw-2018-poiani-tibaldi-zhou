@@ -286,6 +286,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     // MODIFIERS
+    public void removeToolCard(ToolCard toolCard) {
+        game.removeToolCard(toolCard);
+    }
+
     public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers) {
         this.skipTurnPlayers.clear();
         this.skipTurnPlayers.putAll(skipTurnPlayers);
@@ -317,5 +321,4 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void notifyOnEndTurnState() {
         game.getStateObservers().forEach((key, value) -> value.onEndTurnState(currentTurnPlayer.getUser()));
     }
-
 }
