@@ -35,4 +35,10 @@ public class UserWrapperTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void toStringTest() {
+        String test = "test";
+        assertEquals(test, userWrapper.toString());
+    }
 }

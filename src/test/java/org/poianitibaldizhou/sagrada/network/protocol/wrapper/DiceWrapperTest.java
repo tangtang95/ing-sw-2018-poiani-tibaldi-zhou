@@ -34,4 +34,16 @@ public class DiceWrapperTest {
     public void setUp() throws Exception {
         diceWrapper = new DiceWrapper(ColorWrapper.BLUE, 6);
     }
+
+    @Test
+    public void toStringTest() {
+        String test = "6/B";
+        assertEquals(test, diceWrapper.toString());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        DiceWrapper dice = new DiceWrapper(ColorWrapper.GREEN,3);
+        assertNotEquals(diceWrapper.hashCode(),dice.hashCode());
+    }
 }

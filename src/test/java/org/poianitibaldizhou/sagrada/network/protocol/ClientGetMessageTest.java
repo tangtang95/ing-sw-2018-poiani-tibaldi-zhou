@@ -368,4 +368,212 @@ public class ClientGetMessageTest {
         message = "{}";
         assertEquals(false, clientGetMessage.hasTerminateGameError(message));
     }
+
+    @Test
+    public void getToolCard() throws IOException {
+        ToolCardWrapper toolCard = new ToolCardWrapper("Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+        String message = "{\"toolCard\":{\"type\":\"toolCard\",\"body\":" +
+                "{\"cost\":1,\"color\":\"PURPLE\",\"name\":\"Pinza Sgrossatrice\",\"description\":\"Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6\",\"token\":0}}}";
+        assertEquals(toolCard,clientGetMessage.getToolCard(message));
+    }
+
+    @Test(expected = Exception.class)
+    public void getDiceElem1() throws IOException {
+        String message = "{";
+        clientGetMessage.getDiceElem(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getDiceElemList1() throws IOException {
+        String message = "{";
+        clientGetMessage.getDiceElemList(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getDice1() throws IOException {
+        String message = "{";
+        clientGetMessage.getDice(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getDiceList1() throws IOException {
+        String message = "{";
+        clientGetMessage.getDiceList(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getUserWrapper1() throws IOException {
+        String message = "{";
+        clientGetMessage.getUserWrapper(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getTurnUserWrapper1() throws IOException {
+        String message = "{";
+        clientGetMessage.getTurnUserWrapper(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getVictoryPoint1() throws IOException {
+        String message = "{";
+        clientGetMessage.getVictoryPoint(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getListOfUserWrapper1() throws IOException {
+        String message = "{";
+        clientGetMessage.getListOfUserWrapper(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getGameName1() throws IOException {
+        String message = "{";
+        clientGetMessage.getGameName(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getToken1() throws IOException {
+        String message = "{";
+        clientGetMessage.getToken(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getTimeout1() throws IOException {
+        String message = "{";
+        clientGetMessage.getTimeout(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getValue1() throws IOException {
+        String message = "{";
+        clientGetMessage.getValue(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getOutcome1() throws IOException {
+        String message = "{";
+        clientGetMessage.getOutcome(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getOldDice1() throws IOException {
+        String message = "{";
+        clientGetMessage.getOldDice(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getNewDice1() throws IOException {
+        String message = "{";
+        clientGetMessage.getNewDice(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getPosition1() throws IOException {
+        String message = "{";
+        clientGetMessage.getPosition(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getColorList1() throws IOException {
+        String message = "{";
+        clientGetMessage.getColorList(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getDiceValue1() throws IOException {
+        String message = "{";
+        clientGetMessage.getDiceValue(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getPublicObjectiveCards1() throws IOException {
+        String message = "{";
+        clientGetMessage.getPublicObjectiveCards(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getToolCards1() throws IOException {
+        String message = "{";
+        clientGetMessage.getToolCards(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getPrivateObjectiveCards1() throws IOException {
+        String message = "{";
+        clientGetMessage.getPrivateObjectiveCards(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getFrontBackSchemaCards1() throws IOException {
+        String message = "{";
+        clientGetMessage.getFrontBackSchemaCards(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getSchemaCard1() throws IOException {
+        String message = "{";
+        clientGetMessage.getSchemaCard(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getColor1() throws IOException {
+        String message = "{";
+        clientGetMessage.getColor(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getRoundTrack1() throws IOException {
+        String message = "{";
+        clientGetMessage.getRoundTrack(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getSchemaCards1() throws IOException {
+        String message = "{";
+        clientGetMessage.getSchemaCards(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getDraftPool1() throws IOException {
+        String message = "{";
+        clientGetMessage.getDraftPool(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getRoundUser1() throws IOException {
+        String message = "{";
+        clientGetMessage.getRoundUser(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getMyCoins1() throws IOException {
+        String message = "{";
+        clientGetMessage.getMyCoins(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getPlayersCoins1() throws IOException {
+        String message = "{";
+        clientGetMessage.getPlayersCoins(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getToolCard1() throws IOException {
+        String message = "{";
+        clientGetMessage.getToolCard(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getTurnValue1() throws IOException {
+        String message = "{";
+        clientGetMessage.getTurnValue(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getCommandFlow1() throws IOException {
+        String message = "{";
+        clientGetMessage.getCommandFlow(message);
+    }
 }

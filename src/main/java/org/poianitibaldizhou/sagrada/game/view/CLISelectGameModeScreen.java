@@ -167,7 +167,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      * {@inheritDoc}
      */
     @Override
-    public void ping() throws IOException {
+    public void ping(){
         // DO NOTHING
     }
 

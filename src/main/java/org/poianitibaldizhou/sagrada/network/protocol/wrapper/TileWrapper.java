@@ -166,7 +166,6 @@ public final class TileWrapper implements JSONable{
      */
     @Override
     public int hashCode() {
-
         return Objects.hash(getConstraint(), getDice());
     }
 }

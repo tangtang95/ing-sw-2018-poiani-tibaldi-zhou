@@ -186,7 +186,6 @@ public final class SchemaCardWrapper implements JSONable{
      */
     @Override
     public int hashCode() {
-
         int result = Objects.hash(getName(), getDifficulty());
         result = 31 * result + Arrays.hashCode(tileMatrix);
         return result;

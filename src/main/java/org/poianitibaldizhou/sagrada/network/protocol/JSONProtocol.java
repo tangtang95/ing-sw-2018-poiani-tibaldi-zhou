@@ -48,7 +48,6 @@ public class JSONProtocol {
                 packet.put(key, convertToJSON(t));
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException();
         }
     }

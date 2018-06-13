@@ -78,4 +78,8 @@ public class SinglePlayerTest {
                 schemaCard, privateObjectiveCardList));
     }
 
+    @Test
+    public void toJSON() {
+        assertNull(player.toJSON());
+    }
 }

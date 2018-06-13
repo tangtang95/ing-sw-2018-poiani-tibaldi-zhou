@@ -187,4 +187,23 @@ public class SchemaCardWrapperTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void toStringTest() {
+        String test = "  -----   -----   -----   -----   -----  \n" +
+                "|       |   2   |   Y   |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |   4   |       |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |   R   |\n" +
+                "  -----   -----   -----   -----   -----  \n" +
+                "|       |       |       |       |       |\n" +
+                "  -----   -----   -----   -----   -----  \n";
+        assertEquals(test,fullSchemaCardWrapper.toString());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        assertNotEquals(fullSchemaCardWrapper.hashCode(), emptySchemaCard.hashCode());
+    }
 }

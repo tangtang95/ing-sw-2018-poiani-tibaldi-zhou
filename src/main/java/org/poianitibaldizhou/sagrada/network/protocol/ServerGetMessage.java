@@ -12,7 +12,6 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTur
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -88,24 +87,6 @@ public class ServerGetMessage {
             throw new IOException();
         }
         return schemaCard;
-    }
-
-    /**
-     * Get a user from client with key user.
-     *
-     * @param message json message from client.
-     * @return a user.
-     * @throws IOException thrown when there is an error in reading message with protocol.
-     */
-    public User getUser(String message) throws IOException {
-        User user;
-        try {
-            JSONObject jsonObject = serverNetworkProtocol.getResponseByKey(message, SharedConstants.USER);
-            user = User.toObject((JSONObject) jsonObject.get(SharedConstants.BODY));
-        } catch (ParseException | ClassCastException e) {
-            throw new IOException();
-        }
-        return user;
     }
 
     /**

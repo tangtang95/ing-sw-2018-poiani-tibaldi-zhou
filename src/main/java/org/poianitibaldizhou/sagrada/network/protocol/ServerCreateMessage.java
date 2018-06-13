@@ -64,6 +64,7 @@ public class ServerCreateMessage {
      *
      * @return the error message.
      */
+    @SuppressWarnings("unchecked")
     public String getGameTerminatedErrorMessage() {
         JSONObject main = new JSONObject();
         main.put(SharedConstants.TYPE, SharedConstants.ERROR_TEMINATE_GAME);
@@ -186,13 +187,6 @@ public class ServerCreateMessage {
     public ServerCreateMessage createToolCardList(@NotNull List<ToolCard> toolCards) {
         jsonServerProtocol.appendMessage(SharedConstants.TOOL_CARD_LIST_KEY, toolCards);
         return this;
-    }
-
-    /**
-     * Clear the packet.
-     */
-    public void clear() {
-        jsonServerProtocol = new JSONProtocol();
     }
 
     /**

@@ -35,4 +35,15 @@ public class PublicObjectiveCardWrapperTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void getCardPoint() {
+        assertEquals(1, publicObjectiveCardWrapper.getCardPoint());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        PublicObjectiveCardWrapper pub = new PublicObjectiveCardWrapper("test", "test", 4);
+        assertNotEquals(pub.hashCode(), publicObjectiveCardWrapper.hashCode());
+    }
 }

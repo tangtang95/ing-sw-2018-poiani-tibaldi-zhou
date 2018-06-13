@@ -5,11 +5,15 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
@@ -49,6 +53,9 @@ public class TurnStateTest {
 
     @Mock
     private ToolCard toolCard;
+
+    @Mock
+    private ExecutorEvent executorEvent;
 
     @Before
     public void setUp() throws Exception {
@@ -206,6 +213,7 @@ public class TurnStateTest {
     @Test
     public void forceSkipTurn() {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
         turnState.forceSkipTurn();
         verify(game).setState(any());
     }
@@ -213,28 +221,59 @@ public class TurnStateTest {
     @Test(expected = Exception.class)
     public void useCard() throws InvalidActionException {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
         when(toolCard.getCommands()).thenReturn(new Node<>(command1));
         turnState.useCard(player2,toolCard, iToolCardExecutorFakeObserver);
     }
 
-    @Test
-    public void placeDice() {
+    @Test(expected = Exception.class)
+    public void placeDiceExceptionTest() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.placeDice(player2, new Dice(2, Color.GREEN), new Position(1,1));
+    }
+
+    @Test(expected = Exception.class)
+    public void placeDice() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.placeDice(player1, new Dice(2, Color.GREEN), new Position(1,1));
+    }
+
+    @Test(expected = Exception.class)
+    public void fireExecutorEvent() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.fireExecutorEvent(executorEvent);
+    }
+
+    @Test(expected = Exception.class)
+    public void interruptToolCardExecutionExceptionTest() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.interruptToolCardExecution(player2);
     }
 
     @Test
-    public void fireExecutorEvent() {
-    }
+    public void interruptToolCardExecutionTest() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.interruptToolCardExecution(player1);
 
-    @Test
-    public void interruptToolCardExecution() {
     }
 
     @Test
     public void forceStateChange() {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.forceStateChange();
+        ArgumentCaptor<TurnState> argument = ArgumentCaptor.forClass(TurnState.class);
+        verify(game).setState(argument.capture());
     }
 
     @Test
     public void releaseToolCardExecution() {
+
     }
 
     @Test

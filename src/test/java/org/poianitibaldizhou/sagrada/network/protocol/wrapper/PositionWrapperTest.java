@@ -35,4 +35,16 @@ public class PositionWrapperTest {
         String message ="{\"type\":\"position\",\"body\":{\"column\":1,\"row\":1}}";
         assertEquals(message, positionWrapper.toJSON().toJSONString());
     }
+
+    @Test
+    public void toStringTest() {
+        String test = "(2, 2)";
+        assertEquals(test,positionWrapper.toString());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        PositionWrapper pos = new PositionWrapper(0,0);
+        assertNotEquals(pos.hashCode(), positionWrapper.hashCode());
+    }
 }
