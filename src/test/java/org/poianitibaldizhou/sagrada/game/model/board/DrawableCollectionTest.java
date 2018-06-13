@@ -1,18 +1,13 @@
 package org.poianitibaldizhou.sagrada.game.model.board;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.*;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.DrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IDrawableCollectionFakeObserver;
 
 import java.util.*;
@@ -29,7 +24,7 @@ public class DrawableCollectionTest {
         private static List<Dice> diceList;
 
         @Mock
-        private IDrawableCollectionFakeObserver observer1, observer2, observer3;
+        private IDrawableCollectionFakeObserver observer1;
 
         @BeforeClass
         public static void setUpClass() {
@@ -43,17 +38,17 @@ public class DrawableCollectionTest {
         }
 
         @Before
-        public void setUp() throws Exception{
+        public void setUp()  {
             MockitoAnnotations.initMocks(this);
             for (int i = 0; i < 5; i++) {
-                diceList.add(new Dice(i+1, Color.GREEN));
+                diceList.add(new Dice(i + 1, Color.GREEN));
             }
             drawableCollection = new DrawableCollection<>();
             drawableCollection.addElements(diceList);
         }
 
         @Test
-        public void toStringTest() throws Exception {
+        public void toStringTest()  {
             assertEquals(diceList.toString(), drawableCollection.toString());
         }
 
@@ -87,18 +82,15 @@ public class DrawableCollectionTest {
         }
 
         @Test
-        public void testAddElementAndDraw() throws Exception{
+        public void testAddElementAndDraw()  {
             drawableCollection.addElement(new Dice(2, Color.GREEN));
-            diceList.add(new Dice(2, Color.GREEN));
-            assertArrayEquals("Error adding a single element", diceList.toArray(), drawableCollection.toArray());
 
             int initial_size = drawableCollection.size();
             try {
                 for (int i = 0; i < initial_size - 1; i++) {
-                    Dice temp = drawableCollection.draw();
-                    diceList.remove(temp);
-                    assertArrayEquals("Error drawing an element", diceList.toArray(), drawableCollection.toArray());
-                    assertEquals("Error size", diceList.size(), drawableCollection.size());
+                    DrawableCollection<Dice> tempCollection = new DrawableCollection<>(drawableCollection.getCollection());
+                    drawableCollection.draw();
+                    assertTrue(tempCollection.getCollection().size() == drawableCollection.getCollection().size() + 1);
                 }
             } catch (EmptyCollectionException e) {
                 fail("No exception expected");
@@ -106,7 +98,7 @@ public class DrawableCollectionTest {
         }
 
         @Test
-        public void testDrawException() throws Exception{
+        public void testDrawException()  {
             int size = drawableCollection.size();
             try {
                 for (int i = 0; i < size + 1; i++) {
@@ -120,10 +112,10 @@ public class DrawableCollectionTest {
         }
 
         @Test
-        public void testAddElementsMethod() throws Exception{
+        public void testAddElementsMethod()  {
             List<Dice> diceArrayList = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
-                diceArrayList.add(new Dice(1+i, Color.PURPLE));
+                diceArrayList.add(new Dice(1 + i, Color.PURPLE));
             }
 
             drawableCollection.addElements(diceArrayList);
@@ -141,17 +133,17 @@ public class DrawableCollectionTest {
         private DrawableCollection<Dice> collection2;
         private boolean expected;
 
-        public ParameterizedPart(boolean expected, Object[] list1, Object[] list2) throws Exception{
+        public ParameterizedPart(boolean expected, Object[] list1, Object[] list2)  {
             this.expected = expected;
             collection2 = new DrawableCollection<>();
-            if(list1 != null) {
+            if (list1 != null) {
                 collection1 = new DrawableCollection<>();
                 for (Object o : list1)
                     collection1.addElement((Dice) o);
             } else {
                 collection1 = null;
             }
-            if(list2 != null) {
+            if (list2 != null) {
                 collection2 = new DrawableCollection<>();
                 for (Object o : list2)
                     collection2.addElement((Dice) o);
@@ -162,15 +154,15 @@ public class DrawableCollectionTest {
 
         @Parameterized.Parameters
         public static Collection<Object[]> data() {
-            return Arrays.asList(new Object[][] {
-                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}},
-                    {false, new Object[] {new Dice(1, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE)}},
-                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}},
-                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}, new Object[] {new Dice(3, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}},
-                    {true, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(2, Color.BLUE)}, new Object[] {new Dice(2, Color.BLUE), new Dice(1, Color.BLUE), new Dice(2, Color.BLUE)}},
-                    {false, new Object[] {new Dice(2, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[] {new Dice(2, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}},
-                    {false, new Object[] {new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(4, Color.BLUE)}, new Object[] {new Dice(4, Color.BLUE), new Dice(4, Color.BLUE), new Dice(4, Color.BLUE)}},
-                    {false, new Object[] {new Dice(1, Color.BLUE)}, null},
+            return Arrays.asList(new Object[][]{
+                    {true, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}},
+                    {false, new Object[]{new Dice(1, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE)}},
+                    {true, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}},
+                    {true, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}, new Object[]{new Dice(3, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}},
+                    {true, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(2, Color.BLUE)}, new Object[]{new Dice(2, Color.BLUE), new Dice(1, Color.BLUE), new Dice(2, Color.BLUE)}},
+                    {false, new Object[]{new Dice(2, Color.BLUE), new Dice(2, Color.BLUE), new Dice(1, Color.BLUE)}, new Object[]{new Dice(2, Color.BLUE), new Dice(2, Color.BLUE), new Dice(3, Color.BLUE)}},
+                    {false, new Object[]{new Dice(1, Color.BLUE), new Dice(2, Color.BLUE), new Dice(4, Color.BLUE)}, new Object[]{new Dice(4, Color.BLUE), new Dice(4, Color.BLUE), new Dice(4, Color.BLUE)}},
+                    {false, new Object[]{new Dice(1, Color.BLUE)}, null},
             });
         }
 
@@ -181,7 +173,7 @@ public class DrawableCollectionTest {
 
         @Test
         public void testHashCode() {
-            if(collection2 != null)
+            if (collection2 != null)
                 assertEquals(expected, collection1.hashCode() == collection2.hashCode());
         }
     }

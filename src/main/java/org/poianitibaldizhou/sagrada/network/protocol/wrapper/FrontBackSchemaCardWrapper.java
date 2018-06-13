@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.ArrayList;
@@ -26,6 +26,13 @@ public final class FrontBackSchemaCardWrapper implements JSONable{
      */
     public FrontBackSchemaCardWrapper() {
         this.schemaCards = new ArrayList<>();
+    }
+
+    /**
+     * Constructor.
+     */
+    public FrontBackSchemaCardWrapper(List<SchemaCardWrapper> schemaCardWrappers) {
+        this.schemaCards = schemaCardWrappers;
     }
 
     /**

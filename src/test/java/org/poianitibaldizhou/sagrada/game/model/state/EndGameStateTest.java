@@ -7,6 +7,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
@@ -21,8 +22,12 @@ public class EndGameStateTest {
 
     @Mock
     private Game game;
+
     @Mock
     private Player player1, player2, player3, player4;
+
+    @Mock
+    private PrivateObjectiveCard privateObjectiveCard;
 
 
     private List<Player> playerList;
@@ -206,4 +211,10 @@ public class EndGameStateTest {
         //TODO
     }
 
+    @Test
+    public void choosePrivateObjectiveCard() {
+        endGameState = new EndGameState(game,player1);
+        endGameState.choosePrivateObjectiveCard(player1, privateObjectiveCard);
+        verify(game).selectPrivateObjectiveCard(player1,privateObjectiveCard);
+    }
 }

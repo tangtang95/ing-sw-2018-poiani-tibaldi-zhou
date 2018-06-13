@@ -2,36 +2,34 @@ package org.poianitibaldizhou.sagrada.graphics.view;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
-import javafx.animation.Animation;
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.TranslateTransition;
-import javafx.application.Application;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractView extends UnicastRemoteObject {
 
-    protected final transient MultiPlayerController controller;
+    protected final transient GameController controller;
     protected final transient Pane corePane;
     protected final transient Pane notifyPane;
 
@@ -39,7 +37,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
     protected static final double PADDING = 10;
 
-    protected AbstractView(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    protected AbstractView(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super();
         this.controller = controller;
         this.corePane = corePane;
@@ -47,7 +45,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
     }
 
     //GETTER
-    public MultiPlayerController getController() {
+    public GameController getController() {
         return controller;
     }
 
@@ -249,7 +247,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
-    public static DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
+    protected   DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 

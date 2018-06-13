@@ -12,12 +12,21 @@ import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.AnswerExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.DrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.*;
@@ -247,416 +256,44 @@ public class MultiPlayerGameTest {
                 assertEquals(Outcome.LOSE.toString(), player.getOutcome().toString());
         }
     }
+    @Test
+    public void testGetPreCommands() {
+        ToolCard toolCard = new ToolCard(Color.BLUE, "name", "descr", "[1-Add dice to DraftPool]");
+        Node<ICommand> expected = new Node<>(new RemoveFavorToken(toolCard.getCost()));
+        ICommand temp = new ICommand() {
+            @Override
+            public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
+                return null;
+            }
+        };
 
-    @Test(expected = Exception.class)
-    public void testJoinException() throws Exception{
-        multiPlayerGame.userJoin("nonExistingToken");
+        expected.setLeftChild(new Node<>(temp));
+        expected.getLeftChild().setLeftChild(new Node<>(new ClearAll()));
+
+        assertEquals(expected.getData(), multiPlayerGame.getPreCommands(toolCard).getData());
+        assertEquals(expected.getLeftChild().getLeftChild().getData(), multiPlayerGame.getPreCommands(toolCard).getLeftChild()
+                .getLeftChild().getData());
     }
 
     @Test
-    public void testJoin() throws Exception {
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.userJoin(userList.get(0).getToken());
-        verify(stateGame).readyGame(userList.get(0).getToken());
-    }
-
-    @Test
-    public void testStateAndGameObserversJoinAndLeave() throws Exception {
-        Map<String, IStateFakeObserver> expectedStateMapObserver = new HashMap<>();
-        Map<String, IGameFakeObserver> expectedGameMapObserver = new HashMap<>();
-        for (int i = 0; i < multiPlayerGame.getUsers().size(); i++) {
-            multiPlayerGame.attachStateObserver(userList.get(i).getToken(), stateFakeObserverList.get(i));
-            multiPlayerGame.attachGameObserver(userList.get(i).getToken(), gameFakeObserverList.get(i));
-            expectedGameMapObserver.putIfAbsent(userList.get(i).getToken(), gameFakeObserverList.get(i));
-            expectedStateMapObserver.putIfAbsent(userList.get(i).getToken(), stateFakeObserverList.get(i));
-        }
-
-        multiPlayerGame.detachStateObserver(userList.get(0).getToken());
-        multiPlayerGame.detachGameObserver(userList.get(0).getToken());
-        expectedGameMapObserver.remove(userList.get(0).getToken());
-        expectedStateMapObserver.remove(userList.get(0).getToken());
-
-        assertEquals(expectedGameMapObserver, multiPlayerGame.getGameObservers());
-        assertEquals(expectedStateMapObserver, multiPlayerGame.getStateObservers());
-    }
-
-    @Test
-    public void testGetUserByToken() {
-        assertEquals(userList.get(0), multiPlayerGame.getUserByToken(userList.get(0).getToken()));
-    }
-
-    @Test(expected = Exception.class)
-    public void testGetUserByTokenException() {
-        multiPlayerGame.getUserByToken("nonExistingToken");
-    }
-
-    @Test
-    public void testGetListByReferences() {
-        MultiPlayer player1 = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()), createEmptySchemaCard(),
-                createMockListOfPrivateObjectiveCards());
-        MultiPlayer player2 = new MultiPlayer(userList.get(1), new FavorToken(createEmptySchemaCard().getDifficulty()),
-                createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.addNewPlayer(userList.get(1), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-
-        List<Player> playerList = new ArrayList<>();
-        playerList.add(player1);
-        playerList.add(player2);
-
-        List<Player> playerListRef = multiPlayerGame.getPlayerListReferences();
-
-        assertEquals(playerList, playerListRef);
-
-        for (Player refPlayer : playerListRef) {
-            for(Player nonRefPlayer : playerList)
-                assertFalse(refPlayer == nonRefPlayer);
-        }
-    }
-
-    @Test
-    public void testForceSkipTurn() throws Exception {
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.forceSkipTurn();
-        verify(stateGame, times(1)).forceSkipTurn();
-    }
-
-    @Test
-    public void testForce() throws Exception {
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.forceStateChange();
-        verify(stateGame, times(1)).forceStateChange();
-    }
-
-    @Test
-    public void testForceGame() throws Exception {
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.forceGameTerminationBeforeStarting();
-        verify(stateGame, times(1)).forceGameTerminationBeforeStarting();
-    }
-
-    @Test
-    public void testGameTimedOutUsers() throws Exception {
-        multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        List<User> timedOutExpected = new ArrayList<>();
-        timedOutExpected.add(userList.get(1));
-        timedOutExpected.add(userList.get(2));
-
-        assertEquals(timedOutExpected, multiPlayerGame.getTimedOutUsers());
-    }
-
-    @Test
-    public void testFireExecutionEvent() throws Exception {
-        multiPlayerGame.setState(stateGame);
-        ExecutorEvent executorEvent = new AnswerExecutorEvent(true);
-        multiPlayerGame.userFireExecutorEvent(userList.get(0).getToken(), executorEvent);
-
-        verify(stateGame, times(1)).fireExecutorEvent(executorEvent);
-    }
-
-    @Test(expected = Exception.class)
-    public void testUserSelectSchemaCardException() throws Exception {
-        multiPlayerGame.userSelectSchemaCard("nonExitingToken", createEmptySchemaCard());
-    }
-
-    @Test
-    public void testUserSelectSchemaCard() throws Exception {
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.userSelectSchemaCard(userList.get(0).getToken(), createEmptySchemaCard());
-        verify(stateGame, times(1)).ready(userList.get(0).getToken(), createEmptySchemaCard());
-    }
-
-    @Test(expected = Exception.class)
-    public void testUserPlaceDiceExceptionNotContainsToken() throws Exception {
-        multiPlayerGame.userPlaceDice("nonExistingToken", new Dice(5, Color.GREEN), new Position(0,0));
-    }
-
-    @Test(expected = Exception.class)
-    public void testUserPlaceDiceExceptionNoDiceInDraftPool() throws Exception {
-        DraftPool draftPool = new DraftPool();
-        draftPool.addDice(new Dice(2, Color.GREEN));
-        draftPool.addDice(new Dice(1, Color.BLUE));
-        multiPlayerGame.setDraftPool(draftPool);
-
-        multiPlayerGame.userPlaceDice(userList.get(0).getToken(), new Dice(2, Color.YELLOW), new Position(0,0));
-    }
-
-    @Test
-    public void testUserPlaceDice() throws Exception {
-        DraftPool draftPool = new DraftPool();
-        draftPool.addDice(new Dice(2, Color.GREEN));
-        draftPool.addDice(new Dice(1, Color.BLUE));
-        multiPlayerGame.setDraftPool(draftPool);
-        MultiPlayer player = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()), createEmptySchemaCard(),
-                createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.userPlaceDice(userList.get(0).getToken(), new Dice(2, Color.GREEN), new Position(0,0));
-        verify(stateGame, times(1)).placeDice(player, new Dice(2, Color.GREEN), new Position(0,0 ));
-    }
-
-    @Test(expected = Exception.class)
-    public void testUserUseToolCardExceptionNotPresentToken() throws Exception {
+    public void testGetPreCommandsExceution() throws Exception {
         ToolCard toolCard = mock(ToolCard.class);
-        IToolCardExecutorFakeObserver toolCardExecutorFakeObserver = mock(IToolCardExecutorFakeObserver.class);
-        multiPlayerGame.userUseToolCard("nonPresentToken", toolCard, toolCardExecutorFakeObserver);
+        ToolCardExecutor toolCardExecutor = mock(ToolCardExecutor.class);
+        SinglePlayer singlePlayer = mock(SinglePlayer.class);
+        TurnState turnState = mock(TurnState.class);
+        when(toolCard.getCost()).thenReturn(2);
+
+        Node<ICommand> preCommands = multiPlayerGame.getPreCommands(toolCard);
+        ICommand destroy = preCommands.getLeftChild().getData();
+
+        assertEquals(CommandFlow.MAIN, destroy.executeCommand(singlePlayer, toolCardExecutor, turnState));
+        verify(toolCard, times(1)).addTokens(2);
     }
 
-    @Test(expected = Exception.class)
-    public void testUseToolCardNotPresentToolCard() throws Exception {
-        ToolCard toolCard = new ToolCard(Color.GREEN, "toolcardname", "toolcarddescr", "[1-CA]");
-        IToolCardExecutorFakeObserver toolCardExecutorFakeObserver = mock(IToolCardExecutorFakeObserver.class);
-        multiPlayerGame.userUseToolCard(userList.get(0).getToken(), toolCard, toolCardExecutorFakeObserver);
-    }
-
-    @Test
-    public void testUserUseToolCard() throws Exception {
-        ToolCard toolCard = new ToolCard(Color.GREEN, "toolcardname", "toolcarddescr", "[1-CA]");
-        IToolCardExecutorFakeObserver toolCardExecutorFakeObserver = mock(IToolCardExecutorFakeObserver.class);
-
-        MultiPlayer multiPlayer = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()),
-        createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-
-        multiPlayerGame.addToolCard(toolCard);
-        multiPlayerGame.setState(stateGame);
-        multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.userUseToolCard(userList.get(0).getToken(), toolCard, toolCardExecutorFakeObserver);
-        verify(stateGame, times(1)).useCard(multiPlayer, toolCard, toolCardExecutorFakeObserver);
-    }
-
-    @Test(expected = Exception.class)
-    public void testUserChoseActionException() throws Exception {
-        multiPlayerGame.userChooseAction("nonExistToken", new PlaceDiceAction());
-    }
-
-    @Test
-    public void testUserChooseAction() throws Exception{
-        multiPlayerGame.setState(stateGame);
-        MultiPlayer player = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()),createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.userChooseAction(userList.get(0).getToken(), new PlaceDiceAction());
-        verify(stateGame, times(1)).chooseAction(player, new PlaceDiceAction());
-    }
-
-    @Test
-    public void testTerminateGame() {
-        multiPlayerGame.terminateGame();
-        verify(terminationGameManager, times(1)).terminateGame();
-    }
-
-    @Test
-    public void testSetPlayer() {
-        multiPlayerGame.setPlayer(userList.get(0).getToken(), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.setPlayer(userList.get(1).getToken(), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-
-        List<Player> playerList = new ArrayList<>();
-        MultiPlayer player = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()),
-                createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        MultiPlayer player2 = new MultiPlayer(userList.get(1), new FavorToken(createEmptySchemaCard().getDifficulty()),
-                createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        playerList.add(player);
-        playerList.add(player2);
-
-        assertEquals(playerList, multiPlayerGame.getPlayers());
-    }
-
-    @Test
-    public void testAddRemainingDiceToRoundTrack() {
-        RoundTrack roundTrack = new RoundTrack();
-        roundTrack.addDiceToRound(new Dice(4, Color.BLUE), RoundTrack.FIRST_ROUND);
-        DraftPool draftPool = new DraftPool();
-        draftPool.addDice(new Dice(2, Color.RED));
-        draftPool.addDice(new Dice(5, Color.RED));
-
-        multiPlayerGame.setRoundTrack(roundTrack);
-        multiPlayerGame.setDraftPool(draftPool);
-
-        RoundTrack newRoundTrack = RoundTrack.newInstance(roundTrack);
-        newRoundTrack.addDicesToRound(draftPool.getDices(), 1);
-
-        multiPlayerGame.addRemainingDiceToRoundTrack(1);
-
-        for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
-            assertEquals (newRoundTrack.getDices(i), multiPlayerGame.getRoundTrack().getDices(i));
-        }
-    }
-
-    @Test
-    public void testAddDiceToDraftPoolFromDiceBag() {
-        DrawableCollection<Dice> drawableCollection = new DrawableCollection<>();
-        drawableCollection.addElement(new Dice(4, Color.BLUE));
-        drawableCollection.addElement(new Dice(2, Color.GREEN));
-        drawableCollection.addElement(new Dice(1, Color.BLUE));
-        drawableCollection.addElement(new Dice(5, Color.GREEN));
-        drawableCollection.addElement(new Dice(6, Color.RED));
-        drawableCollection.addElement(new Dice(2, Color.PURPLE));
-        drawableCollection.addElement(new Dice(1, Color.YELLOW));
-
-        DraftPool draftPool = new DraftPool();
-        draftPool.addDices(drawableCollection.getCollection());
-
-        multiPlayerGame.setDiceBag(drawableCollection);
-
-        multiPlayerGame.setDraftPool(new DraftPool());
-
-        multiPlayerGame.addDicesToDraftPoolFromDiceBag();
-
-        assertEquals(draftPool, multiPlayerGame.getDraftPool());
-    }
-
-    @Test(expected = Exception.class)
-    public void testAddDiceToDraftPoolException() {
-        DrawableCollection<Dice> drawableCollection = new DrawableCollection<>();
-        drawableCollection.addElement(new Dice(4, Color.BLUE));
-        drawableCollection.addElement(new Dice(2, Color.GREEN));
-
-        multiPlayerGame.addDicesToDraftPoolFromDiceBag();
-    }
-
-    @Test
-    public void testClearDraftPool() {
-        DraftPool draftPool = new DraftPool();
-        draftPool.addDice(new Dice(2, Color.GREEN));
-
-        multiPlayerGame.setDraftPool(draftPool);
-        multiPlayerGame.clearDraftPool();
-
-        assertTrue(multiPlayerGame.getDraftPool().getDices().isEmpty());
-    }
-
-    @Test
-    public void testInitDiceBag() {
-        multiPlayerGame.initDiceBag();
-        multiPlayerGame.getDiceBag();
-
-        assertTrue(multiPlayerGame.getDiceBag().getCollection().size() == 90);
-    }
-
-    @Test
-    public void testGetCurrentPlayer() throws Exception {
-        MultiPlayer player = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()),
-                createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        when(stateGame.getCurrentPlayer()).thenReturn(player);
-        multiPlayerGame.setState(stateGame);
-
-        assertEquals(player, multiPlayerGame.getCurrentPlayer());
-    }
-
-    @Test
-    public void testDraftPoolObserver() {
-        DraftPool draftPool = new DraftPool();
-        multiPlayerGame.setDraftPool(draftPool);
-
-        IDraftPoolFakeObserver draftPoolFakeObserver = mock(IDraftPoolFakeObserver.class);
-
-        multiPlayerGame.attachDraftPoolObserver(userList.get(0).getToken(), draftPoolFakeObserver);
-
-        Map<String, IDraftPoolFakeObserver> map = new HashMap<>();
-        map.putIfAbsent(userList.get(0).getToken(), draftPoolFakeObserver);
-
-        assertEquals(draftPool.getObserverMap(), map);
-
-        multiPlayerGame.detachObservers(userList.get(0).getToken());
-
-        assertTrue(draftPool.getObserverMap().isEmpty());
-    }
-
-    @Test
-    public void testRoundTrackObserver() {
-        RoundTrack roundTrack = new RoundTrack ();
-        multiPlayerGame.setRoundTrack(roundTrack );
-
-        IRoundTrackFakeObserver roundTrackFakeObserver = mock(IRoundTrackFakeObserver.class);
-
-        multiPlayerGame.attachRoundTrackObserver(userList.get(0).getToken(), roundTrackFakeObserver);
-
-        Map<String, IRoundTrackFakeObserver> map = new HashMap<>();
-        map.putIfAbsent(userList.get(0).getToken(), roundTrackFakeObserver);
-
-        assertEquals(roundTrack.getObserverMap(), map);
-
-        multiPlayerGame.detachObservers(userList.get(0).getToken());
-
-        assertTrue(roundTrack.getObserverMap().isEmpty());
-    }
-
-    @Test
-    public void testDiceBagObserver() {
-        DrawableCollection<Dice> diceBag = new DrawableCollection<>();
-        multiPlayerGame.setDiceBag(diceBag);
-
-        GameObserverManager gameObserverManager = mock(GameObserverManager.class);
-        IDrawableCollectionObserver drawableCollectionObserver = mock(IDrawableCollectionObserver.class);
-        IDrawableCollectionFakeObserver<Dice> diceIDrawableCollectionFakeObserver = new DrawableCollectionFakeObserver<>(userList.get(0).getToken(),
-                drawableCollectionObserver, gameObserverManager);
-
-        multiPlayerGame.attachDiceBagObserver(userList.get(0).getToken(), diceIDrawableCollectionFakeObserver);
-
-        Map<String, IDrawableCollectionFakeObserver> map = new HashMap<>();
-        map.putIfAbsent(userList.get(0).getToken(), diceIDrawableCollectionFakeObserver);
-
-        assertEquals(diceBag.getObserverMap(), map);
-
-        multiPlayerGame.detachObservers(userList.get(0).getToken());
-
-        assertTrue(diceBag.getObserverMap().isEmpty());
-    }
-
-    @Test
-    public void testSchemaCardObserver() {
-        SchemaCard schemaCard = createEmptySchemaCard();
-        multiPlayerGame.setPlayer(userList.get(0).getToken(), schemaCard, createMockListOfPrivateObjectiveCards());
-
-        ISchemaCardFakeObserver schemaCardFakeObserver = mock(ISchemaCardFakeObserver.class);
-
-        multiPlayerGame.attachSchemaCardObserver(userList.get(0).getToken(), schemaCard, schemaCardFakeObserver);
-
-        Map<String, ISchemaCardFakeObserver> map = new HashMap<>();
-        map.putIfAbsent(userList.get(0).getToken(), schemaCardFakeObserver);
-
-        assertEquals(multiPlayerGame.getPlayers().get(0).getSchemaCard().getObserverMap(), map);
-
-        multiPlayerGame.detachObservers(userList.get(0).getToken());
-
-        assertTrue(multiPlayerGame.getPlayers().get(0).getSchemaCard().getObserverMap().isEmpty());
-    }
-
-    @Test
-    public void testToolCardObserver() {
-        ToolCard toolCard = new ToolCard(Color.GREEN, "name", "descr", "[1-CA]");
-        multiPlayerGame.addToolCard(toolCard);
-
-        IToolCardFakeObserver toolCardObserver = mock(IToolCardFakeObserver.class);
-
-        multiPlayerGame.attachToolCardObserver(userList.get(0).getToken(),toolCard, toolCardObserver);
-
-        Map<String, IToolCardFakeObserver> map = new HashMap<>();
-        map.putIfAbsent(userList.get(0).getToken(), toolCardObserver);
-
-        assertEquals(toolCard.getObserverMap(), map);
-
-        multiPlayerGame.detachObservers(userList.get(0).getToken());
-
-        assertTrue(toolCard.getObserverMap().isEmpty());
-    }
-
-    @Test
-    public void testPlayerObserver() {
-        MultiPlayer player = new MultiPlayer(userList.get(0), new FavorToken(createEmptySchemaCard().getDifficulty()),
-                createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-        multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
-
-        IPlayerFakeObserver playerFakeObserver = mock(IPlayerFakeObserver.class);
-
-        multiPlayerGame.attachPlayerObserver(userList.get(0).getToken(), player, playerFakeObserver);
-
-        Map<String, IPlayerFakeObserver> map = new HashMap<>();
-        map.putIfAbsent(userList.get(0).getToken(), playerFakeObserver);
-
-        assertEquals(map, multiPlayerGame.getPlayers().get(0).getObserverMap());
-
-        multiPlayerGame.detachObservers(userList.get(0).getToken());
-
-        assertTrue(multiPlayerGame.getPlayers().get(0).getObserverMap().isEmpty());
+    @Test(expected = IllegalStateException.class)
+    public void testWinnersByFavorTokenException() {
+        multiPlayerGame.setPlayersOutcome(new HashMap<>(), new MultiPlayer(userList.get(0), new FavorToken(1),createEmptySchemaCard(),
+                createMockListOfPrivateObjectiveCards()));
     }
 
     private List<PrivateObjectiveCard> createMockListOfPrivateObjectiveCards() {

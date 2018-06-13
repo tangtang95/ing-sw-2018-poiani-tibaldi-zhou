@@ -11,12 +11,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestr
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.io.Serializable;
 import java.util.*;
 
 public abstract class Player implements IVictoryPoints, JSONable {

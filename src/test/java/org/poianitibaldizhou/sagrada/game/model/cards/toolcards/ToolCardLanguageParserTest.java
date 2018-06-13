@@ -54,10 +54,10 @@ public class ToolCardLanguageParserTest {
         commands.addAtIndex(new CheckTurn(2), 32768);
         commands.addAtIndex(new CheckTurn(1), 65536);
         commands.addAtIndex(new CheckBeforeDiceChosen(), 131072);
-        commands.addAtIndex(new SkipTurn(2), 524288);
-        commands.addAtIndex(new SkipTurn(1), 1048576);
-        commands.addAtIndex(new PourOverDice(),2097152);
-        commands.addAtIndex(new ChooseColorFromRoundTrack(),4194304);
+        commands.addAtIndex(new SkipTurn(2), 262144);
+        commands.addAtIndex(new SkipTurn(1), 524288);
+        commands.addAtIndex(new PourOverDice(),1048576);
+        commands.addAtIndex(new ChooseColorFromRoundTrack(),2097152);
 
         String commandsString = new String("[1-Choose dice][2-Modify dice value by 1]" +
                 "[4-Remove dice][8-Remove dice of a certain color]" +

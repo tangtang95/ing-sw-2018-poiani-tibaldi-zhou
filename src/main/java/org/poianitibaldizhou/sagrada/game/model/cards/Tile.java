@@ -12,10 +12,9 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
-import java.io.Serializable;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;

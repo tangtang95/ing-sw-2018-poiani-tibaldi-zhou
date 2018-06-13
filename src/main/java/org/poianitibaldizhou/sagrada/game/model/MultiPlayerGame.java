@@ -9,11 +9,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAl
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.RemoveFavorToken;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
-import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.state.ResetState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;
@@ -158,8 +156,6 @@ public class MultiPlayerGame extends Game{
         List<Player> victoryPointWinners = new ArrayList<>();
         int maxVictoryPoints = Integer.MIN_VALUE;
         for (Player player : players) {
-            System.out.println(player);
-            System.out.print(scoreMap.get(player) == null);
             maxVictoryPoints = Math.max(maxVictoryPoints, scoreMap.get(player));
         }
         for (Player player : players) {

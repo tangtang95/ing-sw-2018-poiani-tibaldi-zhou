@@ -7,9 +7,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.MediatorManager;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
+import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
+import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
+import javax.xml.validation.Schema;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -17,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class GameManagerTest {
@@ -225,10 +234,26 @@ public class GameManagerTest {
         list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
         list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
 
+        IConstraint[][] constraints = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
+        for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
+                constraints[i][j] = new NoConstraint();
+            }
+        }
+
+        SchemaCard schemaCard = new SchemaCard("name", 2, constraints);
+
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(list1.get(0), new FavorToken(1), schemaCard,
+                new ArrayList<PrivateObjectiveCard>()));
+        playerList.add(new MultiPlayer(list1.get(1), new FavorToken(1), schemaCard,
+                new ArrayList<PrivateObjectiveCard>()));
+
         when(game1.getUsers()).thenReturn(list1);
+        when(game1.getPlayers()).thenReturn(playerList);
         gameManager.createMultiPlayerGame(game1, game1.getName());
 
-        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(0).hashCode()));
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(list1.get(0).getToken());
 
         assertTrue(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
 
@@ -251,5 +276,10 @@ public class GameManagerTest {
 
         assertNotNull(gameManager.getGameByName(game1.getName()));
 
+    }
+
+    @Test
+    public void testGetNetworkManager() {
+        assertNotNull(gameManager.getGameNetworkManager());
     }
 }

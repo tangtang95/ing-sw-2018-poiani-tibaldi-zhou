@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
+import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
@@ -74,11 +75,6 @@ public class ServerGetMessageTest {
     }
 
     @Test
-    public void getUser() {
-        //NOT USED//
-    }
-
-    @Test
     public void getPosition() throws IOException {
         Position position = new Position(1,1);
         String message = "{\"position\":{\"type\":\"position\",\"body\":{\"column\":1,\"row\":1}}}";
@@ -109,11 +105,6 @@ public class ServerGetMessageTest {
     }
 
     @Test
-    public void getPrivateObjectiveCard() {
-        //TODO
-    }
-
-    @Test
     public void getInteger() throws IOException {
         Integer value = 5;
         String message = "{\"integer\":{\"type\":\"integer\",\"body\":\"5\"}}";
@@ -138,5 +129,84 @@ public class ServerGetMessageTest {
     public void getBoolean() throws IOException {
         String message = "{\"boolean\":{\"type\":\"boolean\",\"body\":\"true\"}}";
         assertEquals(true, serverGetMessage.getBoolean(message));
+    }
+
+    @Test
+    public void getPrivateObjectiveCard() throws IOException {
+        String message = "{\"privateObjectiveCard\":{\"type\":\"privateObjectiveCard\",\"body\":{\"color\":\"RED\",\"name\":\"Sfumature Rosse - Privata\",\"description\":\"test\"}}}";
+        PrivateObjectiveCard privateObjectiveCard= new PrivateObjectiveCard("Sfumature Rosse - Privata", "Somma dei valori su tutti i dadi rossi", Color.RED);
+        assertEquals(privateObjectiveCard, serverGetMessage.getPrivateObjectiveCard(message));
+    }
+
+    @Test(expected = Exception.class)
+    public void getToken1() throws IOException {
+        String message ="{";
+        serverGetMessage.getToken(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getGameName1() throws IOException {
+        String message ="{";
+        serverGetMessage.getGameName(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getSchemaCard1() throws IOException {
+        String message ="{";
+        serverGetMessage.getSchemaCard(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getPosition1() throws IOException {
+        String message ="{";
+        serverGetMessage.getPosition(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getDice1() throws IOException {
+        String message ="{";
+        serverGetMessage.getDice(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getToolCard1() throws IOException {
+        String message ="{";
+        serverGetMessage.getToolCard(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getActionCommand1() throws IOException {
+        String message ="{";
+        serverGetMessage.getActionCommand(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getPrivateObjectiveCard1() throws IOException {
+        String message ="{";
+        serverGetMessage.getPrivateObjectiveCard(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getInteger1() throws IOException {
+        String message ="{";
+        serverGetMessage.getInteger(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getColor1() throws IOException {
+        String message ="{";
+        serverGetMessage.getColor(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getUserName1() throws IOException {
+        String message ="{";
+        serverGetMessage.getUserName(message);
+    }
+
+    @Test(expected = Exception.class)
+    public void getBoolean1() throws IOException {
+        String message ="{";
+        serverGetMessage.getBoolean(message);
     }
 }

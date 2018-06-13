@@ -2,13 +2,18 @@ package org.poianitibaldizhou.sagrada.lobby.model;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: represents an user with an username and a token.
+ * Username and token can't be null
+ */
 @Immutable
 public class User implements JSONable {
     private String name;
@@ -26,16 +31,22 @@ public class User implements JSONable {
      * @param name User's name
      * @param token User's token
      */
-    public User(String name, String token) {
+    public User(@NotNull String name, @NotNull String token) {
         this.name = name;
         this.token = token;
     }
 
+    /**
+     * @return user's token
+     */
     @Contract(pure = true)
     public String getToken() {
         return token;
     }
 
+    /**
+     * @return user's name
+     */
     @Contract(pure = true)
     public String getName() {
         return name;

@@ -51,4 +51,37 @@ public class DraftPoolWrapperTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void getDice() {
+        DiceWrapper test = new DiceWrapper(ColorWrapper.BLUE,5);
+        assertEquals(test, draftPoolWrapper.getDice(0));
+    }
+
+    @Test
+    public void size() {
+        assertEquals(6, draftPoolWrapper.size());
+    }
+
+    @Test
+    public void toStringTest() {
+        List<DiceWrapper> diceWrappers = new ArrayList<>();
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,5));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,2));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,1));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,6));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,3));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,6));
+        assertEquals(diceWrappers.toString(), draftPoolWrapper.toString());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        List<DiceWrapper> diceWrappers = new ArrayList<>();
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,5));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,2));
+        diceWrappers.add(new DiceWrapper(ColorWrapper.BLUE,1));
+        DraftPoolWrapper test = new DraftPoolWrapper(diceWrappers);
+        assertNotEquals(draftPoolWrapper.hashCode(), test.hashCode());
+    }
 }

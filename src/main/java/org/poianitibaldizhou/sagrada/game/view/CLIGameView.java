@@ -86,7 +86,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                 connectionManager.getGameController().bindPlayer(
                         clientCreateMessage.createTokenMessage(token).createUsernameMessage(user.getUsername()).
                                 createGameNameMessage(gameName).buildMessage(),
-                        new CLIPlayerView(cliStateView),
+                        new CLIPlayerView(cliStateView, user.getUsername()),
                         new CLISchemaCardView(cliStateView, user.getUsername())
                 );
             } catch (IOException e) {

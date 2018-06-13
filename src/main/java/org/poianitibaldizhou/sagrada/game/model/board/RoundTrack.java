@@ -5,11 +5,10 @@ import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IRoundTrackFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

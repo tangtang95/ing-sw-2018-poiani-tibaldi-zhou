@@ -26,8 +26,7 @@ import javafx.util.Duration;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IStateObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
@@ -36,6 +35,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.HistoryObject;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.ObjectMessageType;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
@@ -59,7 +59,7 @@ public class StateListener extends AbstractView implements IStateObserver {
     private static final double TOOL_CARD_SHOW_SIZE = 0.7;
     private static final double DICE_SHOW_SIZE = 0.3;
 
-    public StateListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public StateListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         sequentialTransition = new SequentialTransition();
     }
@@ -316,6 +316,10 @@ public class StateListener extends AbstractView implements IStateObserver {
 
         try {
             List<ToolCardWrapper> toolCardWrappers = controller.getToolCards();
+            if(toolCardWrappers.isEmpty()){
+                continueButton.setDisable(true);
+                return;
+            }
             List<Pane> toolCardViews = new ArrayList<>();
             toolCardWrappers.forEach(toolCard -> {
                 ToolCardView toolCardView = new ToolCardView(toolCard, TOOL_CARD_SHOW_SIZE);

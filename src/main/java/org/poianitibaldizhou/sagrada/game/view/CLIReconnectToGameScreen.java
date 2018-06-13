@@ -118,7 +118,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 Map<UserWrapper,SchemaCardWrapper> schemaCardWrappers = clientGetMessage.getSchemaCards(response);
 
                 for (UserWrapper u : userList)
-                    cliPlayerViewMap.put(u.getUsername(), new CLIPlayerView(cliStateView));
+                    cliPlayerViewMap.put(u.getUsername(), new CLIPlayerView(cliStateView, u.getUsername()));
 
                 for (ToolCardWrapper t : toolCardWrappers)
                     cliToolCardViewMap.put(t.getName(), new CLIToolCardView(cliStateView, t.getName()));

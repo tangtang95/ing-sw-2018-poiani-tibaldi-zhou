@@ -53,12 +53,6 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
             game.setState(new EndGameState(game, currentRoundPlayer));
     }
 
-    @Contract(pure = true)
-    public int getCurrentRound() {
-        return currentRound;
-    }
-
-
     @Override
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;

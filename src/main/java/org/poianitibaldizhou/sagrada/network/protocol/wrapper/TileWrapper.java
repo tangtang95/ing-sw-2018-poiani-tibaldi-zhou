@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.network.protocol.wrapper;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 import java.util.Objects;
@@ -166,7 +166,6 @@ public final class TileWrapper implements JSONable{
      */
     @Override
     public int hashCode() {
-
         return Objects.hash(getConstraint(), getDice());
     }
 }

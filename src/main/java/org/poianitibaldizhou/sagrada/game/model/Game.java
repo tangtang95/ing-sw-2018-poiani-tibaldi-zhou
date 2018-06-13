@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
- * OVERVIEW: Game represents a game, so it has all the references to the board game stuff of Sagrada. 
+ * OVERVIEW: Game represents a game, so it has all the references to the board game stuff of Sagrada.
  */
 public abstract class Game implements IGame, IGameStrategy {
 
@@ -81,6 +81,7 @@ public abstract class Game implements IGame, IGameStrategy {
 
     /**
      * Get the list of players in the game by reference
+     *
      * @return list of game's player by references
      */
     public List<Player> getPlayerListReferences() {
@@ -340,6 +341,7 @@ public abstract class Game implements IGame, IGameStrategy {
                 return;
             }
         }
+
         throw new IllegalArgumentException();
     }
 
@@ -380,8 +382,9 @@ public abstract class Game implements IGame, IGameStrategy {
      */
     @Override
     public void userPlaceDice(String token, Dice dice, Position position) throws InvalidActionException {
-        if (!containsToken(token) || !draftPool.getDices().contains(dice))
+        if (!containsToken(token) || !draftPool.getDices().contains(dice)) {
             throw new InvalidActionException();
+        }
 
         state.placeDice(players.get(token), dice, position);
         try {
@@ -416,7 +419,7 @@ public abstract class Game implements IGame, IGameStrategy {
      * {@inheritDoc}
      */
     @Override
-    public void userChooseAction(String token, IActionCommand action) throws  InvalidActionException {
+    public void userChooseAction(String token, IActionCommand action) throws InvalidActionException {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.chooseAction(players.get(token), action);
@@ -430,7 +433,6 @@ public abstract class Game implements IGame, IGameStrategy {
         if (!containsToken(token))
             throw new IllegalArgumentException();
         state.choosePrivateObjectiveCard(players.get(token), privateObjectiveCard);
-
     }
 
     /**
@@ -525,6 +527,15 @@ public abstract class Game implements IGame, IGameStrategy {
      */
     public void addToolCard(ToolCard toolCard) {
         toolCards.add(toolCard);
+    }
+
+    /**
+     * Remove the toolcard from the game
+     *
+     * @param toolCard tool card to be removed
+     */
+    public void removeToolCard(ToolCard toolCard) {
+        toolCards.remove(toolCard);
     }
 
     /**
@@ -641,4 +652,5 @@ public abstract class Game implements IGame, IGameStrategy {
             }
         }
     }
+
 }

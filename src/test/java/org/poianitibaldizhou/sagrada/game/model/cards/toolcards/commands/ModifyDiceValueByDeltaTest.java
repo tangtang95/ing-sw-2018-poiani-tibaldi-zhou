@@ -121,7 +121,7 @@ public class ModifyDiceValueByDeltaTest {
         public void testHashCode() {
             assertEquals(new ModifyDiceValueByDelta(4).hashCode(), new ModifyDiceValueByDelta(4).hashCode());
             assertNotEquals(new ModifyDiceValueByDelta(2).hashCode(), new ModifyDiceValueByDelta(4).hashCode());
-            assertEquals(new ModifyDiceValueByDelta(4).hashCode(), new ModifyDiceValue().hashCode());
+            assertNotEquals(new ModifyDiceValueByDelta(4).hashCode(), new ModifyDiceValue().hashCode());
         }
     }
 }

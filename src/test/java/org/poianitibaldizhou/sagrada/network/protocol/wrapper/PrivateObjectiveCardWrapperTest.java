@@ -36,4 +36,10 @@ public class PrivateObjectiveCardWrapperTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void hashCodeTest() {
+        PrivateObjectiveCardWrapper privateObjectiveCard = new PrivateObjectiveCardWrapper("test1", "test", ColorWrapper.YELLOW);
+        assertNotEquals(privateObjectiveCard.hashCode(), privateObjectiveCardWrapper.hashCode());
+    }
 }

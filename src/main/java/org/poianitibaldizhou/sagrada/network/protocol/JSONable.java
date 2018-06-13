@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.network.observers.fakeobservers;
+package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.json.simple.JSONObject;
 

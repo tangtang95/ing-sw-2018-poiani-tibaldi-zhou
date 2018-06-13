@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.players;
 
 import org.json.simple.JSONObject;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
+import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 public enum Outcome implements JSONable{

@@ -35,4 +35,10 @@ public class ToolCardWrapperTest {
             e.printStackTrace();
         }
     }
+
+    @Test
+    public void hashCodeTest() {
+        ToolCardWrapper tool = new ToolCardWrapper("test", "test", ColorWrapper.RED, 1);
+        assertNotEquals(tool.hashCode(), toolCardWrapper.hashCode());
+    }
 }

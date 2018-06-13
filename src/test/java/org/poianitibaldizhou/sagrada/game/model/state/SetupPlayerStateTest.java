@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.MultiPlayerGame;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
+import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IGameFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IStateFakeObserver;
 
@@ -38,6 +39,9 @@ public class SetupPlayerStateTest {
 
     @Mock
     private IStateFakeObserver state1obs, state2obs, state3obs, state4obs;
+
+    @Mock
+    private User user1, user2, user3;
 
     private String player1, player2, player3, player4;
 
@@ -87,7 +91,7 @@ public class SetupPlayerStateTest {
     }
 
     @Test
-    public void initTest() throws Exception {
+    public void initTest() {
         SetupPlayerState state = new SetupPlayerState(game);
         state.init();
         for (String token : playerList) {
@@ -150,9 +154,28 @@ public class SetupPlayerStateTest {
 
 
     @Test
-    public void containsSchemaCard() throws Exception {
+    public void containsSchemaCard() {
         List<FrontBackSchemaCard> schemaCards = setupPlayerState.getSchemaCardsOfPlayer(player1);
         assertTrue(setupPlayerState.containsSchemaCard(player1, schemaCards.get(0).getSchemaCards().get(0)));
     }
 
+    @Test
+    public void forceStateChange() {
+        List<User> userList = new ArrayList<>();
+        userList.add(user1);
+        userList.add(user2);
+        userList.add(user3);
+
+        when(game.getUsers()).thenReturn(userList);
+        doNothing().when(game).setPlayer(any(),any(),any());
+        when(user1.getToken()).thenReturn("player1");
+        when(user2.getToken()).thenReturn("player2");
+        when(user3.getToken()).thenReturn("player3");
+        setupPlayerState.forceStateChange();
+        verify(player1Obs).onPlayersCreate(userList);
+        verify(player2Obs).onPlayersCreate(userList);
+        verify(player3Obs).onPlayersCreate(userList);
+        verify(player4Obs).onPlayersCreate(userList);
+
+    }
 }

@@ -62,14 +62,6 @@ public class RoundStartStateTest {
         verify(game).setState(ArgumentMatchers.any(TurnState.class));
     }
 
-    @Test(expected = InvalidActionException.class)
-    public void throwDicesTestException() throws Exception{
-        when(game.isSinglePlayer()).thenReturn(true);
-        when(game.getNumberOfDicesToDraw()).thenReturn(SinglePlayerGame.NUMBER_OF_DICES_TO_DRAW);
-        roundStartState = new RoundStartState(game, 0, currentPlayer);
-        roundStartState.init();
-    }
-
     @Test
     public void throwDicesTestMultiPlayer() throws Exception{
         assertEquals("DiceBag size error", 90, diceBag.size());

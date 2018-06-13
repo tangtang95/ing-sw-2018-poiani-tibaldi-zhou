@@ -68,7 +68,7 @@ public class CheckTurnTest {
     public void testHashCode() {
         assertEquals(new CheckTurn(1).hashCode(), new CheckTurn(1).hashCode());
         assertNotEquals(new CheckTurn(1).hashCode(), new CheckTurn(2).hashCode());
-        assertEquals(new CheckTurn(1), new AddDiceToDiceBag());
+        assertNotEquals(new CheckTurn(1), new AddDiceToDiceBag());
     }
 
     @Test

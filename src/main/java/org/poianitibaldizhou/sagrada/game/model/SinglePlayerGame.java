@@ -154,6 +154,7 @@ public class SinglePlayerGame extends Game {
         Node<ICommand> useDiceCommand = new Node<>(new PayDice(toolCard.getColor()));
         Node<ICommand> destroyToolCard = new Node<>((player, toolCardExecutor, turnState) -> {
             toolCard.destroyToolCard();
+            turnState.removeToolCard(toolCard);
             return CommandFlow.MAIN;
         });
 

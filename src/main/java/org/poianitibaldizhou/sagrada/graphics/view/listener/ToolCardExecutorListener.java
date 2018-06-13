@@ -22,7 +22,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.MultiPlayerController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
@@ -52,7 +52,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     private static final double SCHEMA_CARD_SHOW_SCALE = 0.45;
     private static final double DICE_SCHEMA_SHOW_SCALE = 0.3;
 
-    protected ToolCardExecutorListener(MultiPlayerController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public ToolCardExecutorListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         historyMessages = new ArrayList<>();
     }

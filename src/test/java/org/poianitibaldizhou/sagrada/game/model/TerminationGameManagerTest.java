@@ -5,6 +5,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -20,24 +22,10 @@ public class TerminationGameManagerTest {
 
     @Test
     public void testTerminateCall() {
-        TerminationGameManager terminationGameManager = new TerminationGameManager("gameNameTest", gameManager);
+        TerminationGameManager terminationGameManager = new TerminationGameManager(anyString(), gameManager);
 
         terminationGameManager.terminateGame();
 
-        verify(gameManager, times(1)).terminateGame("gameNameTest");
-    }
-
-    @Test
-    public void testNoTerminateCall() {
-        TerminationGameManager terminationGameManager = new TerminationGameManager("gameNameTest", gameManager);
-
-        verify(gameManager, times(0)).terminateGame("gameNameTest");
-    }
-
-    @Test
-    public void testWithTerminationWithAnotherName() {
-        TerminationGameManager terminationGameManager = new TerminationGameManager("gameNameTest", gameManager);
-
-        verify(gameManager, times(0)).terminateGame("gameNameTestDifferetn");
+        verify(gameManager, times(1)).terminateGame(anyString());
     }
 }

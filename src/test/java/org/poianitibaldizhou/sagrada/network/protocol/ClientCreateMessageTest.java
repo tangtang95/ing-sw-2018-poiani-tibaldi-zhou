@@ -119,4 +119,14 @@ public class ClientCreateMessageTest {
         String message = "{\"actionKey\":{\"type\":\"useToolCardAction\",\"body\":{}}}";
         assertEquals(message,clientCreateMessage.createActionMessage(iActionWrapper).buildMessage());
     }
+
+    @Test
+    public void createPrivateObjectiveCardMessage() {
+        PrivateObjectiveCardWrapper privateObjectiveCardWrapper = new PrivateObjectiveCardWrapper("test",
+                "test", ColorWrapper.GREEN);
+        String message = "{\"privateObjectiveCard\":{\"type\":\"privateObjectiveCard\",\"body\":{\"color\":\"GREEN\",\"name\":\"test\",\"description\":\"test\"}}}";
+        assertEquals(message,
+                clientCreateMessage.createPrivateObjectiveCardMessage(
+                        privateObjectiveCardWrapper).buildMessage());
+    }
 }

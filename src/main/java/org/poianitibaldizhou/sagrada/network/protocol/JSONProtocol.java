@@ -4,7 +4,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.JSONable;
 
 import java.util.*;
 
@@ -49,7 +48,6 @@ public class JSONProtocol {
                 packet.put(key, convertToJSON(t));
             }
         } catch (IllegalArgumentException | IndexOutOfBoundsException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException();
         }
     }

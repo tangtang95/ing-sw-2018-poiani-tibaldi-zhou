@@ -11,9 +11,18 @@ import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ColumnPubli
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDraftPool;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IGameFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -26,9 +35,7 @@ import java.util.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 public class SinglePlayerGameTest {
 
@@ -165,42 +172,37 @@ public class SinglePlayerGameTest {
     }
 
     @Test
-    public void testSelectPrivateObjectiveCard() {
-        SinglePlayer singlePlayer = new SinglePlayer(user, new ExpendableDice(singlePlayerGame), schemaCard, privateObjectiveCards);
-        singlePlayer.setPrivateObjectiveCard(privateObjectiveCards.get(0));
-        singlePlayerGame.addNewPlayer(user, schemaCard, privateObjectiveCards);
-        singlePlayerGame.selectPrivateObjectiveCard(singlePlayer, privateObjectiveCards.get(0));
+    public void testGetPreCommands() {
+        ToolCard toolCard = new ToolCard(Color.BLUE, "name", "descr", "[1-Add dice to DraftPool]");
+        Node<ICommand> expected = new Node<>(new PayDice(Color.BLUE));
+        ICommand temp = new ICommand() {
+            @Override
+            public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
+                return null;
+            }
+        };
 
-        assertEquals(singlePlayer.getPrivateObjectiveCard(), singlePlayerGame.getPlayers().get(0).getPrivateObjectiveCard());
-    }
+        expected.setLeftChild(new Node<>(temp));
+        expected.getLeftChild().setLeftChild(new Node<>(new ClearAll()));
 
-    @Test(expected = Exception.class)
-    public void testGetIndexOfPlayerException() {
-        singlePlayerGame.getNextPlayer(new SinglePlayer(user, new ExpendableDice(singlePlayerGame), schemaCard, privateObjectiveCards),
-                Direction.COUNTER_CLOCKWISE);
-    }
-
-    @Test
-    public void testAddPublicObjectiveCard() {
-        PublicObjectiveCard publicObjectiveCard = new ColumnPublicObjectiveCard("name", "descr", 2, ObjectiveCardType.NUMBER);
-        singlePlayerGame.addPublicObjectiveCard(publicObjectiveCard);
-        assertEquals(Collections.singletonList(publicObjectiveCard), singlePlayerGame.getPublicObjectiveCards());
-    }
-
-    @Test(expected = Exception.class)
-    public void testUserChoosePrivateObjectiveCardException() throws Exception {
-        PrivateObjectiveCard privateObjectiveCard = mock(PrivateObjectiveCard.class);
-        singlePlayerGame.userChoosePrivateObjectiveCard("notExistingToken", privateObjectiveCard);
+        assertEquals(expected.getData(), singlePlayerGame.getPreCommands(toolCard).getData());
+        assertEquals(expected.getLeftChild().getLeftChild().getData(), singlePlayerGame.getPreCommands(toolCard).getLeftChild()
+                .getLeftChild().getData());
     }
 
     @Test
-    public void testUserChoosePrivateObjectiveCard() throws Exception {
-        PrivateObjectiveCard privateObjectiveCard = new PrivateObjectiveCard("name", "descr", Color.BLUE);
-        SinglePlayer singlePlayer = new SinglePlayer(user, new ExpendableDice(singlePlayerGame), schemaCard, privateObjectiveCards);
-        singlePlayerGame.addNewPlayer(user, schemaCard, privateObjectiveCards);
-        singlePlayerGame.setState(stateGame);
-        singlePlayerGame.userChoosePrivateObjectiveCard(user.getToken(), privateObjectiveCard);
-        verify(stateGame, times(1)).choosePrivateObjectiveCard(singlePlayer, privateObjectiveCard);
+    public void testGetPreCommandsExceution() throws Exception {
+        ToolCard toolCard = mock(ToolCard.class);
+        ToolCardExecutor toolCardExecutor = mock(ToolCardExecutor.class);
+        SinglePlayer singlePlayer = mock(SinglePlayer.class);
+        TurnState turnState = mock(TurnState.class);
+        when(toolCard.getColor()).thenReturn(Color.BLUE);
+
+        Node<ICommand> preCommands = singlePlayerGame.getPreCommands(toolCard);
+        ICommand destroy = preCommands.getLeftChild().getData();
+
+        assertEquals(CommandFlow.MAIN, destroy.executeCommand(singlePlayer, toolCardExecutor, turnState));
+        verify(toolCard, times(1)).destroyToolCard();
     }
 
 }

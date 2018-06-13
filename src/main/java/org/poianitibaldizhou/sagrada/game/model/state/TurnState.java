@@ -14,14 +14,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.IPlayerState;
-import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
 
-import java.rmi.RemoteException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -143,8 +140,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
         if (player != currentTurnPlayer)
             throw new InvalidActionException();
-        if (!playerState.useCard(player, toolCard))
+        if (!playerState.useCard(player, toolCard)) {
+            playerState.releaseToolCardExecution();
             throw new InvalidActionException();
+        }
 
         Node<ICommand> preCommands = game.getPreCommands(toolCard);
         toolCardExecutor.setPreCommands(preCommands);
@@ -272,7 +271,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     public Player getCurrentTurnPlayer() {
-        return currentTurnPlayer;
+        return getCurrentPlayer();
     }
 
     public boolean isFirstTurn() {
@@ -287,6 +286,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     // MODIFIERS
+    public void removeToolCard(ToolCard toolCard) {
+        game.removeToolCard(toolCard);
+    }
+
     public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers) {
         this.skipTurnPlayers.clear();
         this.skipTurnPlayers.putAll(skipTurnPlayers);
@@ -318,5 +321,4 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     public void notifyOnEndTurnState() {
         game.getStateObservers().forEach((key, value) -> value.onEndTurnState(currentTurnPlayer.getUser()));
     }
-
 }

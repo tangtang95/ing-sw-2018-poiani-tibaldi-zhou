@@ -7,6 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 public class FrontBackSchemaCardWrapperTest {
@@ -37,6 +40,7 @@ public class FrontBackSchemaCardWrapperTest {
         constraints[2][4] = new TileWrapper(ColorWrapper.RED.name());
         constraints[0][1] = new TileWrapper("2");
         fullSchemaCardWrapper = new SchemaCardWrapper("test3", 2, constraints);
+
     }
 
     @Test
@@ -99,5 +103,13 @@ public class FrontBackSchemaCardWrapperTest {
     @Test
     public void toJsonTest() {
         assertEquals(null, frontBackSchemaCardWrapper.toJSON());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        List<SchemaCardWrapper> schemaCardWrappers = new ArrayList<>();
+        schemaCardWrappers.add(emptySchemaCard);
+        FrontBackSchemaCardWrapper test = new FrontBackSchemaCardWrapper(schemaCardWrappers);
+        assertNotEquals(test.hashCode(), frontBackSchemaCardWrapper.hashCode());
     }
 }

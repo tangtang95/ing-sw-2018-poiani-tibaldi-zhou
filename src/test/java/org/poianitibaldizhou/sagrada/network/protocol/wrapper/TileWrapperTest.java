@@ -35,4 +35,19 @@ public class TileWrapperTest {
         String message = "{\"type\":\"tile\",\"body\":{\"dice\":{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":4}},\"constraint\":4}}";
         assertEquals(message, tileWrapper.toJSON().toJSONString());
     }
+
+    @Test
+    public void toStringTest() {
+        String testDice = "4/B";
+        assertEquals(testDice, tileWrapper.toString());
+        TileWrapper tile = new TileWrapper("4");
+        String test = " 4 ";
+        assertEquals(test, tile.toString());
+    }
+
+    @Test
+    public void hashCodeTest() {
+        TileWrapper tile = new TileWrapper("4");
+        assertNotEquals(tile.hashCode(), tileWrapper.hashCode());
+    }
 }

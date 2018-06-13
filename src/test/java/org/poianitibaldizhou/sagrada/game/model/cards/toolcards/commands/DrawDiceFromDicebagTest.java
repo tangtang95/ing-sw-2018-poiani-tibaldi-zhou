@@ -67,7 +67,7 @@ public class DrawDiceFromDicebagTest {
     @Test
     public void testHashCode() {
         assertEquals(new DrawDiceFromDicebag().hashCode(), new DrawDiceFromDicebag().hashCode());
-        assertEquals(new DrawDiceFromDicebag().hashCode(), new AddDiceToDraftPool().hashCode());
+        assertNotEquals(new DrawDiceFromDicebag().hashCode(), new AddDiceToDraftPool().hashCode());
     }
 
 }

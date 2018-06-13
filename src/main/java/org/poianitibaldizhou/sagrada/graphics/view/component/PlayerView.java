@@ -18,12 +18,20 @@ public class PlayerView extends Pane {
     private double fontSize;
 
     public PlayerView(UserWrapper userWrapper, int favorTokens, double fontSize) {
-        this.fontSize = fontSize;
+        this(userWrapper, fontSize);
         this.favorTokens = favorTokens;
+        drawFavorTokens(favorTokens);
+    }
+
+    public PlayerView(UserWrapper userWrapper, int favorTokens) {
+        this(userWrapper, favorTokens, 10);
+    }
+
+    public PlayerView(UserWrapper userWrapper, double fontSize){
+        this.fontSize = fontSize;
         nameLabel = new Label(userWrapper.getUsername());
         nameLabel.setFont(Font.font(fontSize));
         nameLabel.getStyleClass().add("player-label");
-        drawFavorTokens(favorTokens);
 
         this.getChildren().add(nameLabel);
     }
@@ -42,10 +50,6 @@ public class PlayerView extends Pane {
         coinCanvas.translateXProperty().bind(nameLabel.widthProperty().add(coinCanvas.widthProperty().divide(3)));
         coinCanvas.translateYProperty().bind(nameLabel.heightProperty().subtract(coinCanvas.heightProperty()));
         this.getChildren().add(coinCanvas);
-    }
-
-    public PlayerView(UserWrapper userWrapper, int favorTokens) {
-        this(userWrapper, favorTokens, 10);
     }
 
     public void decreaseFavorToken(Integer favorTokenUsed) {
