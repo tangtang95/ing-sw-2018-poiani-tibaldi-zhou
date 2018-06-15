@@ -24,7 +24,7 @@ public class RoundTrack implements JSONable {
     private final Map<String, IRoundTrackFakeObserver> observerMap;
     private int numberOfDices;
 
-    public static final int NUMBER_OF_TRACK = 10;
+    public static final int NUMBER_OF_TRACK = 1;
     public static final int FIRST_ROUND = 0;
     public static final int LAST_ROUND = NUMBER_OF_TRACK - 1;
 

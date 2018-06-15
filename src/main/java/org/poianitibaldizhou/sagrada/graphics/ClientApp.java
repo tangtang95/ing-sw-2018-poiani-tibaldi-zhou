@@ -36,11 +36,10 @@ public class ClientApp extends Application {
         scenes.setBackground(Background.EMPTY);
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
 
         Parent root = loader.load();
         Controller controller = loader.getController();
-        controller.setStage(primaryStage);
         controller.setSceneManager(sceneManager);
         sceneManager.pushScene(root);
 
@@ -56,6 +55,8 @@ public class ClientApp extends Application {
 
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setFullScreenExitHint("");
+        primaryStage.setMaxWidth(fixedSize.getWidth());
+        primaryStage.setMaxHeight(fixedSize.getHeight());
         primaryStage.setScene(scene);
         primaryStage.show();
     }

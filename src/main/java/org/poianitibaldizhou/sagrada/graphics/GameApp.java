@@ -28,7 +28,6 @@ public class GameApp extends Application {
 
         Parent root = loader.load();
         Controller controller = loader.getController();
-        controller.setStage(primaryStage);
         controller.setSceneManager(sceneManager);
         sceneManager.pushScene(root);
 

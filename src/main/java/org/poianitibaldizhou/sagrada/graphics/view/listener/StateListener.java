@@ -43,6 +43,7 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,6 +53,8 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     private transient HBox helperBox;
     private transient HBox topBarBox;
+
+    private Map<UserWrapper, Integer> victoryPoints;
 
     private static final double DURATION_IN_MILLIS = 1500;
 
@@ -189,13 +192,16 @@ public class StateListener extends AbstractView implements IStateObserver {
     }
 
     @Override
-    public void onVictoryPointsCalculated(String victoryPoints) throws IOException {
-        // TODO
+    public void onVictoryPointsCalculated(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        victoryPoints = parser.getVictoryPoint(message);
     }
 
     @Override
-    public void onResultGame(String winner) throws IOException {
-        // TODO
+    public void onResultGame(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        UserWrapper winner = parser.getUserWrapper(message);
+        Platform.runLater(() -> controller.pushScorePlayerScene(winner, victoryPoints));
     }
 
     @Override

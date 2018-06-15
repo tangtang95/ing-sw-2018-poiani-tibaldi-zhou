@@ -8,8 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.exception.NetworkException;
 import org.poianitibaldizhou.sagrada.graphics.model.LobbyModel;
-import org.poianitibaldizhou.sagrada.graphics.view.LobbyView;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
+import org.poianitibaldizhou.sagrada.graphics.view.LobbyView;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
@@ -80,10 +80,9 @@ public class LobbyController extends Controller implements Initializable {
         try {
             Parent root = loader.load();
             GameController controller = loader.getController();
-            controller.setStage(stage);
             controller.setSceneManager(sceneManager);
             controller.initMultiPlayerGame(lobbyModel.getToken(), lobbyModel.getUsername(), gameName, lobbyModel.getConnectionManager());
-            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.pushScene(root));
+            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
         } catch (NetworkException e) {

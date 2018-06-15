@@ -1,7 +1,9 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.poianitibaldizhou.sagrada.exception.NetworkException;
@@ -56,7 +58,7 @@ public class GameController extends Controller implements Initializable {
         initNotifyPane();
     }
 
-    private void initListeners(){
+    private void initListeners() {
         try {
             draftPoolListener = new DraftPoolListener(this, corePane, notifyPane);
             roundTrackListener = new RoundTrackListener(this, corePane, notifyPane,
@@ -237,4 +239,17 @@ public class GameController extends Controller implements Initializable {
     }
 
 
+    public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
+
+        try {
+            Parent root = loader.load();
+            ScorePlayerController controller = loader.getController();
+            controller.setSceneManager(sceneManager);
+            controller.initScoreScene(winner, victoryPoints);
+            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
+        } catch (IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+        }
+    }
 }

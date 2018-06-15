@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
@@ -32,9 +33,8 @@ public class GameTestApp extends Application{
 
         Parent root = loader.load();
         GameController controller = loader.getController();
-        controller.setStage(primaryStage);
         controller.setSceneManager(sceneManager);
-        ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.RMI.getPort(), ConnectionType.RMI);
+        ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.SOCKET.getPort(), ConnectionType.SOCKET);
         controller.initMultiPlayerGame(String.valueOf("cordero1".hashCode()), "cordero1", "corderoGame", connectionManager);
         sceneManager.pushScene(root);
 
@@ -45,8 +45,10 @@ public class GameTestApp extends Application{
         String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
         scene.getStylesheets().add(css);
 
-        root.scaleXProperty().bind(scene.widthProperty().divide(fixedSize.getWidth()));
-        root.scaleYProperty().bind(scene.widthProperty().divide(fixedSize.getWidth()));
+        scenes.scaleXProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
+                scene.heightProperty().divide(fixedSize.getHeight())), 1));
+        scenes.scaleYProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
+                scene.heightProperty().divide(fixedSize.getHeight())), 1));
 
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setFullScreenExitHint("");

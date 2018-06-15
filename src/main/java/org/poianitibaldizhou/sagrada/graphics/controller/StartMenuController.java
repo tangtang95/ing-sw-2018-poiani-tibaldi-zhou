@@ -216,7 +216,7 @@ public class StartMenuController extends Controller implements Initializable {
 
     @FXML
     public void quitGame(ActionEvent actionEvent) {
-        playSceneTransition(rootPane, (event) -> stage.close());
+        playSceneTransition(sceneManager.getCurrentScene(), (event) -> stage.close());
     }
 
     @FXML
@@ -232,9 +232,8 @@ public class StartMenuController extends Controller implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/lobby.fxml"));
 
             try {
-                Pane root = loader.load();
+                Parent root = loader.load();
                 LobbyController controller = loader.getController();
-                controller.setStage(stage);
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
@@ -267,7 +266,6 @@ public class StartMenuController extends Controller implements Initializable {
             try {
                 Pane root = loader.load();
                 GameController controller = loader.getController();
-                controller.setStage(stage);
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
