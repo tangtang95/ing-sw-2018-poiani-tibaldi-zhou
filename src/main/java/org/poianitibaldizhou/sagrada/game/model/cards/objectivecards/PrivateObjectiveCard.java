@@ -141,7 +141,7 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
                             (String) privateObjectiveCard.get(GameInjector.CARD_DESCRIPTION),
                             Color.valueOf((String) privateObjectiveCard.get("cardColor")));
             }
-        } catch (IOException | ParseException e) {
+        } catch (IOException | ParseException | NullPointerException e) {
             return null;
         }
         return null;

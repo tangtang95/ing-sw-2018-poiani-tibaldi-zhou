@@ -10,10 +10,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 

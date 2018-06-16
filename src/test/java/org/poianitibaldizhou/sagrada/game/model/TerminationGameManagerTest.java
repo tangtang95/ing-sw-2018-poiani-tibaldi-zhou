@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -28,4 +27,5 @@ public class TerminationGameManagerTest {
 
         verify(gameManager, times(1)).terminateGame(anyString());
     }
+
 }

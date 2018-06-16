@@ -4,6 +4,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
@@ -11,9 +13,12 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
+import java.io.IOException;
 import java.util.Objects;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 public class PrivateObjectiveCardTest {
 
@@ -25,6 +30,7 @@ public class PrivateObjectiveCardTest {
 
     @DataPoint
     public static IConstraint[][] constraints;
+
 
     @BeforeClass
     public static void setUpClass() {
@@ -138,6 +144,28 @@ public class PrivateObjectiveCardTest {
         org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
         try {
             assertTrue((Objects.requireNonNull(PrivateObjectiveCard.toObject((JSONObject) jsonParser.parse(message)))).equals(privateObjectiveCard));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testToObjectException(){
+        String message = "{}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertNull(PrivateObjectiveCard.toObject((JSONObject) jsonParser.parse(message)));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void testToObjectException2(){
+        String message = "{\"name\":\"Sfumature Marroni\"}";
+        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
+        try {
+            assertNull(PrivateObjectiveCard.toObject((JSONObject) jsonParser.parse(message)));
         } catch (ParseException e) {
             e.printStackTrace();
         }

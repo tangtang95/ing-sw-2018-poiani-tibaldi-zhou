@@ -1,10 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
+import com.sun.javafx.collections.MappingChange;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.*;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
+import org.poianitibaldizhou.sagrada.exception.RuleViolationException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
@@ -16,6 +18,8 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ExecutorEvent;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionState;
+import org.poianitibaldizhou.sagrada.game.model.state.playerstate.UseCardState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.EndTurnAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
@@ -56,6 +60,12 @@ public class TurnStateTest {
 
     @Mock
     private ExecutorEvent executorEvent;
+
+    @Mock
+    private SelectActionState iPlayerState;
+
+    @Mock
+    private PlaceDiceState placeDiceState;
 
     @Before
     public void setUp() throws Exception {
@@ -226,6 +236,40 @@ public class TurnStateTest {
         turnState.useCard(player2,toolCard, iToolCardExecutorFakeObserver);
     }
 
+    @Test
+    public void useCard1() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+
+        ToolCard toolCard = new ToolCard(Color.PURPLE,
+                "Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][16-CA]");
+
+        when(iPlayerState.useCard(player1, toolCard)).thenReturn(true);
+
+        turnState.setPlayerState(iPlayerState);
+        turnState.useCard(player1,toolCard, iToolCardExecutorFakeObserver);
+        //TODO
+    }
+
+    @Test(expected = Exception.class)
+    public void useCard2() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+
+        ToolCard toolCard = new ToolCard(Color.PURPLE,
+                "Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][16-CA]");
+
+        when(iPlayerState.useCard(player1, toolCard)).thenReturn(false);
+
+        turnState.setPlayerState(iPlayerState);
+        turnState.useCard(player1,toolCard, iToolCardExecutorFakeObserver);
+
+    }
+
     @Test(expected = Exception.class)
     public void placeDiceExceptionTest() throws InvalidActionException {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);
@@ -234,9 +278,21 @@ public class TurnStateTest {
     }
 
     @Test(expected = Exception.class)
+    public void placeDiceException1() throws InvalidActionException, RuleViolationException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        Dice dice = new Dice(2, Color.GREEN);
+        Position position = new Position(1,1);
+        turnState.setPlayerState(placeDiceState);
+        doThrow(RuleViolationException.class).when(placeDiceState).placeDice(player1,dice,position);
+        turnState.placeDice(player1, dice,position );
+    }
+
+    @Test
     public void placeDice() throws InvalidActionException {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);
         turnState.init();
+        turnState.setPlayerState(iPlayerState);
         turnState.placeDice(player1, new Dice(2, Color.GREEN), new Position(1,1));
     }
 
@@ -273,23 +329,57 @@ public class TurnStateTest {
 
     @Test
     public void releaseToolCardExecution() {
-
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.setPlayerState(new UseCardState(turnState));
+        turnState.releaseToolCardExecution();
+        assertTrue(turnState.getPlayerState() instanceof SelectActionState);
     }
 
     @Test
-    public void hasActionUsed() {
+    public void hasActionUsed() throws InvalidActionException {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.setPlayerState(iPlayerState);
+        turnState.placeDice(player1, new Dice(2, Color.GREEN), new Position(1,1));
+        assertTrue(turnState.hasActionUsed(new PlaceDiceAction()));
     }
 
     @Test
     public void getSkipTurnPlayers() {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        assertTrue(turnState.getSkipTurnPlayers() != null);
     }
 
     @Test
     public void setSkipTurnPlayers() {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        Map<Player, Integer> skipPlayers = new HashMap<>();
+        turnState.setSkipTurnPlayers(skipPlayers);
+        assertTrue(turnState.getSkipTurnPlayers() != null);
     }
 
     @Test
+    public void removeToolCard() {
+        ToolCard toolCard = new ToolCard(Color.PURPLE,
+                "Pinza Sgrossatrice",
+                "Dopo aver scelto un dado, aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                "[1-Choose dice][2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][16-CA]");
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        doNothing().when(game).removeToolCard(toolCard);
+        turnState.removeToolCard(toolCard);
+        verify(game).removeToolCard(toolCard);
+
+    }
+
+    @Test(expected = Exception.class)
     public void addSkipTurnPlayer() {
+        TurnState turnState = new TurnState(game, 0, player1, player1, true);
+        turnState.init();
+        turnState.addSkipTurnPlayer(player1, 500);
     }
 
     @Test

@@ -64,4 +64,21 @@ public class RoundTrackWrapperTest {
     public void toJsonTest() {
         assertEquals(null, roundTrackWrapper.toJSON());
     }
+
+    @Test
+    public void hashCodeTest() {
+        List<List<DiceWrapper>> dicesPerRound = new ArrayList<>();
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        dicesPerRound.add(new ArrayList<>());
+        RoundTrackWrapper roundTrackWrapper1 = new RoundTrackWrapper(dicesPerRound);
+        assertNotEquals(roundTrackWrapper.hashCode(), roundTrackWrapper1.hashCode());
+    }
 }
