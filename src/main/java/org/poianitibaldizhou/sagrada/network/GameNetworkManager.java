@@ -40,13 +40,22 @@ public class GameNetworkManager {
         return viewMap.get(token);
     }
 
+
     /**
-     * Return the map of client tokens and their view
-     *
-     * @return map of client tokens and their view
+     * Returns true if the network manager manages a view identified by token
+     * @param token client's token
+     * @return true if client is managed, false otherwise
      */
-    public Map<String, IGameView> getGameViewMap() {
-        return viewMap;
+    public boolean containsToken(String token) {
+        return viewMap.containsKey(token);
+    }
+
+    /**
+     * Remove the client identified by token
+     * @param token client's token
+     */
+    public void removeToken(String token){
+        viewMap.remove(token);
     }
 
     // MODIFIER
