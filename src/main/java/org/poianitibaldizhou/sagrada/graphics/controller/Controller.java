@@ -16,7 +16,6 @@ import java.util.Map;
 
 public abstract class Controller {
 
-    protected Stage stage;
     protected SceneManager sceneManager;
 
     public void setSceneManager(SceneManager sceneManager) {

@@ -54,8 +54,6 @@ public class GraphicsUtils {
     public static ImageView getImageView(String keyName, String imageResourcePath, String jsonResourcePath, double scale){
         Image image = new Image(GraphicsUtils.class.getClassLoader().getResourceAsStream(imageResourcePath));
         ImageView imageView = new ImageView(image);
-        imageView.setCache(true);
-        imageView.setCacheHint(CacheHint.SCALE);
         changeViewport(imageView, keyName, jsonResourcePath, scale);
         return imageView;
     }
@@ -77,8 +75,6 @@ public class GraphicsUtils {
     public static ImageView getSimpleImageView(String imageResourcePath, double scale){
         Image image = new Image(GraphicsUtils.class.getClassLoader().getResourceAsStream(imageResourcePath));
         ImageView imageView = new ImageView(image);
-        imageView.setCache(true);
-        imageView.setCacheHint(CacheHint.SCALE);
         imageView.setFitWidth(image.getWidth()*scale);
         imageView.setFitHeight(image.getHeight()*scale);
         return imageView;

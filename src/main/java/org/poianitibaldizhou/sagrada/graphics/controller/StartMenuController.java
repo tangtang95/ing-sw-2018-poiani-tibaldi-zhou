@@ -216,7 +216,7 @@ public class StartMenuController extends Controller implements Initializable {
 
     @FXML
     public void quitGame(ActionEvent actionEvent) {
-        playSceneTransition(sceneManager.getCurrentScene(), (event) -> stage.close());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.getPrimaryStage().close());
     }
 
     @FXML

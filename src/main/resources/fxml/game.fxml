@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.StackPane?>
 
 
-<StackPane styleClass="background" fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.poianitibaldizhou.sagrada.graphics.controller.GameController">
+<StackPane styleClass="background" fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1280.0" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.poianitibaldizhou.sagrada.graphics.controller.GameController">
    <children>
       <Pane fx:id="corePane" prefHeight="200.0" prefWidth="200.0" />
       <Pane fx:id="notifyPane" prefHeight="200.0" prefWidth="200.0" />

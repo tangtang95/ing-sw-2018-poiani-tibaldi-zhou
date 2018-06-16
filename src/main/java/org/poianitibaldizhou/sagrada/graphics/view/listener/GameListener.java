@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.transform.Rotate;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
@@ -493,7 +494,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             cardView.translateXProperty().bind(getPivotX(cardX, cardView.widthProperty(), 0.5));
             cardView.translateYProperty().bind(getPivotY(y, cardView.heightProperty(), 0.5));
         }
+        cardView.setRotate(angle*180/Math.PI - 90);
         corePane.getChildren().add(cardView);
+        cardView.toFront();
     }
 
     private void onPrivateObjectivePressed(MouseEvent event) {

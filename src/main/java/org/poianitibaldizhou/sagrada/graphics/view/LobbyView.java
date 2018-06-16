@@ -39,35 +39,19 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     private static final int COLUMNS = 4;
 
     private static final double RETRO_IMAGE_SCALE = 0.6;
-    private static final double BUTTON_FONT_SCALE = 0.3;
-    private static final double PADDING = 10;
 
     public LobbyView(LobbyController controller, Pane corePane) throws RemoteException {
         this.controller = controller;
         this.corePane = corePane;
         this.userViews = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < COLUMNS; i++) {
             UserView userView = new UserView(RETRO_IMAGE_SCALE);
             this.userViews.add(userView);
         }
         GraphicsUtils.drawCenteredPanes(corePane, userViews, "on-board-pane", getCenterX(),
                 getPivotY(getCenterY(), userViews.get(0).heightProperty(), 0.5));
-        // TODO Hbox for title label
-        Label titleLabel = new Label("Stanza Lobby");
-        titleLabel.getStyleClass().add("big-title");
-        titleLabel.translateXProperty().bind(getPivotX(getCenterX(), titleLabel.widthProperty(), 0.5));
 
-        JFXButton button = GraphicsUtils.getButton("Lascia la lobby", "negative-button");
-        button.setFont(Font.font(corePane.getPrefHeight()/6));
-        button.setOnAction(this::onLeaveButtonPressed);
-        button.translateXProperty().bind(getPivotX(getCenterX(), button.widthProperty(), 0.5));
-        button.translateYProperty().bind(getHeight().subtract(PADDING*10).subtract(button.heightProperty()));
-        corePane.getChildren().addAll(titleLabel, button);
         this.numberOfUsers = 0;
-    }
-
-    private void onLeaveButtonPressed(ActionEvent actionEvent) {
-        controller.onLeaveLobbyButton(actionEvent);
     }
 
     public void addUser(UserWrapper user) {
@@ -118,11 +102,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     @Override
     public void onUserJoin(String message) throws IOException {
-        Platform.runLater(() -> {
-            clearGrid();
-            List<UserWrapper> users = controller.getUsers();
-            users.stream().forEach(this::addUser);
-        });
+        Platform.runLater(this::updateUserViews);
 
     }
 
@@ -131,11 +111,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         ClientGetMessage parser = new ClientGetMessage();
         UserWrapper user = parser.getUserWrapper(message);
         if(!user.getUsername().equals(controller.getMyUsername())) {
-            Platform.runLater(() -> {
-                clearGrid();
-                List<UserWrapper> users = controller.getUsers();
-                users.stream().forEach(this::addUser);
-            });
+            Platform.runLater(this::updateUserViews);
         }
     }
 
@@ -152,6 +128,36 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     @Override
     public void onPing() throws IOException {
         Logger.getAnonymousLogger().log(Level.FINEST, "onPing");
+    }
+
+    private void updateUserViews(){
+        clearGrid();
+        List<UserWrapper> users = controller.getUsers();
+        users.stream().forEach(this::addUser);
+        if(numberOfUsers > 1){
+            setTimeoutLabel();
+        }
+        else if(numberOfUsers == 0){
+            hideTimeoutLabel();
+        }
+    }
+
+    private void setTimeoutLabel(){
+        try {
+            long currentTime = System.currentTimeMillis();
+            int serverTimeout = controller.getTimeout();
+            long delayTime = System.currentTimeMillis() - currentTime;
+            System.out.println(delayTime);
+            System.out.println(serverTimeout);
+            System.out.println(serverTimeout*1000 - delayTime);
+            controller.onTimeoutSet(serverTimeout*1000 - delayTime);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void hideTimeoutLabel() {
+        controller.hideTimeoutLabel();
     }
 
     @Override

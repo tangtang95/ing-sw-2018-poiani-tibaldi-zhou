@@ -36,7 +36,7 @@ public class ClientApp extends Application {
         scenes.setBackground(Background.EMPTY);
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
 
         Parent root = loader.load();
         Controller controller = loader.getController();
@@ -49,14 +49,12 @@ public class ClientApp extends Application {
         scene.getStylesheets().add(css);
 
         scenes.scaleXProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
-                scene.heightProperty().divide(fixedSize.getHeight())), 1));
+                scene.heightProperty().divide(fixedSize.getHeight())), 1.5));
         scenes.scaleYProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
-                scene.heightProperty().divide(fixedSize.getHeight())), 1));
+                scene.heightProperty().divide(fixedSize.getHeight())), 1.5));
 
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setFullScreenExitHint("");
-        primaryStage.setMaxWidth(fixedSize.getWidth());
-        primaryStage.setMaxHeight(fixedSize.getHeight());
         primaryStage.setScene(scene);
         primaryStage.show();
     }
