@@ -1,15 +1,18 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import org.poianitibaldizhou.sagrada.exception.NetworkException;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
-import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.utils.Difficulty;
+import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.view.MultiPlayerGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.view.SinglePlayerGameViewStrategy;
+import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
@@ -53,9 +56,13 @@ public class GameController extends Controller implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initNotifyPane();
+    }
+
+    private void initListeners() {
         try {
             draftPoolListener = new DraftPoolListener(this, corePane, notifyPane);
-            roundTrackListener = new RoundTrackListener(this, corePane, notifyPane);
+            roundTrackListener = new RoundTrackListener(this, corePane, notifyPane,
+                    new RoundTrackView(gameViewStrategy.getRoundTrackScale()));
             stateListener = new StateListener(this, corePane, notifyPane);
             gameListener = new GameListener(this, corePane, notifyPane);
             diceBagListener = new DiceBagListener(this, corePane, notifyPane);
@@ -74,6 +81,7 @@ public class GameController extends Controller implements Initializable {
 
     public void initMultiPlayerGame(String token, String username, String gameName, ConnectionManager connectionManager) throws NetworkException {
         gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        initListeners();
         gameModel = new GameModel(username, token, gameName, connectionManager);
         try {
             gameModel.joinGame(gameListener, gameListener, stateListener,
@@ -85,6 +93,7 @@ public class GameController extends Controller implements Initializable {
 
     public void initSinglePlayerGame(String username, Difficulty difficulty, ConnectionManager connectionManager) throws NetworkException {
         gameViewStrategy = new SinglePlayerGameViewStrategy(this, corePane, notifyPane);
+        initListeners();
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createUsernameMessage(username).createValueMessage(difficulty.getDifficulty()).buildMessage();
@@ -223,5 +232,24 @@ public class GameController extends Controller implements Initializable {
 
     public void destroyToolCard(ToolCardListener toolCardListener) {
         gameListener.destroyToolCard(toolCardListener);
+    }
+
+    public void choosePrivateObjectiveCard(PrivateObjectiveCardWrapper privateObjectiveCardWrapper) throws IOException {
+        gameModel.choosePrivateObjectiveCard(privateObjectiveCardWrapper);
+    }
+
+
+    public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
+
+        try {
+            Parent root = loader.load();
+            ScorePlayerController controller = loader.getController();
+            controller.setSceneManager(sceneManager);
+            controller.initScoreScene(winner, victoryPoints);
+            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
+        } catch (IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+        }
     }
 }

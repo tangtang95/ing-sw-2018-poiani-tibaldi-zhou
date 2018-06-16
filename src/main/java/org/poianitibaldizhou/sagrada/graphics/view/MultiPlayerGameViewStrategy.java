@@ -1,18 +1,15 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
+import com.jfoenix.controls.JFXDialog;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
-
-import java.util.Map;
 
 public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
+
 
     private GameController gameController;
     private Pane corePane;
@@ -20,7 +17,9 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
 
     private static final double SCHEMA_CARD_SCALE = 0.25;
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.25;
-    private static final double ROUND_TRACK_SCALE = 0.25;
+    private static final double ROUND_TRACK_SCALE = 0.5;
+    private static final double TOOL_CARD_SCALE = 0.3;
+    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.3;
 
     private static final double PADDING = 10;
 
@@ -56,17 +55,7 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
     }
 
     @Override
-    public DoubleBinding getSchemaCardCenterX(DoubleBinding offsetX) {
-        return corePane.widthProperty().divide(2).add(offsetX);
-    }
-
-    @Override
-    public DoubleBinding getSchemaCardCenterY(DoubleBinding offsetY) {
-        return corePane.widthProperty().divide(2).add(offsetY);
-    }
-
-    @Override
-    public SchemaCardView drawSchemaCardView(SchemaCardWrapper schemaCardWrapper, double angle) {
+    public SchemaCardView drawSchemaCardView(Pane corePane, SchemaCardWrapper schemaCardWrapper, double angle) {
         // CALCULATE SCHEMA CARD POSITION
         DoubleBinding distance;
         if (Math.abs(Math.abs(angle) - 2 * Math.PI) < 0.0001f || Math.abs(Math.abs(angle) - Math.PI) < 0.0001f)
@@ -80,12 +69,22 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
         SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SCALE);
         schemaCardView.setRotate(angle * 180.0 / Math.PI - 90);
         DoubleBinding distanceSchemaCard = getCenterY().subtract(schemaCardView.heightProperty().divide(1.8));
-        schemaCardView.translateXProperty().bind(getPivotX(getCenterX().add(offsetX), schemaCardView.widthProperty(), 0.5)
-                .add(distanceSchemaCard.multiply(Math.cos(angle))));
-        schemaCardView.translateYProperty().bind(getPivotY(getCenterY().add(offsetY), schemaCardView.heightProperty(), 0.5)
-                .add(distanceSchemaCard.multiply(Math.sin(angle))));
+        schemaCardView.translateXProperty().bind(getPivotX(getCenterX().add(offsetX),
+                schemaCardView.widthProperty(), 0.5).add(distanceSchemaCard.multiply(Math.cos(angle))));
+        schemaCardView.translateYProperty().bind(getPivotY(getCenterY().add(offsetY),
+                schemaCardView.heightProperty(), 0.5).add(distanceSchemaCard.multiply(Math.sin(angle))));
         corePane.getChildren().addAll(schemaCardView);
         return schemaCardView;
+    }
+
+    @Override
+    public double getPublicObjectiveCardScale() {
+       return PUBLIC_OBJECTIVE_CARD_SCALE;
+    }
+
+    @Override
+    public double getToolCardScale() {
+        return TOOL_CARD_SCALE;
     }
 
     protected DoubleBinding getWidth() {
@@ -119,6 +118,5 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
     public static DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
-
 
 }

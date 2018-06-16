@@ -18,7 +18,6 @@ import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
-import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 import org.poianitibaldizhou.sagrada.graphics.view.component.*;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IGameObserver;
@@ -42,15 +41,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private transient Map<UserWrapper, SchemaCardListener> schemaCardViewMap;
     private transient List<ToolCardListener> toolCardListeners;
 
-    private transient IGameViewStrategy gameViewStrategy;
-
     private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.3;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.4;
-    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.35;
-    private static final double TOOL_CARD_SCALE = 0.35;
-    private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 0.7;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.7;
-    private static final double TOOL_CARD_SHOW_SCALE = 0.7;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.6;
+    private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 0.65;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.65;
+    private static final double TOOL_CARD_SHOW_SCALE = 0.65;
 
     private static final double PADDING = 10;
 
@@ -126,7 +121,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers = parser.getPublicObjectiveCards(message);
 
         Platform.runLater(() -> {
-            this.drawPublicObjectiveCards(publicObjectiveCardWrappers);
+            publicObjectiveCardsContainer = drawPublicObjectiveCardsView(corePane, publicObjectiveCardWrappers,
+                    controller.getGameViewStrategy().getPublicObjectiveCardScale());
+            publicObjectiveCardsContainer.setOnMousePressed(this::onPublicObjectiveCardsPressed);
             controller.setRoundTrack();
             controller.setDraftPool();
         });
@@ -142,7 +139,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         List<ToolCardWrapper> toolCardWrappers = parser.getToolCards(message);
 
         Platform.runLater(() -> {
-            this.drawToolCards(toolCardWrappers);
+            this.drawToolCards(toolCardWrappers, controller.getGameViewStrategy().getToolCardScale());
         });
     }
 
@@ -206,7 +203,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
         continueButton.setOnAction(event -> {
             if (toggleGroup.getSelectedToggle() == null) {
-                showMessage(notifyPane, "Devi scegliere una delle due window pattern", MessageType.ERROR);
+                showMessage(notifyPane, "Devi scegliere una delle due Carte Schema fronte o retro", MessageType.ERROR);
                 return;
             }
             FrontBackSchemaCardView schemaCardView = (FrontBackSchemaCardView) toggleGroup.getSelectedToggle().getUserData();
@@ -243,6 +240,37 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     }
 
     private void showChoosePrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
+        List<Pane> privateObjectiveCardViews = new ArrayList<>();
+        privateObjectiveCards.forEach(privateObjectiveCardWrapper ->
+                privateObjectiveCardViews.add(new PrivateObjectiveCardView(privateObjectiveCardWrapper,
+                        PRIVATE_OBJECTIVE_CARD_SHOW_SCALE)));
+        drawCenteredPanes(notifyPane, privateObjectiveCardViews, "on-notify-pane-card");
+        ToggleGroup toggleGroup = new ToggleGroup();
+        drawRadioButtons(toggleGroup, privateObjectiveCardViews);
+        HBox helperBox = showHelperText(notifyPane,
+                "Prima del calcolo dei punti scegli una delle Carte Private che desideri");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.SOMETIMES);
+
+        JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+        continueButton.setOnAction(event -> {
+            if (toggleGroup.getSelectedToggle() == null) {
+                showMessage(notifyPane, "Devi scegliere una delle Carte Private", MessageType.ERROR);
+                return;
+            }
+            PrivateObjectiveCardView privateObjectiveCardView = (PrivateObjectiveCardView) toggleGroup
+                    .getSelectedToggle().getUserData();
+            try {
+                controller.choosePrivateObjectiveCard(privateObjectiveCardView.getPrivateObjectiveCardWrapper());
+                toggleGroup.getToggles().forEach(toggle -> ((RadioButton)toggle).setDisable(true));
+                ((Button) event.getSource()).setDisable(true);
+            } catch (IOException e) {
+                showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+                e.printStackTrace();
+            }
+        });
+
+        helperBox.getChildren().addAll(spacer, continueButton);
     }
 
     private void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
@@ -253,7 +281,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             final double angle = 2 * Math.PI * i / ((orderedUsers.size() == 3) ? orderedUsers.size() + 1 :
                     orderedUsers.size()) + Math.PI / 2 + ((i == 2 && orderedUsers.size() == 3) ? Math.PI / 2 : 0);
 
-            SchemaCardView schemaCardView = controller.getGameViewStrategy().drawSchemaCardView(
+            SchemaCardView schemaCardView = controller.getGameViewStrategy().drawSchemaCardView(corePane,
                     schemaCardWrapperMap.get(orderedUsers.get(i)), angle);
 
             // CALCULATE PRIVATE OBJECTIVE CARD POSITION
@@ -326,29 +354,30 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         return playerView;
     }
 
-    private void drawPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers) {
+    public Pane drawPublicObjectiveCardsView(Pane corePane, List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double scale) {
+        Pane container = new Pane();
+        container.getStyleClass().add("on-board-card");
 
-        publicObjectiveCardsContainer = new Pane();
 
-        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING);
-        DoubleBinding y = new SimpleDoubleProperty(0).add(PADDING);
-
-        publicObjectiveCardsContainer.translateXProperty().bind(x.add(toolCardsContainer.widthProperty().add(PADDING * 4)));
-        publicObjectiveCardsContainer.translateYProperty().bind(y);
+        DoubleBinding y = new SimpleDoubleProperty(PADDING)
+                .add(corePane.heightProperty().multiply(AbstractView.HELPER_BAR_PERCENT_HEIGHT));
 
         for (int i = 0; i < publicObjectiveCardWrappers.size(); i++) {
             PublicObjectiveCardView publicObjectiveCardView = new PublicObjectiveCardView(
-                    publicObjectiveCardWrappers.get(i), PUBLIC_OBJECTIVE_CARD_SCALE);
-            publicObjectiveCardView.setTranslateX(i * PADDING);
-            publicObjectiveCardView.setTranslateY(i * PADDING);
+                    publicObjectiveCardWrappers.get(i), scale);
+            publicObjectiveCardView.setTranslateX((publicObjectiveCardWrappers.size()-i-1)*PADDING);
+            publicObjectiveCardView.setTranslateY(i*PADDING);
 
-            publicObjectiveCardsContainer.getChildren().add(publicObjectiveCardView);
+            container.getChildren().add(publicObjectiveCardView);
         }
 
-        publicObjectiveCardsContainer.setOnMousePressed(this::onPublicObjectiveCardsPressed);
-        publicObjectiveCardsContainer.getStyleClass().add("on-board-card");
+        container.translateXProperty().bind(corePane.widthProperty()
+                .subtract(PADDING*(publicObjectiveCardWrappers.size()+1))
+                .subtract(container.widthProperty()));
+        container.translateYProperty().bind(y);
+        corePane.getChildren().add(container);
 
-        corePane.getChildren().add(publicObjectiveCardsContainer);
+        return container;
     }
 
 
@@ -373,18 +402,19 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         event.consume();
     }
 
-    private void drawToolCards(List<ToolCardWrapper> toolCardWrappers) {
+    private void drawToolCards(List<ToolCardWrapper> toolCardWrappers, double scale) {
 
         toolCardsContainer = new Pane();
 
-        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING);
-        DoubleBinding y = new SimpleDoubleProperty(0).add(PADDING);
+        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING*2);
+        DoubleBinding y = new SimpleDoubleProperty(0).add(corePane.heightProperty()
+                .multiply(AbstractView.HELPER_BAR_PERCENT_HEIGHT).add(PADDING));
 
         toolCardsContainer.translateXProperty().bind(x);
         toolCardsContainer.translateYProperty().bind(y);
 
         for (int i = 0; i < toolCardWrappers.size(); i++) {
-            ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), TOOL_CARD_SCALE);
+            ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), scale);
             toolCardView.setTranslateX(i * PADDING);
             toolCardView.setTranslateY(i * PADDING);
             try {

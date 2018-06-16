@@ -29,7 +29,6 @@ public class GameTestApp3 extends Application{
 
         Parent root = loader.load();
         GameController controller = loader.getController();
-        controller.setStage(primaryStage);
         controller.setSceneManager(sceneManager);
         ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.RMI.getPort(), ConnectionType.RMI);
         controller.initMultiPlayerGame(String.valueOf("cordero3".hashCode()), "cordero3", "corderoGame", connectionManager);

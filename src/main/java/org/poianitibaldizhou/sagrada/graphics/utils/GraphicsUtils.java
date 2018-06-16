@@ -2,16 +2,20 @@ package org.poianitibaldizhou.sagrada.graphics.utils;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXRadioButton;
+import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.Event;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.CacheHint;
+import javafx.scene.Group;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
@@ -19,10 +23,13 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class GraphicsUtils {
+
+    private static final double PADDING = 10;
 
     private GraphicsUtils(){
         throw new IllegalStateException("Cannot instantiate GraphicsUtils");
@@ -108,8 +115,9 @@ public class GraphicsUtils {
 
     public static void drawCenteredPanes(Pane targetPane, List<Pane> panes, String classCSS,
                                          DoubleBinding centerX, DoubleBinding posY) {
+
         for (int i = 0; i < panes.size(); i++) {
-            DoubleBinding padding = panes.get(i).widthProperty().divide(2);
+            DoubleBinding padding = new SimpleDoubleProperty().add(PADDING*2);
             DoubleBinding totalWidth = panes.get(i).widthProperty().multiply(panes.size())
                     .add(padding.multiply(panes.size() - 1));
             DoubleBinding x = centerX.subtract(totalWidth.divide(2))
@@ -117,7 +125,6 @@ public class GraphicsUtils {
 
             panes.get(i).translateXProperty().bind(getPivotX(x, panes.get(i).widthProperty(), 1));
             panes.get(i).translateYProperty().bind(posY);
-            panes.get(i).setOnMousePressed(Event::consume);
             if(!classCSS.isEmpty())
                 panes.get(i).getStyleClass().add(classCSS);
             targetPane.getChildren().add(panes.get(i));

@@ -219,7 +219,6 @@ public class TurnStateTest {
         assertNotEquals(player2, turnState.getCurrentRoundPlayer());
     }
 
-
     @Test
     public void forceSkipTurn() {
         TurnState turnState = new TurnState(game, 0, player1, player1, true);

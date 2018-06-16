@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane styleClass="background" stylesheets="@../stylesheet/visible-big.css" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.poianitibaldizhou.sagrada.graphics.controller.ScorePlayerController">
+   <children>
+      <BorderPane>
+         <center>
+            <HBox alignment="CENTER">
+               <children>
+                  <JFXTreeTableView fx:id="tableView" prefHeight="400.0" prefWidth="997.0" />
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="30.0" left="60.0" right="60.0" top="30.0" />
+               </padding>
+            </HBox>
+         </center>
+         <bottom>
+            <HBox alignment="CENTER" minHeight="-Infinity" prefHeight="100.0" BorderPane.alignment="CENTER">
+               <children>
+                  <JFXButton buttonType="RAISED" onAction="#onBackButtonAction" styleClass="positive-button" text="Torna alla schermata principale">
+                     <font>
+                        <Font size="28.0" />
+                     </font>
+                  </JFXButton>
+               </children>
+            </HBox>
+         </bottom>
+         <top>
+            <HBox alignment="CENTER" minHeight="100" BorderPane.alignment="CENTER">
+               <children>
+                  <Label fx:id="winnerLabel" styleClass="big-title" />
+               </children>
+            </HBox>
+         </top>
+      </BorderPane>
+   </children>
+</StackPane>

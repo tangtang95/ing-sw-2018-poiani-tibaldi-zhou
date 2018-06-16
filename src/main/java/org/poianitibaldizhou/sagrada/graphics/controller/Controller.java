@@ -10,15 +10,14 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
+import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+
+import java.util.Map;
 
 public abstract class Controller {
 
     protected Stage stage;
     protected SceneManager sceneManager;
-
-    public void setStage(Stage stage){
-        this.stage = stage;
-    }
 
     public void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
