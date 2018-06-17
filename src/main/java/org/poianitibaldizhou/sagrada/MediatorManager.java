@@ -58,8 +58,8 @@ public class MediatorManager {
      */
     public boolean isAlreadyPlayingAGame(String username) {
         for(IGame game : gameManager.getGameList()) {
-            for(Player player : game.getPlayers()) {
-                if(player.getUser().getName().equals(username))
+            for(User user : game.getUsers()) {
+                if(user.getName().equals(username))
                     return true;
             }
         }

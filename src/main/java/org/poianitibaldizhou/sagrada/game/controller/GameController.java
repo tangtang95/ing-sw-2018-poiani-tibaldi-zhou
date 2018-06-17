@@ -689,11 +689,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             }
 
             // Attaching observer and view regarding the re-connected player
-            if (gameNetworkManager.containsToken(token)) {
-                gameNetworkManager.replaceView(token, gameView);
-            } else {
-                gameNetworkManager.putView(token, gameView);
-            }
+            gameNetworkManager.putView(token, gameView);
 
             //
             HashMap<String, ISchemaCardObserver> schemaCardObserverHashMapToken = new HashMap<>();
@@ -716,7 +712,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
             // Notify reconnection
             notifyReconnection(gameName, token, userName);
-
         }
     }
 
@@ -1296,8 +1291,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 gameManager.getPlayersByGame(game.getName()).containsAll(playerKeys))) {
             return false;
         }
-        if (!((schemaCardsKey.containsAll(gameManager.getPlayersByGame(game.getName()))) &&
-                (gameManager.getPlayersByGame(game.getName()).containsAll(schemaCardsKey)))) {
+        if (!((schemaCardsKey.containsAll(gameManager.getPlayersByGame(game.getName()))) && (gameManager.getPlayersByGame(game.getName()).containsAll(schemaCardsKey)))) {
             return false;
         }
 
