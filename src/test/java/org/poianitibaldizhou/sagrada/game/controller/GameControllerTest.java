@@ -29,11 +29,13 @@ import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.util.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -1952,11 +1954,116 @@ public class GameControllerTest {
         verify(gameNetworkManager).removeToken(tokenUser2);
     }
 
-    @Test
-    public void testAttemptReconnect() throws Exception {
+    @Test(expected = Exception.class)
+    public void testAttemptReconnectOfNotPlayingUser() throws Exception {
         when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser);
+        tokenList.add(tokenUser2);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+
+        String clientMessage = clientCreateMessage.createUsernameMessage("notExistingUsername").buildMessage();
+        String response = gameController.attemptReconnect(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getGameName(response);
     }
 
+    @Test
+    public void testAttemptReConnect() throws Exception {
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser);
+        tokenList.add(tokenUser2);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        String response = gameController.attemptReconnect(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        assertEquals(gameName, clientGetMessage.getGameName(response));
+    }
+
+    @Test(expected = Exception.class)
+    public void testAttemptReconnectOfNonDisconnectedUser() throws Exception {
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser);
+        tokenList.add(tokenUser2);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        String response = gameController.attemptReconnect(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getGameName(response);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetToolCardsNotContainedTokenInGameNetworkManager() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName).buildMessage();
+        String response = gameController.getToolCards(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getToolCards(response);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetToolCardsTerminatedGame() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+        when(gameManager.notContainsGame(gameName)).thenReturn(false);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName).buildMessage();
+        String response = gameController.getToolCards(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getToolCards(response);
+    }
+
+    @Test
+    public void testGetToolCards() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+        when(gameManager.notContainsGame(gameName)).thenReturn(false);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+
+        List<ToolCard> toolCards = new ArrayList<>();
+        toolCards.add(new ToolCard(Color.BLUE ,"Name", "Descr", "[1-CA]"));
+
+        when(game.getToolCards()).thenReturn(toolCards);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName).buildMessage();
+        String response = gameController.getToolCards(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        List<ToolCardWrapper> toolCardWrapperList = clientGetMessage.getToolCards(response);
+
+        assertEquals(toolCards.size(), toolCardWrapperList.size());
+        assertEquals(toolCards.get(0).getName(), toolCardWrapperList.get(0).getName());
+        assertEquals(toolCards.get(0).getDescription(), toolCardWrapperList.get(0).getDescription());
+        assertEquals(toolCards.get(0).getColor().toString(), toolCardWrapperList.get(0).getColor().toString());
+        assertEquals(0, toolCardWrapperList.get(0).getToken());
+    }
 
     private void verifyHandleIOException() {
         verify(gameObserverManager).signalDisconnection(tokenUser);
