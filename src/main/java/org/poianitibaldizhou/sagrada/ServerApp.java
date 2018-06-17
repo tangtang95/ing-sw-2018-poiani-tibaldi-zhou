@@ -24,7 +24,7 @@ public class ServerApp {
         LobbyController lobbyController = new LobbyController(managerMediator.getLobbyManager());
         GameController gameController = new GameController(managerMediator.getGameManager());
         ControllerManager controllerManager = new ControllerManager(gameController, lobbyController);
-        System.out.println(">>> Controller exported");
+        System.out.println(">>> controller exported");
 
         new Thread(() -> {
             ServerSocket serverSocket = null;

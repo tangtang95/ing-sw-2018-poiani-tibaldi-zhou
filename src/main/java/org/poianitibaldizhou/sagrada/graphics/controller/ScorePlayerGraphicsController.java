@@ -16,7 +16,7 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class ScorePlayerController extends Controller implements Initializable{
+public class ScorePlayerGraphicsController extends GraphicsController implements Initializable{
 
 
     @FXML

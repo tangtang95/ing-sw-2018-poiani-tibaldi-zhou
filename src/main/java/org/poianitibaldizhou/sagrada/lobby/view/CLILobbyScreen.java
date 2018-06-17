@@ -38,7 +38,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     private final transient ConsoleListener consoleListener;
 
     /**
-     * Controller of the lobby.
+     * GraphicsController of the lobby.
      */
     private final transient ILobbyController controller;
 

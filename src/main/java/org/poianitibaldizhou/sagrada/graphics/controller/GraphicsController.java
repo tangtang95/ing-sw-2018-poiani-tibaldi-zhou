@@ -14,7 +14,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.util.Map;
 
-public abstract class Controller {
+public abstract class GraphicsController {
 
     protected SceneManager sceneManager;
 

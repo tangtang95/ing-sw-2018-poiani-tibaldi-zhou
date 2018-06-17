@@ -1,19 +1,15 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
-import com.jfoenix.controls.JFXButton;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.event.ActionEvent;
-import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
 import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.IView;
-import org.poianitibaldizhou.sagrada.graphics.controller.LobbyController;
+import org.poianitibaldizhou.sagrada.graphics.controller.LobbyGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -30,7 +26,7 @@ import java.util.logging.Logger;
 public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObserver{
 
 
-    private transient LobbyController controller;
+    private transient LobbyGraphicsController controller;
     private transient Pane corePane;
 
     private transient List<Pane> userViews;
@@ -40,7 +36,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private static final double RETRO_IMAGE_SCALE = 0.6;
 
-    public LobbyView(LobbyController controller, Pane corePane) throws RemoteException {
+    public LobbyView(LobbyGraphicsController controller, Pane corePane) throws RemoteException {
         this.controller = controller;
         this.corePane = corePane;
         this.userViews = new ArrayList<>();
@@ -147,9 +143,6 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
             long currentTime = System.currentTimeMillis();
             int serverTimeout = controller.getTimeout();
             long delayTime = System.currentTimeMillis() - currentTime;
-            System.out.println(delayTime);
-            System.out.println(serverTimeout);
-            System.out.println(serverTimeout*1000 - delayTime);
             controller.onTimeoutSet(serverTimeout*1000 - delayTime);
         } catch (IOException e) {
             e.printStackTrace();

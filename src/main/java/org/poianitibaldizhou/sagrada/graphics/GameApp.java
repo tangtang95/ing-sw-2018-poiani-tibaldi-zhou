@@ -7,7 +7,7 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.poianitibaldizhou.sagrada.graphics.controller.Controller;
+import org.poianitibaldizhou.sagrada.graphics.controller.GraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 
@@ -27,7 +27,7 @@ public class GameApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         Parent root = loader.load();
-        Controller controller = loader.getController();
+        GraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
         sceneManager.pushScene(root);
 

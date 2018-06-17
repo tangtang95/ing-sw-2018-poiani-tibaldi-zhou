@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
@@ -17,7 +17,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
     private transient ToolCardView toolCardView;
     private String toolCardName;
 
-    public ToolCardListener(ToolCardView toolCardView, GameController controller,
+    public ToolCardListener(ToolCardView toolCardView, GameGraphicsController controller,
                                Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.toolCardView = toolCardView;

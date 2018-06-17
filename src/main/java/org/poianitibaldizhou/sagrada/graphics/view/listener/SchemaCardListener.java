@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCardObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -21,7 +21,7 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
     private transient SchemaCardView schemaCardView;
     private String username;
 
-    public SchemaCardListener(SchemaCardView schemaCardView, GameController controller,
+    public SchemaCardListener(SchemaCardView schemaCardView, GameGraphicsController controller,
                                  Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.username = userWrapper.getUsername();

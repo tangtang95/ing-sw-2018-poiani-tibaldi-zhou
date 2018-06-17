@@ -21,14 +21,12 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LobbyController extends Controller implements Initializable {
+public class LobbyGraphicsController extends GraphicsController implements Initializable {
 
     @FXML
     public Pane corePane;
@@ -83,7 +81,7 @@ public class LobbyController extends Controller implements Initializable {
 
         try {
             Parent root = loader.load();
-            GameController controller = loader.getController();
+            GameGraphicsController controller = loader.getController();
             controller.setSceneManager(sceneManager);
             controller.initMultiPlayerGame(lobbyModel.getToken(), lobbyModel.getUsername(), gameName, lobbyModel.getConnectionManager());
             playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));

@@ -6,19 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.poianitibaldizhou.sagrada.graphics.controller.Controller;
-import org.poianitibaldizhou.sagrada.graphics.controller.StartMenuController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
-
-import java.net.URL;
 
 public class ClientApp extends Application {
 
@@ -39,7 +32,7 @@ public class ClientApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
 
         Parent root = loader.load();
-        Controller controller = loader.getController();
+        GraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
         sceneManager.pushScene(root);
 
@@ -56,6 +49,7 @@ public class ClientApp extends Application {
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setFullScreenExitHint("");
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
         primaryStage.show();
     }
 }

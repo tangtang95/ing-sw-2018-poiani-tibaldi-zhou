@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDrawableCollectionObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 
 public class DiceBagListener extends AbstractView implements IDrawableCollectionObserver {
 
-    public DiceBagListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public DiceBagListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
     }
 

@@ -7,7 +7,7 @@ import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
@@ -28,7 +28,7 @@ public class GameTestApp4 extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
         Parent root = loader.load();
-        GameController controller = loader.getController();
+        GameGraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
         ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.SOCKET.getPort(), ConnectionType.SOCKET);
         controller.initMultiPlayerGame(String.valueOf("cordero4".hashCode()), "cordero4", "corderoGame", connectionManager);

@@ -23,4 +23,5 @@ public interface IGameViewStrategy {
 
     double getToolCardScale();
 
+    boolean hasTimeout();
 }

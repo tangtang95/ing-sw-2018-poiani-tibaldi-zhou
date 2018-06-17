@@ -136,14 +136,13 @@ public class ToolCardExecutor extends Thread{
             setTemporaryObjects();
             invokeCommands(preCommands);
             updateObjects();
+            setTemporaryObjects();
             invokeCommands(coreCommands);
             updateObjects();
         } catch (InterruptedException e) {
-            System.out.println("Interrupted exception");
             Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
             Thread.currentThread().interrupt();
         } finally {
-            System.out.println("");
             setIsExecutingCommands(false);
             turnState.releaseToolCardExecution();
         }

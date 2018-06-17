@@ -6,7 +6,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDraftPoolObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DraftPoolView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
@@ -23,7 +23,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
 
     private static final double DRAFT_POOL_SCALE = 0.2;
 
-    public DraftPoolListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public DraftPoolListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         DropShadow dropShadow = new DropShadow(4, 4, 4, Color.GRAY);
         draftPoolView = new DraftPoolView(DRAFT_POOL_SCALE);
@@ -41,8 +41,8 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         try {
             DraftPoolWrapper draftPoolWrapper = controller.getDraftPool();
             draftPoolView.drawDraftPool(draftPoolWrapper);
+            System.out.println("update draft pool");
         } catch (IOException e) {
-
             e.printStackTrace();
         }
     }

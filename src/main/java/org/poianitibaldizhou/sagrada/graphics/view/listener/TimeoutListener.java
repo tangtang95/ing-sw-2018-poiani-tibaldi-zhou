@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ITimeOutObserver;
@@ -13,7 +13,7 @@ import java.rmi.RemoteException;
 
 public class TimeoutListener extends AbstractView implements ITimeOutObserver {
 
-    public TimeoutListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public TimeoutListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
     }
 

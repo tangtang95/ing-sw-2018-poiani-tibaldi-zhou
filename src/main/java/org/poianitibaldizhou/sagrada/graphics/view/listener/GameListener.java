@@ -14,9 +14,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.transform.Rotate;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
@@ -50,7 +49,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     private static final double PADDING = 10;
 
-    public GameListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public GameListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         schemaCardViewMap = new HashMap<>();
         toolCardListeners = new ArrayList<>();
