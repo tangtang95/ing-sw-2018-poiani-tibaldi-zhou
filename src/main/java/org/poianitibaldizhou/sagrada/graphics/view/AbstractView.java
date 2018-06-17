@@ -16,20 +16,16 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractView extends UnicastRemoteObject {
 
-    protected final transient GameController controller;
+    protected final transient GameGraphicsController controller;
     protected final transient Pane corePane;
     protected final transient Pane notifyPane;
 
@@ -37,7 +33,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
     protected static final double PADDING = 10;
 
-    protected AbstractView(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    protected AbstractView(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super();
         this.controller = controller;
         this.corePane = corePane;
@@ -45,7 +41,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
     }
 
     //GETTER
-    public GameController getController() {
+    public GameGraphicsController getController() {
         return controller;
     }
 

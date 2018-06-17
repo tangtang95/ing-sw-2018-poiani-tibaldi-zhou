@@ -1,6 +1,8 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDrawer;
+import com.jfoenix.controls.JFXDrawersStack;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
@@ -22,7 +24,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
@@ -52,9 +54,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     private static final double SCHEMA_CARD_SHOW_SCALE = 0.45;
     private static final double DICE_SCHEMA_SHOW_SCALE = 0.3;
 
-    public ToolCardExecutorListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public ToolCardExecutorListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         historyMessages = new ArrayList<>();
+        JFXDrawersStack drawersStack = new JFXDrawersStack();
+        JFXDrawer leftDrawer = new JFXDrawer();
+
     }
 
     @Override
@@ -292,7 +297,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             schemaCardView.setEffect(dropShadow);
             notifyPane.getChildren().add(schemaCardView);
             String helperMessage = "Piazza il dado in una cella rispettando le restrizioni di piazzamento della Carta" +
-                    "Utensile";
+                    " Utensile";
             DiceView diceView = new DiceView(diceWrapper, DICE_SCHEMA_SHOW_SCALE);
 
             schemaCardView.setOnDragOver(event -> {
@@ -419,11 +424,6 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             deactivateNotifyPane();
             showMessage(corePane, "L'esecuzione della Carta Utensile è stata interrotta per errore: " + error,
                     MessageType.ERROR);
-            try {
-                controller.updateAllViews();
-            } catch (IOException e) {
-                showCrashErrorMessage("Errore di connessione");
-            }
         });
     }
 

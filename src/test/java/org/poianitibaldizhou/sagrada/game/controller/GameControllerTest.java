@@ -17,6 +17,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.*;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
@@ -25,14 +26,16 @@ import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.GameNetworkManager;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -43,17 +46,20 @@ public class GameControllerTest {
     private GameController gameController;
     private String gameName;
     private String tokenUser, tokenUser2;
+    private String userName, userName2;
 
     private List<String> tokenOfPlayerPlayingInGame;
     private SchemaCardWrapper schemaCardWrapper;
     private SchemaCard schemaCard;
     private List<PrivateObjectiveCard> privateObjectiveCards;
+    private PrivateObjectiveCardWrapper privateObjectiveCardWrapper;
+    private PrivateObjectiveCard privateObjectiveCard;
 
     @Mock
     private GameManager gameManager;
 
     @Mock
-    private IGameView view;
+    private IGameView view, view2;
 
     @Mock
     private IDraftPoolObserver draftPoolObserver;
@@ -101,8 +107,11 @@ public class GameControllerTest {
         when(gameManager.getGameNetworkManager()).thenReturn(gameNetworkManager);
         gameController = new GameController(gameManager);
         gameName = "gameName";
-        tokenUser = "token";
-        tokenUser2 = "token2";
+
+        userName = "username";
+        userName2 = "username2";
+        tokenUser = String.valueOf(userName.hashCode());
+        tokenUser2 = String.valueOf(userName2.hashCode());
         tokenOfPlayerPlayingInGame = new ArrayList<>();
         tokenOfPlayerPlayingInGame.add(tokenUser);
         tokenOfPlayerPlayingInGame.add(tokenUser2);
@@ -127,6 +136,11 @@ public class GameControllerTest {
 
         privateObjectiveCards = new ArrayList<>();
         privateObjectiveCards.add(new PrivateObjectiveCard("name", "descr", Color.PURPLE));
+
+        privateObjectiveCard = new PrivateObjectiveCard("Sfumature Viola - Privata",
+                "Somma dei valori su tutti i dadi viola", Color.PURPLE);
+        privateObjectiveCardWrapper = new PrivateObjectiveCardWrapper("Sfumature Viola - Privata",
+                "Somma dei valori su tutti i dadi viola", ColorWrapper.PURPLE);
     }
 
 
@@ -455,34 +469,6 @@ public class GameControllerTest {
         gameController.bindPlayer(clientMessage, playerObserver1, schemaCardObserver1);
 
         verifyHandleIOException();
-    }
-
-    @Test(expected = IOException.class)
-    public void testChooseActionToolCardInitCheckFailed() throws Exception {
-        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
-        when(gameManager.notContainsGame(gameName)).thenReturn(true);
-
-        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
-        gameController.chooseAction(clientMessage);
-    }
-
-    @Test
-    public void testChooseActionCardGameEndedDetected() throws Exception {
-        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
-        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
-        when(gameManager.getGameByName(gameName)).thenReturn(game);
-        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
-        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
-
-        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
-
-        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
-        gameController.chooseAction(clientMessage);
-
-        verify(view).err(anyString());
-        verify(gameNetworkManager).removeView(tokenUser);
     }
 
     @Test
@@ -846,6 +832,1237 @@ public class GameControllerTest {
 
         verify(game).userChooseAction(tokenUser, new EndTurnAction());
         verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testChooseActionToolCardInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+        gameController.chooseAction(clientMessage);
+    }
+
+    @Test
+    public void testChooseActionCardGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+        gameController.chooseAction(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+    @Test
+    public void testUseToolCardWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        gameController.useToolCard(clientMessage, toolCardExecutorObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testUseToolCard() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        gameController.useToolCard(clientMessage, toolCardExecutorObserver);
+
+        verify(view, times(0)).err(anyString());
+    }
+
+
+    @Test
+    public void testUseToolCardInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userChooseAction(tokenUser, new EndTurnAction());
+
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+        ToolCard toolCard = new ToolCard(Color.PURPLE, "Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6", "[1-Choose dice]" +
+                "[2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][16-CA]");
+        doThrow(InvalidActionException.class).when(game).userUseToolCard(eq(tokenUser), eq(toolCard), any(IToolCardExecutorFakeObserver.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        gameController.useToolCard(clientMessage, toolCardExecutorObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testUseToolCardInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        ToolCard toolCard = new ToolCard(Color.PURPLE, "Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6", "[1-Choose dice]" +
+                "[2-Remove dice from DraftPool][4-Modify dice value by 1][8-Place new dice][16-CA]");
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+
+        doThrow(InvalidActionException.class).when(game).userUseToolCard(eq(tokenUser), eq(toolCard), any(IToolCardExecutorFakeObserver.class));
+        doThrow(IOException.class).when(view).err(anyString());
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        gameController.useToolCard(clientMessage, toolCardExecutorObserver);
+
+        verify(view).err(anyString());
+        verifyHandleIOException();
+    }
+
+    @Test(expected = IOException.class)
+    public void testUseToolCardInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        gameController.useToolCard(clientMessage, toolCardExecutorObserver);
+    }
+
+    @Test
+    public void testUseToolCardGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        ToolCardWrapper toolCardWrapper = new ToolCardWrapper("Pinza Sgrossatrice", "Dopo aver scelto un dado, " +
+                "aumenta o diminuisci il valore del dado scelto di 1. Non puoi cambiare un 6 in 1 o un 1 in 6",
+                ColorWrapper.PURPLE, 0);
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createToolCardMessage(toolCardWrapper).buildMessage();
+        gameController.useToolCard(clientMessage, toolCardExecutorObserver);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+
+
+    @Test
+    public void testChoosePrivateCardWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPrivateObjectiveCardMessage(privateObjectiveCardWrapper)
+                .buildMessage();
+        gameController.choosePrivateObjectiveCard(clientMessage);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testChoosePrivateCard() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPrivateObjectiveCardMessage(privateObjectiveCardWrapper)
+                .buildMessage();
+        gameController.choosePrivateObjectiveCard(clientMessage);
+
+        verify(game).userChoosePrivateObjectiveCard(tokenUser, privateObjectiveCard);
+
+        verify(view, times(0)).err(anyString());
+    }
+
+
+    @Test
+    public void testChoosePrivateCardInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userChoosePrivateObjectiveCard(tokenUser, privateObjectiveCard);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPrivateObjectiveCardMessage(privateObjectiveCardWrapper)
+                .buildMessage();
+        gameController.choosePrivateObjectiveCard(clientMessage);
+
+        verify(game).userChoosePrivateObjectiveCard(tokenUser, privateObjectiveCard);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testChoosePrivateCardInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).err(anyString());
+        doThrow(InvalidActionException.class).when(game).userChoosePrivateObjectiveCard(tokenUser, privateObjectiveCard);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPrivateObjectiveCardMessage(privateObjectiveCardWrapper)
+                .buildMessage();
+        gameController.choosePrivateObjectiveCard(clientMessage);
+
+        verify(game).userChoosePrivateObjectiveCard(tokenUser, privateObjectiveCard);
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testChoosePrivateCardInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPrivateObjectiveCardMessage(privateObjectiveCardWrapper)
+                .buildMessage();
+        gameController.choosePrivateObjectiveCard(clientMessage);
+    }
+
+    @Test
+    public void testChoosePrivateCardGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPrivateObjectiveCardMessage(privateObjectiveCardWrapper)
+                .buildMessage();
+        gameController.choosePrivateObjectiveCard(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+    @Test
+    public void testSetDiceWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createDiceMessage(new DiceWrapper(ColorWrapper.BLUE, 5)).buildMessage();
+        gameController.setDice(clientMessage);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetDice() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createDiceMessage(new DiceWrapper(ColorWrapper.BLUE, 5)).buildMessage();
+        gameController.setDice(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(DiceExecutorEvent.class));
+    }
+
+    @Test
+    public void testSetDiceInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(DiceExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createDiceMessage(new DiceWrapper(ColorWrapper.BLUE, 5)).buildMessage();
+        gameController.setDice(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(DiceExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetDiceInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).err(anyString());
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(DiceExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createDiceMessage(new DiceWrapper(ColorWrapper.BLUE, 5)).buildMessage();
+        gameController.setDice(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(DiceExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testSetDiceToolCardInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createDiceMessage(new DiceWrapper(ColorWrapper.BLUE, 5)).buildMessage();
+        gameController.setDice(clientMessage);
+
+    }
+
+    @Test
+    public void testSetDiceGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(DiceExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createDiceMessage(new DiceWrapper(ColorWrapper.BLUE, 5)).buildMessage();
+        gameController.setDice(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+
+    @Test
+    public void testSetValueWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createValueMessage(5).buildMessage();
+        gameController.setNewValue(clientMessage);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetValue() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createValueMessage(5).buildMessage();
+        gameController.setNewValue(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(ValueExecutorEvent.class));
+        verify(view, times(0)).err(anyString());
+    }
+
+    @Test
+    public void testSetValueInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(ValueExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createValueMessage(5).buildMessage();
+        gameController.setNewValue(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(ValueExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetValueInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).err(anyString());
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(ValueExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createValueMessage(5).buildMessage();
+        gameController.setNewValue(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(ValueExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testSetValueToolCardInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createValueMessage(5).buildMessage();
+        gameController.setNewValue(clientMessage);
+    }
+
+    @Test
+    public void testSetValueGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createColorMessage(ColorWrapper.YELLOW).buildMessage();
+        gameController.setColor(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+    @Test
+    public void testSetColorWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createColorMessage(ColorWrapper.YELLOW).buildMessage();
+        gameController.setColor(clientMessage);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetColor() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createColorMessage(ColorWrapper.YELLOW).buildMessage();
+        gameController.setColor(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(ColorExecutorEvent.class));
+        verify(view, times(0)).err(anyString());
+    }
+
+    @Test
+    public void testSetColorInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(ColorExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createColorMessage(ColorWrapper.YELLOW).buildMessage();
+        gameController.setColor(clientMessage);
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(ColorExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetColorInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).err(anyString());
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(ColorExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createColorMessage(ColorWrapper.YELLOW).buildMessage();
+        gameController.setColor(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(ColorExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testSetColorInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createColorMessage(ColorWrapper.YELLOW).buildMessage();
+        gameController.setColor(clientMessage);}
+
+    @Test
+    public void testSetColorGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+
+    @Test
+    public void testSetPositionWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetPosition() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(PositionExecutorEvent.class));
+        verify(view, times(0)).err(anyString());
+    }
+
+    @Test
+    public void testSetPositionInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(PositionExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(PositionExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetPositionInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).err(anyString());
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(PositionExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(PositionExecutorEvent.class));
+
+        verifyHandleIOException();
+    }
+
+    @Test(expected = IOException.class)
+    public void testSetPositionInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+    }
+
+    @Test
+    public void testSetPositionGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(ColorExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createPositionMessage(new PositionWrapper(1,1)).buildMessage();
+        gameController.setPosition(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+    @Test
+    public void testSetAnswerWasDisconnectedUser() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createBooleanMessage(false).buildMessage();
+        gameController.setContinueAction(clientMessage);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetAnswer() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createBooleanMessage(false).buildMessage();
+        gameController.setContinueAction(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(AnswerExecutorEvent.class));
+        verify(view, times(0)).err(anyString());
+    }
+
+    @Test
+    public void testSetAnswerInvalidException() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(AnswerExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createBooleanMessage(false).buildMessage();
+        gameController.setContinueAction(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(AnswerExecutorEvent.class));
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testSetAnswerInvalidExceptionAndErrorSignalingToView() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).err(anyString());
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(AnswerExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createBooleanMessage(true).buildMessage();
+        gameController.setContinueAction(clientMessage);
+
+        verify(game).userFireExecutorEvent(eq(tokenUser), any(AnswerExecutorEvent.class));
+
+        verifyHandleIOException();
+    }
+
+    @Test(expected = IOException.class)
+    public void testSetAnswerInitCheckFailed() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.notContainsGame(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createBooleanMessage(false).buildMessage();
+        gameController.setContinueAction(clientMessage);
+    }
+
+    @Test
+    public void testSetAnswerGameEndedDetected() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenOfPlayerPlayingInGame);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        doThrow(InvalidActionException.class).when(game).userFireExecutorEvent(eq(tokenUser), any(AnswerExecutorEvent.class));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
+                .createBooleanMessage(false).buildMessage();
+        gameController.setContinueAction(clientMessage);
+
+        verify(view).err(anyString());
+        verify(gameNetworkManager).removeView(tokenUser);
+    }
+
+    @Test(expected = IOException.class)
+    public void testReconnectNotPlayingUser() throws Exception {
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(game.getPlayers()).thenReturn(playerList);
+        when(game.getName()).thenReturn(gameName);
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(tokenUser, playerObserver1);
+        playerObserverMap.putIfAbsent(tokenUser2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(tokenUser, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(tokenUser2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testReconnectTerminatedGame() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(game.getName()).thenReturn(gameName);
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(tokenUser, playerObserver1);
+        playerObserverMap.putIfAbsent(tokenUser2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(tokenUser, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(tokenUser2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testReconnectNotDisconnectedUser() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(tokenUser, playerObserver1);
+        playerObserverMap.putIfAbsent(tokenUser2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(tokenUser, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(tokenUser2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testReconnectWrongPlayerObservers() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(userName, playerObserver1);
+        playerObserverMap.putIfAbsent("wrongUsername", playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(userName, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(userName2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testReconnectWrongSchemaCardObservers() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(userName, playerObserver1);
+        playerObserverMap.putIfAbsent(userName2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(userName, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent("notExistingName",schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test(expected = IOException.class)
+    public void testReconnectWrongToolCardObservers() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(game.getToolCards()).thenReturn(Collections.singletonList(new ToolCard(Color.BLUE,
+                "Pennello per Eglomise", "descr", "[1-CA]")));
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(userName, playerObserver1);
+        playerObserverMap.putIfAbsent(userName2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise fake", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(userName, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(userName2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(view).err(anyString());
+    }
+
+    @Test
+    public void testReconnect() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(game.getToolCards()).thenReturn(Collections.singletonList(new ToolCard(Color.BLUE,
+                "Pennello per Eglomise", "descr", "[1-CA]")));
+        when(gameNetworkManager.getViewByToken(tokenUser2)).thenReturn(view2);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(userName, playerObserver1);
+        playerObserverMap.putIfAbsent(userName2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(userName, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(userName2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(gameNetworkManager, times(1)).putView(tokenUser, view);
+        verify(view).ack(anyString());
+        verify(view2).ack(anyString());
+    }
+
+    @Test
+    public void testReconnectErrorACKing() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(game.getToolCards()).thenReturn(Collections.singletonList(new ToolCard(Color.BLUE,
+                "Pennello per Eglomise", "descr", "[1-CA]")));
+        when(gameNetworkManager.getViewByToken(tokenUser2)).thenReturn(view2);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view).ack(anyString());
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(userName, playerObserver1);
+        playerObserverMap.putIfAbsent(userName2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(userName, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(userName2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(gameNetworkManager, times(1)).putView(tokenUser, view);
+        verify(view).ack(anyString());
+        verify(view2, times(0)).ack(anyString());
+        verifyHandleIOException();
+    }
+
+    @Test
+    public void testReconnectErrorACKingOtherPlayers() throws Exception {
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        List<Player> playerList = new ArrayList<>();
+        playerList.add(new MultiPlayer(new User(userName, tokenUser), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        playerList.add(new MultiPlayer(new User(userName2, tokenUser2), new FavorToken(5), schemaCard,
+                privateObjectiveCards));
+        when(game.getPlayers()).thenReturn(playerList);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(game.getToolCards()).thenReturn(Collections.singletonList(new ToolCard(Color.BLUE,
+                "Pennello per Eglomise", "descr", "[1-CA]")));
+        when(gameNetworkManager.getViewByToken(tokenUser2)).thenReturn(view2);
+        when(gameNetworkManager.getViewByToken(tokenUser)).thenReturn(view);
+
+        doThrow(IOException.class).when(view2).ack(anyString());
+
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerObserverMap.putIfAbsent(userName, playerObserver1);
+        playerObserverMap.putIfAbsent(userName2, playerObserver2);
+
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardObserverMap.putIfAbsent("Pennello per Eglomise", toolCardObserver);
+
+        Map<String, ISchemaCardObserver> stringISchemaCardObserverMap = new HashMap<>();
+        stringISchemaCardObserverMap.putIfAbsent(userName, schemaCardObserver1);
+        stringISchemaCardObserverMap.putIfAbsent(userName2,schemaCardObserver2);
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+                timeOutObserver);
+
+        verify(gameNetworkManager, times(1)).putView(tokenUser, view);
+        verify(view).ack(anyString());
+        verify(gameObserverManager).signalDisconnection(tokenUser2);
+        verify(gameNetworkManager).removeToken(tokenUser2);
+    }
+
+    @Test(expected = Exception.class)
+    public void testAttemptReconnectOfNotPlayingUser() throws Exception {
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser);
+        tokenList.add(tokenUser2);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+
+        String clientMessage = clientCreateMessage.createUsernameMessage("notExistingUsername").buildMessage();
+        String response = gameController.attemptReconnect(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getGameName(response);
+    }
+
+    @Test
+    public void testAttemptReConnect() throws Exception {
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser);
+        tokenList.add(tokenUser2);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        String response = gameController.attemptReconnect(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        assertEquals(gameName, clientGetMessage.getGameName(response));
+    }
+
+    @Test(expected = Exception.class)
+    public void testAttemptReconnectOfNonDisconnectedUser() throws Exception {
+        when(game.getName()).thenReturn(gameName);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser);
+        tokenList.add(tokenUser2);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameList()).thenReturn(Collections.singletonList(game));
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+
+        String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
+        String response = gameController.attemptReconnect(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getGameName(response);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetToolCardsNotContainedTokenInGameNetworkManager() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(false);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName).buildMessage();
+        String response = gameController.getToolCards(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getToolCards(response);
+    }
+
+    @Test(expected = Exception.class)
+    public void testGetToolCardsTerminatedGame() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+        when(gameManager.notContainsGame(gameName)).thenReturn(false);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName).buildMessage();
+        String response = gameController.getToolCards(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        clientGetMessage.getToolCards(response);
+    }
+
+    @Test
+    public void testGetToolCards() throws Exception {
+        when(gameNetworkManager.containsToken(tokenUser)).thenReturn(true);
+        when(gameManager.getObserverManagerByGame(gameName)).thenReturn(gameObserverManager);
+        when(gameObserverManager.getDisconnectedPlayer()).thenReturn(new HashSet<>());
+        when(gameManager.notContainsGame(gameName)).thenReturn(false);
+        List<String> tokenList = new ArrayList<>();
+        tokenList.add(tokenUser2);
+        tokenList.add(tokenUser);
+        when(gameManager.getPlayersByGame(gameName)).thenReturn(tokenList);
+        when(gameManager.getGameByName(gameName)).thenReturn(game);
+
+        List<ToolCard> toolCards = new ArrayList<>();
+        toolCards.add(new ToolCard(Color.BLUE ,"Name", "Descr", "[1-CA]"));
+
+        when(game.getToolCards()).thenReturn(toolCards);
+
+        String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName).buildMessage();
+        String response = gameController.getToolCards(clientMessage);
+        ClientGetMessage clientGetMessage = new ClientGetMessage();
+        List<ToolCardWrapper> toolCardWrapperList = clientGetMessage.getToolCards(response);
+
+        assertEquals(toolCards.size(), toolCardWrapperList.size());
+        assertEquals(toolCards.get(0).getName(), toolCardWrapperList.get(0).getName());
+        assertEquals(toolCards.get(0).getDescription(), toolCardWrapperList.get(0).getDescription());
+        assertEquals(toolCards.get(0).getColor().toString(), toolCardWrapperList.get(0).getColor().toString());
+        assertEquals(0, toolCardWrapperList.get(0).getToken());
     }
 
     private void verifyHandleIOException() {

@@ -6,19 +6,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
-import org.poianitibaldizhou.sagrada.graphics.controller.Controller;
-import org.poianitibaldizhou.sagrada.graphics.controller.StartMenuController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
-
-import java.net.URL;
 
 public class ClientApp extends Application {
 
@@ -36,10 +29,10 @@ public class ClientApp extends Application {
         scenes.setBackground(Background.EMPTY);
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
 
         Parent root = loader.load();
-        Controller controller = loader.getController();
+        GraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
         sceneManager.pushScene(root);
 
@@ -49,15 +42,14 @@ public class ClientApp extends Application {
         scene.getStylesheets().add(css);
 
         scenes.scaleXProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
-                scene.heightProperty().divide(fixedSize.getHeight())), 1));
+                scene.heightProperty().divide(fixedSize.getHeight())), 1.5));
         scenes.scaleYProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
-                scene.heightProperty().divide(fixedSize.getHeight())), 1));
+                scene.heightProperty().divide(fixedSize.getHeight())), 1.5));
 
         primaryStage.setTitle("Sagrada: il Gioco");
         primaryStage.setFullScreenExitHint("");
-        primaryStage.setMaxWidth(fixedSize.getWidth());
-        primaryStage.setMaxHeight(fixedSize.getHeight());
         primaryStage.setScene(scene);
+        primaryStage.setOnCloseRequest(event -> System.exit(0));
         primaryStage.show();
     }
 }

@@ -1,11 +1,16 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.exception.NetworkException;
 import org.poianitibaldizhou.sagrada.graphics.model.LobbyModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
@@ -21,16 +26,23 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LobbyController extends Controller implements Initializable {
+public class LobbyGraphicsController extends GraphicsController implements Initializable {
 
     @FXML
     public Pane corePane;
+    public Label labelTimeout;
+
+    private long delayTime;
+    private long startTime;
+    private Timeline timeoutAnimation;
 
     private LobbyModel lobbyModel;
     private LobbyView lobbyView;
 
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        labelTimeout.getParent().setVisible(false);
         try {
             lobbyView = new LobbyView(this, corePane);
         } catch (RemoteException e) {
@@ -40,7 +52,7 @@ public class LobbyController extends Controller implements Initializable {
 
     public void initLobbyModel(String username, ConnectionManager connectionManager) throws NetworkException {
         lobbyModel = new LobbyModel(username, connectionManager);
-        stage.setOnCloseRequest((event -> {
+        sceneManager.getPrimaryStage().setOnCloseRequest((event -> {
             connectionManager.close();
         }));
         try {
@@ -60,16 +72,6 @@ public class LobbyController extends Controller implements Initializable {
         return users;
     }
 
-    @FXML
-    public void onLeaveLobbyButton(ActionEvent actionEvent) {
-        try {
-            lobbyModel.leave();
-        } catch (IOException e) {
-            AlertBox.displayBox("Errore di connessione", "L'operazione è fallita per problemi di connessione");
-        }
-        playSceneTransition(corePane, event -> sceneManager.popScene());
-    }
-
     public String getMyUsername() {
         return lobbyModel.getUsername();
     }
@@ -79,7 +81,7 @@ public class LobbyController extends Controller implements Initializable {
 
         try {
             Parent root = loader.load();
-            GameController controller = loader.getController();
+            GameGraphicsController controller = loader.getController();
             controller.setSceneManager(sceneManager);
             controller.initMultiPlayerGame(lobbyModel.getToken(), lobbyModel.getUsername(), gameName, lobbyModel.getConnectionManager());
             playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
@@ -88,5 +90,48 @@ public class LobbyController extends Controller implements Initializable {
         } catch (NetworkException e) {
             AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
         }
+    }
+
+    public void onTimeoutSet(long millisTime){
+        labelTimeout.setText(String.valueOf(Math.round(millisTime/1000.0)));
+        delayTime = millisTime;
+        startTime = System.currentTimeMillis();
+        if(timeoutAnimation != null)
+            timeoutAnimation.stop();
+
+        timeoutAnimation = new Timeline(new KeyFrame(
+                Duration.millis(500),
+                event -> {
+                    long deltaTime = delayTime - (System.currentTimeMillis() - startTime);
+                    if(deltaTime < 0){
+                        labelTimeout.setText("00");
+                    }
+                    else{
+                        labelTimeout.setText(String.format("%02d", Math.round(deltaTime/1000.0)));
+                    }
+
+                }
+        ));
+        timeoutAnimation.setCycleCount(Animation.INDEFINITE);
+        timeoutAnimation.play();
+        labelTimeout.getParent().setVisible(true);
+    }
+
+    @FXML
+    public void onLeaveButtonAction(ActionEvent actionEvent) {
+        try {
+            lobbyModel.leave();
+        } catch (IOException e) {
+            AlertBox.displayBox("Errore di connessione", "L'operazione è fallita per problemi di connessione");
+        }
+        playSceneTransition(corePane, event -> sceneManager.popScene());
+    }
+
+    public int getTimeout() throws IOException {
+        return lobbyModel.getTimeout();
+    }
+
+    public void hideTimeoutLabel() {
+        labelTimeout.getParent().setVisible(false);
     }
 }

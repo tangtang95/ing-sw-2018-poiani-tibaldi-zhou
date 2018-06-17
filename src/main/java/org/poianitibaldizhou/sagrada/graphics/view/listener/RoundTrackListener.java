@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.poianitibaldizhou.sagrada.graphics.view.IGameViewStrategy;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IRoundTrackObserver;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
@@ -34,7 +34,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
     private static final double ROUND_TRACK_SHOW_SCALE = 1.3;
     private static final double DICE_SCALE = 0.3;
 
-    public RoundTrackListener(GameController controller, Pane corePane, Pane notifyPane, RoundTrackView trackView) throws RemoteException {
+    public RoundTrackListener(GameGraphicsController controller, Pane corePane, Pane notifyPane, RoundTrackView trackView) throws RemoteException {
         super(controller, corePane, notifyPane);
         copyRoundTrackViews = new ArrayList<>();
         diceViews = new ArrayList<>();

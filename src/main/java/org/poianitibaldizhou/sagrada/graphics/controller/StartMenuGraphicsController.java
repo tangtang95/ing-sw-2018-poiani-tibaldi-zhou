@@ -14,7 +14,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -34,7 +33,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class StartMenuController extends Controller implements Initializable {
+public class StartMenuGraphicsController extends GraphicsController implements Initializable {
 
     @FXML
     public Parent rootPane;
@@ -216,7 +215,7 @@ public class StartMenuController extends Controller implements Initializable {
 
     @FXML
     public void quitGame(ActionEvent actionEvent) {
-        playSceneTransition(sceneManager.getCurrentScene(), (event) -> stage.close());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.getPrimaryStage().close());
     }
 
     @FXML
@@ -233,7 +232,7 @@ public class StartMenuController extends Controller implements Initializable {
 
             try {
                 Parent root = loader.load();
-                LobbyController controller = loader.getController();
+                LobbyGraphicsController controller = loader.getController();
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
@@ -265,7 +264,7 @@ public class StartMenuController extends Controller implements Initializable {
 
             try {
                 Pane root = loader.load();
-                GameController controller = loader.getController();
+                GameGraphicsController controller = loader.getController();
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));

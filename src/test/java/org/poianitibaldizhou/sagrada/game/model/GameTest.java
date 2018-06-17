@@ -309,7 +309,6 @@ public class GameTest {
     @Test
     public void testInitDiceBag() {
         multiPlayerGame.initDiceBag();
-        multiPlayerGame.getDiceBag();
 
         assertTrue(multiPlayerGame.getDiceBag().getCollection().size() == 90);
     }

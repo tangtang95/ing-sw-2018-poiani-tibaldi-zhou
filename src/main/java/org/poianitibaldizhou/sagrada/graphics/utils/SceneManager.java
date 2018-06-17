@@ -25,6 +25,7 @@ public class SceneManager {
     public SceneManager(StackPane stackPane, WindowSize size) {
         this.sceneStack = new ArrayDeque<>();
         this.stackPane = stackPane;
+        pushScene(new Pane());
         this.windowSize = size;
     }
 

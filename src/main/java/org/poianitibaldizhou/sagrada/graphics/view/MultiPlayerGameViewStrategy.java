@@ -1,17 +1,16 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
-import com.jfoenix.controls.JFXDialog;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
 public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
 
 
-    private GameController gameController;
+    private GameGraphicsController gameController;
     private Pane corePane;
     private Pane notifyPane;
 
@@ -23,7 +22,7 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
 
     private static final double PADDING = 10;
 
-    public MultiPlayerGameViewStrategy(GameController gameController, Pane corePane, Pane notifyPane) {
+    public MultiPlayerGameViewStrategy(GameGraphicsController gameController, Pane corePane, Pane notifyPane) {
         this.gameController = gameController;
         this.corePane = corePane;
         this.notifyPane = notifyPane;
@@ -85,6 +84,11 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
     @Override
     public double getToolCardScale() {
         return TOOL_CARD_SCALE;
+    }
+
+    @Override
+    public boolean hasTimeout() {
+        return true;
     }
 
     protected DoubleBinding getWidth() {

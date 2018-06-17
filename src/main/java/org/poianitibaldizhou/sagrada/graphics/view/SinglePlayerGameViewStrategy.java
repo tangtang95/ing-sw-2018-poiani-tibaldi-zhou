@@ -1,19 +1,14 @@
 package org.poianitibaldizhou.sagrada.graphics.view;
 
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.layout.Pane;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
-import org.poianitibaldizhou.sagrada.graphics.view.component.PublicObjectiveCardView;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PublicObjectiveCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
-
-import java.util.List;
 
 public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
 
-    private final GameController gameController;
+    private final GameGraphicsController gameController;
     private final Pane corePane;
     private final Pane notifyPane;
 
@@ -23,7 +18,7 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
     private static final double TOOL_CARD_SCALE = 0.55;
     private static final double ROUND_TRACK_SCALE = 1;
 
-    public SinglePlayerGameViewStrategy(GameController gameController, Pane corePane, Pane notifyPane) {
+    public SinglePlayerGameViewStrategy(GameGraphicsController gameController, Pane corePane, Pane notifyPane) {
         this.gameController = gameController;
         this.corePane = corePane;
         this.notifyPane = notifyPane;
@@ -73,6 +68,11 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
     @Override
     public double getToolCardScale() {
         return TOOL_CARD_SCALE;
+    }
+
+    @Override
+    public boolean hasTimeout() {
+        return false;
     }
 
 }

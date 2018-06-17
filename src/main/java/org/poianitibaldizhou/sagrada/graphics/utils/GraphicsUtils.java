@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.parser.ParseException;
@@ -54,8 +55,6 @@ public class GraphicsUtils {
     public static ImageView getImageView(String keyName, String imageResourcePath, String jsonResourcePath, double scale){
         Image image = new Image(GraphicsUtils.class.getClassLoader().getResourceAsStream(imageResourcePath));
         ImageView imageView = new ImageView(image);
-        imageView.setCache(true);
-        imageView.setCacheHint(CacheHint.SCALE);
         changeViewport(imageView, keyName, jsonResourcePath, scale);
         return imageView;
     }
@@ -77,8 +76,6 @@ public class GraphicsUtils {
     public static ImageView getSimpleImageView(String imageResourcePath, double scale){
         Image image = new Image(GraphicsUtils.class.getClassLoader().getResourceAsStream(imageResourcePath));
         ImageView imageView = new ImageView(image);
-        imageView.setCache(true);
-        imageView.setCacheHint(CacheHint.SCALE);
         imageView.setFitWidth(image.getWidth()*scale);
         imageView.setFitHeight(image.getHeight()*scale);
         return imageView;

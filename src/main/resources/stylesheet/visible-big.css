@@ -63,6 +63,10 @@
     -fx-scale-y: 200%;
 }
 
+.button{
+    -fx-cursor: hand;
+}
+
 .negative-button{
     -fx-background-color: white;
 }

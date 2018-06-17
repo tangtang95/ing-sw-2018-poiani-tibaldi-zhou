@@ -33,7 +33,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class GameController extends Controller implements Initializable {
+public class GameGraphicsController extends GraphicsController implements Initializable {
 
     @FXML
     public StackPane rootPane;
@@ -244,12 +244,21 @@ public class GameController extends Controller implements Initializable {
 
         try {
             Parent root = loader.load();
-            ScorePlayerController controller = loader.getController();
+            ScorePlayerGraphicsController controller = loader.getController();
             controller.setSceneManager(sceneManager);
             controller.initScoreScene(winner, victoryPoints);
             playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
         }
+    }
+
+    public void quitGame() throws IOException {
+        gameModel.quitGame();
+        playSceneTransition(sceneManager.getCurrentScene(), event -> popScene());
+    }
+
+    public long getMillisTimeout() throws IOException {
+        return gameModel.getMillisTimeout();
     }
 }

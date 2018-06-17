@@ -9,6 +9,11 @@ import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -242,5 +247,31 @@ public class GameModel {
         String request = builder.createTokenMessage(token)
                 .createGameNameMessage(gameName).createPrivateObjectiveCardMessage(privateObjectiveCardWrapper).buildMessage();
         connectionManager.getGameController().choosePrivateObjectiveCard(request);
+    }
+
+    public void quitGame() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameName).buildMessage();
+        connectionManager.getGameController().quitGame(request);
+        connectionManager.close();
+    }
+
+    public long getMillisTimeout() throws IOException {
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createTokenMessage(token).createGameNameMessage(gameName).buildMessage();
+        String response = connectionManager.getGameController().getTimeout(request);
+        String timeoutText = parser.getTimeout(response);
+        DateFormat formatter = new SimpleDateFormat("mm:ss");
+        Calendar cal = Calendar.getInstance();
+        try {
+            Date dt = formatter.parse(timeoutText);
+            cal.setTime(dt);
+        }catch (ParseException ex){
+            Logger.getAnonymousLogger().log(Level.SEVERE, ex.toString());
+        }
+        int minute = cal.get(Calendar.MINUTE);
+        int second = cal.get(Calendar.SECOND);
+        return  (minute*60 + second)*1000;
     }
 }

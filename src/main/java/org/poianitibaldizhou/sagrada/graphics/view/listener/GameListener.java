@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.graphics.controller.GameController;
+import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
@@ -49,7 +49,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     private static final double PADDING = 10;
 
-    public GameListener(GameController controller, Pane corePane, Pane notifyPane) throws RemoteException {
+    public GameListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         schemaCardViewMap = new HashMap<>();
         toolCardListeners = new ArrayList<>();
@@ -493,7 +493,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             cardView.translateXProperty().bind(getPivotX(cardX, cardView.widthProperty(), 0.5));
             cardView.translateYProperty().bind(getPivotY(y, cardView.heightProperty(), 0.5));
         }
+        cardView.setRotate(angle*180/Math.PI - 90);
         corePane.getChildren().add(cardView);
+        cardView.toFront();
     }
 
     private void onPrivateObjectivePressed(MouseEvent event) {
