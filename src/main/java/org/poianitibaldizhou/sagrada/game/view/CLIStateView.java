@@ -307,6 +307,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         synchronized (lock) {
             UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
             if (turnUser.equals(myUser)) {
+                CLIBasicScreen.clearScreen();
                 PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH-----------------------\n",
                         Level.STANDARD);
                 screenManager.popScreen();

@@ -82,7 +82,7 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
         return score;
     }
 
-    public IConstraint getConstraint(){
+    public ColorConstraint getConstraint(){
         return colorConstraint;
     }
 

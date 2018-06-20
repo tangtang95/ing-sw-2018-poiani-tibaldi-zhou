@@ -276,8 +276,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         String setMessage = clientCreateMessage.createGameNameMessage(gameModeStrategy.getGameName()).
                 createTokenMessage(gameModeStrategy.getToken()).createBooleanMessage(answer).buildMessage();
 
-        System.out.println("ANSWER IN VIEW: " + answer);
-
         connectionManager.getGameController().setContinueAction(setMessage);
         consoleListener.wakeUpCommandConsole();
 
@@ -295,7 +293,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     }
 
     @Override
-    public void notifyExecutionEnded() throws IOException {
+    public void notifyExecutionEnded(){
         /* NOT NEEDED */
     }
 
@@ -308,7 +306,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
-    public void notifyWaitTurnEnd() throws IOException {
+    public void notifyWaitTurnEnd() {
         /* NOT NEEDED */
     }
 
