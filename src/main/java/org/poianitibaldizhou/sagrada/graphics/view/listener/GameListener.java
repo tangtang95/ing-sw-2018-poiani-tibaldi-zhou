@@ -21,6 +21,9 @@ import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.MessageType;
 import org.poianitibaldizhou.sagrada.graphics.view.component.*;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IGameObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
@@ -40,12 +43,13 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     private transient Map<UserWrapper, SchemaCardListener> schemaCardViewMap;
     private transient List<ToolCardListener> toolCardListeners;
+    private transient Map<UserWrapper, PlayerListener> playerListenerMap;
 
-    private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.3;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.6;
-    private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 0.65;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.65;
-    private static final double TOOL_CARD_SHOW_SCALE = 0.65;
+    private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.75;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.9;
+    private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 1;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 1;
+    private static final double TOOL_CARD_SHOW_SCALE = 1;
 
     private static final double PADDING = 10;
 
@@ -53,6 +57,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         super(controller, corePane, notifyPane);
         schemaCardViewMap = new HashMap<>();
         toolCardListeners = new ArrayList<>();
+        playerListenerMap = new HashMap<>();
     }
 
     @Override
@@ -106,6 +111,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 schemaCardWrapperMap = controller.getSchemaCardMap();
                 users = controller.getUserList();
                 this.drawUsers(users, schemaCardWrapperMap, privateObjectiveCardWrappers, favorTokeMap);
+                for (UserWrapper userWrapper : users) {
+                    controller.bindPlayer(userWrapper, playerListenerMap.get(userWrapper),
+                            schemaCardViewMap.get(userWrapper));
+                }
+
             } catch (IOException e) {
                 this.showCrashErrorMessage("Errore di connessione");
             }
@@ -139,7 +149,14 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         List<ToolCardWrapper> toolCardWrappers = parser.getToolCards(message);
 
         Platform.runLater(() -> {
-            this.drawToolCards(toolCardWrappers, controller.getGameViewStrategy().getToolCardScale());
+            try {
+                this.drawToolCards(toolCardWrappers, controller.getGameViewStrategy().getToolCardScale());
+                for (ToolCardListener listener : toolCardListeners) {
+                    controller.bindToolCard(listener.getToolCardView().getToolCardWrapper(), listener);
+                }
+            } catch (IOException e) {
+                showCrashErrorMessage("Errore di connessione");
+            }
         });
     }
 
@@ -209,7 +226,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             FrontBackSchemaCardView schemaCardView = (FrontBackSchemaCardView) toggleGroup.getSelectedToggle().getUserData();
             try {
                 controller.chooseSchemaCard(schemaCardView.getCurrentSchemaCardWrapper());
-                toggleGroup.getToggles().forEach(toggle -> ((RadioButton)toggle).setDisable(true));
+                toggleGroup.getToggles().forEach(toggle -> ((RadioButton) toggle).setDisable(true));
                 ((Button) event.getSource()).setDisable(true);
             } catch (IOException e) {
                 showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
@@ -262,7 +279,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                     .getSelectedToggle().getUserData();
             try {
                 controller.choosePrivateObjectiveCard(privateObjectiveCardView.getPrivateObjectiveCardWrapper());
-                toggleGroup.getToggles().forEach(toggle -> ((RadioButton)toggle).setDisable(true));
+                toggleGroup.getToggles().forEach(toggle -> ((RadioButton) toggle).setDisable(true));
                 ((Button) event.getSource()).setDisable(true);
             } catch (IOException e) {
                 showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
@@ -273,9 +290,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         helperBox.getChildren().addAll(spacer, continueButton);
     }
 
-    private void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
-                           List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
-                           Map<UserWrapper, Integer> favorTokenMap) {
+    public void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
+                          List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
+                          Map<UserWrapper, Integer> favorTokenMap) {
         List<UserWrapper> orderedUsers = getUsersOrdered(users);
         for (int i = 0; i < orderedUsers.size(); i++) {
             final double angle = 2 * Math.PI * i / ((orderedUsers.size() == 3) ? orderedUsers.size() + 1 :
@@ -286,7 +303,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
             // CALCULATE PRIVATE OBJECTIVE CARD POSITION
             final double tangentAngle = angle - Math.PI / 2;
-            DoubleBinding tangentDistance = schemaCardView.widthProperty().divide(2).add(PADDING*2);
+            DoubleBinding tangentDistance = schemaCardView.widthProperty().divide(2).add(PADDING * 2);
             DoubleBinding pocX = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2))
                     .add(tangentDistance.multiply(Math.cos(tangentAngle)));
             DoubleBinding pocY = schemaCardView.translateYProperty().add(schemaCardView.heightProperty().divide(2))
@@ -304,10 +321,10 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 schemaCardViewMap.putIfAbsent(orderedUsers.get(i), schemaCardListener);
 
                 PlayerView playerView = drawUser(orderedUsers.get(i), favorTokenMap.get(orderedUsers.get(i)),
-                            new Point2D(Math.round(Math.cos(angle)), Math.round(Math.sin(angle))));
+                        new Point2D(Math.round(Math.cos(angle)), Math.round(Math.sin(angle))));
                 PlayerListener playerListener = new PlayerListener(playerView, controller, corePane, notifyPane,
                         orderedUsers.get(i));
-                controller.bindPlayer(orderedUsers.get(i), playerListener, schemaCardListener);
+                playerListenerMap.putIfAbsent(orderedUsers.get(i), playerListener);
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot initialize SchemaCardListener");
                 showCrashErrorMessage("Errore di connessione");
@@ -317,7 +334,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     private PlayerView drawUser(UserWrapper userWrapper, int favorTokens, Point2D direction) throws RemoteException {
         PlayerView playerView;
-        if(favorTokens >= 0)
+        if (favorTokens >= 0)
             playerView = new PlayerView(userWrapper, favorTokens);
         else
             playerView = new PlayerView(userWrapper, 10.0);
@@ -365,14 +382,14 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         for (int i = 0; i < publicObjectiveCardWrappers.size(); i++) {
             PublicObjectiveCardView publicObjectiveCardView = new PublicObjectiveCardView(
                     publicObjectiveCardWrappers.get(i), scale);
-            publicObjectiveCardView.setTranslateX((publicObjectiveCardWrappers.size()-i-1)*PADDING);
-            publicObjectiveCardView.setTranslateY(i*PADDING);
+            publicObjectiveCardView.setTranslateX((publicObjectiveCardWrappers.size() - i - 1) * PADDING);
+            publicObjectiveCardView.setTranslateY(i * PADDING);
 
             container.getChildren().add(publicObjectiveCardView);
         }
 
         container.translateXProperty().bind(corePane.widthProperty()
-                .subtract(PADDING*(publicObjectiveCardWrappers.size()+1))
+                .subtract(PADDING * (publicObjectiveCardWrappers.size() + 1))
                 .subtract(container.widthProperty()));
         container.translateYProperty().bind(y);
         corePane.getChildren().add(container);
@@ -402,11 +419,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         event.consume();
     }
 
-    private void drawToolCards(List<ToolCardWrapper> toolCardWrappers, double scale) {
+    private void drawToolCards(List<ToolCardWrapper> toolCardWrappers, double scale) throws RemoteException {
 
         toolCardsContainer = new Pane();
 
-        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING*2);
+        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING * 2);
         DoubleBinding y = new SimpleDoubleProperty(0).add(corePane.heightProperty()
                 .multiply(AbstractView.HELPER_BAR_PERCENT_HEIGHT).add(PADDING));
 
@@ -417,14 +434,8 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), scale);
             toolCardView.setTranslateX(i * PADDING);
             toolCardView.setTranslateY(i * PADDING);
-            try {
-                ToolCardListener toolCardListener = new ToolCardListener(toolCardView, controller, corePane, notifyPane);
-                controller.bindToolCard(toolCardWrappers.get(i), toolCardListener);
-                toolCardListeners.add(toolCardListener);
-            } catch (IOException e) {
-                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-                showCrashErrorMessage("Errore di connessione");
-            }
+            ToolCardListener toolCardListener = new ToolCardListener(toolCardView, controller, corePane, notifyPane);
+            toolCardListeners.add(toolCardListener);
             toolCardsContainer.getChildren().add(toolCardView);
         }
 
@@ -441,7 +452,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
         try {
             List<ToolCardWrapper> toolCardList = controller.getToolCards();
-            if(!toolCardList.isEmpty()) {
+            if (!toolCardList.isEmpty()) {
                 List<Pane> toolCardViews = new ArrayList<>();
                 toolCardList.forEach(toolCardWrapper -> {
                     Pane cardView = new ToolCardView(toolCardWrapper, TOOL_CARD_SHOW_SCALE);
@@ -459,7 +470,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     public void destroyToolCard(ToolCardListener toolCardListener) {
         toolCardsContainer.getChildren().remove(toolCardListener.getToolCardView());
         toolCardListeners.remove(toolCardListener);
-        if(toolCardListeners.isEmpty())
+        if (toolCardListeners.isEmpty())
             corePane.getChildren().remove(toolCardsContainer);
     }
 
@@ -469,8 +480,8 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         for (int i = 0; i < privateObjectiveCardWrappers.size(); i++) {
             PrivateObjectiveCardView cardView = new PrivateObjectiveCardView(
                     privateObjectiveCardWrappers.get(i), controller.getGameViewStrategy().getPrivateObjectiveCardScale());
-            cardView.setTranslateX(PADDING*i);
-            cardView.setTranslateY(PADDING*i);
+            cardView.setTranslateX(PADDING * i);
+            cardView.setTranslateY(PADDING * i);
             container.getChildren().add(cardView);
         }
         DoubleBinding cardX = x.add(container.widthProperty().divide(2));
@@ -493,7 +504,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             cardView.translateXProperty().bind(getPivotX(cardX, cardView.widthProperty(), 0.5));
             cardView.translateYProperty().bind(getPivotY(y, cardView.heightProperty(), 0.5));
         }
-        cardView.setRotate(angle*180/Math.PI - 90);
+        cardView.setRotate(angle * 180 / Math.PI - 90);
         corePane.getChildren().add(cardView);
         cardView.toFront();
     }
@@ -534,5 +545,24 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();
+    }
+
+    public Map<String, IPlayerObserver> getPlayerObservers() {
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerListenerMap.forEach((key, value) -> playerObserverMap.put(key.getUsername(), value));
+        return playerObserverMap;
+    }
+
+    public Map<String, IToolCardObserver> getToolCardObservers() {
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardListeners.forEach(toolCardListener -> toolCardObserverMap.put(toolCardListener.getToolCardName(),
+                toolCardListener));
+        return toolCardObserverMap;
+    }
+
+    public Map<String, ISchemaCardObserver> getSchemaCardObservers() {
+        Map<String, ISchemaCardObserver> schemaCardObserverMap = new HashMap<>();
+        schemaCardViewMap.forEach((key, value) -> schemaCardObserverMap.put(key.getUsername(), value));
+        return schemaCardObserverMap;
     }
 }

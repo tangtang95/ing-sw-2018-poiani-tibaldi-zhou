@@ -43,7 +43,8 @@ public class SchemaCardView extends Pane {
     //Based on SchemaCard.png tileHeight
     private static final double HEIGHT_NAME_PERCENT = 0.9;
 
-    private static final double DICE_SCALE = 0.75;
+    private static final double DICE_SCALE = 0.6;
+    private static final double DIFFICULTY_SCALE = 0.4;
 
     private static final int NUMBER_OF_ROWS = 4;
     private static final int NUMBER_OF_COLUMNS = 5;
@@ -95,7 +96,7 @@ public class SchemaCardView extends Pane {
         }
 
         for (int i = 0; i < schemaCard.getDifficulty(); i++) {
-            ImageView difficultyView = drawDifficultyToken(scale);
+            ImageView difficultyView = drawDifficultyToken(scale*DIFFICULTY_SCALE);
             difficultyView.setTranslateX(image.getWidth()*scale - difficultyView.getFitWidth()*(i+2));
             difficultyView.setTranslateY(image.getHeight()*scale*HEIGHT_NAME_PERCENT + difficultyView.getFitHeight()/2);
             this.getChildren().add(difficultyView);

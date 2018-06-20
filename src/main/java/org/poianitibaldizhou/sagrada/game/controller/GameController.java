@@ -694,6 +694,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             //
             HashMap<String, ISchemaCardObserver> schemaCardObserverHashMapToken = new HashMap<>();
             HashMap<String, IPlayerObserver> playerObserverHashMapToken = new HashMap<>();
+
             schemaCardObserver.forEach((key, value) -> schemaCardObserverHashMapToken.putIfAbsent(NetworkUtility.encrypt(key),schemaCardObserver.get(key)));
             playerObserver.forEach((key, value) -> playerObserverHashMapToken.putIfAbsent(NetworkUtility.encrypt(key), playerObserver.get(key)));
 
@@ -718,8 +719,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     /**
      * Notify the reconnection of a certain player
      *
-     * @param gameName name of the game that the player has reconnected to
-     * @param reconnectingToken reconnecting player's token
+     * @param gameName             name of the game that the player has reconnected to
+     * @param reconnectingToken    reconnecting player's token
      * @param reconnectingUserName reconnecting player's username
      */
     private void notifyReconnection(String gameName, String reconnectingToken, String reconnectingUserName) {
@@ -728,9 +729,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             gameNetworkManager.getViewByToken(reconnectingToken).ack("Reconnected succesfull");
             final String finalGameName = gameName;
             gameManager.getPlayersByGame(gameName).forEach(playerToken -> {
-                if(!gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(playerToken)) {
+                if (!gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(playerToken)) {
                     try {
-                        gameNetworkManager.getViewByToken(playerToken).ack("Player " + reconnectingUserName+ " has reconnected");
+                        gameNetworkManager.getViewByToken(playerToken).ack("Player " + reconnectingUserName + " has reconnected");
                     } catch (IOException e) {
                         handleIOException(playerToken, finalGameName);
                     }
@@ -759,9 +760,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         if (!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
             return serverCreateMessage.reconnectErrorMessage();
 
-        ArrayList<User> users = new ArrayList<>();
-
-        gameManager.getGameByName(gameName.get()).getPlayers().forEach(player -> users.add(player.getUser()));
+        List<User> users = gameManager.getGameByName(gameName.get()).getUsers();
 
         return serverCreateMessage.createGameNameMessage(gameName.get()).createUserList(users).createTokenMessage(token).buildMessage();
     }
@@ -854,7 +853,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         if (!requestingPlayer.isPresent())
             return serverCreateMessage.getErrorMessage();
-
 
         return serverCreateMessage.createCoinsMessage(requestingPlayer.get().getCoins()).buildMessage();
     }
@@ -1174,11 +1172,11 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         synchronized (gameManager.getGameByName(gameName)) {
             gameManager.getObserverManagerByGame(gameName).signalDisconnection(token);
-            if(gameNetworkManager.clearObservers(gameName))
+            if (gameNetworkManager.clearObservers(gameName))
                 return;
 
             try {
-                if(gameManager.getGameByName(gameName).getCurrentPlayer().getToken().equals(token))
+                if (gameManager.getGameByName(gameName).getCurrentPlayer().getToken().equals(token))
                     gameManager.getGameByName(gameName).userChooseAction(token, new EndTurnAction());
             } catch (InvalidActionException e) {
                 // DO NOTHING

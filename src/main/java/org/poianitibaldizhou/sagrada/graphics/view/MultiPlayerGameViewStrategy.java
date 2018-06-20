@@ -14,11 +14,11 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
     private Pane corePane;
     private Pane notifyPane;
 
-    private static final double SCHEMA_CARD_SCALE = 0.25;
-    private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.25;
+    private static final double SCHEMA_CARD_SCALE = 0.625;
+    private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.4;
     private static final double ROUND_TRACK_SCALE = 0.5;
-    private static final double TOOL_CARD_SCALE = 0.3;
-    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.3;
+    private static final double TOOL_CARD_SCALE = 0.45;
+    private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.45;
 
     private static final double PADDING = 10;
 

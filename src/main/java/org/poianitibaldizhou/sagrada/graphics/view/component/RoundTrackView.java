@@ -39,7 +39,7 @@ public class RoundTrackView extends Pane{
     //based on dice width
     private static final double ICON_PERCENT_RADIUS = 0.6;
 
-    private static final double DICE_SCALE = 0.15;
+    private static final double DICE_SCALE = 0.3;
 
     public RoundTrackView(){
         this(1);

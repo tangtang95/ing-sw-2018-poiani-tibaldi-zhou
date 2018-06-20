@@ -679,4 +679,19 @@ public class ClientGetMessage {
         return true;
     }
 
+    /**
+     * Get a ReconnectError message from server.
+     *
+     * @param message json message from server.
+     * @return a boolean value: true if there is reconnection error (no game found), false otherwise.
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    public boolean hasReconnectError(String message) {
+        try {
+            jsonClientProtocol.getResponseByKey(message, SharedConstants.RECONNECT_ERROR).toString();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 }
