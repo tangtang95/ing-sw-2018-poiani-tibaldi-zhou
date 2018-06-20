@@ -32,6 +32,7 @@ import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.DrawableCollectionFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.*;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDrawableCollectionObserver;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.util.*;
 
@@ -71,9 +72,9 @@ public class GameTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         userList = new ArrayList<>();
-        userList.add(new User("user1", String.valueOf("user1".hashCode())));
-        userList.add(new User("user2", String.valueOf("user2".hashCode())));
-        userList.add(new User("user3", String.valueOf("user3".hashCode())));
+        userList.add(new User("user1", NetworkUtility.encrypt("user1")));
+        userList.add(new User("user2", NetworkUtility.encrypt("user2")));
+        userList.add(new User("user3", NetworkUtility.encrypt("user3")));
 
         stateFakeObserverList = new ArrayList<>();
         stateFakeObserverList.add(stateFakeObserver1);
@@ -87,7 +88,7 @@ public class GameTest {
 
         multiPlayerGame = new MultiPlayerGame("Multi player game", userList, terminationGameManager);
 
-        user = new User("user", String.valueOf("user".hashCode()));
+        user = new User("user", NetworkUtility.encrypt("user"));
 
         privateObjectiveCards = new ArrayList<>();
         privateObjectiveCards.add(new PrivateObjectiveCard("private1", "descr1", Color.BLUE));
@@ -359,7 +360,7 @@ public class GameTest {
     }
 
     @Test
-    public void testStateAndGameObserversJoinAndLeave() throws Exception {
+    public void testStateAndGameObserversJoinAndLeave() {
         Map<String, IStateFakeObserver> expectedStateMapObserver = new HashMap<>();
         Map<String, IGameFakeObserver> expectedGameMapObserver = new HashMap<>();
         for (int i = 0; i < multiPlayerGame.getUsers().size(); i++) {
@@ -433,7 +434,7 @@ public class GameTest {
     }
 
     @Test
-    public void testGameTimedOutUsers() throws Exception {
+    public void testGameTimedOutUsers() {
         multiPlayerGame.addNewPlayer(userList.get(0), createEmptySchemaCard(), createMockListOfPrivateObjectiveCards());
         List<User> timedOutExpected = new ArrayList<>();
         timedOutExpected.add(userList.get(1));

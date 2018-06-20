@@ -26,6 +26,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.GameNetworkManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -40,7 +41,6 @@ import java.util.stream.Collectors;
  */
 public class GameController extends UnicastRemoteObject implements IGameController {
 
-    private static final transient String INITIAL_CHECK_ERROR = "You're not playing the selected game or the game does not exist";
     private static final transient String FIRE_EVENT_ERROR = "Can't fire an event now";
     private static final transient String INVALID_ACTION_ERR = "You can't perform this action now";
     private static final transient String YOU_NEED_TO_RECONNECT = "You need to reconnect";
@@ -128,7 +128,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: chooseSchemaCard");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -178,7 +178,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: bindPlayer");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -225,7 +225,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: bindToolCard");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -273,7 +273,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: choseAction");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -321,7 +321,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: placeDice");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -364,7 +364,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: useToolCard");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -404,7 +404,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: choosePrivateObjectiveCard");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -445,7 +445,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: setDice");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -486,7 +486,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: setNewValue");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -526,7 +526,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: setColor");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -566,7 +566,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: setPosition");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -608,7 +608,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         System.out.println("User with token: " + token + "accessed: setContinueAction");
 
-        if (initialCheck(token, gameName))
+        if (initialCheck(token))
             throw new IOException();
 
         synchronized (gameManager.getGameByName(gameName)) {
@@ -694,10 +694,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             //
             HashMap<String, ISchemaCardObserver> schemaCardObserverHashMapToken = new HashMap<>();
             HashMap<String, IPlayerObserver> playerObserverHashMapToken = new HashMap<>();
-            schemaCardObserver.forEach((key, value) -> schemaCardObserverHashMapToken.putIfAbsent(String.valueOf(key.hashCode()),schemaCardObserver.get(key)));
-            playerObserver.forEach((key, value) -> playerObserverHashMapToken.putIfAbsent(String.valueOf(key.hashCode()), playerObserver.get(key)));
+            schemaCardObserver.forEach((key, value) -> schemaCardObserverHashMapToken.putIfAbsent(NetworkUtility.encrypt(key),schemaCardObserver.get(key)));
+            playerObserver.forEach((key, value) -> playerObserverHashMapToken.putIfAbsent(NetworkUtility.encrypt(key), playerObserver.get(key)));
 
-            // Attachin observers
+            // Attaching observers
             final String finalToken = token;
             game.getPlayers().forEach(player -> game.attachPlayerObserver(finalToken, player, new PlayerFakeObserver(finalToken, observerManager, playerObserverHashMapToken.get(player.getToken()))));
             game.getPlayers().forEach(player -> game.attachSchemaCardObserver(finalToken, player.getSchemaCard(),
@@ -748,7 +748,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public String attemptReconnect(String message) throws IOException {
         ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         final String username = serverGetMessage.getUserName(message);
-        final String token = String.valueOf(username.hashCode());
+        final String token = NetworkUtility.encrypt(username);
         final Optional<String> gameName;
         List<IGame> gameList = gameManager.getGameList();
 
@@ -1161,7 +1161,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         String gameName = gameManager.createSinglePlayerGame(username, difficulty);
 
-        return serverCreateMessage.createGameNameMessage(gameName).createTokenMessage(String.valueOf(username.hashCode())).buildMessage();
+        return serverCreateMessage.createGameNameMessage(gameName).createTokenMessage(NetworkUtility.encrypt(username)).buildMessage();
     }
 
     /**
@@ -1250,13 +1250,10 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * the user is part of the that game.
      *
      * @param token    player's token
-     * @param gameName game's name
      * @return true if the condition mentioned above are not respected, false otherwise
      */
-    private boolean initialCheck(String token, String gameName) {
-        if (!gameNetworkManager.containsToken(token))
-            return true;
-        return false;
+    private boolean initialCheck(String token) {
+        return !gameNetworkManager.containsToken(token);
     }
 
     /**
@@ -1284,8 +1281,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     private boolean isObserverBindCorrect(IGame game, Map<String, IPlayerObserver> playerObserver, Map<String, ISchemaCardObserver> schemaCardObserver, Map<String, IToolCardObserver> toolCardObserver) {
 
-        List<String> playerKeys = playerObserver.keySet().stream().map(username -> String.valueOf(username.hashCode())).collect(Collectors.toList());
-        List<String> schemaCardsKey = schemaCardObserver.keySet().stream().map(username -> String.valueOf(username.hashCode())).collect(Collectors.toList());
+        List<String> playerKeys = playerObserver.keySet().stream().map(NetworkUtility::encrypt).collect(Collectors.toList());
+        List<String> schemaCardsKey = schemaCardObserver.keySet().stream().map(NetworkUtility::encrypt).collect(Collectors.toList());
 
         if (!(playerKeys.containsAll(gameManager.getPlayersByGame(game.getName())) &&
                 gameManager.getPlayersByGame(game.getName()).containsAll(playerKeys))) {
@@ -1295,8 +1292,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             return false;
         }
 
-        List<String> toolCarsdNameOnServer = game.getToolCards().stream().map(Card::getName).collect(Collectors.toList());
+        List<String> toolCardsNameOnServer = game.getToolCards().stream().map(Card::getName).collect(Collectors.toList());
 
-        return toolCarsdNameOnServer.containsAll(toolCardObserver.keySet()) && toolCardObserver.keySet().containsAll(toolCarsdNameOnServer);
+        return toolCardsNameOnServer.containsAll(toolCardObserver.keySet()) && toolCardObserver.keySet().containsAll(toolCardsNameOnServer);
     }
 }

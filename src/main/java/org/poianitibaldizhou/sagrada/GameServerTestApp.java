@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.game.controller.GameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.socket.ClientHandler;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -18,16 +19,14 @@ import java.util.logging.Logger;
 
 public class GameServerTestApp {
 
-    private static Registry registry;
-
-    public static final int SERVER_SOCKET_PORT = 9090;
-    public static final int SERVER_RMI_PORT = 1099;
+    private static final int SERVER_SOCKET_PORT = 9090;
+    private static final int SERVER_RMI_PORT = 1099;
 
     public static void main(String[] args) throws RemoteException {
         MediatorManager managerMediator = new MediatorManager();
         List<User> users = new ArrayList<>();
-        users.add(new User("cordero1", String.valueOf("cordero1".hashCode())));
-        users.add(new User("cordero2", String.valueOf("cordero2".hashCode())));
+        users.add(new User("cordero1", NetworkUtility.encrypt("cordero1")));
+        users.add(new User("cordero2", NetworkUtility.encrypt("cordero2")));
         managerMediator.createMultiPlayerGameTest(users);
         LobbyController lobbyController = new LobbyController(managerMediator.getLobbyManager());
         GameController gameController = new GameController(managerMediator.getGameManager());
@@ -56,7 +55,7 @@ public class GameServerTestApp {
             }
         }).start();
 
-        registry = LocateRegistry.getRegistry(SERVER_RMI_PORT);
+        Registry registry = LocateRegistry.getRegistry(SERVER_RMI_PORT);
         registry.rebind("lobbycontroller", controllerManager.getLobbyController());
         registry.rebind("gamecontroller", controllerManager.getGameController());
     }

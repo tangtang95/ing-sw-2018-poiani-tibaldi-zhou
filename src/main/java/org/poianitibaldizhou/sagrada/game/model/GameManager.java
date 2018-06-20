@@ -1,16 +1,14 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.TestOnly;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.ForceSkipTurnFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.TimeOutFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.GameNetworkManager;
-import org.poianitibaldizhou.sagrada.network.ServerGameHeartBeat;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.io.IOException;
 import java.util.*;
@@ -103,7 +101,7 @@ public class GameManager {
         String gameName;
 
         // Try login with this username
-        if (managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(String.valueOf(userName.hashCode()))) {
+        if (managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(NetworkUtility.encrypt(userName))) {
             throw new IOException();
         }
 
@@ -112,7 +110,7 @@ public class GameManager {
             gameName = UUID.randomUUID().toString();
         } while (gameMap.containsKey(gameName));
 
-        String token = String.valueOf(userName.hashCode());
+        String token = NetworkUtility.encrypt(userName);
 
         SinglePlayerGame singlePlayer = new SinglePlayerGame(gameName, new User(userName, token), difficulty,
                 new TerminationGameManager(gameName, this));

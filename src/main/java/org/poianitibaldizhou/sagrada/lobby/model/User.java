@@ -6,8 +6,8 @@ import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -93,6 +93,6 @@ public class User implements JSONable {
      * @return a User object.
      */
     public static User toObject(JSONObject jsonObject) {
-        return new User(jsonObject.get(JSON_USER_NAME).toString(), String.valueOf(jsonObject.get(JSON_USER_NAME).toString().hashCode()));
+        return new User(jsonObject.get(JSON_USER_NAME).toString(), NetworkUtility.encrypt(jsonObject.get(JSON_USER_NAME).toString()));
     }
 }

@@ -31,6 +31,7 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.io.IOException;
 import java.util.*;
@@ -110,8 +111,8 @@ public class GameControllerTest {
 
         userName = "username";
         userName2 = "username2";
-        tokenUser = String.valueOf(userName.hashCode());
-        tokenUser2 = String.valueOf(userName2.hashCode());
+        tokenUser = NetworkUtility.encrypt(userName);
+        tokenUser2 = NetworkUtility.encrypt(userName2);
         tokenOfPlayerPlayingInGame = new ArrayList<>();
         tokenOfPlayerPlayingInGame.add(tokenUser);
         tokenOfPlayerPlayingInGame.add(tokenUser2);

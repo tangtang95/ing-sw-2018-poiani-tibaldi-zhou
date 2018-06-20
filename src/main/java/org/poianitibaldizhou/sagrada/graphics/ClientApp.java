@@ -13,6 +13,8 @@ import org.poianitibaldizhou.sagrada.graphics.controller.GraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 
+import java.util.Objects;
+
 public class ClientApp extends Application {
 
     public static void main(String[] args){
@@ -38,7 +40,7 @@ public class ClientApp extends Application {
 
         Scene scene = new Scene(scenes, startSize.getWidth(), startSize.getHeight());
         scene.setCamera(new PerspectiveCamera());
-        String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
+        String css = Objects.requireNonNull(this.getClass().getClassLoader().getResource("stylesheet/visible-big.css")).toExternalForm();
         scene.getStylesheets().add(css);
 
         scenes.scaleXProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),

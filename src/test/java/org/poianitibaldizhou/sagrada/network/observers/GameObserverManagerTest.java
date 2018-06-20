@@ -7,6 +7,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.IGame;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,22 +23,21 @@ public class GameObserverManagerTest {
 
     private GameObserverManager gameObserverManager;
     private List<String> tokenList;
-    private List<User> userList;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         tokenList = new ArrayList<>();
-        tokenList.add(String.valueOf("user1".hashCode()));
-        tokenList.add(String.valueOf("user2".hashCode()));
-        tokenList.add(String.valueOf("user3".hashCode()));
-        tokenList.add(String.valueOf("user4".hashCode()));
+        tokenList.add(NetworkUtility.encrypt("user1"));
+        tokenList.add(NetworkUtility.encrypt("user2"));
+        tokenList.add(NetworkUtility.encrypt("user3"));
+        tokenList.add(NetworkUtility.encrypt("user4"));
 
-        userList = new ArrayList<>();
-        userList.add(new User("user1", String.valueOf("user1".hashCode())));
-        userList.add(new User("user2", String.valueOf("user2".hashCode())));
-        userList.add(new User("user3", String.valueOf("user3".hashCode())));
-        userList.add(new User("user4", String.valueOf("user4".hashCode())));
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("user1", NetworkUtility.encrypt("user1")));
+        userList.add(new User("user2", NetworkUtility.encrypt("user2")));
+        userList.add(new User("user3", NetworkUtility.encrypt("user3")));
+        userList.add(new User("user4", NetworkUtility.encrypt("user4")));
 
         when(game.getUsers()).thenReturn(userList);
 

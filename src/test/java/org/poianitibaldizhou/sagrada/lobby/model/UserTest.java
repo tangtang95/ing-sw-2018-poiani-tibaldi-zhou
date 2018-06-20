@@ -6,6 +6,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +23,7 @@ public class UserTest {
 
     @Before
     public void setUp() throws Exception {
-        user = new User("test", String.valueOf("test".hashCode()));
+        user = new User("test", NetworkUtility.encrypt("test"));
     }
 
     @Test
@@ -38,21 +39,20 @@ public class UserTest {
 
     @Test
     public void equalsTest() {
-        User user = new User("name", String.valueOf("name".hashCode()));
+        User user = new User("name", NetworkUtility.encrypt("name"));
 
-        assertFalse(user.equals(null));
-        assertEquals(user, new User("name", String.valueOf("name".hashCode())));
+        assertEquals(user, new User("name", NetworkUtility.encrypt("name")));
         assertNotEquals(user, new User("name", "name"));
-        assertNotEquals(user, new User("notEqualsName", String.valueOf("name".hashCode())));
+        assertNotEquals(user, new User("notEqualsName", NetworkUtility.encrypt("name")));
     }
 
     @Test
     public void testHashCode() {
-        User user = new User("name", String.valueOf("name".hashCode()));
+        User user = new User("name", NetworkUtility.encrypt("name"));
 
-        assertEquals(user.hashCode(), new User("name", String.valueOf("name".hashCode())).hashCode());
+        assertEquals(user.hashCode(), new User("name", NetworkUtility.encrypt("name")).hashCode());
         assertNotEquals(user.hashCode(), new User("name", "name").hashCode());
-        assertNotEquals(user.hashCode(), new User("notEqualsName", String.valueOf("name".hashCode())).hashCode());
+        assertNotEquals(user.hashCode(), new User("notEqualsName", NetworkUtility.encrypt("name")).hashCode());
     }
 
     @Test

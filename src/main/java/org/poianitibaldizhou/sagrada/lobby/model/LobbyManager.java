@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.network.observers.LobbyObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.LobbyFakeObserver;
 import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -180,7 +181,7 @@ public class LobbyManager {
         }
         if (managerMediator.isAlreadyPlayingAGame(username))
             throw new IllegalArgumentException("User already logged: " + username);
-        String token = String.valueOf(username.hashCode());
+        String token = NetworkUtility.encrypt(username);
         User user = new User(username, token);
         users.add(user);
         return token;

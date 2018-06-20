@@ -8,7 +8,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.MediatorManager;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
@@ -16,21 +15,17 @@ import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
-import javax.xml.validation.Schema;
-import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class GameManagerTest {
     private GameManager gameManager;
-    private List<IGame> gameList;
     private List<String> playerList;
 
     @Mock
@@ -62,10 +57,6 @@ public class GameManagerTest {
         playerList.add("player2");
         playerList.add("player3");
 
-        gameList = new ArrayList<>();
-        gameList.add(game1);
-        gameList.add(game2);
-        gameList.add(game3);
     }
 
     @After
@@ -79,7 +70,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testJoinNotExistingGame() throws Exception {
+    public void testJoinNotExistingGame() {
         gameManager.createMultiPlayerGame(game1, "game1");
         List<IGame> games = gameManager.getGameList();
         assertEquals(1, games.size());
@@ -87,13 +78,13 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testJoinGame() throws Exception {
+    public void testJoinGame(){
         List<User> list1 = new ArrayList<>();
-        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
-        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+        list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
+        list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
 
         List<User> list2 = new ArrayList<>();
-        list2.add(new User(playerList.get(2), String.valueOf(playerList.get(2).hashCode())));
+        list2.add(new User(playerList.get(2), NetworkUtility.encrypt(playerList.get(2))));
 
         when(game1.getUsers()).thenReturn(list1);
         when(game2.getUsers()).thenReturn(list2);
@@ -101,8 +92,8 @@ public class GameManagerTest {
         gameManager.createMultiPlayerGame(game1, "game1");
         gameManager.createMultiPlayerGame(game2, game2.getName());
 
-        assertEquals(list1.stream().map(user -> user.getToken()).collect(Collectors.toList()), gameManager.getPlayersByGame(game1.getName()));
-        assertEquals(list2.stream().map(user -> user.getToken()).collect(Collectors.toList()), gameManager.getPlayersByGame(game2.getName()));
+        assertEquals(list1.stream().map(User::getToken).collect(Collectors.toList()), gameManager.getPlayersByGame(game1.getName()));
+        assertEquals(list2.stream().map(User::getToken).collect(Collectors.toList()), gameManager.getPlayersByGame(game2.getName()));
     }
 
     @Test
@@ -125,7 +116,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void removeGameTest() throws Exception {
+    public void removeGameTest() {
         gameManager.createMultiPlayerGame(game1, game1.getName());
         gameManager.terminateGame(game1.getName());
         assertEquals(0, gameManager.getGameList().size());
@@ -133,7 +124,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void removeNonExistingGame() throws Exception {
+    public void removeNonExistingGame() {
         gameManager.createMultiPlayerGame(game1, game1.getName());
         List<IGame> prevList = gameManager.getGameList();
         gameManager.terminateGame("NonExistingGame");
@@ -169,8 +160,8 @@ public class GameManagerTest {
     @Test(expected = Exception.class)
     public void testCreateSinglePlayerAlreadyInGame() throws Exception{
         List<User> list1 = new ArrayList<>();
-        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
-        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+        list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
+        list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
 
         when(game1.getUsers()).thenReturn(list1);
         gameManager.createMultiPlayerGame(game1, game1.getName());
@@ -181,7 +172,7 @@ public class GameManagerTest {
     @Test
     public void testCreateSinglePlayer() throws Exception {
         String username = "username";
-        String token = String.valueOf(username.hashCode());
+        String token = NetworkUtility.encrypt(username);
         String gameName = gameManager.createSinglePlayerGame("username", 2);
 
         assertEquals(Collections.singletonList(token), gameManager.getPlayersByGame(gameName));
@@ -190,7 +181,7 @@ public class GameManagerTest {
     @Test
     public void testHandleEndGameSinglePlayerTrue() throws Exception {
         String username  = "username";
-        String token = String.valueOf(username.hashCode());
+        String token = NetworkUtility.encrypt(username);
         String gameName = gameManager.createSinglePlayerGame(username, 2);
 
         GameObserverManager gameObserverManager = gameManager.getObserverManagerByGame(gameName);
@@ -212,16 +203,16 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerNoPlayerLeft() throws Exception {
+    public void testHandleEndGameMultiPlayerNoPlayerLeft() {
         List<User> list1 = new ArrayList<>();
-        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
-        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+        list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
+        list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
 
         when(game1.getUsers()).thenReturn(list1);
         gameManager.createMultiPlayerGame(game1, game1.getName());
 
-        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(0).hashCode()));
-        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(1).hashCode()));
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(NetworkUtility.encrypt(playerList.get(0)));
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(NetworkUtility.encrypt(playerList.get(1)));
 
         assertTrue(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
 
@@ -229,10 +220,10 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerOnePlayerLeft() throws Exception {
+    public void testHandleEndGameMultiPlayerOnePlayerLeft() {
         List<User> list1 = new ArrayList<>();
-        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
-        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
+        list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
+        list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
 
         IConstraint[][] constraints = new IConstraint[SchemaCard.NUMBER_OF_ROWS][SchemaCard.NUMBER_OF_COLUMNS];
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
@@ -245,9 +236,9 @@ public class GameManagerTest {
 
         List<Player> playerList = new ArrayList<>();
         playerList.add(new MultiPlayer(list1.get(0), new FavorToken(1), schemaCard,
-                new ArrayList<PrivateObjectiveCard>()));
+                new ArrayList<>()));
         playerList.add(new MultiPlayer(list1.get(1), new FavorToken(1), schemaCard,
-                new ArrayList<PrivateObjectiveCard>()));
+                new ArrayList<>()));
 
         when(game1.getUsers()).thenReturn(list1);
         when(game1.getPlayers()).thenReturn(playerList);
@@ -261,16 +252,16 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerFalse() throws Exception {
+    public void testHandleEndGameMultiPlayerFalse() {
         List<User> list1 = new ArrayList<>();
-        list1.add(new User(playerList.get(0), String.valueOf(playerList.get(0).hashCode())));
-        list1.add(new User(playerList.get(1), String.valueOf(playerList.get(1).hashCode())));
-        list1.add(new User(playerList.get(2), String.valueOf(playerList.get(2).hashCode())));
+        list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
+        list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
+        list1.add(new User(playerList.get(2), NetworkUtility.encrypt(playerList.get(2))));
 
         when(game1.getUsers()).thenReturn(list1);
         gameManager.createMultiPlayerGame(game1, game1.getName());
 
-        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(String.valueOf(playerList.get(0).hashCode()));
+        gameManager.getObserverManagerByGame(game1.getName()).signalDisconnection(NetworkUtility.encrypt(playerList.get(0)));
 
         assertFalse(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
 

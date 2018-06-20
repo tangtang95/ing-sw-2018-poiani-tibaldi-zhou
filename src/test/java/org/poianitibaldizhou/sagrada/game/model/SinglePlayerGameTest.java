@@ -7,14 +7,10 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ColumnPublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.ObjectiveCardType;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.Node;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ClearAll;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.PayDice;
@@ -22,15 +18,19 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCar
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
-import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IGameFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;
 import org.poianitibaldizhou.sagrada.game.model.state.IStateGame;
+import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IGameFakeObserver;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +55,7 @@ public class SinglePlayerGameTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        user = new User("user", String.valueOf("user".hashCode()));
+        user = new User("user", NetworkUtility.encrypt("user"));
 
         privateObjectiveCards = new ArrayList<>();
         privateObjectiveCards.add(new PrivateObjectiveCard("private1", "descr1", Color.BLUE));
@@ -175,12 +175,7 @@ public class SinglePlayerGameTest {
     public void testGetPreCommands() {
         ToolCard toolCard = new ToolCard(Color.BLUE, "name", "descr", "[1-Add dice to DraftPool]");
         Node<ICommand> expected = new Node<>(new PayDice(Color.BLUE));
-        ICommand temp = new ICommand() {
-            @Override
-            public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
-                return null;
-            }
-        };
+        ICommand temp = (player, toolCardExecutor, turnState) -> null;
 
         expected.setLeftChild(new Node<>(temp));
         expected.getLeftChild().setLeftChild(new Node<>(new ClearAll()));
@@ -191,7 +186,7 @@ public class SinglePlayerGameTest {
     }
 
     @Test
-    public void testGetPreCommandsExceution() throws Exception {
+    public void testGetPreCommandsExecution() throws Exception {
         ToolCard toolCard = mock(ToolCard.class);
         ToolCardExecutor toolCardExecutor = mock(ToolCardExecutor.class);
         SinglePlayer singlePlayer = mock(SinglePlayer.class);

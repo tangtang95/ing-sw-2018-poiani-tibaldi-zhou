@@ -14,6 +14,9 @@ import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
+import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
+
+import java.util.Objects;
 
 public class GameTestApp extends Application{
 
@@ -35,14 +38,14 @@ public class GameTestApp extends Application{
         GameGraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
         ConnectionManager connectionManager = new ConnectionManager("localhost", ConnectionType.SOCKET.getPort(), ConnectionType.SOCKET);
-        controller.initMultiPlayerGame(String.valueOf("cordero1".hashCode()), "cordero1", "corderoGame", connectionManager);
+        controller.initMultiPlayerGame(NetworkUtility.encrypt("cordero1"), "cordero1", "corderoGame", connectionManager);
         sceneManager.pushScene(root);
 
         WindowSize startSize = WindowSize.MEDIUM;
 
         Scene scene = new Scene(scenes, startSize.getWidth(), startSize.getHeight());
         scene.setCamera(new PerspectiveCamera());
-        String css = this.getClass().getClassLoader().getResource("stylesheet/visible-big.css").toExternalForm();
+        String css = Objects.requireNonNull(this.getClass().getClassLoader().getResource("stylesheet/visible-big.css")).toExternalForm();
         scene.getStylesheets().add(css);
 
         scenes.scaleXProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
