@@ -12,7 +12,7 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
     private final Pane corePane;
     private final Pane notifyPane;
 
-    private static final double SCHEMA_CARD_SCALE = 0.4;
+    private static final double SCHEMA_CARD_SCALE = 1;
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.4;
     private static final double PUBLIC_OBJECTIVE_CARD_SCALE = 0.55;
     private static final double TOOL_CARD_SCALE = 0.55;

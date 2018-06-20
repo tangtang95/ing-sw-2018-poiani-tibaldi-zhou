@@ -97,9 +97,8 @@ public class GameGraphicsController extends GraphicsController implements Initia
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
         String request = builder.createUsernameMessage(username).createValueMessage(difficulty.getDifficulty()).buildMessage();
-        String response = null;
         try {
-            response = connectionManager.getGameController().createSinglePlayer(request);
+            String response = connectionManager.getGameController().createSinglePlayer(request);
             String token = parser.getToken(response);
             String gameName = parser.getGameName(response);
             gameModel = new GameModel(username, token, gameName, connectionManager);
@@ -109,6 +108,34 @@ public class GameGraphicsController extends GraphicsController implements Initia
             throw new NetworkException(e);
         }
 
+    }
+
+    public void initReconnectMultiPlayerGame(String username, ConnectionManager connectionManager) throws NetworkException{
+        gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        initListeners();
+        ClientCreateMessage builder = new ClientCreateMessage();
+        ClientGetMessage parser = new ClientGetMessage();
+        String request = builder.createUsernameMessage(username).buildMessage();
+        try {
+            String response = connectionManager.getGameController().attemptReconnect(request);
+            if(parser.hasReconnectError(response))
+                throw new IOException("No game available error");
+            String token = parser.getToken(response);
+            String gameName = parser.getGameName(response);
+            gameModel = new GameModel(username, token, gameName, connectionManager);
+            List<UserWrapper> userList = parser.getListOfUserWrapper(response);
+            Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap = gameModel.getSchemaCardMap();
+            Map<UserWrapper, Integer> coinMap = gameModel.getCoinsMap();
+            List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers = gameModel.getOwnPrivateObjectiveCard();
+            gameListener.drawUsers(userList, schemaCardWrapperMap, privateObjectiveCardWrappers, coinMap);
+            connectionManager.getGameController().reconnect(
+                    builder.createUsernameMessage(username).buildMessage(),
+                    gameListener, stateListener, gameListener.getPlayerObservers(), gameListener.getToolCardObservers(),
+                    gameListener.getSchemaCardObservers(),gameListener, draftPoolListener, roundTrackListener,
+                    diceBagListener, timeoutListener);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setRoundTrack() {

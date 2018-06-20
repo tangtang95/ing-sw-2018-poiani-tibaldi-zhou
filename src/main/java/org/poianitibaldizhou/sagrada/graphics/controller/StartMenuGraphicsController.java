@@ -51,10 +51,17 @@ public class StartMenuGraphicsController extends GraphicsController implements I
     public VBox connectionPane;
 
     @FXML
+    public VBox reconnectPane;
+
+    @FXML
     public VBox multiPlayerPane;
 
     @FXML
     public VBox singlePlayerPane;
+
+    //ReconnectPane
+    @FXML
+    public JFXTextField reconnectUsernameTextField;
 
     //MultiPlayerPane
     @FXML
@@ -95,16 +102,15 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         initializeConnectionView();
         initializeSinglePlayerView();
         initializeMultiPlayerView();
+        initializeReconnectView();
+    }
+
+    private void initializeReconnectView() {
+        reconnectUsernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
     }
 
     private void initializeMultiPlayerView() {
-        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
-        requiredValidator.setMessage("Obbligatorio");
-
-        ValidatorBase usernameValidator = new UsernameValidator();
-        usernameValidator.setMessage("Solo caratteri alfanumerici");
-
-        usernameTextField.setValidators(requiredValidator, usernameValidator);
+        usernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
     }
 
     private void initializeConnectionView(){
@@ -144,13 +150,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
     }
 
     private void initializeSinglePlayerView(){
-        RequiredFieldValidator requiredValidator = new RequiredFieldValidator();
-        requiredValidator.setMessage("Obbligatorio");
-
-        ValidatorBase usernameValidator = new UsernameValidator();
-        usernameValidator.setMessage("Solo caratteri alfanumerici");
-
-        singlePlayerUsernameTextField.setValidators(requiredValidator, usernameValidator);
+        singlePlayerUsernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
 
         difficultyToggleGroup = new ToggleGroup();
         radioButtonVeryEasy.setUserData(Difficulty.VERY_EASY);
@@ -218,6 +218,42 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.getPrimaryStage().close());
     }
 
+    public void onReconnectButtonAction(ActionEvent actionEvent) {
+        closeEveryPane();
+        playOpenMenuPaneTransition(reconnectPane);
+        reconnectPane.setVisible(true);
+        reconnectPane.toFront();
+    }
+
+    public void onReconnectCloseButton(ActionEvent actionEvent) {
+        closeEveryPane();
+        reconnectUsernameTextField.setText("");
+    }
+
+    public void onReconnectPlayButton(ActionEvent actionEvent) {
+        if(usernameTextField.validate()){
+
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
+
+            try {
+                Parent root = loader.load();
+                GameGraphicsController controller = loader.getController();
+                controller.setSceneManager(sceneManager);
+                ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
+                        connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                controller.initReconnectMultiPlayerGame(usernameTextField.getText(), connectionManager);
+                playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
+            } catch (IOException e) {
+                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+            } catch (NetworkException e) {
+                AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
+            } finally {
+                onReconnectCloseButton(actionEvent);
+            }
+        }
+    }
+
     @FXML
     public void onMultiPlayerCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
@@ -253,6 +289,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
     public void onSinglePlayerCloseButton(ActionEvent actionEvent) {
         difficultyToggleGroup.selectToggle(radioButtonMedium);
         closeEveryPane();
+        singlePlayerUsernameTextField.setText("");
     }
 
     @FXML
@@ -307,9 +344,24 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         connectionToggleGroup.selectToggle(selectedRadioButton);
     }
 
-    private void closeEveryPane(){
+    private void closeEveryPane() {
+        reconnectPane.setVisible(false);
         connectionPane.setVisible(false);
         singlePlayerPane.setVisible(false);
         multiPlayerPane.setVisible(false);
     }
+
+    private ValidatorBase getRequiredFieldValidator(){
+        ValidatorBase requiredValidator = new RequiredFieldValidator();
+        requiredValidator.setMessage("Obbligatorio");
+        return requiredValidator;
+    }
+
+    private ValidatorBase getUsernameFieldValidator(){
+        ValidatorBase usernameValidator = new UsernameValidator();
+        usernameValidator.setMessage("Solo caratteri alfanumerici");
+        return  usernameValidator;
+    }
+
+
 }

@@ -26,8 +26,8 @@ public class DraftPoolView extends Pane{
     private static final double PADDING_X_PERCENT = 0.12;
     private static final double PADDING_Y_PERCENT = 0.12;
 
-    private static final double PADDING_PERCENT = 0.1;
-    private static final double DICE_SCALE = 0.6;
+    private static final double PADDING_PERCENT = 0.06;
+    private static final double DICE_SCALE = 1.44;
 
     public DraftPoolView(double scale){
         this.scale = scale;

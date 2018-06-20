@@ -65,4 +65,8 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
     public int hashCode() {
         return this.getClass().getSimpleName().concat(toolCardName).hashCode();
     }
+
+    public String getToolCardName() {
+        return toolCardName;
+    }
 }

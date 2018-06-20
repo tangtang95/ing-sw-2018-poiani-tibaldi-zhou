@@ -32,7 +32,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
     private transient Label roundLabel;
 
     private static final double ROUND_TRACK_SHOW_SCALE = 1.3;
-    private static final double DICE_SCALE = 0.3;
+    private static final double DICE_SCALE = 0.6;
 
     public RoundTrackListener(GameGraphicsController controller, Pane corePane, Pane notifyPane, RoundTrackView trackView) throws RemoteException {
         super(controller, corePane, notifyPane);

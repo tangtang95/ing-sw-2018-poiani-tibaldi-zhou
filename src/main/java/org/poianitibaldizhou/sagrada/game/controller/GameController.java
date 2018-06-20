@@ -759,9 +759,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         if (!gameName.isPresent() || !gameManager.getObserverManagerByGame(gameName.get()).getDisconnectedPlayer().contains(token))
             return serverCreateMessage.reconnectErrorMessage();
 
-        ArrayList<User> users = new ArrayList<>();
-
-        gameManager.getGameByName(gameName.get()).getPlayers().forEach(player -> users.add(player.getUser()));
+        List<User> users = gameManager.getGameByName(gameName.get()).getUsers();
 
         return serverCreateMessage.createGameNameMessage(gameName.get()).createUserList(users).createTokenMessage(token).buildMessage();
     }

@@ -1,8 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDrawer;
-import com.jfoenix.controls.JFXDrawersStack;
+import com.jfoenix.controls.*;
+import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
@@ -13,11 +12,9 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.json.simple.JSONObject;
@@ -49,17 +46,14 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     private static final double ROUND_TRACK_SHOW_SCALE = 1;
     private final transient List<HistoryObject> historyMessages;
 
-    private static final double DICE_SHOW_SCALE = 0.5;
-    private static final double TILE_SHOW_SCALE = 0.5;
-    private static final double SCHEMA_CARD_SHOW_SCALE = 0.45;
-    private static final double DICE_SCHEMA_SHOW_SCALE = 0.3;
+    private static final double DICE_SHOW_SCALE = 1;
+    private static final double TILE_SHOW_SCALE = 1;
+    private static final double SCHEMA_CARD_SHOW_SCALE = 1;
+    private static final double DICE_SCHEMA_SHOW_SCALE = 0.6;
 
     public ToolCardExecutorListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         historyMessages = new ArrayList<>();
-        JFXDrawersStack drawersStack = new JFXDrawersStack();
-        JFXDrawer leftDrawer = new JFXDrawer();
-
     }
 
     @Override
@@ -74,6 +68,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             HBox helperBox = showHelperText(notifyPane, "Scegli uno dei dadi nella lista: ");
             List<Pane> diceViewList = new ArrayList<>();
             diceWrapperList.forEach(diceWrapper -> {
@@ -102,6 +97,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             HBox helperBox = showHelperText(notifyPane, "Scegli il nuovo valore del dado: ");
             List<Pane> diceViewList = new ArrayList<>();
             for (int i = DiceWrapper.MIN_VALUE; i <= DiceWrapper.MAX_VALUE; i++) {
@@ -129,6 +125,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             HBox helperBox = showHelperText(notifyPane, "Scegli uno dei colori indicati per la mossa successiva: ");
             List<Pane> colorViewList = new ArrayList<>();
             colorWrapperList.forEach(colorWrapper -> {
@@ -158,6 +155,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             HBox helperBox = showHelperText(notifyPane, "Scegli il nuovo valore del dado: ");
             List<Pane> diceViewList = new ArrayList<>();
             if (diceWrapper.getNumber() + deltaValue <= DiceWrapper.MAX_VALUE)
@@ -188,6 +186,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             HBox helperBox = showHelperText(notifyPane, "Scegli un dado dal Tracciato dei round: ");
             RoundTrackView copyRoundTrackView = new RoundTrackView(roundTrackWrapper, ROUND_TRACK_SHOW_SCALE);
 
@@ -251,6 +250,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             DropShadow dropShadow = new DropShadow(4, 4, 4, Color.BLACK);
             SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
             schemaCardView.translateXProperty().bind(getPivotX(getCenterX(), schemaCardView.widthProperty(), 0.5));
@@ -290,6 +290,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             DropShadow dropShadow = new DropShadow(4, 4, 4, Color.BLACK);
             SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
             schemaCardView.translateXProperty().bind(getPivotX(getCenterX(), schemaCardView.widthProperty(), 0.5));
@@ -376,6 +377,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
             drawCenteredPane(notifyPane, schemaCardView, "");
             String helperMessage = String.format("Rimuovi un dado del color %s dalla Carta Schema rispettando la " +
@@ -432,6 +434,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
+            drawHistoryButton();
             HBox helperBox = showHelperText(notifyPane, "Vuoi continuare l'esecuzione della Carta Utensile?");
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
@@ -485,6 +488,28 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
     public void addHistoryMessage(HistoryObject message) {
         historyMessages.add(message);
+    }
+
+    private void drawHistoryButton(){
+        JFXButton button = GraphicsUtils.getButton("Cronologia", "negative-button");
+        button.setTranslateX(PADDING);
+        button.setTranslateY(PADDING);
+        button.setOnAction(event -> {
+            JFXDialogLayout layout = new JFXDialogLayout();
+            VBox historyBox = new VBox(10);
+            showHistoryMessages(historyBox);
+            layout.getBody().add(historyBox);
+            JFXDialog dialog = new JFXDialog((StackPane) corePane.getParent(), layout, JFXDialog.DialogTransition.CENTER);
+            dialog.show();
+        });
+        notifyPane.getChildren().add(button);
+    }
+
+    private void showHistoryMessages(VBox historyBox) {
+        historyMessages.forEach(historyObject -> {
+            Label messageLabel = new Label(historyObject.getMessage());
+            historyBox.getChildren().add(messageLabel);
+        });
     }
 
     private void fireDiceEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
