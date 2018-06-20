@@ -60,7 +60,7 @@ public class StateListener extends AbstractView implements IStateObserver {
     private static final double DURATION_IN_MILLIS = 1500;
 
     private static final double SCHEMA_CARD_SHOW_SIZE = 1;
-    private static final double TOOL_CARD_SHOW_SIZE = 0.7;
+    private static final double TOOL_CARD_SHOW_SIZE = 1;
     private static final double DICE_SHOW_SIZE = 0.6;
 
     public StateListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {

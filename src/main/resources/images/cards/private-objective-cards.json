@@ -2,56 +2,56 @@
 
 "retro.png":
 {
-	"frame": {"x":1,"y":1,"w":358,"h":500},
+	"frame": {"x":0,"y":0,"w":230,"h":321},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
-	"sourceSize": {"w":358,"h":500},
+	"spriteSourceSize": {"x":0,"y":0,"w":230,"h":321},
+	"sourceSize": {"w":230,"h":321},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "sfumatureBluPrivata.png":
 {
-	"frame": {"x":1,"y":503,"w":358,"h":500},
+	"frame": {"x":230,"y":0,"w":230,"h":321},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
-	"sourceSize": {"w":358,"h":500},
+	"spriteSourceSize": {"x":0,"y":0,"w":230,"h":321},
+	"sourceSize": {"w":230,"h":321},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "sfumatureGiallePrivata.png":
 {
-	"frame": {"x":361,"y":1,"w":358,"h":500},
+	"frame": {"x":460,"y":0,"w":230,"h":321},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
-	"sourceSize": {"w":358,"h":500},
+	"spriteSourceSize": {"x":0,"y":0,"w":230,"h":321},
+	"sourceSize": {"w":230,"h":321},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "sfumatureRossePrivata.png":
 {
-	"frame": {"x":361,"y":503,"w":358,"h":500},
+	"frame": {"x":0,"y":321,"w":230,"h":321},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
-	"sourceSize": {"w":358,"h":500},
+	"spriteSourceSize": {"x":0,"y":0,"w":230,"h":321},
+	"sourceSize": {"w":230,"h":321},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "sfumatureVerdiPrivata.png":
 {
-	"frame": {"x":721,"y":1,"w":358,"h":500},
+	"frame": {"x":230,"y":321,"w":230,"h":321},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
-	"sourceSize": {"w":358,"h":500},
+	"spriteSourceSize": {"x":0,"y":0,"w":230,"h":321},
+	"sourceSize": {"w":230,"h":321},
 	"pivot": {"x":0.5,"y":0.5}
 },
 "sfumatureViolaPrivata.png":
 {
-	"frame": {"x":721,"y":503,"w":358,"h":500},
+	"frame": {"x":460,"y":321,"w":230,"h":321},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":358,"h":500},
-	"sourceSize": {"w":358,"h":500},
+	"spriteSourceSize": {"x":0,"y":0,"w":230,"h":321},
+	"sourceSize": {"w":230,"h":321},
 	"pivot": {"x":0.5,"y":0.5}
 }},
 "meta": {
@@ -59,8 +59,8 @@
 	"version": "1.0",
 	"image": "private-objective-cards.png",
 	"format": "RGBA8888",
-	"size": {"w":1080,"h":1004},
+	"size": {"w":690,"h":690},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:39a9ce822b200904e4d222e97fd7b053:dd4ade91a6f4201e01d6f4d12097e709:cec14ee734cf13611e9c2785014895d3$"
+	"smartupdate": "$TexturePacker:SmartUpdate:dd55745533d5e1d01a57dd4f4da78479:cbd97b6c2153d4caeb4096007606e50d:cec14ee734cf13611e9c2785014895d3$"
 }
 }

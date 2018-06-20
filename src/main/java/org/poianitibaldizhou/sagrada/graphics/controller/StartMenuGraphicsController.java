@@ -225,13 +225,15 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         reconnectPane.toFront();
     }
 
+    @FXML
     public void onReconnectCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
         reconnectUsernameTextField.setText("");
     }
 
+    @FXML
     public void onReconnectPlayButton(ActionEvent actionEvent) {
-        if(usernameTextField.validate()){
+        if(reconnectUsernameTextField.validate()){
 
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
@@ -241,7 +243,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 controller.setSceneManager(sceneManager);
                 ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
                         connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
-                controller.initReconnectMultiPlayerGame(usernameTextField.getText(), connectionManager);
+                controller.initReconnectMultiPlayerGame(reconnectUsernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 e.printStackTrace();

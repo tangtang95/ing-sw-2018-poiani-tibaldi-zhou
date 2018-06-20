@@ -119,7 +119,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
         try {
             String response = connectionManager.getGameController().attemptReconnect(request);
             if(parser.hasReconnectError(response))
-                throw new IOException("No game available error");
+                throw new NetworkException("No game available error");
             String token = parser.getToken(response);
             String gameName = parser.getGameName(response);
             gameModel = new GameModel(username, token, gameName, connectionManager);

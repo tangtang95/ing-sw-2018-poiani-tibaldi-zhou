@@ -46,10 +46,10 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private transient Map<UserWrapper, PlayerListener> playerListenerMap;
 
     private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.75;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.6;
-    private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 0.65;
-    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 0.65;
-    private static final double TOOL_CARD_SHOW_SCALE = 0.65;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.9;
+    private static final double PUBLIC_OBJECTIVE_CARD_SHOW_SCALE = 1;
+    private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE = 1;
+    private static final double TOOL_CARD_SHOW_SCALE = 1;
 
     private static final double PADDING = 10;
 

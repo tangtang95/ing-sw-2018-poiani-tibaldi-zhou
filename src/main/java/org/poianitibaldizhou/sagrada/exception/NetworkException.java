@@ -10,6 +10,10 @@ public class NetworkException extends Exception{
         innerException = e;
     }
 
+    public NetworkException(String errorMessage) {
+        innerException = new IOException(errorMessage);
+    }
+
     public Exception getInnerException() {
         return innerException;
     }

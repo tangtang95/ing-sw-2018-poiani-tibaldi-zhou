@@ -34,7 +34,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private static final int COLUMNS = 4;
 
-    private static final double RETRO_IMAGE_SCALE = 0.6;
+    private static final double RETRO_IMAGE_SCALE = 1;
 
     public LobbyView(LobbyGraphicsController controller, Pane corePane) throws RemoteException {
         this.controller = controller;
