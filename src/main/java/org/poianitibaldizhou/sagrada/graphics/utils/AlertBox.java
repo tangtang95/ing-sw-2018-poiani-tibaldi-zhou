@@ -9,8 +9,14 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import org.jetbrains.annotations.Contract;
 
 public class AlertBox {
+
+    @Contract(" -> fail")
+    private AlertBox(){
+        throw new IllegalStateException();
+    }
 
     public static void displayBox(String title, String text){
         Stage popup = new Stage();

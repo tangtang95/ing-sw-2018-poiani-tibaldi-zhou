@@ -30,10 +30,9 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
 
     @FXML
     public Pane corePane;
+    @FXML
     public Label labelTimeout;
 
-    private long delayTime;
-    private long startTime;
     private Timeline timeoutAnimation;
 
     private LobbyModel lobbyModel;
@@ -50,6 +49,13 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         }
     }
 
+    /**
+     * Init method for instantiation of Lobby
+     *
+     * @param username the username chosen
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException if cannot connect to server
+     */
     public void initLobbyModel(String username, ConnectionManager connectionManager) throws NetworkException {
         lobbyModel = new LobbyModel(username, connectionManager);
         sceneManager.getPrimaryStage().setOnCloseRequest((event -> {
@@ -62,6 +68,9 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         }
     }
 
+    /**
+     * @return the list of user inside the lobby
+     */
     public List<UserWrapper> getUsers() {
         List<UserWrapper> users = null;
         try {
@@ -76,6 +85,11 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         return lobbyModel.getUsername();
     }
 
+    /**
+     * Change the scene to the GameScene
+     *
+     * @param gameName the name of the game
+     */
     public void gameStart(String gameName) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
@@ -84,7 +98,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
             GameGraphicsController controller = loader.getController();
             controller.setSceneManager(sceneManager);
             controller.initMultiPlayerGame(lobbyModel.getToken(), lobbyModel.getUsername(), gameName, lobbyModel.getConnectionManager());
-            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
+            playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.replaceScene(root));
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
         } catch (NetworkException e) {
@@ -92,17 +106,21 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         }
     }
 
-    public void onTimeoutSet(long millisTime){
+    /**
+     * Initialize the timeout
+     *
+     * @param millisTime the remaining time until the game start
+     */
+    public void onTimeoutSet(final long millisTime){
         labelTimeout.setText(String.valueOf(Math.round(millisTime/1000.0)));
-        delayTime = millisTime;
-        startTime = System.currentTimeMillis();
+        long startTime = System.currentTimeMillis();
         if(timeoutAnimation != null)
             timeoutAnimation.stop();
 
         timeoutAnimation = new Timeline(new KeyFrame(
                 Duration.millis(500),
                 event -> {
-                    long deltaTime = delayTime - (System.currentTimeMillis() - startTime);
+                    long deltaTime = millisTime - (System.currentTimeMillis() - startTime);
                     if(deltaTime < 0){
                         labelTimeout.setText("00");
                     }

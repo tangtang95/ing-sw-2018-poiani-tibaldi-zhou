@@ -79,6 +79,15 @@ public class GameGraphicsController extends GraphicsController implements Initia
         notifyPane.toBack();
     }
 
+    /**
+     * Init method for Multi player games
+     *
+     * @param token the token got from lobby
+     * @param username the username chosen
+     * @param gameName the game name got from lobby
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException if cannot connect to the server
+     */
     public void initMultiPlayerGame(String token, String username, String gameName, ConnectionManager connectionManager) throws NetworkException {
         gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
         initListeners();
@@ -91,6 +100,14 @@ public class GameGraphicsController extends GraphicsController implements Initia
         }
     }
 
+    /**
+     * Init method for Single player games
+     *
+     * @param username the username chosen
+     * @param difficulty the difficulty level chosen
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException if cannot connect to the server
+     */
     public void initSinglePlayerGame(String username, Difficulty difficulty, ConnectionManager connectionManager) throws NetworkException {
         gameViewStrategy = new SinglePlayerGameViewStrategy(this, corePane, notifyPane);
         initListeners();
@@ -110,6 +127,13 @@ public class GameGraphicsController extends GraphicsController implements Initia
 
     }
 
+    /**
+     * Init method for Reconnecting to Multi Player Games
+     *
+     * @param username the username used before
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException
+     */
     public void initReconnectMultiPlayerGame(String username, ConnectionManager connectionManager) throws NetworkException{
         gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
         initListeners();
@@ -138,11 +162,17 @@ public class GameGraphicsController extends GraphicsController implements Initia
         }
     }
 
-    public void setRoundTrack() {
+    /**
+     * Draw the Round Track
+     */
+    public void drawRoundTrack() {
         roundTrackListener.drawRoundTrack();
     }
 
-    public void setDraftPool() {
+    /**
+     * Draw the Draft Pool
+     */
+    public void drawDraftPool() {
         draftPoolListener.drawDraftPool();
     }
 
@@ -266,6 +296,12 @@ public class GameGraphicsController extends GraphicsController implements Initia
     }
 
 
+    /**
+     * Go to the ScorePlayerScene to show the winner
+     *
+     * @param winner the user who won
+     * @param victoryPoints the final points of each player
+     */
     public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
 
@@ -282,7 +318,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
 
     public void quitGame() throws IOException {
         gameModel.quitGame();
-        playSceneTransition(sceneManager.getCurrentScene(), event -> popScene());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.popScene());
     }
 
     public long getMillisTimeout() throws IOException {

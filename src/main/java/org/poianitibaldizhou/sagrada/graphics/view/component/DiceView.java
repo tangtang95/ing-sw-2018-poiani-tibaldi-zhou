@@ -15,11 +15,12 @@ public class DiceView extends Pane {
 
     private static final String DICE_IMAGE_PATH = "images/board/dices.png";
     private static final String DICE_JSON_PATH = "images/board/dices.json";
+    private static final String DICE_IMAGE_NAME = "dice-%s-%s.png";
 
     public DiceView(DiceWrapper dice, double scale) {
         this.diceWrapper = dice;
         this.scale = scale;
-        String imageKey = String.format("dice-%s-%s.png", dice.getColor().name().toLowerCase(),
+        String imageKey = String.format(DICE_IMAGE_NAME, dice.getColor().name().toLowerCase(),
                 String.valueOf(dice.getNumber()));
         diceImage = GraphicsUtils.getImageView(imageKey, DICE_IMAGE_PATH, DICE_JSON_PATH, scale);
 
@@ -51,15 +52,14 @@ public class DiceView extends Pane {
     }
 
     public void reRoll(int number) {
-        // TODO ANIMATION
         diceWrapper = new DiceWrapper(diceWrapper.getColor(), number);
-        String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
+        String imageKey = String.format(DICE_IMAGE_NAME, diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
         GraphicsUtils.changeViewport(diceImage, imageKey, DICE_JSON_PATH, scale);
     }
 
     public Image getImage() {
-        String imageKey = String.format("dice-%s-%s.png", diceWrapper.getColor().name().toLowerCase(),
+        String imageKey = String.format(DICE_IMAGE_NAME, diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
         return GraphicsUtils.getImage("images/dices/", imageKey, diceImage.getFitWidth(), diceImage.getFitHeight());
     }

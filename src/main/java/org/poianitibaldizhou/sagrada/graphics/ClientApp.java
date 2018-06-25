@@ -10,6 +10,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.poianitibaldizhou.sagrada.graphics.controller.GraphicsController;
+import org.poianitibaldizhou.sagrada.graphics.controller.StartMenuGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 
@@ -34,8 +35,9 @@ public class ClientApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
 
         Parent root = loader.load();
-        GraphicsController controller = loader.getController();
+        StartMenuGraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
+        controller.initStartMenuScene();
         sceneManager.pushScene(root);
 
         Scene scene = new Scene(scenes, startSize.getWidth(), startSize.getHeight());

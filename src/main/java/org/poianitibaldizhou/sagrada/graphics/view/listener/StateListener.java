@@ -162,14 +162,7 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     @Override
     public void onRoundEnd(String message) throws IOException {
-        Platform.runLater(() -> {
-            try {
-                controller.updateAllViews();
-            } catch (IOException e) {
-                showCrashErrorMessage("Errore di connessione");
-                e.printStackTrace();
-            }
-        });
+        /* NOT NEEDED */
     }
 
     @Override

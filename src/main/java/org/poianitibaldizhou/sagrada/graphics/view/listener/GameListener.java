@@ -134,8 +134,8 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             publicObjectiveCardsContainer = drawPublicObjectiveCardsView(corePane, publicObjectiveCardWrappers,
                     controller.getGameViewStrategy().getPublicObjectiveCardScale());
             publicObjectiveCardsContainer.setOnMousePressed(this::onPublicObjectiveCardsPressed);
-            controller.setRoundTrack();
-            controller.setDraftPool();
+            controller.drawRoundTrack();
+            controller.drawDraftPool();
         });
 
     }

@@ -426,6 +426,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             deactivateNotifyPane();
             showMessage(corePane, "L'esecuzione della Carta Utensile è stata interrotta per errore: " + error,
                     MessageType.ERROR);
+            try {
+                controller.updateAllViews();
+            } catch (IOException e) {
+                showCrashErrorMessage("Errore di connessione");
+                e.printStackTrace();
+            }
         });
     }
 
@@ -594,21 +600,6 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             historyMessages.remove(historyMessages.size() - 1);
             showCrashErrorMessage("Errore di connessione");
         }
-    }
-
-    public HistoryObject getMostRecentDiceMessage() throws IOException {
-        for (int i = historyMessages.size() - 1; i >= 0; i--) {
-            if (historyMessages.get(i).getObjectMessageType() == ObjectMessageType.DICE) {
-                return historyMessages.get(i);
-            }
-        }
-        throw new IOException();
-    }
-
-    public HistoryObject getMostRecentMessage() {
-        if (historyMessages.isEmpty())
-            return new HistoryObject(null, ObjectMessageType.NONE);
-        return historyMessages.get(historyMessages.size() - 1);
     }
 
     @Override
