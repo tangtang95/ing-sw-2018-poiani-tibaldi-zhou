@@ -58,6 +58,39 @@ public class GameGraphicsController extends GraphicsController implements Initia
         initNotifyPane();
     }
 
+    /**
+     * Update every views inside this controller
+     * @throws IOException network error
+     */
+    public void updateAllViews() throws IOException {
+        draftPoolListener.updateView();
+        roundTrackListener.updateView();
+        gameListener.updateView();
+        stateListener.updateView();
+        timeoutListener.updateView();
+        diceBagListener.updateView();
+    }
+
+    /**
+     * Go to the ScorePlayerScene to show the winner
+     *
+     * @param winner the user who won
+     * @param victoryPoints the final points of each player
+     */
+    public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
+
+        try {
+            Parent root = loader.load();
+            ScorePlayerGraphicsController controller = loader.getController();
+            controller.setSceneManager(sceneManager);
+            controller.initScoreScene(winner, victoryPoints);
+            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
+        } catch (IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+        }
+    }
+
     private void initListeners() {
         try {
             draftPoolListener = new DraftPoolListener(this, corePane, notifyPane);
@@ -176,6 +209,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
         draftPoolListener.drawDraftPool();
     }
 
+    // REQUEST TO THE GAME MODEL
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
         gameModel.chooseSchemaCard(schemaCardWrapper);
     }
@@ -266,14 +300,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
         gameModel.sendValueObject(value);
     }
 
-    public void updateAllViews() throws IOException {
-        draftPoolListener.updateView();
-        roundTrackListener.updateView();
-        gameListener.updateView();
-        stateListener.updateView();
-        timeoutListener.updateView();
-        diceBagListener.updateView();
-    }
+
 
     public int getOwnToken() throws IOException {
         return gameModel.getOwnToken();
@@ -295,26 +322,6 @@ public class GameGraphicsController extends GraphicsController implements Initia
         gameModel.choosePrivateObjectiveCard(privateObjectiveCardWrapper);
     }
 
-
-    /**
-     * Go to the ScorePlayerScene to show the winner
-     *
-     * @param winner the user who won
-     * @param victoryPoints the final points of each player
-     */
-    public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
-
-        try {
-            Parent root = loader.load();
-            ScorePlayerGraphicsController controller = loader.getController();
-            controller.setSceneManager(sceneManager);
-            controller.initScoreScene(winner, victoryPoints);
-            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
-        }
-    }
 
     public void quitGame() throws IOException {
         gameModel.quitGame();

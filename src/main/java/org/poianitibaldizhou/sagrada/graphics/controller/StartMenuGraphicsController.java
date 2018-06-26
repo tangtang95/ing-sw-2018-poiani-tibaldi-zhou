@@ -285,7 +285,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 e.printStackTrace();
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             } catch (NetworkException e) {
-                AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
+                AlertBox.displayBox("Errore del server", e.getInnerException().getMessage());
             } finally {
                 onMultiPlayerCloseButton(actionEvent);
             }

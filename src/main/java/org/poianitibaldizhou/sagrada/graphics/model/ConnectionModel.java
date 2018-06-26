@@ -15,6 +15,11 @@ public class ConnectionModel {
 
     private static final String LOCAL_HOST = "localhost";
 
+    /**
+     * Constructor.
+     * Create a connection model that contains ip address, port and type of connection
+     *
+     */
     public ConnectionModel(){
         ipAddress = new SimpleStringProperty(LOCAL_HOST);
         port = new SimpleIntegerProperty(ConnectionType.RMI.getPort());

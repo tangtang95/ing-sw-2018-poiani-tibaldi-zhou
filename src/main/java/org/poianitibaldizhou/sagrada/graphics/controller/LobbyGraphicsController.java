@@ -54,7 +54,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
      *
      * @param username the username chosen
      * @param connectionManager the manager of the connection
-     * @throws NetworkException if cannot connect to server
+     * @throws NetworkException if cannot connect to server or the username is already in use
      */
     public void initLobbyModel(String username, ConnectionManager connectionManager) throws NetworkException {
         lobbyModel = new LobbyModel(username, connectionManager);
@@ -74,7 +74,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
     public List<UserWrapper> getUsers() {
         List<UserWrapper> users = null;
         try {
-            users =  lobbyModel.requestGetUsers();
+            users =  lobbyModel.getUsers();
         } catch (IOException e) {
             AlertBox.displayBox("Errore di connessione", "L'operazione è fallita per problemi di connessione");
         }
