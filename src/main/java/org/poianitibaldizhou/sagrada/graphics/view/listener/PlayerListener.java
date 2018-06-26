@@ -67,7 +67,7 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
             playerView.drawFavorToken(token);
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 

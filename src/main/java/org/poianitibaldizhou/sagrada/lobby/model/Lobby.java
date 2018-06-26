@@ -16,11 +16,11 @@ import java.util.Map;
  * userList.size() >= 0 && userList.size() <= MAX_PLAYER
  * lobbyObserverMap.size() >= 0 && lobbyObserverMap.size() <= MAX_PLAYER
  */
-public class Lobby implements Serializable {
+public class Lobby {
     private List<User> userList;
     private String name;
     private boolean gameStarted;
-    private final transient Map<String, ILobbyFakeObserver> lobbyObserverMap;
+    private final Map<String, ILobbyFakeObserver> lobbyObserverMap;
 
     public static final int MAX_PLAYER = 4;
 

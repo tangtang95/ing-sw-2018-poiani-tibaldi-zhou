@@ -15,6 +15,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SchemaCardListener extends AbstractView implements ISchemaCardObserver{
 
@@ -50,7 +52,7 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
             SchemaCardWrapper schemaCardWrapper = schemaCardWrapperMap.get(new UserWrapper(username));
             schemaCardView.drawSchemaCard(schemaCardWrapper);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 

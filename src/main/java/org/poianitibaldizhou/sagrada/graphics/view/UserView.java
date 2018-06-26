@@ -34,9 +34,6 @@ public class UserView extends Pane {
         this.getStyleClass().add("user-view");
 
         this.getChildren().add(imageView);
-        this.onRotateProperty().addListener(((observable, oldValue, newValue) ->{
-
-        }));
     }
 
     /**

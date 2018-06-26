@@ -1,14 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.observers.realobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
-
 import java.io.IOException;
 import java.rmi.Remote;
-import java.util.List;
 
 public interface IGameObserver extends Remote {
 

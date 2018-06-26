@@ -33,7 +33,6 @@ public class ToolCardView extends Pane{
      */
     public ToolCardView(ToolCardWrapper toolCard, double scale){
         this.toolCardWrapper = toolCard;
-        double scale1 = scale;
         String cardKey = GraphicsUtils.convertNameIntoCardKey(toolCard.getName());
         imageView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 public class NetworkException extends Exception{
 
-    private Exception innerException;
+    private final Exception innerException;
 
     public NetworkException(IOException e) {
         innerException = e;

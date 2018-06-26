@@ -30,7 +30,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
     protected final transient Pane notifyPane;
 
     public static final double HELPER_BAR_PERCENT_HEIGHT = 0.05;
-
+    
     protected static final double PADDING = 10;
 
     protected AbstractView(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {

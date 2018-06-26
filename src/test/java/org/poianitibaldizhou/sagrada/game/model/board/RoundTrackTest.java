@@ -1,12 +1,12 @@
 package org.poianitibaldizhou.sagrada.game.model.board;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.*;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -216,12 +216,12 @@ public class RoundTrackTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exception.class)
     public void testAddNull() {
         roundTrack.addDiceToRound(null, 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exception.class)
     public void testAddsNull() {
         roundTrack.addDicesToRound(null, 0);
     }

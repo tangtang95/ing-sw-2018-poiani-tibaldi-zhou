@@ -7,11 +7,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.GameInjector;
-import org.poianitibaldizhou.sagrada.game.model.cards.Position;
+import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Card;
+import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 

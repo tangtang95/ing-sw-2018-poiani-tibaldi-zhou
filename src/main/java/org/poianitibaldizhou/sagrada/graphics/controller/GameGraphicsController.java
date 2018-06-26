@@ -85,7 +85,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
             ScorePlayerGraphicsController controller = loader.getController();
             controller.setSceneManager(sceneManager);
             controller.initScoreScene(winner, victoryPoints);
-            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
+            playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.replaceScene(root));
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
         }
@@ -146,7 +146,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
         initListeners();
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
-        String request = builder.createUsernameMessage(username).createValueMessage(difficulty.getDifficulty()).buildMessage();
+        String request = builder.createUsernameMessage(username).createValueMessage(difficulty.getDifficultyValue()).buildMessage();
         try {
             String response = connectionManager.getGameController().createSinglePlayer(request);
             String token = parser.getToken(response);
@@ -191,7 +191,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
                     gameListener.getSchemaCardObservers(),gameListener, draftPoolListener, roundTrackListener,
                     diceBagListener, timeoutListener);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 

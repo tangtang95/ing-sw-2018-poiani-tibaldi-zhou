@@ -3,8 +3,6 @@ package org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 
-import java.io.IOException;
-
 public interface ISchemaCardFakeObserver {
 
     /**

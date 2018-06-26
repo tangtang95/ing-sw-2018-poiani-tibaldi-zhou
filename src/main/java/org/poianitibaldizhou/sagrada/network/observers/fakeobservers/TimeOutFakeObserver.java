@@ -3,15 +3,13 @@ package org.poianitibaldizhou.sagrada.network.observers.fakeobservers;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.ServerSettings;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
-import org.poianitibaldizhou.sagrada.game.model.IGame;
-import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;

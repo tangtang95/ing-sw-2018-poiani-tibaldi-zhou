@@ -1,10 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands;
 
-import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 
 import java.util.Objects;
 
@@ -14,7 +14,6 @@ public class IfContinue implements ICommand {
         toolCardExecutor.getObservers().forEach(IToolCardExecutorFakeObserver::notifyNeedContinueAnswer);
 
         boolean answer = toolCardExecutor.getNeededAnswer();
-        System.out.println("ANSWER: " + answer);
         return answer ? CommandFlow.MAIN : CommandFlow.SUB;
     }
 

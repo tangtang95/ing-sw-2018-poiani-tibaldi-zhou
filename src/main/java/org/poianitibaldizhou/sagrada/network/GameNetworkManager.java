@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
@@ -13,7 +14,7 @@ import java.util.*;
  */
 public class GameNetworkManager {
 
-    private final transient HashMap<String, IGameView> viewMap = new HashMap<>();
+    private final HashMap<String, IGameView> viewMap = new HashMap<>();
     private final GameManager gameManager;
 
     private final Map<String, ServerGameHeartBeat> serverGameHeartBeatMap;
@@ -157,7 +158,7 @@ public class GameNetworkManager {
      * @param gameName name of the game
      */
     private void ping(String gameName) {
-        gameManager.getGameByName(gameName).getPlayers().stream().map(player -> player.getToken()).forEach(
+        gameManager.getGameByName(gameName).getPlayers().stream().map(Player::getToken).forEach(
                 token -> {
                     try {
                         if (viewMap.get(token) != null)

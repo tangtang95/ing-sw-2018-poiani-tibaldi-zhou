@@ -1,8 +1,10 @@
 package org.poianitibaldizhou.sagrada.network;
 
 import org.poianitibaldizhou.sagrada.ServerSettings;
-import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * OVERVIEW: Heart beat for detection client disconnection
@@ -41,13 +43,15 @@ public class ServerGameHeartBeat extends Thread {
                     if (gameNetworkManager.clearObservers(gameName))
                         break;
                 } catch (NullPointerException npe) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, npe.toString());
                     if (!gameManager.notContainsGame(gameName)) {
                         throw new IllegalStateException();
                     }
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
+            Thread.currentThread().interrupt();
         }
     }
 }

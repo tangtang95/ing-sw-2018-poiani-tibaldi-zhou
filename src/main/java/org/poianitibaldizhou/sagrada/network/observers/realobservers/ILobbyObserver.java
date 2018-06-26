@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.network.observers.realobservers;
 
 import java.io.IOException;
 import java.rmi.Remote;
-import java.rmi.RemoteException;
 
 public interface ILobbyObserver extends Remote {
 

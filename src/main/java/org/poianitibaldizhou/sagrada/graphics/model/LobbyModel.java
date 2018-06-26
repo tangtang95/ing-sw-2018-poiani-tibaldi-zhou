@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
 import org.poianitibaldizhou.sagrada.IView;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;

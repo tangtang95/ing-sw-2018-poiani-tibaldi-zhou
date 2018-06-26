@@ -11,6 +11,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ToolCardListener extends AbstractView implements IToolCardObserver {
 
@@ -72,7 +74,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
             toolCardView.redrawToken(toolCardWrapper.getToken());
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
 
     }

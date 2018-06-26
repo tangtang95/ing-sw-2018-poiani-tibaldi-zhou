@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +17,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 

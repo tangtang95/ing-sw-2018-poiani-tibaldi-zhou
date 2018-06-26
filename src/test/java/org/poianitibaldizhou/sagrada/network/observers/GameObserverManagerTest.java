@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.network.observers;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,6 +9,7 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;

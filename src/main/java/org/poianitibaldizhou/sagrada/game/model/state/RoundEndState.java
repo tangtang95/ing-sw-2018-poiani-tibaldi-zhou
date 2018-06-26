@@ -1,9 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
-import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
-
+import org.poianitibaldizhou.sagrada.game.model.Direction;
+import org.poianitibaldizhou.sagrada.game.model.Game;
 
 public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 

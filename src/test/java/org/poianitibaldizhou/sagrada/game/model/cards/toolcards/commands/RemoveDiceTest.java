@@ -166,7 +166,7 @@ public class RemoveDiceTest {
                     temp = new RemoveDice(type);
                     fail("Exception expected");
                 } catch (Exception e) {
-                    assertEquals(temp, null);
+                    assertEquals(null, temp);
                 }
             }
         }

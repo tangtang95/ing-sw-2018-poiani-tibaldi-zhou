@@ -1,7 +1,8 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
-import com.jfoenix.controls.*;
-import com.jfoenix.transitions.hamburger.HamburgerSlideCloseTransition;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
@@ -12,7 +13,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -20,7 +20,6 @@ import javafx.scene.text.Font;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
@@ -31,6 +30,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.HistoryObject;
 import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.ObjectMessageType;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
@@ -349,7 +349,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                     try {
                         schemaCardView.removeDice(diceWrapper, oldPositionWrapper);
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
                         showCrashErrorMessage("Errore di sincronizzazione");
                         return;
                     }
@@ -469,7 +469,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                 controller.updateAllViews();
             } catch (IOException e) {
                 showCrashErrorMessage("Errore di connessione");
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             }
         });
     }

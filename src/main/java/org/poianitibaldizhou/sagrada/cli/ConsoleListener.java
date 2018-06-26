@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.cli;
 
-import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 
@@ -9,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 /**
  * ConsoleListener is a singleton class that rule the input stream from the console command.

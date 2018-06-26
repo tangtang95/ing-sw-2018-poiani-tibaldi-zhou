@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.cli.BuildGraphic;
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;
@@ -18,6 +17,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 
 /**
  * This class implement the IToolCardExecutorObserver and it takes care

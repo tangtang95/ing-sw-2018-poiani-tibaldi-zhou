@@ -395,7 +395,7 @@ public class SchemaCard implements JSONable {
      * @param obj the other object to compare
      * @return true if *hasSameTiles(same constraint and same dice placed on it)* &&
      * this.getName().equals(obj.getName()) &&
-     * this.getDifficulty() == obj.getDifficulty();
+     * this.getDifficultyValue() == obj.getDifficultyValue();
      */
     @Override
     public boolean equals(Object obj) {

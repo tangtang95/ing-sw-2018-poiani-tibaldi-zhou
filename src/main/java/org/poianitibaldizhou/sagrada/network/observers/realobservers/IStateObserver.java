@@ -1,11 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.observers.realobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
-import org.poianitibaldizhou.sagrada.lobby.model.User;
-
 import java.io.IOException;
 import java.rmi.Remote;
-import java.util.Map;
 
 public interface IStateObserver extends Remote {
 

@@ -1,16 +1,15 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DrawableCollection;
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
+import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.*;
-import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
