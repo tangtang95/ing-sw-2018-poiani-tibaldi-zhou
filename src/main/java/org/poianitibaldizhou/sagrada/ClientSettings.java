@@ -74,7 +74,7 @@ public class ClientSettings {
             return null;
         }
 
-        value = (Integer) jsonObject.get(key);
+        value = Integer.parseInt(jsonObject.get(key).toString());
 
         return value;
     }
