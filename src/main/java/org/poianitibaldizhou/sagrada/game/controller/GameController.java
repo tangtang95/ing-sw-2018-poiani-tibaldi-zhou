@@ -206,12 +206,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                     gameManager.getObserverManagerByGame(gameName), schemaCardObserver));
             game.attachPlayerObserver(token, player, new PlayerFakeObserver(token, gameManager.getObserverManagerByGame(gameName), playerObserver));
         }
-
-        try {
-            gameNetworkManager.getViewByToken(token).ack("Binding to " + player.getUser().getName() + " successful");
-        } catch (IOException e) {
-            handleIOException(token, gameName);
-        }
     }
 
     /**
@@ -255,11 +249,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             game.attachToolCardObserver(token, toolCard, new ToolCardFakeObserver(token, gameManager.getObserverManagerByGame(gameName), toolCardObserver));
         }
 
-        try {
-            gameNetworkManager.getViewByToken(token).ack("Binding to " + toolCard.getName() + " successful");
-        } catch (IOException e) {
-            handleIOException(token, gameName);
-        }
     }
 
     /**
@@ -298,14 +287,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
                 } catch (IOException e1) {
                     handleIOException(token, gameName);
                 }
-                return;
             }
-        }
-
-        try {
-            gameNetworkManager.getViewByToken(token).ack("Action performed");
-        } catch (IOException e) {
-            handleIOException(token, gameName);
         }
     }
 
@@ -726,12 +708,12 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     private void notifyReconnection(String gameName, String reconnectingToken, String reconnectingUserName) {
         gameManager.getObserverManagerByGame(gameName).signalReconnect(reconnectingToken);
         try {
-            gameNetworkManager.getViewByToken(reconnectingToken).ack("Reconnected succesfull");
+            gameNetworkManager.getViewByToken(reconnectingToken).ack("Reconnected successful.");
             final String finalGameName = gameName;
             gameManager.getPlayersByGame(gameName).forEach(playerToken -> {
                 if (!gameManager.getObserverManagerByGame(gameName).getDisconnectedPlayer().contains(playerToken)) {
                     try {
-                        gameNetworkManager.getViewByToken(playerToken).ack("Player " + reconnectingUserName + " has reconnected");
+                        gameNetworkManager.getViewByToken(playerToken).ack("Player " + reconnectingUserName + " has reconnected.");
                     } catch (IOException e) {
                         handleIOException(playerToken, finalGameName);
                     }
@@ -1293,5 +1275,22 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         List<String> toolCardsNameOnServer = game.getToolCards().stream().map(Card::getName).collect(Collectors.toList());
 
         return toolCardsNameOnServer.containsAll(toolCardObserver.keySet()) && toolCardObserver.keySet().containsAll(toolCardsNameOnServer);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GameController)) return false;
+        if (!super.equals(o)) return false;
+        GameController that = (GameController) o;
+        return Objects.equals(gameManager, that.gameManager) &&
+                Objects.equals(serverGetMessage, that.serverGetMessage) &&
+                Objects.equals(gameNetworkManager, that.gameNetworkManager);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), gameManager, serverGetMessage, gameNetworkManager);
     }
 }

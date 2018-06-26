@@ -1,13 +1,12 @@
 package org.poianitibaldizhou.sagrada.network;
 
-
-import org.poianitibaldizhou.sagrada.ServerApp;
+import org.poianitibaldizhou.sagrada.ClientSettings;
 
 /**
- * OVERIVEW: representes the type of connections available for the various clients
+ * OVERVIEW: representes the type of connections available for the various clients
  */
 public enum ConnectionType {
-    RMI(ServerApp.SERVER_RMI_PORT), SOCKET(ServerApp.SERVER_SOCKET_PORT);
+    RMI(ClientSettings.getRMIPort()), SOCKET(ClientSettings.getSocketPort());
 
     private final int port;
 

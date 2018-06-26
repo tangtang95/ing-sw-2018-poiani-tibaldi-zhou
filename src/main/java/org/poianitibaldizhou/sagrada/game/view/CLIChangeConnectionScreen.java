@@ -25,7 +25,7 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
      * @param screenManager manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIChangeConnectionScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
+    CLIChangeConnectionScreen(ConnectionManager networkManager, ScreenManager screenManager) throws RemoteException {
         super(networkManager, screenManager);
 
         initializeCommands();
