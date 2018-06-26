@@ -13,15 +13,30 @@ import java.rmi.RemoteException;
 
 public class TimeoutListener extends AbstractView implements ITimeOutObserver {
 
+    /**
+     * Constructor.
+     * Create a timeout listener that shows a message when the timeout is expired
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public TimeoutListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         /* NOTHING TO UPDATE */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onTimeOut(String message) throws IOException {
         Platform.runLater(() -> {

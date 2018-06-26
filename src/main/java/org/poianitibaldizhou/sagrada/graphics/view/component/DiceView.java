@@ -17,6 +17,13 @@ public class DiceView extends Pane {
     private static final String DICE_JSON_PATH = "images/board/dices.json";
     private static final String DICE_IMAGE_NAME = "dice-%s-%s.png";
 
+    /**
+     * Constructor.
+     * Create a dice view pane that contains an imageView of the dice passed
+     *
+     * @param dice the dice to draw
+     * @param scale the scale value
+     */
     public DiceView(DiceWrapper dice, double scale) {
         this.diceWrapper = dice;
         this.scale = scale;
@@ -38,26 +45,43 @@ public class DiceView extends Pane {
 
     }
 
+    /**
+     * @return the image width size
+     */
     public double getImageWidth(){
         return diceImage.getFitWidth();
     }
 
+    /**
+     * @return the image height size
+     */
     public double getImageHeight(){
         return diceImage.getFitHeight();
     }
 
 
+    /**
+     * @return the dice object used to draw the image view
+     */
     public DiceWrapper getDiceWrapper() {
         return diceWrapper;
     }
 
-    public void reRoll(int number) {
+    /**
+     * Change the dice number of the image view
+     *
+     * @param number the new value of the dice
+     */
+    public void changeDiceNumber(int number) {
         diceWrapper = new DiceWrapper(diceWrapper.getColor(), number);
         String imageKey = String.format(DICE_IMAGE_NAME, diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
         GraphicsUtils.changeViewport(diceImage, imageKey, DICE_JSON_PATH, scale);
     }
 
+    /**
+     * @return the image of the related image view
+     */
     public Image getImage() {
         String imageKey = String.format(DICE_IMAGE_NAME, diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));

@@ -9,8 +9,6 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
 public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
 
-
-    private GameGraphicsController gameController;
     private Pane corePane;
     private Pane notifyPane;
 
@@ -22,39 +20,56 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
 
     private static final double PADDING = 10;
 
-    public MultiPlayerGameViewStrategy(GameGraphicsController gameController, Pane corePane, Pane notifyPane) {
-        this.gameController = gameController;
+    /**
+     * Constructor.
+     * Create a multi player game view strategy, that defines the position and scale of most object inside the
+     * game
+     *
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     */
+    public MultiPlayerGameViewStrategy(Pane corePane, Pane notifyPane) {
         this.corePane = corePane;
         this.notifyPane = notifyPane;
     }
 
-    @Override
-    public double getSchemaCardScale() {
-        return SCHEMA_CARD_SCALE;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getPrivateObjectiveCardScale() {
         return PRIVATE_OBJECTIVE_CARD_SCALE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getRoundTrackScale() {
         return ROUND_TRACK_SCALE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DoubleBinding getRoundTrackCenterX() {
         return corePane.widthProperty().divide(2);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public DoubleBinding getRoundTrackCenterY() {
         return corePane.heightProperty().divide(2);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public SchemaCardView drawSchemaCardView(Pane corePane, SchemaCardWrapper schemaCardWrapper, double angle) {
+    public SchemaCardView drawSchemaCardView(Pane targetPane, SchemaCardWrapper schemaCardWrapper, double angle) {
         // CALCULATE SCHEMA CARD POSITION
         DoubleBinding distance;
         if (Math.abs(Math.abs(angle) - 2 * Math.PI) < 0.0001f || Math.abs(Math.abs(angle) - Math.PI) < 0.0001f)
@@ -72,54 +87,63 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
                 schemaCardView.widthProperty(), 0.5).add(distanceSchemaCard.multiply(Math.cos(angle))));
         schemaCardView.translateYProperty().bind(getPivotY(getCenterY().add(offsetY),
                 schemaCardView.heightProperty(), 0.5).add(distanceSchemaCard.multiply(Math.sin(angle))));
-        corePane.getChildren().addAll(schemaCardView);
+        targetPane.getChildren().addAll(schemaCardView);
         return schemaCardView;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getPublicObjectiveCardScale() {
        return PUBLIC_OBJECTIVE_CARD_SCALE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public double getToolCardScale() {
         return TOOL_CARD_SCALE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean hasTimeout() {
         return true;
     }
 
-    protected DoubleBinding getWidth() {
+    private DoubleBinding getWidth() {
         return notifyPane.widthProperty().divide(1);
     }
 
-    protected DoubleBinding getHeight() {
+    private DoubleBinding getHeight() {
         return notifyPane.heightProperty().divide(1);
     }
 
-    protected DoubleBinding getCenterX() {
+    private DoubleBinding getCenterX() {
         return notifyPane.widthProperty().divide(2);
     }
 
-    protected DoubleBinding getCenterY() {
+    private DoubleBinding getCenterY() {
         return notifyPane.heightProperty().divide(2);
     }
 
-    protected DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
+    private DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
-    protected DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
+    private DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
-    protected DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
+    private DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
-    public static DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
+    private DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 

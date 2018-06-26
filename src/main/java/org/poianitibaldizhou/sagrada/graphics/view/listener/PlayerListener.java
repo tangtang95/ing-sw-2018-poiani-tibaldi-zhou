@@ -19,12 +19,26 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
     private final transient PlayerView playerView;
     private final String username;
 
+    /**
+     * Constructor.
+     * Create a player listener that update its player view when there are notify from the server
+     *
+     * @param playerView the player view to update
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @param userWrapper the model of the user related to the playerView
+     * @throws RemoteException network error
+     */
     public PlayerListener(PlayerView playerView, GameGraphicsController controller, Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
         super(controller, corePane, notifyPane);
         this.playerView = playerView;
         this.username = userWrapper.getUsername();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onFavorTokenChange(String value) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -34,12 +48,18 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSetOutcome(String outcome) throws IOException {
         /* NOT IMPORTANT FOR THE GUI*/
         Logger.getAnonymousLogger().log(Level.INFO, outcome);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         try {

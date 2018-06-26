@@ -89,7 +89,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
      * @throws NetworkException if cannot connect to the server
      */
     public void initMultiPlayerGame(String token, String username, String gameName, ConnectionManager connectionManager) throws NetworkException {
-        gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        gameViewStrategy = new MultiPlayerGameViewStrategy(corePane, notifyPane);
         initListeners();
         gameModel = new GameModel(username, token, gameName, connectionManager);
         try {
@@ -109,7 +109,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
      * @throws NetworkException if cannot connect to the server
      */
     public void initSinglePlayerGame(String username, Difficulty difficulty, ConnectionManager connectionManager) throws NetworkException {
-        gameViewStrategy = new SinglePlayerGameViewStrategy(this, corePane, notifyPane);
+        gameViewStrategy = new SinglePlayerGameViewStrategy(corePane);
         initListeners();
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
@@ -135,7 +135,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
      * @throws NetworkException
      */
     public void initReconnectMultiPlayerGame(String username, ConnectionManager connectionManager) throws NetworkException{
-        gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        gameViewStrategy = new MultiPlayerGameViewStrategy(corePane, notifyPane);
         initListeners();
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();

@@ -26,10 +26,13 @@ public class PrivateObjectiveCardView extends Pane {
         this.getChildren().add(cardView);
     }
 
-    public PrivateObjectiveCardView(PrivateObjectiveCardWrapper privateObjectiveCard){
-        this(privateObjectiveCard, 1);
-    }
-
+    /**
+     * Constructor.
+     * Create a PrivateObjectiveCardView (pane) that contains the imageView of the privateObjectiveCard passed
+     *
+     * @param privateObjectiveCard the model of the privateObjectiveCard
+     * @param scale the scale value
+     */
     public PrivateObjectiveCardView(PrivateObjectiveCardWrapper privateObjectiveCard, double scale){
         this.privateObjectiveCardWrapper = privateObjectiveCard;
         String cardKey = GraphicsUtils.convertNameIntoObjectiveCardKey(privateObjectiveCard.getName());
@@ -37,6 +40,9 @@ public class PrivateObjectiveCardView extends Pane {
         this.getChildren().add(cardView);
     }
 
+    /**
+     * @return the model of the private objective card drawn
+     */
     public PrivateObjectiveCardWrapper getPrivateObjectiveCardWrapper() {
         if(privateObjectiveCardWrapper == null)
             throw new IllegalStateException();

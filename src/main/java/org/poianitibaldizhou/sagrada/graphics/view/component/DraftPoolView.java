@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 
 public class DraftPoolView extends Pane{
 
-    private final ImageView draftPoolImage;
     private List<DiceView> diceViewList;
     private final double scale;
 
@@ -29,18 +28,26 @@ public class DraftPoolView extends Pane{
     private static final double PADDING_PERCENT = 0.06;
     private static final double DICE_SCALE = 1.44;
 
+    /**
+     * Constructor.
+     * Create a draft pool view (pane) that contains the draft pool image and every dice inside the draft
+     * pool
+     *
+     * @param scale the scale value
+     */
     public DraftPoolView(double scale){
         this.scale = scale;
         diceViewList = new ArrayList<>();
-        draftPoolImage = GraphicsUtils.getSimpleImageView(IMAGE_PATH, scale);
+        ImageView draftPoolImage = GraphicsUtils.getSimpleImageView(IMAGE_PATH, scale);
 
         this.getChildren().add(draftPoolImage);
     }
 
-    public List<DiceWrapper> getDiceWrapperList(){
-        return diceViewList.stream().map(DiceView::getDiceWrapper).collect(Collectors.toList());
-    }
-
+    /**
+     * Draw the draftPool using the draftPoolWrapper object
+     *
+     * @param draftPoolWrapper the draftPool model that contains the dice inside it
+     */
     public void drawDraftPool(DraftPoolWrapper draftPoolWrapper) {
         clearDraftPool();
         for (int i = 0; i < draftPoolWrapper.size(); i++) {
@@ -50,12 +57,22 @@ public class DraftPoolView extends Pane{
         }
     }
 
+    /**
+     * Draw a new dice into the draftPool
+     *
+     * @param diceWrapper the new dice to add
+     */
     public void addDiceToDraftPool(DiceWrapper diceWrapper){
         int row = (diceViewList.size())/COLUMNS;
         int column = (diceViewList.size())%COLUMNS;
         drawDice(diceWrapper, row, column);
     }
 
+    /**
+     * Remove a diceView from the draftPool
+     *
+     * @param diceWrapper the dice to remove
+     */
     public void removeDiceFromDraftPool(DiceWrapper diceWrapper){
         for (DiceView diceView: diceViewList) {
             if(diceView.getDiceWrapper().equals(diceWrapper)){
@@ -66,22 +83,30 @@ public class DraftPoolView extends Pane{
         }
     }
 
+    /**
+     * Remove every diceView from the draftPool
+     */
     public void clearDraftPool() {
         this.getChildren().removeAll(diceViewList);
         diceViewList.clear();
     }
 
 
+    /**
+     * Re-draw every dice on the draftPool by changing the dice number of each dice
+     *
+     * @param diceList the new list of dice of the draftPool
+     */
     public void reRollDraftPool(List<DiceWrapper> diceList) {
         Set<Integer> diceChangedIndexes = new HashSet<>();
-        for (int i = 0; i < diceList.size(); i++) {
+        for (DiceWrapper newDice : diceList) {
             for (int j = 0; j < diceViewList.size(); j++) {
-                if(diceChangedIndexes.contains(j))
+                if (diceChangedIndexes.contains(j))
                     break;
                 DiceWrapper diceWrapper = diceViewList.get(j).getDiceWrapper();
-                if(diceWrapper.getColor() == diceList.get(i).getColor()){
+                if (diceWrapper.getColor() == newDice.getColor()) {
                     diceChangedIndexes.add(j);
-                    diceViewList.get(j).reRoll(diceList.get(i).getNumber());
+                    diceViewList.get(j).changeDiceNumber(newDice.getNumber());
                 }
             }
         }

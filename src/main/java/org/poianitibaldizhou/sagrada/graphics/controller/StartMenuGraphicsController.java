@@ -216,7 +216,10 @@ public class StartMenuGraphicsController extends GraphicsController implements I
 
     @FXML
     public void quitGame(ActionEvent actionEvent) {
-        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.getPrimaryStage().close());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> {
+            sceneManager.getPrimaryStage().close();
+            System.exit(0);
+        });
     }
 
     @FXML

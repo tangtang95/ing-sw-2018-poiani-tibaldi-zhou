@@ -16,6 +16,10 @@ public class TimeoutView extends StackPane {
     private long delayTime;
     private long startTime;
 
+    /**
+     * Constructor.
+     * Create a TimeoutView (pane) that shows a count down
+     */
     public TimeoutView(){
         timeoutLabel = new Label();
         timeoutLabel.getStyleClass().add("big-title");
@@ -42,6 +46,10 @@ public class TimeoutView extends StackPane {
         this.getChildren().addAll(timeoutLabel, spinner);
     }
 
+    /**
+     * Start the count down from the time value passed
+     * @param millisTime the time value in millis
+     */
     public void startTimeout(long millisTime){
         this.setVisible(true);
         delayTime = millisTime;
@@ -50,6 +58,9 @@ public class TimeoutView extends StackPane {
         timeoutAnimation.play();
     }
 
+    /**
+     * Stop the count down and hide the timeoutView
+     */
     public void stopTimeout(){
         timeoutAnimation.stop();
         this.setVisible(false);

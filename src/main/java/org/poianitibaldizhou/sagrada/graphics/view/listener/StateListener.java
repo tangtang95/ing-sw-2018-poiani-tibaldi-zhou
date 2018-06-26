@@ -49,8 +49,8 @@ import java.util.logging.Logger;
 
 public class StateListener extends AbstractView implements IStateObserver {
 
-    private transient final SequentialTransition sequentialTransition;
-    private transient final TimeoutView timeoutView;
+    private final transient SequentialTransition sequentialTransition;
+    private final transient TimeoutView timeoutView;
 
     private transient HBox helperBox;
     private transient HBox topBarBox;
@@ -63,17 +63,32 @@ public class StateListener extends AbstractView implements IStateObserver {
     private static final double TOOL_CARD_SHOW_SIZE = 1;
     private static final double DICE_SHOW_SIZE = 0.6;
 
+    /**
+     * Constructor.
+     * Create a State Listener that show messages to the client every time a notify is called
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public StateListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         sequentialTransition = new SequentialTransition();
         timeoutView = new TimeoutView();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         /* NOTHING TO UPDATE */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSetupGame() throws IOException {
         Platform.runLater(() -> {
@@ -84,6 +99,9 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSetupPlayer() throws IOException {
         Platform.runLater(() -> {
@@ -91,7 +109,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             activateNotifyPane();
             Label stateMessageLabel = createLabelMessage("Setup Player");
             notifyPane.getChildren().add(stateMessageLabel);
-            if(controller.getGameViewStrategy().hasTimeout()) {
+            if (controller.getGameViewStrategy().hasTimeout()) {
                 timeoutView.startTimeout(getTimeout());
                 timeoutView.setTranslateX(PADDING);
                 timeoutView.setTranslateY(PADDING);
@@ -100,11 +118,17 @@ public class StateListener extends AbstractView implements IStateObserver {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onRoundStart(String message) throws IOException {
          /* NOT NEEDED */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onTurnState(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -122,7 +146,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             button.setOnAction(this::onQuitGameButtonAction);
             topBarBox.getChildren().add(button);
 
-            if(controller.getGameViewStrategy().hasTimeout()) {
+            if (controller.getGameViewStrategy().hasTimeout()) {
                 timeoutView.stopTimeout();
                 corePane.getChildren().remove(timeoutView);
                 timeoutView.startTimeout(getTimeout());
@@ -160,16 +184,25 @@ public class StateListener extends AbstractView implements IStateObserver {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onRoundEnd(String message) throws IOException {
         /* NOT NEEDED */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onEndGame(String roundUser) throws IOException {
         /* NOT NEEDED */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onSkipTurnState(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -181,16 +214,25 @@ public class StateListener extends AbstractView implements IStateObserver {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPlaceDiceState(String message) throws IOException {
         /*NOT IMPORTANT FOR THE GUI*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onUseCardState(String message) throws IOException {
         /*NOT IMPORTANT FOR THE GUI*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onEndTurnState(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -202,12 +244,18 @@ public class StateListener extends AbstractView implements IStateObserver {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onVictoryPointsCalculated(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         victoryPoints = parser.getVictoryPoint(message);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onResultGame(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -219,9 +267,22 @@ public class StateListener extends AbstractView implements IStateObserver {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onGameTerminationBeforeStarting() throws IOException {
         // TODO :)
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof StateListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
     }
 
     private void onPlaceDiceButtonPressed(ActionEvent actionEvent) {
@@ -445,16 +506,6 @@ public class StateListener extends AbstractView implements IStateObserver {
         ordinalNumberStrings.add("Nono");
         ordinalNumberStrings.add("Decimo");
         return ordinalNumberStrings;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof StateListener;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getClass().getSimpleName().hashCode();
     }
 
 }

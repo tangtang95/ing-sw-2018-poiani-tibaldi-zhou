@@ -36,6 +36,14 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private static final double RETRO_IMAGE_SCALE = 1;
 
+    /**
+     * Constructor.
+     * Create a lobbyView that contains the user views and the timeout
+     *
+     * @param controller the lobby controller of the GUI
+     * @param corePane the core view of the lobby
+     * @throws RemoteException network error
+     */
     public LobbyView(LobbyGraphicsController controller, Pane corePane) throws RemoteException {
         this.controller = controller;
         this.corePane = corePane;
@@ -50,7 +58,83 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         this.numberOfUsers = 0;
     }
 
-    public void addUser(UserWrapper user) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void ack(String ack) throws IOException {
+        Logger.getAnonymousLogger().log(Level.FINEST, ack);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void err(String err) throws IOException {
+        Logger.getAnonymousLogger().log(Level.FINEST, err);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void ping() throws IOException {
+        // DO NOTHING
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onUserJoin(String message) throws IOException {
+        Platform.runLater(this::updateUserViews);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onUserExit(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        UserWrapper user = parser.getUserWrapper(message);
+        if(!user.getUsername().equals(controller.getMyUsername())) {
+            Platform.runLater(this::updateUserViews);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onGameStart(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        final String gameName = parser.getGameName(message);
+
+        Platform.runLater(() -> {
+            controller.gameStart(gameName);
+        });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onPing() throws IOException {
+        Logger.getAnonymousLogger().log(Level.FINEST, "onPing");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof LobbyView;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
+    private void addUser(UserWrapper user) {
         UserView userView = (UserView) userViews.get(numberOfUsers);
         userView.drawRetro();
         RotateTransition rotator = new RotateTransition(Duration.millis(500), userView);
@@ -76,54 +160,6 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
 
     private void clearGrid(){
         numberOfUsers = 0;
-    }
-
-    @Override
-    public void ack(String ack) throws IOException {
-        Logger.getAnonymousLogger().log(Level.FINEST, ack);
-    }
-
-    @Override
-    public void err(String err) throws IOException {
-        Logger.getAnonymousLogger().log(Level.FINEST, err);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void ping() throws IOException {
-        // DO NOTHING
-    }
-
-    @Override
-    public void onUserJoin(String message) throws IOException {
-        Platform.runLater(this::updateUserViews);
-
-    }
-
-    @Override
-    public void onUserExit(String message) throws IOException {
-        ClientGetMessage parser = new ClientGetMessage();
-        UserWrapper user = parser.getUserWrapper(message);
-        if(!user.getUsername().equals(controller.getMyUsername())) {
-            Platform.runLater(this::updateUserViews);
-        }
-    }
-
-    @Override
-    public void onGameStart(String message) throws IOException {
-        ClientGetMessage parser = new ClientGetMessage();
-        final String gameName = parser.getGameName(message);
-
-        Platform.runLater(() -> {
-            controller.gameStart(gameName);
-        });
-    }
-
-    @Override
-    public void onPing() throws IOException {
-        Logger.getAnonymousLogger().log(Level.FINEST, "onPing");
     }
 
     private void updateUserViews(){
@@ -153,45 +189,35 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         controller.hideTimeoutLabel();
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof LobbyView;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getClass().getSimpleName().hashCode();
-    }
-
-    protected DoubleBinding getWidth() {
+    private DoubleBinding getWidth() {
         return corePane.widthProperty().divide(1);
     }
 
-    protected DoubleBinding getHeight() {
+    private DoubleBinding getHeight() {
         return corePane.heightProperty().divide(1);
     }
 
-    protected DoubleBinding getCenterX() {
+    private DoubleBinding getCenterX() {
         return corePane.widthProperty().divide(2);
     }
 
-    protected DoubleBinding getCenterY() {
+    private DoubleBinding getCenterY() {
         return corePane.heightProperty().divide(2);
     }
 
-    protected DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
+    private DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
-    protected DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
+    private DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
-    protected DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
+    private DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
-    protected DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
+    private DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 

@@ -12,25 +12,46 @@ import java.util.logging.Logger;
 
 public class DiceBagListener extends AbstractView implements IDrawableCollectionObserver {
 
+    /**
+     * Constructor.
+     * Create a dice bag listener (black-box)
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public DiceBagListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         /*NOT IMPORTANT FOR THE GUI*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onElementAdd(String elem) throws IOException {
         /*NOT IMPORTANT FOR THE GUI*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onElementsAdd(String elemList) throws IOException {
         /*NOT IMPORTANT FOR THE GUI*/
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onElementDraw(String elem) throws IOException {
         /*NOT IMPORTANT FOR THE GUI*/

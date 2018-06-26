@@ -24,16 +24,17 @@ public class ClientApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // Define the fixed size of the GUI and the start size of the GUI
         WindowSize fixedSize = WindowSize.BIG;
         WindowSize startSize = WindowSize.MEDIUM;
 
-
+        // Initialize a stack pane on which the various scene will be added on
         StackPane scenes = new StackPane();
         scenes.setBackground(Background.EMPTY);
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
+        // Add the start scene (menu)
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
-
         Parent root = loader.load();
         StartMenuGraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
@@ -45,6 +46,7 @@ public class ClientApp extends Application {
         String css = Objects.requireNonNull(this.getClass().getClassLoader().getResource("stylesheet/visible-big.css")).toExternalForm();
         scene.getStylesheets().add(css);
 
+        // auto scale property (keep aspect ratio)
         scenes.scaleXProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),
                 scene.heightProperty().divide(fixedSize.getHeight())), 1.5));
         scenes.scaleYProperty().bind(Bindings.min(Bindings.min(scene.widthProperty().divide(fixedSize.getWidth()),

@@ -41,9 +41,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private transient Pane publicObjectiveCardsContainer;
     private transient Pane toolCardsContainer;
 
-    private transient Map<UserWrapper, SchemaCardListener> schemaCardViewMap;
-    private transient List<ToolCardListener> toolCardListeners;
-    private transient Map<UserWrapper, PlayerListener> playerListenerMap;
+    private final transient Map<UserWrapper, SchemaCardListener> schemaCardViewMap;
+    private final transient List<ToolCardListener> toolCardListeners;
+    private final transient Map<UserWrapper, PlayerListener> playerListenerMap;
 
     private static final double FRONT_BACK_SCHEMA_CARD_SCALE = 0.75;
     private static final double PRIVATE_OBJECTIVE_CARD_SHOW_SCALE_AT_FIRST = 0.9;
@@ -53,6 +53,15 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     private static final double PADDING = 10;
 
+    /**
+     * Constructor.
+     * Create a Game listener that update majorly the corePane when there are new notifies
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public GameListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         schemaCardViewMap = new HashMap<>();
@@ -60,6 +69,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         playerListenerMap = new HashMap<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         schemaCardViewMap.values().forEach(AbstractView::updateView);
@@ -200,6 +212,94 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         });
     }
 
+    /**
+     * @return a map that contains every playerObserver inside the gameListener
+     */
+    public Map<String, IPlayerObserver> getPlayerObservers() {
+        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+        playerListenerMap.forEach((key, value) -> playerObserverMap.put(key.getUsername(), value));
+        return playerObserverMap;
+    }
+
+    /**
+     * @return a map that contains every toolCardObserver inside the gameListener
+     */
+    public Map<String, IToolCardObserver> getToolCardObservers() {
+        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+        toolCardListeners.forEach(toolCardListener -> toolCardObserverMap.put(toolCardListener.getToolCardName(),
+                toolCardListener));
+        return toolCardObserverMap;
+    }
+
+    /**
+     * @return a map that contains every SchemaCardObserver inside the gameListener
+     */
+    public Map<String, ISchemaCardObserver> getSchemaCardObservers() {
+        Map<String, ISchemaCardObserver> schemaCardObserverMap = new HashMap<>();
+        schemaCardViewMap.forEach((key, value) -> schemaCardObserverMap.put(key.getUsername(), value));
+        return schemaCardObserverMap;
+    }
+
+    /**
+     * Draw every player of the Game, his schemaCard, his name, his favorTokens and his privateObjectiveCards
+     *
+     * @param users the list of user
+     * @param schemaCardWrapperMap the map of schemaCard
+     * @param privateObjectiveCardWrappers the list of private objective cards
+     * @param favorTokenMap the map of favor tokens
+     */
+    public void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
+                          List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
+                          Map<UserWrapper, Integer> favorTokenMap) {
+        List<UserWrapper> orderedUsers = getUsersOrdered(users);
+        for (int i = 0; i < orderedUsers.size(); i++) {
+            final double angle = 2 * Math.PI * i / ((orderedUsers.size() == 3) ? orderedUsers.size() + 1 :
+                    orderedUsers.size()) + Math.PI / 2 + ((i == 2 && orderedUsers.size() == 3) ? Math.PI / 2 : 0);
+
+            SchemaCardView schemaCardView = controller.getGameViewStrategy().drawSchemaCardView(corePane,
+                    schemaCardWrapperMap.get(orderedUsers.get(i)), angle);
+
+            // CALCULATE PRIVATE OBJECTIVE CARD POSITION
+            final double tangentAngle = angle - Math.PI / 2;
+            DoubleBinding tangentDistance = schemaCardView.widthProperty().divide(2).add(PADDING * 2);
+            DoubleBinding pocX = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2))
+                    .add(tangentDistance.multiply(Math.cos(tangentAngle)));
+            DoubleBinding pocY = schemaCardView.translateYProperty().add(schemaCardView.heightProperty().divide(2))
+                    .add(tangentDistance.multiply(Math.sin(tangentAngle)));
+
+            // DRAW PRIVATE OBJECTIVE CARD
+            if (i == 0)
+                drawPrivateObjectiveCard(privateObjectiveCardWrappers, pocX, pocY);
+            else
+                drawRetroPrivateObjectiveCard(pocX, pocY, angle);
+
+            try {
+                SchemaCardListener schemaCardListener = new SchemaCardListener(schemaCardView,
+                        controller, corePane, notifyPane, orderedUsers.get(i));
+                schemaCardViewMap.putIfAbsent(orderedUsers.get(i), schemaCardListener);
+
+                PlayerView playerView = drawUser(orderedUsers.get(i), favorTokenMap.get(orderedUsers.get(i)),
+                        new Point2D(Math.round(Math.cos(angle)), Math.round(Math.sin(angle))));
+                PlayerListener playerListener = new PlayerListener(playerView, controller, corePane, notifyPane,
+                        orderedUsers.get(i));
+                playerListenerMap.putIfAbsent(orderedUsers.get(i), playerListener);
+            } catch (IOException e) {
+                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot initialize SchemaCardListener");
+                showCrashErrorMessage("Errore di connessione");
+            }
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof GameListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
     private void showFrontBackSchemaCards(List<FrontBackSchemaCardWrapper> frontBackSchemaCardList) {
 
         List<Pane> frontBackSchemaCardViewList = new ArrayList<>();
@@ -290,47 +390,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         helperBox.getChildren().addAll(spacer, continueButton);
     }
 
-    public void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
-                          List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
-                          Map<UserWrapper, Integer> favorTokenMap) {
-        List<UserWrapper> orderedUsers = getUsersOrdered(users);
-        for (int i = 0; i < orderedUsers.size(); i++) {
-            final double angle = 2 * Math.PI * i / ((orderedUsers.size() == 3) ? orderedUsers.size() + 1 :
-                    orderedUsers.size()) + Math.PI / 2 + ((i == 2 && orderedUsers.size() == 3) ? Math.PI / 2 : 0);
 
-            SchemaCardView schemaCardView = controller.getGameViewStrategy().drawSchemaCardView(corePane,
-                    schemaCardWrapperMap.get(orderedUsers.get(i)), angle);
-
-            // CALCULATE PRIVATE OBJECTIVE CARD POSITION
-            final double tangentAngle = angle - Math.PI / 2;
-            DoubleBinding tangentDistance = schemaCardView.widthProperty().divide(2).add(PADDING * 2);
-            DoubleBinding pocX = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2))
-                    .add(tangentDistance.multiply(Math.cos(tangentAngle)));
-            DoubleBinding pocY = schemaCardView.translateYProperty().add(schemaCardView.heightProperty().divide(2))
-                    .add(tangentDistance.multiply(Math.sin(tangentAngle)));
-
-            // DRAW PRIVATE OBJECTIVE CARD
-            if (i == 0)
-                drawPrivateObjectiveCard(privateObjectiveCardWrappers, pocX, pocY);
-            else
-                drawRetroPrivateObjectiveCard(pocX, pocY, angle);
-
-            try {
-                SchemaCardListener schemaCardListener = new SchemaCardListener(schemaCardView,
-                        controller, corePane, notifyPane, orderedUsers.get(i));
-                schemaCardViewMap.putIfAbsent(orderedUsers.get(i), schemaCardListener);
-
-                PlayerView playerView = drawUser(orderedUsers.get(i), favorTokenMap.get(orderedUsers.get(i)),
-                        new Point2D(Math.round(Math.cos(angle)), Math.round(Math.sin(angle))));
-                PlayerListener playerListener = new PlayerListener(playerView, controller, corePane, notifyPane,
-                        orderedUsers.get(i));
-                playerListenerMap.putIfAbsent(orderedUsers.get(i), playerListener);
-            } catch (IOException e) {
-                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot initialize SchemaCardListener");
-                showCrashErrorMessage("Errore di connessione");
-            }
-        }
-    }
 
     private PlayerView drawUser(UserWrapper userWrapper, int favorTokens, Point2D direction) throws RemoteException {
         PlayerView playerView;
@@ -339,28 +399,28 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         else
             playerView = new PlayerView(userWrapper, 10.0);
         if (direction.equals(new Point2D(1, 0))) {
-            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getView();
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getSchemaCardView();
             DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.heightProperty().divide(2));
             DoubleBinding y = schemaCardView.translateYProperty().add(schemaCardView.widthProperty()).add(PADDING);
 
             playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
             playerView.translateYProperty().bind(getPivotY(y, playerView.heightProperty(), 0));
         } else if (direction.equals(new Point2D(0, 1))) {
-            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getView();
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getSchemaCardView();
             DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2));
             DoubleBinding y = schemaCardView.translateYProperty().add(schemaCardView.heightProperty()).add(PADDING);
 
             playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
             playerView.translateYProperty().bind(y);
         } else if (direction.equals(new Point2D(-1, 0))) {
-            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getView();
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getSchemaCardView();
             DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.heightProperty().divide(2));
             DoubleBinding y = schemaCardView.translateYProperty().subtract(PADDING * 2);
 
             playerView.translateXProperty().bind(getPivotX(x, playerView.widthProperty(), 0.5));
             playerView.translateYProperty().bind(getPivotY(y, playerView.heightProperty(), 0));
         } else {
-            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getView();
+            SchemaCardView schemaCardView = schemaCardViewMap.get(userWrapper).getSchemaCardView();
             DoubleBinding x = schemaCardView.translateXProperty().add(schemaCardView.widthProperty().divide(2));
             DoubleBinding y = schemaCardView.translateYProperty().subtract(PADDING);
 
@@ -371,7 +431,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         return playerView;
     }
 
-    public Pane drawPublicObjectiveCardsView(Pane corePane, List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double scale) {
+    private Pane drawPublicObjectiveCardsView(Pane corePane, List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double scale) {
         Pane container = new Pane();
         container.getStyleClass().add("on-board-card");
 
@@ -535,34 +595,5 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             Collections.rotate(orderedUsers, 1);
         }
         return orderedUsers;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof GameListener;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getClass().getSimpleName().hashCode();
-    }
-
-    public Map<String, IPlayerObserver> getPlayerObservers() {
-        Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
-        playerListenerMap.forEach((key, value) -> playerObserverMap.put(key.getUsername(), value));
-        return playerObserverMap;
-    }
-
-    public Map<String, IToolCardObserver> getToolCardObservers() {
-        Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
-        toolCardListeners.forEach(toolCardListener -> toolCardObserverMap.put(toolCardListener.getToolCardName(),
-                toolCardListener));
-        return toolCardObserverMap;
-    }
-
-    public Map<String, ISchemaCardObserver> getSchemaCardObservers() {
-        Map<String, ISchemaCardObserver> schemaCardObserverMap = new HashMap<>();
-        schemaCardViewMap.forEach((key, value) -> schemaCardObserverMap.put(key.getUsername(), value));
-        return schemaCardObserverMap;
     }
 }

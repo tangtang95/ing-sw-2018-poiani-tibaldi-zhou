@@ -1,5 +1,6 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener;
 
+import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
@@ -15,14 +16,19 @@ public final class HistoryObject {
         this.objectMessageType = objectMessageType;
     }
 
+    @Contract(pure = true)
     public ObjectMessageType getObjectMessageType() {
         return objectMessageType;
     }
 
+    @Contract(pure = true)
     public Object getObject() {
         return object;
     }
 
+    /**
+     * @return a message based on its ObjectMessageType
+     */
     public String getMessage(){
         switch (objectMessageType){
             case COLOR:

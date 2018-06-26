@@ -25,6 +25,13 @@ public class FrontBackSchemaCardView extends Pane {
 
     private static final double ROTATE_AMPLIFY = 0.8;
 
+    /**
+     * Constructor.
+     * Create a new FrontBackSchemaCardView (pane) that contains the two schemaCard (front and back)
+     *
+     * @param frontBackSchemaCard the model of the frontBackSchemaCard
+     * @param scale the scale value
+     */
     public FrontBackSchemaCardView(FrontBackSchemaCardWrapper frontBackSchemaCard, double scale) {
         this.frontSchemaCard = new SchemaCardView(frontBackSchemaCard.getFrontSchemaCard(), scale);
         this.backSchemaCard = new SchemaCardView(frontBackSchemaCard.getBackSchemaCard(), scale);
@@ -106,6 +113,9 @@ public class FrontBackSchemaCardView extends Pane {
         transition.play();
     }
 
+    /**
+     * @return the schemaCard chosen
+     */
     public SchemaCardWrapper getCurrentSchemaCardWrapper() {
         return currentSchemaCard.getSchemaCardWrapper();
     }
