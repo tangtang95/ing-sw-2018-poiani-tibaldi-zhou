@@ -34,7 +34,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      * Constructor.
      *
      * @param cliStateView the CLI that contains all parameter.
-     * @param username
+     * @param username player's username
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
     public CLIPlayerView(CLIStateView cliStateView, String username) throws RemoteException {

@@ -1,15 +1,11 @@
 package org.poianitibaldizhou.sagrada.game.model.board;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.exception.EmptyCollectionException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDiceBagTest;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.DraftPoolFakeObserver;
 
@@ -73,19 +69,7 @@ public class DraftPoolTest {
 
     @Test
     public void testToObject() {
-        String message = "{\"diceList\":{\"type\":\"collection\",\"body\":" +
-                "[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":5}}," +
-                "{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":2}}," +
-                "{\"type\":\"dice\",\"body\":{\"color\":\"PURPLE\",\"value\":1}}," +
-                "{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":6}}," +
-                "{\"type\":\"dice\",\"body\":{\"color\":\"GREEN\",\"value\":3}}," +
-                "{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":6}}]}}";
-       org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
-        try {
-            assertTrue(dp.toObject((JSONObject) jsonParser.parse(message)) == null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+       assertTrue(DraftPool.toObject() == null);
 
     }
 
@@ -148,7 +132,7 @@ public class DraftPoolTest {
     }
 
     @Test
-    public void testEquals() throws Exception {
+    public void testEquals() {
         DraftPool draftPool = new DraftPool();
         draftPool.addDice(new Dice(1, Color.PURPLE));
         assertNotEquals(dp, draftPool);

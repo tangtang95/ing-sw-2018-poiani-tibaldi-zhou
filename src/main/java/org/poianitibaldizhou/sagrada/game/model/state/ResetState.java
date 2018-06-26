@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.game.model.state;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 
-import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.Set;
 

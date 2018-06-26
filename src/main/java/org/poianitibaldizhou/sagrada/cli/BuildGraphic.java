@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
-import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.util.ArrayList;
@@ -194,22 +193,6 @@ public class BuildGraphic {
                 stringBuilder.append(DESCRIPTION);
                 stringBuilder.append(poc.getDescription()).append("\n");
             }
-        }
-        return this;
-    }
-
-    /**
-     * Build the graphic of a  privateObjectiveCard.
-     *
-     * @param privateObjectiveCard privateObjectiveCard whom create the graphics.
-     * @return the BuildGraphic with the stringBuilder changed.
-     */
-    public BuildGraphic buildGraphicPrivateObjectiveCard(PrivateObjectiveCardWrapper privateObjectiveCard) {
-        if (privateObjectiveCard != null) {
-            buildMessage("------------------------PRIVATE OBJECTIVE CARD-----------------------");
-            stringBuilder.append(NAME).append(privateObjectiveCard.getName()).append("\n");
-            stringBuilder.append(DESCRIPTION);
-            stringBuilder.append(privateObjectiveCard.getDescription()).append("\n");
         }
         return this;
     }

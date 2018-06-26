@@ -2,8 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement;
 
 import org.jetbrains.annotations.Contract;
 
-import java.util.Objects;
-
 public enum PlacementRestrictionType {
     NUMBER(new NumberPlacementRestriction()),
     COLOR(new ColorPlacementRestriction()),

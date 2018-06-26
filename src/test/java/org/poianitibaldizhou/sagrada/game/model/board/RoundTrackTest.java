@@ -1,15 +1,10 @@
 package org.poianitibaldizhou.sagrada.game.model.board;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -65,23 +60,7 @@ public class RoundTrackTest {
 
     @Test
     public void testToObject() {
-        String message = "{\"roundList\":[" +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":0}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":1}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":1}}]},\"round\":2}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[{\"type\":\"dice\",\"body\":{\"color\":\"BLUE\",\"value\":4}},{\"type\":\"dice\",\"body\":{\"color\":\"RED\",\"value\":2}}]},\"round\":3}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":4}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":5}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":6}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":7}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":8}," +
-                "{\"diceList\":{\"type\":\"collection\",\"body\":[]},\"round\":9}]}";
-        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
-        try {
-            assertTrue((RoundTrack.toObject((JSONObject) jsonParser.parse(message))) == null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        assertTrue((RoundTrack.toObject() == null));
     }
 
     @After

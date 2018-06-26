@@ -247,10 +247,9 @@ public class RoundTrack implements JSONable {
     /**
      * Convert a json string in a roundTrack object.
      *
-     * @param jsonObject a JSONObject that contains a roundTrack.
      * @return a roundTrack object.
      */
-    public static RoundTrack toObject(JSONObject jsonObject) {
+    public static RoundTrack toObject() {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

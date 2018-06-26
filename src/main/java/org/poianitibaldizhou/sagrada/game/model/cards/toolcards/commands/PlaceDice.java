@@ -12,7 +12,6 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,7 +57,6 @@ public class PlaceDice implements ICommand {
      * @return CommandFlow.REPEAT if the restrictions aren't respected; CommandFlow.DICE_CANNOT_BE_PLACED_ANYWHERE if it's not possible to place
      * the dice in any position; CommandFlow.MAIN otherwise
      * @throws InterruptedException given to wait() in getting parameters from the executor
-     * @throws RemoteException      network communication error
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {

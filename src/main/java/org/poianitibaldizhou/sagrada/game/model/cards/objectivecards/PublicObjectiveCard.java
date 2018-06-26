@@ -61,8 +61,8 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
             if (type == ObjectiveCardType.COLOR) {
                 if (!(constraint instanceof ColorConstraint))
                     throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
-            } else if (type == ObjectiveCardType.NUMBER) {
-                if (!(constraint instanceof NumberConstraint))
+            } else
+                if (type == ObjectiveCardType.NUMBER && !(constraint instanceof NumberConstraint)) {
                     throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
             }
         }
@@ -120,10 +120,9 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
     /**
      * Convert a json string in a publicObjectiveCard object.
      *
-     * @param jsonObject a JSONObject that contains a name of the publicObjectiveCard.
      * @return a publicObjectiveCard object or null if the jsonObject is wrong.
      */
-    public static PublicObjectiveCard toObject(JSONObject jsonObject) {
+    public static PublicObjectiveCard toObject() {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

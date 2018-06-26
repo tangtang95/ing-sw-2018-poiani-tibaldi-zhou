@@ -8,7 +8,7 @@ public class Node<T> {
     private Node<T> rightChild = null;
     private Node<T> leftChild = null;
     private Node<T> parent = null;
-    private T data = null;
+    private T data;
 
     /**
      * Creates the node of the tree.

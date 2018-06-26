@@ -24,7 +24,7 @@ public class ExpendableDice implements ICoin {
         DraftPool draftPool = game.getDraftPool();
         final ColorConstraint colorConstraint = new ColorConstraint(toolCard.getColor());
         return draftPool.getDices().stream()
-                .map(Dice::getColorConstraint).filter(constraint -> constraint.equals(colorConstraint)).count() > 0;
+                .map(Dice::getColorConstraint).anyMatch(constraint -> constraint.equals(colorConstraint));
     }
 
     @Override

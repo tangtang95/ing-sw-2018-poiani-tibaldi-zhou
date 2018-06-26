@@ -5,7 +5,6 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
-import org.poianitibaldizhou.sagrada.game.model.coin.ICoin;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.ArrayList;

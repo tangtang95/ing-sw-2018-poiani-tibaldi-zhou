@@ -8,7 +8,6 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,7 +40,6 @@ public class ModifyDiceValueByDelta implements ICommand {
      * @param toolCardExecutor ToolCard invoked that contains this command
      * @param turnState        state in which the player acts
      * @return CommandFlow.MAIN if methods execute correctly, CommandFlow.REPEAT if the new value doesn't respect the rules.
-     * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in  toolCard.getDice()
      */
     @Override
@@ -76,9 +74,7 @@ public class ModifyDiceValueByDelta implements ICommand {
      */
     @Contract(pure = true)
     private boolean checkNewValueValidity(int newValue, int oldValue) {
-        if (newValue < Dice.MIN_VALUE || newValue > Dice.MAX_VALUE)
-            return false;
-        return (newValue == oldValue + this.value) || (newValue == oldValue - this.value);
+        return newValue >= Dice.MIN_VALUE && newValue <= Dice.MAX_VALUE && ((newValue == oldValue + this.value) || (newValue == oldValue - this.value));
     }
 
     @Override

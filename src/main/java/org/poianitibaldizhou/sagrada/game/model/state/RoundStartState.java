@@ -1,11 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.state;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
-
-import java.rmi.RemoteException;
 
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 

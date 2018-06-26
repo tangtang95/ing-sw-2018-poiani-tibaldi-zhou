@@ -225,10 +225,9 @@ public class DraftPool implements JSONable {
     /**
      * Convert a json string in a draftPool object.
      *
-     * @param jsonObject a JSONObject that contains a draftPool.
      * @return a draftPool object.
      */
-    public static DraftPool toObject(JSONObject jsonObject) {
+    public static DraftPool toObject() {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

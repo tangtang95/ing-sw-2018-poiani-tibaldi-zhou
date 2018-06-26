@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import org.poianitibaldizhou.sagrada.graphics.controller.GraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.controller.StartMenuGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;

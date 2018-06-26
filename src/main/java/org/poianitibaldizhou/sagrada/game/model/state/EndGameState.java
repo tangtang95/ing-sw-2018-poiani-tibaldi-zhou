@@ -36,7 +36,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
      */
     @Override
     public void init() {
-        game.getStateObservers().forEach((key, value) -> value.onEndGame(currentRoundPlayer.getUser()));;
+        game.getStateObservers().forEach((key, value) -> value.onEndGame(currentRoundPlayer.getUser()));
 
         game.handleEndGame();
     }

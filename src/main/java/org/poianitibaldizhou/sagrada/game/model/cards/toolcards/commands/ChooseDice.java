@@ -7,7 +7,6 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 

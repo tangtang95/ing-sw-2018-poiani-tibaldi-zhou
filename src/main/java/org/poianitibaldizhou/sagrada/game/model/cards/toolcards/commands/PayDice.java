@@ -23,7 +23,7 @@ public class PayDice implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         List<Dice> diceList = toolCardExecutor.getTemporaryDraftPool().getDices(color);
-        toolCardExecutor.getObservers().forEach(obs -> {obs.notifyNeedDice(diceList);});
+        toolCardExecutor.getObservers().forEach(obs -> obs.notifyNeedDice(diceList));
 
         Dice dice = toolCardExecutor.getNeededDice();
         if(dice.getColor() != color)

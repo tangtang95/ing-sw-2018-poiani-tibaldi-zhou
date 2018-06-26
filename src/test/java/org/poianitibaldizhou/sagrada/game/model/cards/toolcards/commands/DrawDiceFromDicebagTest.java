@@ -32,7 +32,7 @@ public class DrawDiceFromDicebagTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         command = new DrawDiceFromDicebag();
-        when(executor.getTemporaryDicebag()).thenReturn(diceBag);
+        when(executor.getTemporaryDiceBag()).thenReturn(diceBag);
     }
 
     @After
@@ -47,14 +47,14 @@ public class DrawDiceFromDicebagTest {
     @Test
     public void executeCommand() throws Exception {
         Dice dice = mock(Dice.class);
-        when(executor.getTemporaryDicebag().draw()).thenReturn(dice);
+        when(executor.getTemporaryDiceBag().draw()).thenReturn(dice);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
         verify(executor, times(1)).setNeededDice(dice);
     }
 
     @Test
     public void executeCommandDrawFromEmptyDicebag() throws Exception {
-        when(executor.getTemporaryDicebag().draw()).thenThrow(EmptyCollectionException.class);
+        when(executor.getTemporaryDiceBag().draw()).thenThrow(EmptyCollectionException.class);
         assertEquals(CommandFlow.EMPTY_DICEBAG, command.executeCommand(invokerPlayer, executor, state));
     }
 

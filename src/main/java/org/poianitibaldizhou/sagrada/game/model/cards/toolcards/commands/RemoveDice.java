@@ -10,7 +10,6 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,14 +47,13 @@ public class RemoveDice implements ICommand {
      * @return CommandFlow.REPEAT if the specified position doesn't contain a dice or if the dice contain doesn't match
      * the specified color constraint. CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR if none dice of the specified color
      * is present in schemacard, CommandFlow.EMPTY_SCHEMACARD if the schemacard is empty; CommandFlow.MAIN otherwise.
-     * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         Position position;
-        Dice removed = null;
+        Dice removed;
         Color color;
 
         System.out.println("REMOVE");

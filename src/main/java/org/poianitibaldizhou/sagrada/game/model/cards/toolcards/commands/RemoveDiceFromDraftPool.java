@@ -8,7 +8,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class RemoveDiceFromDraftPool implements ICommand {
@@ -21,7 +20,6 @@ public class RemoveDiceFromDraftPool implements ICommand {
      * @param turnState        state in which the player acts
      * @return CommandFlow.NOT_DICE_IN_DRAFTPOOL if the dice isn't present in DraftPool, CommandFlow_EMPTY_DRAFTPOOL if
      * the draftpool is empty, CommandFlow.MAIN otherwise
-     * @throws RemoteException      network communication error
      * @throws InterruptedException due to wait()
      */
     @Override

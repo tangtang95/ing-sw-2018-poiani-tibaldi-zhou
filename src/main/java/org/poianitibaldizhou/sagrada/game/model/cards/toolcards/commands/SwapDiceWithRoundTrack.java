@@ -6,12 +6,9 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
-import java.util.List;
 import java.util.Objects;
 
 public class SwapDiceWithRoundTrack implements ICommand {
@@ -27,7 +24,6 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.EMPTY_DRAFTPOOL
      * if the draftpool is empty, CommandFlow.EMPTY_ROUNDTRACK if the round track is empty, CommandFlow.MAIN otherwise.
-     * @throws RemoteException      network communication error
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override

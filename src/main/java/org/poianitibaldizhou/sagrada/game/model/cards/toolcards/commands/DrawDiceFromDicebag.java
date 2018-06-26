@@ -25,7 +25,7 @@ public class DrawDiceFromDicebag implements ICommand {
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         Dice dice;
         try {
-            dice = toolCardExecutor.getTemporaryDicebag().draw();
+            dice = toolCardExecutor.getTemporaryDiceBag().draw();
         } catch (EmptyCollectionException e) {
             return CommandFlow.EMPTY_DICEBAG;
         }

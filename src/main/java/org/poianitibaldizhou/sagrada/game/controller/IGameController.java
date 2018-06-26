@@ -159,7 +159,6 @@ public interface IGameController extends Remote {
      * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
      * @param timeOutObserver    player's time out observer
-     * @return player's token
      * @throws IOException network communication error
      */
     void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,

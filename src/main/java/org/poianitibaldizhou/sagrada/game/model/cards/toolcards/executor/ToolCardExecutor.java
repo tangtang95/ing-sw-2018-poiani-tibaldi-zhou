@@ -15,7 +15,6 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ public class ToolCardExecutor extends Thread{
     private final Object executorMonitor;
     private final Object answerMonitor;
 
-    // Values monitorized
+    // Values monitored
     private Dice neededDice;
     private Color neededColor;
     private Integer neededValue;
@@ -48,7 +47,7 @@ public class ToolCardExecutor extends Thread{
     private Player player;
 
     private DraftPool temporaryDraftPool;
-    private DrawableCollection<Dice> temporaryDicebag;
+    private DrawableCollection<Dice> temporaryDiceBag;
     private RoundTrack temporaryRoundTrack;
     private SchemaCard temporarySchemaCard;
 
@@ -111,7 +110,7 @@ public class ToolCardExecutor extends Thread{
      */
     public void setTemporaryObjects() {
         this.temporaryDraftPool = game.getDraftPool();
-        this.temporaryDicebag = game.getDiceBag();
+        this.temporaryDiceBag = game.getDiceBag();
         this.temporaryRoundTrack = game.getRoundTrack();
         this.temporarySchemaCard = player.getSchemaCard();
         this.skipTurnPlayers = turnState.getSkipTurnPlayers();
@@ -122,7 +121,7 @@ public class ToolCardExecutor extends Thread{
      */
     private void updateObjects() {
         game.setDraftPool(temporaryDraftPool);
-        game.setDiceBag(temporaryDicebag);
+        game.setDiceBag(temporaryDiceBag);
         game.setRoundTrack(temporaryRoundTrack);
         player.setSchemaCard(temporarySchemaCard);
         turnState.setSkipTurnPlayers(skipTurnPlayers);
@@ -152,7 +151,6 @@ public class ToolCardExecutor extends Thread{
     /**
      * Invoke the list of commands
      *
-     * @throws RemoteException      network error
      * @throws InterruptedException if the toolCard execution is interrupted by a client command or
      *                              because the command can't proceed
      */
@@ -291,8 +289,8 @@ public class ToolCardExecutor extends Thread{
         return temporaryDraftPool;
     }
 
-    public DrawableCollection<Dice> getTemporaryDicebag() {
-        return temporaryDicebag;
+    public DrawableCollection<Dice> getTemporaryDiceBag() {
+        return temporaryDiceBag;
     }
 
     public RoundTrack getTemporaryRoundTrack() {

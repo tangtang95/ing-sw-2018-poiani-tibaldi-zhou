@@ -53,9 +53,9 @@ public class AddDiceToDiceBagTest {
         modifiedDiceBag.addElements(diceBag.getCollection());
         modifiedDiceBag.addElement(dice);
         when(executor.getNeededDice()).thenReturn(dice);
-        when(executor.getTemporaryDicebag()).thenReturn(diceBag);
+        when(executor.getTemporaryDiceBag()).thenReturn(diceBag);
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, state));
-        assertEquals(modifiedDiceBag, executor.getTemporaryDicebag());
+        assertEquals(modifiedDiceBag, executor.getTemporaryDiceBag());
     }
 
     @Test

@@ -4,7 +4,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -72,9 +71,7 @@ public class ColorConstraint implements IConstraint {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ColorConstraint))
-            return false;
-        return this.getColor() == ((ColorConstraint) obj).getColor();
+        return obj instanceof ColorConstraint && this.getColor() == ((ColorConstraint) obj).getColor();
     }
 
     public String toString() {

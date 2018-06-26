@@ -12,7 +12,6 @@ import org.poianitibaldizhou.sagrada.game.model.cards.Card;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
@@ -73,9 +72,8 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
         for (int i = 0; i < SchemaCard.NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < SchemaCard.NUMBER_OF_COLUMNS; j++) {
                 Dice dice = schema.getDice(new Position(i, j));
-                if(dice != null) {
-                    if (dice.getColorConstraint().equals(colorConstraint))
-                        score += dice.getNumber();
+                if(dice != null && dice.getColorConstraint().equals(colorConstraint)) {
+                    score += dice.getNumber();
                 }
             }
         }

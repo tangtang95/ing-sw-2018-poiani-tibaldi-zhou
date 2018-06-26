@@ -9,7 +9,6 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -26,7 +25,6 @@ public class ChooseColorFromRoundTrack implements ICommand {
      * @param toolCardExecutor toolCard invoked
      * @param turnState state in which the player acts
      * @return CommandFlow.EMPTY_ROUNDTRACK if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
-     * @throws RemoteException communication architecture error
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {

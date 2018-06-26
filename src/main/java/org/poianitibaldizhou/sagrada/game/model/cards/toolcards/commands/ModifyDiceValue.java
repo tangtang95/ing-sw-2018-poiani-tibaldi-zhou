@@ -7,7 +7,6 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.List;
 import java.util.Objects;
 
@@ -22,7 +21,6 @@ public class ModifyDiceValue implements ICommand {
      * @param toolCardExecutor ToolCard invoked that contains this command
      * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the value is not in range with the accepted value, CommandFlow.MAIN otherwise
-     * @throws RemoteException      if there are network communication errors
      * @throws InterruptedException due to the wait() in getting values from the executor
      */
     @Override

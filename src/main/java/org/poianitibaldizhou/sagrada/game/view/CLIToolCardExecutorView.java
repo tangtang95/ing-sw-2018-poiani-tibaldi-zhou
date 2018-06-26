@@ -312,12 +312,13 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
     @Override
     public void notifyNeedPositionForPlacement(String message) throws IOException {
-        // TODO If you want add the print of the dice to be placed
         BuildGraphic buildGraphic = new BuildGraphic();
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
+        DiceWrapper diceWrapper = clientGetMessage.getDice(message);
 
         PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card\n").
+                buildGraphicDice(diceWrapper).
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         schemaCardPosition();
     }

@@ -33,7 +33,7 @@ public class ToolCardLanguageParser {
      * @throws IllegalArgumentException if a string isn't matching with any of the available commands.
      */
     public Node<ICommand> parseToolCard(String description) {
-        Node<ICommand> commands_root = null;
+        Node<ICommand> commandsRoot = null;
 
         Pattern p = Pattern.compile("\\[(.*?)\\]");
         Matcher m = p.matcher(description);
@@ -48,14 +48,14 @@ public class ToolCardLanguageParser {
             String[] c = temp.split("-");
             if(grammar.get(c[1]) == null || c.length != 2)
                 throw new IllegalArgumentException("Command not recognized " + c[1]);
-            if(commands_root == null)
-                commands_root = new Node<>(grammar.get(c[1]));
+            if(commandsRoot == null)
+                commandsRoot = new Node<>(grammar.get(c[1]));
             else
-                commands_root.addAtIndex(grammar.get(c[1]),Integer.parseInt(c[0]));
+                commandsRoot.addAtIndex(grammar.get(c[1]),Integer.parseInt(c[0]));
             firstCheck = m.find();
         }
 
-        return commands_root;
+        return commandsRoot;
     }
 
     /**

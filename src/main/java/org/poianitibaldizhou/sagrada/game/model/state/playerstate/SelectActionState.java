@@ -3,8 +3,6 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 
-import java.rmi.RemoteException;
-
 public class SelectActionState extends IPlayerState {
 
     public SelectActionState(TurnState turnState) {

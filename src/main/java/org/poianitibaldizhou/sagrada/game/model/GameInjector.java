@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

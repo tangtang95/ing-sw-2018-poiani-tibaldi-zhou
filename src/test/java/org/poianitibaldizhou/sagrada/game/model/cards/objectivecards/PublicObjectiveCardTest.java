@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.objectivecards;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -67,7 +65,7 @@ public class PublicObjectiveCardTest {
     }
 
     @Test(expected = Exception.class)
-    public void testConstructorFail() throws Exception{
+    public void testConstructorFail() {
         List<IConstraint> constraints = new ArrayList<>();
         constraints.add(new NumberConstraint(4));
         PublicObjectiveCard publicObjectiveCard = new SetPublicObjectiveCard("name", "descr", 4, constraints, ObjectiveCardType.COLOR);
@@ -114,13 +112,7 @@ public class PublicObjectiveCardTest {
     public void testToObject(){
         publicObjectiveCard = new ColumnPublicObjectiveCard("Test", "Test",
                 5, ObjectiveCardType.COLOR);
-        String message = "{\"name\":\"Test\"}";
-        org.json.simple.parser.JSONParser jsonParser = new org.json.simple.parser.JSONParser();
-        try {
-            assertTrue((PublicObjectiveCard.toObject((JSONObject) jsonParser.parse(message))) == null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        assertTrue((PublicObjectiveCard.toObject() == null));
     }
 
     @Test

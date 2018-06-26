@@ -23,7 +23,7 @@ public class AddDiceToDiceBag implements ICommand {
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
         Dice dice = toolCardExecutor.getNeededDice();
-        toolCardExecutor.getTemporaryDicebag().addElement(dice);
+        toolCardExecutor.getTemporaryDiceBag().addElement(dice);
         return CommandFlow.MAIN;
     }
 
