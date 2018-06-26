@@ -17,6 +17,16 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
     private transient ToolCardView toolCardView;
     private String toolCardName;
 
+    /**
+     * Constructor.
+     * Create a tool card listener that update its toolCardView every time a notify is called
+     *
+     * @param toolCardView the tool card view to update
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public ToolCardListener(ToolCardView toolCardView, GameGraphicsController controller,
                                Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
@@ -28,6 +38,13 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
         return toolCardView;
     }
 
+    public String getToolCardName() {
+        return toolCardName;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onTokenChange(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -37,11 +54,17 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onCardDestroy() throws IOException {
         Platform.runLater(() -> controller.destroyToolCard(this));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         try {
@@ -64,9 +87,5 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().concat(toolCardName).hashCode();
-    }
-
-    public String getToolCardName() {
-        return toolCardName;
     }
 }

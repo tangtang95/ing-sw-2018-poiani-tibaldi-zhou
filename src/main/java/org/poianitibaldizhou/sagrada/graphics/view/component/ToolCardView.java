@@ -13,9 +13,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 
 public class ToolCardView extends Pane{
 
-    private final ImageView toolCardView;
+    private final ImageView imageView;
     private ToolCardWrapper toolCardWrapper;
-    private final double scale;
     private Canvas tokenView;
 
     //Based on toolCardWidth
@@ -25,35 +24,63 @@ public class ToolCardView extends Pane{
     private static final String CARD_JSON_PATH = "images/cards/tool-cards.json";
 
 
+    /**
+     * Constructor.
+     * Create a ToolCardView (pane) that contains the toolCard given
+     *
+     * @param toolCard the model of the toolCard to draw
+     * @param scale the scale value
+     */
     public ToolCardView(ToolCardWrapper toolCard, double scale){
         this.toolCardWrapper = toolCard;
-        this.scale = scale;
+        double scale1 = scale;
         String cardKey = GraphicsUtils.convertNameIntoCardKey(toolCard.getName());
-        toolCardView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
+        imageView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
 
         tokenView = drawToken(toolCard.getToken());
-        tokenView.setTranslateX(toolCardView.getFitWidth() - tokenView.getWidth()/2);
+        tokenView.setTranslateX(imageView.getFitWidth() - tokenView.getWidth()/2);
         tokenView.setTranslateY(- tokenView.getHeight()/2);
 
-        this.getChildren().addAll(toolCardView, tokenView);
+        this.getChildren().addAll(imageView, tokenView);
     }
 
-    public ToolCardView(ToolCardWrapper toolCard){
-        this(toolCard, 1);
-    }
-
+    /**
+     * Re-draw the token of the tool card view with the value passed
+     *
+     * @param token the new value of the token
+     */
     public void redrawToken(int token) {
         this.getChildren().remove(tokenView);
         tokenView = drawToken(token);
-        tokenView.setTranslateX(toolCardView.getFitWidth() - tokenView.getWidth()/2);
+        tokenView.setTranslateX(imageView.getFitWidth() - tokenView.getWidth()/2);
         tokenView.setTranslateY(- tokenView.getHeight()/2);
 
         this.getChildren().add(tokenView);
     }
 
+    /**
+     * Increase the value of the token inside the token image
+     * @param value the value to increase
+     */
+    public void increaseToken(Integer value) {
+        toolCardWrapper = new ToolCardWrapper(toolCardWrapper.getName(),
+                toolCardWrapper.getDescription(), toolCardWrapper.getColor(), toolCardWrapper.getToken() + value);
+        this.getChildren().remove(tokenView);
+        tokenView = drawToken(value);
+
+        tokenView.setTranslateX(imageView.getFitWidth() - tokenView.getWidth()/2);
+        tokenView.setTranslateY(- tokenView.getHeight()/2);
+
+        this.getChildren().add(tokenView);
+    }
+
+    public ToolCardWrapper getToolCardWrapper() {
+        return toolCardWrapper;
+    }
+
     private Canvas drawToken(int numbersOfToken){
-        Canvas canvas = new Canvas(toolCardView.getFitWidth()*ICON_PERCENT_RADIUS,
-                toolCardView.getFitWidth()*ICON_PERCENT_RADIUS);
+        Canvas canvas = new Canvas(imageView.getFitWidth()*ICON_PERCENT_RADIUS,
+                imageView.getFitWidth()*ICON_PERCENT_RADIUS);
         double offset = canvas.getWidth()*0.1;
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.WHITE);
@@ -70,19 +97,5 @@ public class ToolCardView extends Pane{
         return canvas;
     }
 
-    public void increaseToken(Integer value) {
-        toolCardWrapper = new ToolCardWrapper(toolCardWrapper.getName(),
-                toolCardWrapper.getDescription(), toolCardWrapper.getColor(), toolCardWrapper.getToken() + value);
-        this.getChildren().remove(tokenView);
-        tokenView = drawToken(value);
 
-        tokenView.setTranslateX(toolCardView.getFitWidth() - tokenView.getWidth()/2);
-        tokenView.setTranslateY(- tokenView.getHeight()/2);
-
-        this.getChildren().add(tokenView);
-    }
-
-    public ToolCardWrapper getToolCardWrapper() {
-        return toolCardWrapper;
-    }
 }

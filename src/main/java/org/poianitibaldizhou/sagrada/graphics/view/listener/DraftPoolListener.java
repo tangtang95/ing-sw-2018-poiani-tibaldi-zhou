@@ -19,10 +19,19 @@ import java.util.List;
 
 public class DraftPoolListener extends AbstractView implements IDraftPoolObserver{
 
-    private transient DraftPoolView draftPoolView;
+    private final transient DraftPoolView draftPoolView;
 
     private static final double DRAFT_POOL_SCALE = 0.2;
 
+    /**
+     * Constructor.
+     * Create a draft pool listener that update its draftPoolView every time a notify is called
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public DraftPoolListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         DropShadow dropShadow = new DropShadow(4, 4, 4, Color.GRAY);
@@ -36,6 +45,9 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         draftPoolView.setEffect(dropShadow);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         try {
@@ -55,6 +67,9 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         corePane.getChildren().add(draftPoolView);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDiceAdd(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -64,6 +79,9 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDiceRemove(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -73,6 +91,9 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDicesAdd(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -82,6 +103,9 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDraftPoolReroll(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -91,6 +115,9 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDraftPoolClear() throws IOException {
         Platform.runLater(() -> {

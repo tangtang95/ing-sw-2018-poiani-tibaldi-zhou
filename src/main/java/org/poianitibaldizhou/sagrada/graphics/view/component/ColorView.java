@@ -7,16 +7,21 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
 
 public final class ColorView extends Pane {
 
-    private final ImageView imageView;
     private final ColorWrapper colorWrapper;
 
     private static final String TILE_IMAGE_PATH = "images/schemaCards/tiles.png";
     private static final String TILE_JSON_PATH = "images/schemaCards/tiles.json";
 
+    /**
+     * Create a ColorView Pane containing an imageView of the color chosen
+     *
+     * @param colorWrapper the color chosen
+     * @param scale the scale value
+     */
     public ColorView(ColorWrapper colorWrapper, double scale){
         this.colorWrapper = colorWrapper;
         String keyName = String.format("tile-%s.png", colorWrapper.name().toLowerCase());
-        imageView = GraphicsUtils.getImageView(keyName, TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
+        ImageView imageView = GraphicsUtils.getImageView(keyName, TILE_IMAGE_PATH, TILE_JSON_PATH, scale);
         this.getChildren().add(imageView);
     }
 

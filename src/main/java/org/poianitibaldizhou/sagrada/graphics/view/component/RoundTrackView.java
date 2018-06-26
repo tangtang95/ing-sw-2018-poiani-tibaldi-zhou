@@ -41,10 +41,12 @@ public class RoundTrackView extends Pane{
 
     private static final double DICE_SCALE = 0.3;
 
-    public RoundTrackView(){
-        this(1);
-    }
-
+    /**
+     * Constructor.
+     * Create an empty RoundTrackView (pane) without any dice
+     *
+     * @param scale
+     */
     public RoundTrackView(double scale){
         this.scale = scale;
         diceViewList = new ArrayList<>();
@@ -59,6 +61,13 @@ public class RoundTrackView extends Pane{
         this.getChildren().add(roundTrackImage);
     }
 
+    /**
+     * Constructor.
+     * Create a RoundTrackView (pane) that contains every diceView inside the roundTrack passed
+     *
+     * @param roundTrack the model of the roundTrack
+     * @param scale the scale value
+     */
     public RoundTrackView(RoundTrackWrapper roundTrack, double scale){
         this.scale = scale;
         diceViewList = new ArrayList<>();
@@ -74,14 +83,42 @@ public class RoundTrackView extends Pane{
         drawRoundTrack(roundTrack);
     }
 
+    /**
+     * Draw the dices of the RoundTrack
+     *
+     * @param roundTrack the model of the roundTrack to draw
+     */
     public void drawRoundTrack(RoundTrackWrapper roundTrack) {
         this.roundTrack = roundTrack;
         clearDices();
         drawDices(roundTrack);
     }
 
+    /**
+     * @param round the number of the round to get dices from
+     * @return a list of dices that are inside the round passed
+     */
     public List<DiceWrapper> getDices(int round){
         return roundTrack.getDicesPerRound(round);
+    }
+
+    /**
+     * @return the model of the roundTrack used to draw it
+     */
+    public RoundTrackWrapper getRoundTrackWrapper() {
+        return roundTrack;
+    }
+
+    /**
+     * Add an event handler (onMousePressed) to the dice of the chosen round
+     *
+     * @param round the chosen round
+     * @param eventHandler the event to add
+     */
+    public void setDicePressedEvent(int round, EventHandler<? super MouseEvent> eventHandler) {
+        if(diceViewList.size() <= round)
+            return;
+        diceViewList.get(round).setOnMousePressed(eventHandler);
     }
 
     private void drawDices(RoundTrackWrapper roundTrack){
@@ -133,17 +170,4 @@ public class RoundTrackView extends Pane{
         diceViewList.forEach(diceView -> this.getChildren().remove(diceView));
     }
 
-    public RoundTrackWrapper getRoundTrackWrapper() {
-        return roundTrack;
-    }
-
-    public void setDicePressedEvent(int round, EventHandler<? super MouseEvent> eventHandler) {
-        if(diceViewList.size() <= round)
-            return;
-        diceViewList.get(round).setOnMousePressed(eventHandler);
-    }
-
-    public void setDiceCSSClass(String classCSS){
-        diceViewList.forEach(diceView -> diceView.getStyleClass().add(classCSS));
-    }
 }

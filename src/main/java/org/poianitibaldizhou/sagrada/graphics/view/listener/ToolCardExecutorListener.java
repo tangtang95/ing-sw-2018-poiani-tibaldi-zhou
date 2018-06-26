@@ -43,24 +43,39 @@ import java.util.logging.Logger;
 
 public class ToolCardExecutorListener extends AbstractView implements IToolCardExecutorObserver {
 
-    private static final double ROUND_TRACK_SHOW_SCALE = 1;
     private final transient List<HistoryObject> historyMessages;
 
+    private static final double ROUND_TRACK_SHOW_SCALE = 1;
     private static final double DICE_SHOW_SCALE = 1;
     private static final double TILE_SHOW_SCALE = 1;
     private static final double SCHEMA_CARD_SHOW_SCALE = 1;
     private static final double DICE_SCHEMA_SHOW_SCALE = 0.6;
 
+    /**
+     * Constructor.
+     * Create a tool card executor listener that handles every notify related to the execution of the toolCard
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @throws RemoteException network error
+     */
     public ToolCardExecutorListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
         historyMessages = new ArrayList<>();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         /* NOTHING TO UPDATE */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedDice(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -89,7 +104,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedNewValue(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -118,6 +135,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedColor(String colors) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -146,7 +166,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedNewDeltaForDice(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -178,6 +200,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedDiceFromRoundTrack(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -243,6 +268,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedPositionForRemoving(String message) throws IOException {
         ClientGetMessage protocolParser = new ClientGetMessage();
@@ -281,7 +309,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedPositionForPlacement(String message) throws IOException {
         ClientGetMessage protocolParser = new ClientGetMessage();
@@ -369,6 +399,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedDicePositionOfCertainColor(String message) throws IOException {
         ClientGetMessage protocolParser = new ClientGetMessage();
@@ -409,6 +442,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyRepeatAction() throws IOException {
         Platform.runLater(() -> {
@@ -417,6 +453,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyCommandInterrupted(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -426,9 +465,18 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             deactivateNotifyPane();
             showMessage(corePane, "L'esecuzione della Carta Utensile è stata interrotta per errore: " + error,
                     MessageType.ERROR);
+            try {
+                controller.updateAllViews();
+            } catch (IOException e) {
+                showCrashErrorMessage("Errore di connessione");
+                e.printStackTrace();
+            }
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedContinueAnswer() throws IOException {
         Platform.runLater(() -> {
@@ -448,7 +496,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyDiceReroll(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -458,6 +508,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyExecutionEnded() throws IOException {
         Platform.runLater(() -> {
@@ -467,6 +520,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyWaitTurnEnd() throws IOException {
         Platform.runLater(() -> {
@@ -477,6 +533,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyDicePouredOver(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -486,8 +545,22 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * Add a new history message inside the list of history
+     * @param message the history message to add
+     */
     public void addHistoryMessage(HistoryObject message) {
         historyMessages.add(message);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ToolCardExecutorListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
     }
 
     private void drawHistoryButton(){
@@ -594,30 +667,5 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             historyMessages.remove(historyMessages.size() - 1);
             showCrashErrorMessage("Errore di connessione");
         }
-    }
-
-    public HistoryObject getMostRecentDiceMessage() throws IOException {
-        for (int i = historyMessages.size() - 1; i >= 0; i--) {
-            if (historyMessages.get(i).getObjectMessageType() == ObjectMessageType.DICE) {
-                return historyMessages.get(i);
-            }
-        }
-        throw new IOException();
-    }
-
-    public HistoryObject getMostRecentMessage() {
-        if (historyMessages.isEmpty())
-            return new HistoryObject(null, ObjectMessageType.NONE);
-        return historyMessages.get(historyMessages.size() - 1);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof ToolCardExecutorListener;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getClass().getSimpleName().hashCode();
     }
 }

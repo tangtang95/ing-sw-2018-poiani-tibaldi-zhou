@@ -42,14 +42,6 @@ public class MediatorManager {
         return gameName;
     }
 
-    @TestOnly
-    public String createMultiPlayerGameTest(List<User> users) {
-        String gameName = "corderoGame";
-        IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
-        gameManager.createMultiPlayerGame(game, gameName);
-        return gameName;
-    }
-
     /**
      * Returns true if a player with this user name is already playing
      *

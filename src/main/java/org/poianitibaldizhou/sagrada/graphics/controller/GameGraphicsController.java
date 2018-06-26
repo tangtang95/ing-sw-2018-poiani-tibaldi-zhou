@@ -58,6 +58,39 @@ public class GameGraphicsController extends GraphicsController implements Initia
         initNotifyPane();
     }
 
+    /**
+     * Update every views inside this controller
+     * @throws IOException network error
+     */
+    public void updateAllViews() throws IOException {
+        draftPoolListener.updateView();
+        roundTrackListener.updateView();
+        gameListener.updateView();
+        stateListener.updateView();
+        timeoutListener.updateView();
+        diceBagListener.updateView();
+    }
+
+    /**
+     * Go to the ScorePlayerScene to show the winner
+     *
+     * @param winner the user who won
+     * @param victoryPoints the final points of each player
+     */
+    public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
+
+        try {
+            Parent root = loader.load();
+            ScorePlayerGraphicsController controller = loader.getController();
+            controller.setSceneManager(sceneManager);
+            controller.initScoreScene(winner, victoryPoints);
+            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
+        } catch (IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+        }
+    }
+
     private void initListeners() {
         try {
             draftPoolListener = new DraftPoolListener(this, corePane, notifyPane);
@@ -79,8 +112,17 @@ public class GameGraphicsController extends GraphicsController implements Initia
         notifyPane.toBack();
     }
 
+    /**
+     * Init method for Multi player games
+     *
+     * @param token the token got from lobby
+     * @param username the username chosen
+     * @param gameName the game name got from lobby
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException if cannot connect to the server
+     */
     public void initMultiPlayerGame(String token, String username, String gameName, ConnectionManager connectionManager) throws NetworkException {
-        gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        gameViewStrategy = new MultiPlayerGameViewStrategy(corePane, notifyPane);
         initListeners();
         gameModel = new GameModel(username, token, gameName, connectionManager);
         try {
@@ -91,8 +133,16 @@ public class GameGraphicsController extends GraphicsController implements Initia
         }
     }
 
+    /**
+     * Init method for Single player games
+     *
+     * @param username the username chosen
+     * @param difficulty the difficulty level chosen
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException if cannot connect to the server
+     */
     public void initSinglePlayerGame(String username, Difficulty difficulty, ConnectionManager connectionManager) throws NetworkException {
-        gameViewStrategy = new SinglePlayerGameViewStrategy(this, corePane, notifyPane);
+        gameViewStrategy = new SinglePlayerGameViewStrategy(corePane);
         initListeners();
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
@@ -110,8 +160,15 @@ public class GameGraphicsController extends GraphicsController implements Initia
 
     }
 
+    /**
+     * Init method for Reconnecting to Multi Player Games
+     *
+     * @param username the username used before
+     * @param connectionManager the manager of the connection
+     * @throws NetworkException
+     */
     public void initReconnectMultiPlayerGame(String username, ConnectionManager connectionManager) throws NetworkException{
-        gameViewStrategy = new MultiPlayerGameViewStrategy(this, corePane, notifyPane);
+        gameViewStrategy = new MultiPlayerGameViewStrategy(corePane, notifyPane);
         initListeners();
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
@@ -138,14 +195,21 @@ public class GameGraphicsController extends GraphicsController implements Initia
         }
     }
 
-    public void setRoundTrack() {
+    /**
+     * Draw the Round Track
+     */
+    public void drawRoundTrack() {
         roundTrackListener.drawRoundTrack();
     }
 
-    public void setDraftPool() {
+    /**
+     * Draw the Draft Pool
+     */
+    public void drawDraftPool() {
         draftPoolListener.drawDraftPool();
     }
 
+    // REQUEST TO THE GAME MODEL
     public void chooseSchemaCard(SchemaCardWrapper schemaCardWrapper) throws IOException {
         gameModel.chooseSchemaCard(schemaCardWrapper);
     }
@@ -236,14 +300,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
         gameModel.sendValueObject(value);
     }
 
-    public void updateAllViews() throws IOException {
-        draftPoolListener.updateView();
-        roundTrackListener.updateView();
-        gameListener.updateView();
-        stateListener.updateView();
-        timeoutListener.updateView();
-        diceBagListener.updateView();
-    }
+
 
     public int getOwnToken() throws IOException {
         return gameModel.getOwnToken();
@@ -266,23 +323,9 @@ public class GameGraphicsController extends GraphicsController implements Initia
     }
 
 
-    public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
-
-        try {
-            Parent root = loader.load();
-            ScorePlayerGraphicsController controller = loader.getController();
-            controller.setSceneManager(sceneManager);
-            controller.initScoreScene(winner, victoryPoints);
-            playSceneTransition(sceneManager.getCurrentScene(), (event) -> sceneManager.replaceScene(root));
-        } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
-        }
-    }
-
     public void quitGame() throws IOException {
         gameModel.quitGame();
-        playSceneTransition(sceneManager.getCurrentScene(), event -> popScene());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.popScene());
     }
 
     public long getMillisTimeout() throws IOException {

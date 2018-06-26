@@ -1,5 +1,32 @@
-# ing-sw-2018-poiani-tibaldi-zhou
-Progetto di Ingegneria del Software 2018 - Sagrada
+# Progetto di Ingegneria del Software 2018 - Sagrada
+
+## Membri del gruppo
+
+- Poiani Riccardo
+    - Matricola: 
+    - Codice persona:
+- Tibaldi Mattia
+    - Matricola:
+    - Codice persona:
+- Zhou Tang-tang
+    - Matricola: 847685
+    - Codice persona: 10540904
+
+## Coverage dei test
+
+## Diagramma UML
+
+Link alla [cartella uml]()
+
+## Funzionalità implementate
+
+- Single Player
+- Multi partita
+
+## Spiegazioni aggiuntive
+
+- TODO
+
 
 ### How to run RMI Server and Client
 Requirements: [nanohttpd-webserver-2.3.2-snap.jar](https://github.com/affo/ingsoft-project/blob/master/rmi/warehouse/nanohttpd-webserver-2.3.2-snap.jar)

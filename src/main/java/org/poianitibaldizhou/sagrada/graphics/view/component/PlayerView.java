@@ -17,16 +17,40 @@ public class PlayerView extends Pane {
     private int favorTokens;
     private double fontSize;
 
+    /**
+     * Constructor.
+     * Create a PlayerView (pane) that contains a label for the player name and an image that represents
+     * the favor tokens
+     *
+     * @param userWrapper the model of the user
+     * @param favorTokens the number of favor tokens
+     * @param fontSize the size of the label font
+     */
     public PlayerView(UserWrapper userWrapper, int favorTokens, double fontSize) {
         this(userWrapper, fontSize);
         this.favorTokens = favorTokens;
         drawFavorTokens(favorTokens);
     }
 
+    /**
+     * Constructor.
+     * Create a PlayerView (pane) that contains a label (with standard size = 10) for the player name and an image
+     * that represents the favor tokens
+     *
+     * @param userWrapper the model of the user
+     * @param favorTokens the number of favor tokens
+     */
     public PlayerView(UserWrapper userWrapper, int favorTokens) {
         this(userWrapper, favorTokens, 10);
     }
 
+    /**
+     * Constructor.
+     * Create a PlayerView (pane) that contains a label (with standard size = 10) for the player name
+     *
+     * @param userWrapper the model of the user
+     * @param fontSize the size of the label font
+     */
     public PlayerView(UserWrapper userWrapper, double fontSize){
         this.fontSize = fontSize;
         nameLabel = new Label(userWrapper.getUsername());
@@ -52,12 +76,22 @@ public class PlayerView extends Pane {
         this.getChildren().add(coinCanvas);
     }
 
+    /**
+     * Update the favor token image by decreasing its value by the number passed
+     *
+     * @param favorTokenUsed the decreasing value number
+     */
     public void decreaseFavorToken(Integer favorTokenUsed) {
         favorTokens -= favorTokenUsed;
         this.getChildren().remove(coinCanvas);
         drawFavorTokens(favorTokens);
     }
 
+    /**
+     * Draw favor token image
+     *
+     * @param token the number of favor token
+     */
     public void drawFavorToken(int token) {
         favorTokens = token;
         this.getChildren().remove(coinCanvas);

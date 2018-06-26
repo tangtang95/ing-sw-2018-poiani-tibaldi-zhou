@@ -255,6 +255,9 @@ public abstract class AbstractView extends UnicastRemoteObject {
         return corePane.getScene().getWindow().getWidth();
     }
 
+    /**
+     * Update the view by getting the most recent model
+     */
     public abstract void updateView();
 
 }

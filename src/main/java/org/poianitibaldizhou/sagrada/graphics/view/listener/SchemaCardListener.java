@@ -18,9 +18,20 @@ import java.util.Map;
 
 public class SchemaCardListener extends AbstractView implements ISchemaCardObserver{
 
-    private transient SchemaCardView schemaCardView;
-    private String username;
+    private final transient SchemaCardView schemaCardView;
+    private final String username;
 
+    /**
+     * Constructor.
+     * Create a schema card listener that update its schemaCardView every time an update is called
+     *
+     * @param schemaCardView the schemaCardView to update
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @param userWrapper the user linked to the schemaCardView
+     * @throws RemoteException network error
+     */
     public SchemaCardListener(SchemaCardView schemaCardView, GameGraphicsController controller,
                                  Pane corePane, Pane notifyPane, UserWrapper userWrapper) throws RemoteException {
         super(controller, corePane, notifyPane);
@@ -29,6 +40,23 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
         this.schemaCardView.getStyleClass().add("on-board-schema-card");
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void updateView() {
+        try {
+            Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap = controller.getSchemaCardMap();
+            SchemaCardWrapper schemaCardWrapper = schemaCardWrapperMap.get(new UserWrapper(username));
+            schemaCardView.drawSchemaCard(schemaCardWrapper);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onPlaceDice(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -43,6 +71,9 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void onDiceRemove(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
@@ -57,19 +88,8 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
         });
     }
 
-    public SchemaCardView getView() {
+    public SchemaCardView getSchemaCardView() {
         return schemaCardView;
-    }
-
-    @Override
-    public void updateView() {
-        try {
-            Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap = controller.getSchemaCardMap();
-            SchemaCardWrapper schemaCardWrapper = schemaCardWrapperMap.get(new UserWrapper(username));
-            schemaCardView.drawSchemaCard(schemaCardWrapper);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

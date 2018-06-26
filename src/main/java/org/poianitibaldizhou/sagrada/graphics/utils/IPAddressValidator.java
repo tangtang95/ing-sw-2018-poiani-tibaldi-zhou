@@ -3,6 +3,9 @@ package org.poianitibaldizhou.sagrada.graphics.utils;
 import com.jfoenix.validation.base.ValidatorBase;
 import javafx.scene.control.TextInputControl;
 
+/**
+ * Validator class for IP addresses
+ */
 public class IPAddressValidator extends ValidatorBase{
 
     @Override

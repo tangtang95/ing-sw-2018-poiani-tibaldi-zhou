@@ -167,9 +167,10 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         difficultyToggleGroup.selectToggle(radioButtonMedium);
     }
 
-    @Override
-    public void setSceneManager(SceneManager sceneManager){
-        super.setSceneManager(sceneManager);
+    /**
+     * Init method for StartMenuScene
+     */
+    public void initStartMenuScene(){
         menuButtonPane.setPrefWidth(sceneManager.getSceneWidth()*0.4);
         menuButtonPane.setPadding(new Insets(sceneManager.getSceneHeight()/10, 0, 0, sceneManager.getSceneWidth()/20));
         rightPane.setPrefWidth(sceneManager.getSceneWidth()*0.6);
@@ -215,9 +216,13 @@ public class StartMenuGraphicsController extends GraphicsController implements I
 
     @FXML
     public void quitGame(ActionEvent actionEvent) {
-        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.getPrimaryStage().close());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> {
+            sceneManager.getPrimaryStage().close();
+            System.exit(0);
+        });
     }
 
+    @FXML
     public void onReconnectButtonAction(ActionEvent actionEvent) {
         closeEveryPane();
         playOpenMenuPaneTransition(reconnectPane);
@@ -280,7 +285,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 e.printStackTrace();
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             } catch (NetworkException e) {
-                AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
+                AlertBox.displayBox("Errore del server", e.getInnerException().getMessage());
             } finally {
                 onMultiPlayerCloseButton(actionEvent);
             }

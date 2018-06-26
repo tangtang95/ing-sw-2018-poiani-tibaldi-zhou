@@ -22,6 +22,12 @@ public abstract class GraphicsController {
         this.sceneManager = sceneManager;
     }
 
+    /**
+     * Standard scene transition
+     *
+     * @param node the node target of the transition
+     * @param eventHandler the event to do after the transition end
+     */
     public void playSceneTransition(Node node, EventHandler<ActionEvent> eventHandler){
         FadeTransition transition = new FadeTransition();
         transition.setDuration(Duration.millis(400));
@@ -30,14 +36,6 @@ public abstract class GraphicsController {
         transition.setByValue(1);
         transition.play();
         transition.setOnFinished(eventHandler);
-    }
-
-    public void pushScene(Parent node){
-        sceneManager.pushScene(node);
-    }
-
-    public void popScene() {
-        sceneManager.popScene();
     }
 
 }

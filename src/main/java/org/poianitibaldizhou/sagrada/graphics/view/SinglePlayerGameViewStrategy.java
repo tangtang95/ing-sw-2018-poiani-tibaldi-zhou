@@ -8,9 +8,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
 public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
 
-    private final GameGraphicsController gameController;
     private final Pane corePane;
-    private final Pane notifyPane;
 
     private static final double SCHEMA_CARD_SCALE = 1;
     private static final double PRIVATE_OBJECTIVE_CARD_SCALE = 0.6;
@@ -18,15 +16,15 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
     private static final double TOOL_CARD_SCALE = 0.85;
     private static final double ROUND_TRACK_SCALE = 1;
 
-    public SinglePlayerGameViewStrategy(GameGraphicsController gameController, Pane corePane, Pane notifyPane) {
-        this.gameController = gameController;
+    /**
+     * Constructor.
+     * Create a single player game view strategy, that defines the position and scale of most object inside the
+     * game
+     *
+     * @param corePane the core view of the game
+     */
+    public SinglePlayerGameViewStrategy(Pane corePane) {
         this.corePane = corePane;
-        this.notifyPane = notifyPane;
-    }
-
-    @Override
-    public double getSchemaCardScale() {
-        return SCHEMA_CARD_SCALE;
     }
 
     @Override
@@ -50,13 +48,13 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
     }
 
     @Override
-    public SchemaCardView drawSchemaCardView(Pane corePane, SchemaCardWrapper schemaCardWrapper, double angle) {
+    public SchemaCardView drawSchemaCardView(Pane targetPane, SchemaCardWrapper schemaCardWrapper, double angle) {
         SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SCALE);
-        schemaCardView.translateXProperty().bind(corePane.widthProperty().divide(2)
+        schemaCardView.translateXProperty().bind(targetPane.widthProperty().divide(2)
                 .subtract(schemaCardView.widthProperty().divide(2)));
-        schemaCardView.translateYProperty().bind(corePane.heightProperty().divide(1.6)
+        schemaCardView.translateYProperty().bind(targetPane.heightProperty().divide(1.6)
                 .subtract(schemaCardView.heightProperty().divide(2)));
-        corePane.getChildren().add(schemaCardView);
+        targetPane.getChildren().add(schemaCardView);
         return schemaCardView;
     }
 

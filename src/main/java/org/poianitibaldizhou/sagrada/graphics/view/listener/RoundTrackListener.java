@@ -25,15 +25,25 @@ import java.util.List;
 
 public class RoundTrackListener extends AbstractView implements IRoundTrackObserver {
 
-    private transient RoundTrackView roundTrackView;
-    private transient List<RoundTrackView> copyRoundTrackViews;
+    private final transient RoundTrackView roundTrackView;
+    private final transient List<RoundTrackView> copyRoundTrackViews;
 
-    private transient List<Pane> diceViews;
-    private transient Label roundLabel;
+    private final transient List<Pane> diceViews;
+    private final transient Label roundLabel;
 
     private static final double ROUND_TRACK_SHOW_SCALE = 1.3;
     private static final double DICE_SCALE = 0.7;
 
+    /**
+     * Constructor.
+     * Create a round track listener that update its roundTrackView every time a notify is called
+     *
+     * @param controller the game controller of the GUI
+     * @param corePane the core view of the game
+     * @param notifyPane the view of the game to show the image on a greater size
+     * @param trackView the roundTrackView to update
+     * @throws RemoteException network error
+     */
     public RoundTrackListener(GameGraphicsController controller, Pane corePane, Pane notifyPane, RoundTrackView trackView) throws RemoteException {
         super(controller, corePane, notifyPane);
         copyRoundTrackViews = new ArrayList<>();
@@ -51,6 +61,9 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
         roundTrackView.setOnMousePressed(this::onRoundTrackPressed);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void updateView() {
         try {
@@ -62,7 +75,61 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
         }
     }
 
-    public void onRoundTrackPressed(MouseEvent mouseEvent){
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onDicesAddToRound(String message) throws IOException {
+        Platform.runLater(this::updateRoundTrack);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onDiceAddToRound(String message) throws IOException {
+        Platform.runLater(this::updateRoundTrack);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onDiceRemoveFromRound(String message) throws IOException {
+        Platform.runLater(this::updateRoundTrack);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void onDiceSwap(String message) throws IOException {
+        Platform.runLater(this::updateRoundTrack);
+    }
+
+    /**
+     * Draw the roundTrackView on the corePane
+     */
+    public void drawRoundTrack() {
+        IGameViewStrategy gameViewStrategy = controller.getGameViewStrategy();
+        roundTrackView.translateXProperty().bind(getPivotX(gameViewStrategy.getRoundTrackCenterX(),
+                roundTrackView.widthProperty(), 0.5));
+        roundTrackView.translateYProperty().bind(getPivotY(gameViewStrategy.getRoundTrackCenterY(),
+                roundTrackView.heightProperty(), 0.5));
+        corePane.getChildren().add(roundTrackView);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof RoundTrackListener;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+
+    private void onRoundTrackPressed(MouseEvent mouseEvent){
         clearNotifyPane(true);
         activateNotifyPane();
 
@@ -100,39 +167,6 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
         mouseEvent.consume();
     }
 
-    public RoundTrackView getRoundTrackView() {
-        return roundTrackView;
-    }
-
-    public void drawRoundTrack() {
-        IGameViewStrategy gameViewStrategy = controller.getGameViewStrategy();
-        roundTrackView.translateXProperty().bind(getPivotX(gameViewStrategy.getRoundTrackCenterX(),
-                roundTrackView.widthProperty(), 0.5));
-        roundTrackView.translateYProperty().bind(getPivotY(gameViewStrategy.getRoundTrackCenterY(),
-                roundTrackView.heightProperty(), 0.5));
-        corePane.getChildren().add(roundTrackView);
-    }
-
-    @Override
-    public void onDicesAddToRound(String message) throws IOException {
-        Platform.runLater(this::updateRoundTrack);
-    }
-
-    @Override
-    public void onDiceAddToRound(String message) throws IOException {
-        Platform.runLater(this::updateRoundTrack);
-    }
-
-    @Override
-    public void onDiceRemoveFromRound(String message) throws IOException {
-        Platform.runLater(this::updateRoundTrack);
-    }
-
-    @Override
-    public void onDiceSwap(String message) throws IOException {
-        Platform.runLater(this::updateRoundTrack);
-    }
-
     private void updateRoundTrack(){
         try {
             RoundTrackWrapper roundTrack = controller.getRoundTrack();
@@ -142,16 +176,6 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
             e.printStackTrace();
             showCrashErrorMessage("errore di connessione");
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        return obj instanceof RoundTrackListener;
-    }
-
-    @Override
-    public int hashCode() {
-        return this.getClass().getSimpleName().hashCode();
     }
 
 

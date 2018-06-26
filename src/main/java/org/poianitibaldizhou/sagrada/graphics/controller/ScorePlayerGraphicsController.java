@@ -46,6 +46,12 @@ public class ScorePlayerGraphicsController extends GraphicsController implements
         tableView.getColumns().add(totalScoreColumn);
     }
 
+    /**
+     * Init method of the Score Scene
+     *
+     * @param winner the user who won the game
+     * @param victoryPoints every final points of each player
+     */
     public void initScoreScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
         TreeItem<PlayerScoreWrapper> itemRoot = new TreeItem<>();
         victoryPoints.forEach((key, value) -> {
@@ -61,6 +67,6 @@ public class ScorePlayerGraphicsController extends GraphicsController implements
     @FXML
     public void onBackButtonAction(ActionEvent actionEvent) {
         ((Button)actionEvent.getSource()).setDisable(true);
-        playSceneTransition(sceneManager.getCurrentScene(), event -> popScene());
+        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.popScene());
     }
 }

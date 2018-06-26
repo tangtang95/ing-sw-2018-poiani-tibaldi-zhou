@@ -20,6 +20,12 @@ public class UserView extends Pane {
     private static final String RETRO_IMAGE_PATH = "images/cards/tool-cards.png";
     private static final String RETRO_JSON_PATH = "images/cards/tool-cards.json";
 
+    /**
+     * Constructor.
+     * Create a user view (pane) that contains the image view that represents the user and its username inside
+     *
+     * @param scale the scale value
+     */
     public UserView(double scale){
         String retroKeyName = "retro.png";
         imageView = GraphicsUtils.getImageView(retroKeyName, RETRO_IMAGE_PATH, RETRO_JSON_PATH, scale);
@@ -33,11 +39,19 @@ public class UserView extends Pane {
         }));
     }
 
+    /**
+     * Draw the retro of the user view
+     */
     public void drawRetro(){
         this.getChildren().clear();
         this.getChildren().add(imageView);
     }
 
+    /**
+     * Draw the user image with its username
+     *
+     * @param userWrapper the model of the user to draw
+     */
     public void drawUserCanvas(UserWrapper userWrapper){
         this.getChildren().clear();
         GraphicsContext gc = canvas.getGraphicsContext2D();
