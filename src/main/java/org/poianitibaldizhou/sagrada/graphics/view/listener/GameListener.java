@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.graphics.view.listener;
 
 import com.jfoenix.controls.JFXButton;
-import edu.emory.mathcs.backport.java.util.Collections;
 import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -29,10 +28,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -383,7 +379,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 ((Button) event.getSource()).setDisable(true);
             } catch (IOException e) {
                 showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             }
         });
 

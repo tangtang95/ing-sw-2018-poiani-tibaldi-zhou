@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.model.board;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
@@ -12,6 +11,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -237,12 +237,12 @@ public class RoundTrackTest {
         }
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exception.class)
     public void testAddNull() {
         roundTrack.addDiceToRound(null, 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exception.class)
     public void testAddsNull() {
         roundTrack.addDicesToRound(null, 0);
     }

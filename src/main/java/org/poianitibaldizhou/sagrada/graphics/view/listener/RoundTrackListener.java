@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class RoundTrackListener extends AbstractView implements IRoundTrackObserver {
 
@@ -71,7 +73,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
             roundTrackView.drawRoundTrack(roundTrackWrapper);
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 
@@ -173,7 +175,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
             roundTrackView.drawRoundTrack(roundTrack);
             copyRoundTrackViews.forEach(trackView -> trackView.drawRoundTrack(roundTrack));
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             showCrashErrorMessage("errore di connessione");
         }
     }

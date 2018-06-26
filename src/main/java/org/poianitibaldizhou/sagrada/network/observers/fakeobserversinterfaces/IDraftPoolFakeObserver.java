@@ -2,7 +2,6 @@ package org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces;
 
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
-import java.io.IOException;
 import java.util.List;
 
 public interface IDraftPoolFakeObserver {

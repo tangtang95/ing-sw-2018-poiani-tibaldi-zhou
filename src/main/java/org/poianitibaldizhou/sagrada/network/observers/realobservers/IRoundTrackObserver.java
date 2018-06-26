@@ -1,10 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.observers.realobservers;
 
-import org.poianitibaldizhou.sagrada.game.model.board.Dice;
-
 import java.io.IOException;
 import java.rmi.Remote;
-import java.util.List;
 
 public interface IRoundTrackObserver extends Remote {
 

@@ -2,8 +2,6 @@ package org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces;
 
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 
-import java.io.IOException;
-
 public interface IPlayerFakeObserver {
 
     /**

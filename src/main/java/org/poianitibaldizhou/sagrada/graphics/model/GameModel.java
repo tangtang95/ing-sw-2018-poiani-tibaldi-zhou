@@ -1,7 +1,6 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
-import org.poianitibaldizhou.sagrada.graphics.view.listener.TimeoutListener;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.*;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
@@ -460,8 +459,8 @@ public class GameModel {
         }catch (ParseException ex){
             Logger.getAnonymousLogger().log(Level.SEVERE, ex.toString());
         }
-        int minute = cal.get(Calendar.MINUTE);
-        int second = cal.get(Calendar.SECOND);
+        long minute = cal.get(Calendar.MINUTE);
+        long second = cal.get(Calendar.SECOND);
         return  (minute*60 + second)*1000;
     }
 }

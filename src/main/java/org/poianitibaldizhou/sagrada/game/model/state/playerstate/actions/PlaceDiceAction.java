@@ -4,7 +4,6 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState;
 
-import java.rmi.RemoteException;
 import java.util.Objects;
 
 public class PlaceDiceAction implements IActionCommand{

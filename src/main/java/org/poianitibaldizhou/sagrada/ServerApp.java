@@ -14,8 +14,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ServerApp {
-    private static Registry registry;
-
     public static final int SERVER_SOCKET_PORT = 9090;
     public static final int SERVER_RMI_PORT = 1099;
 
@@ -48,7 +46,7 @@ public class ServerApp {
             }
         }).start();
 
-        registry = LocateRegistry.getRegistry(SERVER_RMI_PORT);
+        Registry registry = LocateRegistry.getRegistry(SERVER_RMI_PORT);
         registry.rebind("lobbycontroller", controllerManager.getLobbyController());
         registry.rebind("gamecontroller", controllerManager.getGameController());
     }

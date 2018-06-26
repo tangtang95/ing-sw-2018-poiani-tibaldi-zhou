@@ -4,15 +4,8 @@ import javafx.animation.FadeTransition;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
-import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
-
-import java.util.Map;
 
 public abstract class GraphicsController {
 

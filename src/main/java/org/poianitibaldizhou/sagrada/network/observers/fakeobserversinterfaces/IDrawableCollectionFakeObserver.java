@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces;
 
-import java.io.IOException;
-import java.rmi.Remote;
 import java.util.List;
 
 public interface IDrawableCollectionFakeObserver<T> {

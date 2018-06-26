@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.view;
 
-import edu.emory.mathcs.backport.java.util.concurrent.TimeoutException;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyScreen;
@@ -14,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.RemoteException;
 import java.util.Objects;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Select game mode menu.

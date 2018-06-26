@@ -2,7 +2,7 @@ package org.poianitibaldizhou.sagrada.exception;
 
 public class RuleViolationException extends Exception {
 
-    private RuleViolationType violationType;
+    private final RuleViolationType violationType;
 
     public RuleViolationException(RuleViolationType violationType){
         this.violationType = violationType;

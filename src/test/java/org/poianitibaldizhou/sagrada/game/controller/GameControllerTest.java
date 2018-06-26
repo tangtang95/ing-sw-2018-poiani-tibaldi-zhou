@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.game.controller;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

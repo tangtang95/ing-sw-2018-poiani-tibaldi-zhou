@@ -16,6 +16,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DraftPoolWrapper;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DraftPoolListener extends AbstractView implements IDraftPoolObserver{
 
@@ -55,7 +57,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
             draftPoolView.drawDraftPool(draftPoolWrapper);
             System.out.println("update draft pool");
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 

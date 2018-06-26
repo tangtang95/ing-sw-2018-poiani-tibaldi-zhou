@@ -4,8 +4,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 
 public class ExecutionCommandException extends Exception {
 
-    private Exception innerException;
-    private CommandFlow error;
+    private final CommandFlow error;
 
     public ExecutionCommandException(CommandFlow error){
         this.error = error;

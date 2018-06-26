@@ -251,7 +251,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 controller.initReconnectMultiPlayerGame(reconnectUsernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             } catch (NetworkException e) {
                 AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
@@ -282,7 +282,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 controller.initLobbyModel(usernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             } catch (NetworkException e) {
                 AlertBox.displayBox("Errore del server", e.getInnerException().getMessage());
@@ -316,7 +316,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 controller.initSinglePlayerGame(singlePlayerUsernameTextField.getText(), difficulty, connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
-                e.printStackTrace();
+                Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
             } catch (NetworkException e) {
                 AlertBox.displayBox("Errore di connessione", "Non è possibile collegarsi al server");

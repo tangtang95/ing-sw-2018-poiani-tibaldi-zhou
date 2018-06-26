@@ -3,13 +3,13 @@ package org.poianitibaldizhou.sagrada.graphics.utils;
 public enum Difficulty {
     VERY_EASY(5), EASY(4), MEDIUM(3), HARD(2), HELL(1);
 
-    private final int difficulty;
+    private final int difficultyValue;
 
     Difficulty(int difficulty) {
-        this.difficulty = difficulty;
+        this.difficultyValue = difficulty;
     }
 
-    public int getDifficulty() {
-        return difficulty;
+    public int getDifficultyValue() {
+        return difficultyValue;
     }
 }

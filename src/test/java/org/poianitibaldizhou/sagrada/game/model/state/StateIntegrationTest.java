@@ -66,7 +66,7 @@ public class StateIntegrationTest {
         assertTrue(singleGame.getToolCards() != null);
         assertEquals("Wrong number of publicObjectiveCards", 2,
                 singleGame.getPublicObjectiveCards().size());
-        assertEquals("Wrong number of ToolCards", singleGame.getDifficulty(),
+        assertEquals("Wrong number of ToolCards", singleGame.getDifficultyValue(),
                 singleGame.getToolCards().size());
         for (PublicObjectiveCard poc : singleGame.getPublicObjectiveCards()) {
             assertTrue(poc != null);

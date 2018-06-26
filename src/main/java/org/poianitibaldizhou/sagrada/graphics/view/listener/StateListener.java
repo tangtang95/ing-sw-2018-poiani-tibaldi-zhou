@@ -353,7 +353,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             showCrashErrorMessage("Errore di connessione");
             return;
         }
@@ -366,7 +366,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             millisTimeout = controller.getMillisTimeout();
         } catch (IOException e) {
             showCrashErrorMessage("Errore di connessione");
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
         long endRequestTime = System.currentTimeMillis();
         return millisTimeout - (endRequestTime - requestTime);
@@ -425,7 +425,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             drawRadioButtons(toggleGroup, toolCardViews);
             continueButton.setOnAction(event -> onUseCardContinueButtonPressed(event, toggleGroup));
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 
@@ -449,6 +449,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             toggleGroup.getToggles().forEach(toggle -> ((RadioButton) toggle).setDisable(true));
             ((Button) actionEvent.getSource()).setDisable(true);
         } catch (IOException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
         }
     }
@@ -457,7 +458,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         try {
             controller.endTurn();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             showCrashErrorMessage("Errore di connessione");
         }
     }
@@ -466,7 +467,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         try {
             controller.quitGame();
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             showCrashErrorMessage("Errore di connessione");
         }
     }

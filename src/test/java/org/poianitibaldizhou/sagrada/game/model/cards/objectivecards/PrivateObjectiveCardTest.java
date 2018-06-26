@@ -4,21 +4,16 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import org.junit.*;
 import org.junit.experimental.theories.DataPoint;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.game.model.*;
+import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
 
-import java.io.IOException;
 import java.util.Objects;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 public class PrivateObjectiveCardTest {
 
@@ -170,13 +165,4 @@ public class PrivateObjectiveCardTest {
             e.printStackTrace();
         }
     }
-
-    @Test(expected = Exception.class)
-    public void testToObjectObserver() {
-        Dice dice = new Dice(2, Color.PURPLE);
-        JSONObject jsonObject = dice.toJSON();
-
-        PrivateObjectiveCard.toObject(jsonObject);
-    }
-    
 }

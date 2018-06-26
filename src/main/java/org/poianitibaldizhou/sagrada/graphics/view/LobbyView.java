@@ -181,7 +181,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
             long delayTime = System.currentTimeMillis() - currentTime;
             controller.onTimeoutSet(serverTimeout*1000 - delayTime);
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 

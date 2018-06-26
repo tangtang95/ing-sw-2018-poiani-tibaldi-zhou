@@ -92,7 +92,7 @@ public class ToolCardLanguageParserTest {
             commands = toolCardLanguageParser.parseToolCard(command);
             fail("Exception expected");
         } catch (IllegalArgumentException e) {
-            assertEquals(commands, null);
+            assertEquals(null, commands);
         }
     }
 
