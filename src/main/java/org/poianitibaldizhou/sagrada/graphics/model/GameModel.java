@@ -200,7 +200,7 @@ public class GameModel {
     public void endTurn() throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         connectionManager.getGameController().chooseAction(request);
     }
 
@@ -241,7 +241,7 @@ public class GameModel {
     public void placeDice(DiceWrapper dice, PositionWrapper positionWrapper) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String changeActionRequest = builder.createTokenMessage(token).createGameNameMessage(gameName)
-                .createActionMessage(new PlaceDiceStateWrapper()).buildMessage();
+                .createActionMessage(new PlaceDiceActionWrapper()).buildMessage();
         connectionManager.getGameController().chooseAction(changeActionRequest);
         String placeDiceRequest = builder.createTokenMessage(token).createGameNameMessage(gameName)
                 .createDiceMessage(dice).createPositionMessage(positionWrapper).buildMessage();
@@ -306,7 +306,7 @@ public class GameModel {
     public void useToolCard(ToolCardWrapper toolCardWrapper, IToolCardExecutorObserver executorObserver) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         String changeActionRequest = builder.createTokenMessage(token).createGameNameMessage(gameName)
-                .createActionMessage(new UseToolCardStateWrapper()).buildMessage();
+                .createActionMessage(new UseToolCardActionWrapper()).buildMessage();
         connectionManager.getGameController().chooseAction(changeActionRequest);
         String useToolCardRequest = builder.createTokenMessage(token).createGameNameMessage(gameName)
                 .createToolCardMessage(toolCardWrapper).buildMessage();

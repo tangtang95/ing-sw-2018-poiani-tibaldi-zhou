@@ -311,7 +311,7 @@ public abstract class GameModeStrategy implements IScreen{
             PositionWrapper position = selectPosition();
 
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
-                    createTokenMessage(token).createActionMessage(new PlaceDiceStateWrapper()).buildMessage()
+                    createTokenMessage(token).createActionMessage(new PlaceDiceActionWrapper()).buildMessage()
             );
             connectionManager.getGameController().placeDice(clientCreateMessage.createGameNameMessage(gameName).
                     createTokenMessage(token).createDiceMessage(draftPool.getDice(diceNumber)).
@@ -339,7 +339,7 @@ public abstract class GameModeStrategy implements IScreen{
             ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readNumber(toolCardList.size()));
 
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
-                    createTokenMessage(token).createActionMessage(new UseToolCardStateWrapper()).buildMessage()
+                    createTokenMessage(token).createActionMessage(new UseToolCardActionWrapper()).buildMessage()
             );
             connectionManager.getGameController().useToolCard(clientCreateMessage.createGameNameMessage(gameName).
                             createTokenMessage(token).createToolCardMessage(toolCardWrapper).buildMessage(),
@@ -359,7 +359,7 @@ public abstract class GameModeStrategy implements IScreen{
      void endTurn() {
         try {
             connectionManager.getGameController().chooseAction(clientCreateMessage.createGameNameMessage(gameName).
-                    createTokenMessage(token).createActionMessage(new EndTurnStateWrapper()).buildMessage()
+                    createTokenMessage(token).createActionMessage(new EndTurnActionWrapper()).buildMessage()
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +

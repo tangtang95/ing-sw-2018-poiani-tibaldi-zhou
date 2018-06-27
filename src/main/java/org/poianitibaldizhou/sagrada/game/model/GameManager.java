@@ -100,7 +100,7 @@ public class GameManager {
         String gameName;
 
         // Try login with this username
-        if (managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(NetworkUtility.encrypt(userName))) {
+        if (managerMediator.isAlreadyWaitingInALobby(userName) || players.contains(NetworkUtility.encryptUsername(userName))) {
             throw new IOException();
         }
 
@@ -109,7 +109,7 @@ public class GameManager {
             gameName = UUID.randomUUID().toString();
         } while (gameMap.containsKey(gameName));
 
-        String token = NetworkUtility.encrypt(userName);
+        String token = NetworkUtility.encryptUsername(userName);
 
         SinglePlayerGame singlePlayer = new SinglePlayerGame(gameName, new User(userName, token), difficulty,
                 new TerminationGameManager(gameName, this));

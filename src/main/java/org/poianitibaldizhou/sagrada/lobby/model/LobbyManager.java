@@ -182,7 +182,7 @@ public class LobbyManager {
         }
         if (managerMediator.isAlreadyPlayingAGame(username))
             throw new IllegalArgumentException(ServerMessage.USER_HAS_ALREADY_LOGGED + username);
-        String token = NetworkUtility.encrypt(username);
+        String token = NetworkUtility.encryptUsername(username);
         User user = new User(username, token);
         users.add(user);
         return token;

@@ -6,11 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="clientCLI" />
         <module name="sagrada" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="clientCLI" target="1.8" />
       <module name="sagrada" target="1.8" />
+      <module name="server" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

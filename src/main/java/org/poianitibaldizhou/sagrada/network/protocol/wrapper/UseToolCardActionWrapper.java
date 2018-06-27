@@ -5,11 +5,11 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 /**
- * Copy class of PlaceDiceState in the game model.
- * Place dice action.
+ * Copy class of UseToolCardState in the game model.
+ * Use toolCard action.
  */
 @Immutable
-public final class PlaceDiceStateWrapper implements IActionWrapper {
+public final class UseToolCardActionWrapper implements IActionWrapper{
 
     /**
      * Convert a action in a JSONObject.
@@ -20,7 +20,7 @@ public final class PlaceDiceStateWrapper implements IActionWrapper {
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
-        main.put(SharedConstants.TYPE, SharedConstants.PLACE_DICE_ACTION);
+        main.put(SharedConstants.TYPE, SharedConstants.USE_TOOL_CARD_ACTION);
         main.put(SharedConstants.BODY,new JSONObject());
         return main;
     }
@@ -28,7 +28,7 @@ public final class PlaceDiceStateWrapper implements IActionWrapper {
     /**
      * @return null.
      */
-    public static PlaceDiceStateWrapper toObject() {
+    public static UseToolCardActionWrapper toObject() {
         return null;
     }
 }

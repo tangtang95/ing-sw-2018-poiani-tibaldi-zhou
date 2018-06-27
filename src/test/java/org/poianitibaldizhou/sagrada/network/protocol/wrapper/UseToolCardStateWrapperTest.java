@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 public class UseToolCardStateWrapperTest {
 
     @DataPoint
-    public static UseToolCardStateWrapper useToolCardStateWrapper = new UseToolCardStateWrapper();
+    public static UseToolCardActionWrapper useToolCardStateWrapper = new UseToolCardActionWrapper();
 
     @Test
     public void toJsonTest() {
@@ -18,7 +18,7 @@ public class UseToolCardStateWrapperTest {
 
     @Test
     public void toObjectTest() {
-        assertEquals(null, UseToolCardStateWrapper.toObject());
+        assertEquals(null, UseToolCardActionWrapper.toObject());
     }
 
 }

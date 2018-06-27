@@ -23,7 +23,7 @@ public class UserTest {
 
     @Before
     public void setUp() throws Exception {
-        user = new User("test", NetworkUtility.encrypt("test"));
+        user = new User("test", NetworkUtility.encryptUsername("test"));
     }
 
     @Test
@@ -39,20 +39,20 @@ public class UserTest {
 
     @Test
     public void equalsTest() {
-        User user = new User("name", NetworkUtility.encrypt("name"));
+        User user = new User("name", NetworkUtility.encryptUsername("name"));
 
-        assertEquals(user, new User("name", NetworkUtility.encrypt("name")));
+        assertEquals(user, new User("name", NetworkUtility.encryptUsername("name")));
         assertNotEquals(user, new User("name", "name"));
-        assertNotEquals(user, new User("notEqualsName", NetworkUtility.encrypt("name")));
+        assertNotEquals(user, new User("notEqualsName", NetworkUtility.encryptUsername("name")));
     }
 
     @Test
     public void testHashCode() {
-        User user = new User("name", NetworkUtility.encrypt("name"));
+        User user = new User("name", NetworkUtility.encryptUsername("name"));
 
-        assertEquals(user.hashCode(), new User("name", NetworkUtility.encrypt("name")).hashCode());
+        assertEquals(user.hashCode(), new User("name", NetworkUtility.encryptUsername("name")).hashCode());
         assertNotEquals(user.hashCode(), new User("name", "name").hashCode());
-        assertNotEquals(user.hashCode(), new User("notEqualsName", NetworkUtility.encrypt("name")).hashCode());
+        assertNotEquals(user.hashCode(), new User("notEqualsName", NetworkUtility.encryptUsername("name")).hashCode());
     }
 
     @Test

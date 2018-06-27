@@ -115,7 +115,7 @@ public class ClientCreateMessageTest {
 
     @Test
     public void createActionMessageTest() {
-        IActionWrapper iActionWrapper = new UseToolCardStateWrapper();
+        IActionWrapper iActionWrapper = new UseToolCardActionWrapper();
         String message = "{\"actionKey\":{\"type\":\"useToolCardAction\",\"body\":{}}}";
         assertEquals(message,clientCreateMessage.createActionMessage(iActionWrapper).buildMessage());
     }

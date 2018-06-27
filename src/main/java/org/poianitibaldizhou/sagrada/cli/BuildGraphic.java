@@ -274,7 +274,7 @@ public class BuildGraphic {
             buildMessage("----------------------------ROUND TRACK---------------------------");
             for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
                 buildMessage("Round " + "[" + (i + 1) + "]");
-                buildGraphicDices(roundTrack.getDicesPerRound(i));
+                buildGraphicDices(roundTrack.getDicesForRound(i));
             }
         }
         return this;

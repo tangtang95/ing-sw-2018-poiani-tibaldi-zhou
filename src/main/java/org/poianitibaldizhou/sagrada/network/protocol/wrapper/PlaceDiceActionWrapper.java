@@ -5,11 +5,12 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 /**
- * Copy class of EndTurnState in the game model.
- * End turn action.
+ * Copy class of PlaceDiceState in the game model.
+ * Place dice action.
  */
 @Immutable
-public final class EndTurnStateWrapper implements IActionWrapper {
+public final class PlaceDiceActionWrapper implements IActionWrapper {
+
     /**
      * Convert a action in a JSONObject.
      *
@@ -19,7 +20,7 @@ public final class EndTurnStateWrapper implements IActionWrapper {
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
-        main.put(SharedConstants.TYPE, SharedConstants.END_TURN_ACTION);
+        main.put(SharedConstants.TYPE, SharedConstants.PLACE_DICE_ACTION);
         main.put(SharedConstants.BODY,new JSONObject());
         return main;
     }
@@ -27,7 +28,7 @@ public final class EndTurnStateWrapper implements IActionWrapper {
     /**
      * @return null.
      */
-    public static EndTurnStateWrapper toObject() {
+    public static PlaceDiceActionWrapper toObject() {
         return null;
     }
 }

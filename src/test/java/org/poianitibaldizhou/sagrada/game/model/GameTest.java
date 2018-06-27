@@ -72,9 +72,9 @@ public class GameTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         userList = new ArrayList<>();
-        userList.add(new User("user1", NetworkUtility.encrypt("user1")));
-        userList.add(new User("user2", NetworkUtility.encrypt("user2")));
-        userList.add(new User("user3", NetworkUtility.encrypt("user3")));
+        userList.add(new User("user1", NetworkUtility.encryptUsername("user1")));
+        userList.add(new User("user2", NetworkUtility.encryptUsername("user2")));
+        userList.add(new User("user3", NetworkUtility.encryptUsername("user3")));
 
         stateFakeObserverList = new ArrayList<>();
         stateFakeObserverList.add(stateFakeObserver1);
@@ -88,7 +88,7 @@ public class GameTest {
 
         multiPlayerGame = new MultiPlayerGame("Multi player game", userList, terminationGameManager);
 
-        user = new User("user", NetworkUtility.encrypt("user"));
+        user = new User("user", NetworkUtility.encryptUsername("user"));
 
         privateObjectiveCards = new ArrayList<>();
         privateObjectiveCards.add(new PrivateObjectiveCard("private1", "descr1", Color.BLUE));

@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
 import org.poianitibaldizhou.sagrada.IView;
+import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
@@ -59,7 +60,7 @@ public class LobbyModel {
      * @param observer the lobby observer of the client
      * @throws IOException if there are network errors or the username is already in use
      */
-    public void login(IView view, ILobbyObserver observer) throws IOException {
+    public void login(ILobbyView view, ILobbyObserver observer) throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();
 

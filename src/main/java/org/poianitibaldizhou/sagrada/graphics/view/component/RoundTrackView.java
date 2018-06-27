@@ -21,8 +21,6 @@ import java.util.Optional;
 public class RoundTrackView extends Pane{
 
     private final ImageView roundTrackImage;
-    private final double roundTrackWidth;
-    private final double roundTrackHeight;
     private final double scale;
 
     private final List<DiceView> diceViewList;
@@ -54,10 +52,8 @@ public class RoundTrackView extends Pane{
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
         roundTrackImage = new ImageView(image);
         roundTrackImage.setPreserveRatio(true);
-        roundTrackWidth = image.getWidth()*scale;
-        roundTrackHeight = image.getHeight()*scale;
-        roundTrackImage.setFitWidth(roundTrackWidth);
-        roundTrackImage.setFitHeight(roundTrackHeight);
+        roundTrackImage.setFitWidth(image.getWidth()*scale);
+        roundTrackImage.setFitHeight(image.getHeight()*scale);
         this.getChildren().add(roundTrackImage);
     }
 
@@ -74,10 +70,8 @@ public class RoundTrackView extends Pane{
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
         roundTrackImage = new ImageView(image);
         roundTrackImage.setPreserveRatio(true);
-        roundTrackWidth = image.getWidth()*scale;
-        roundTrackHeight = image.getHeight()*scale;
-        roundTrackImage.setFitWidth(roundTrackWidth);
-        roundTrackImage.setFitHeight(roundTrackHeight);
+        roundTrackImage.setFitWidth(image.getWidth()*scale);
+        roundTrackImage.setFitHeight(image.getHeight()*scale);
         this.getChildren().add(roundTrackImage);
 
         drawRoundTrack(roundTrack);
@@ -99,7 +93,7 @@ public class RoundTrackView extends Pane{
      * @return a list of dices that are inside the round passed
      */
     public List<DiceWrapper> getDices(int round){
-        return roundTrack.getDicesPerRound(round);
+        return roundTrack.getDicesForRound(round);
     }
 
     /**
@@ -124,10 +118,10 @@ public class RoundTrackView extends Pane{
     private void drawDices(RoundTrackWrapper roundTrack){
 
         for (int i = 0; i < RoundTrackWrapper.NUMBER_OF_TRACK; i++) {
-            Optional<DiceWrapper> diceOptional = roundTrack.getDicesPerRound(i).stream().findFirst();
+            Optional<DiceWrapper> diceOptional = roundTrack.getDicesForRound(i).stream().findFirst();
             final int round = i;
-            diceOptional.ifPresent(dice -> drawDice(dice, round, roundTrackWidth,
-                    roundTrackHeight, roundTrack.getDicesPerRound(round).size()));
+            diceOptional.ifPresent(dice -> drawDice(dice, round, roundTrackImage.getFitWidth(),
+                    roundTrackImage.getFitHeight(), roundTrack.getDicesForRound(round).size()));
         }
     }
 

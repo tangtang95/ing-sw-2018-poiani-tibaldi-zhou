@@ -32,7 +32,7 @@ public class ProxyObserverInvocationHandler implements InvocationHandler {
         return null;
     }
 
-    private Object equalsMethod(Object me, Object other) {
+    private boolean equalsMethod(Object me, Object other) {
         if(other == null)
             return false;
         if(other.getClass() == me.getClass())

@@ -1,8 +1,8 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
-import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
@@ -51,7 +51,7 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * {@inheritDoc}
      */
     @Override
-    public synchronized String login(String message, IView view) throws IOException {
+    public synchronized String login(String message, ILobbyView view) throws IOException {
         ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         String username = networkGetItem.getUserName(message);
         String token;
