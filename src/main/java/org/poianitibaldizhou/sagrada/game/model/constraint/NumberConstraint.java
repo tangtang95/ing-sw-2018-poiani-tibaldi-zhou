@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.constraint;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +22,7 @@ public class NumberConstraint implements IConstraint {
      */
     public NumberConstraint(int number) {
         if (number < Dice.MIN_VALUE || number > Dice.MAX_VALUE)
-            throw new IllegalArgumentException("Invalid number: number must be in range [" +
-                    Dice.MIN_VALUE + "," + Dice.MAX_VALUE + "]");
+            throw new IllegalArgumentException(String.format(ServerMessage.INVALID_DICE_NUMBER,Dice.MIN_VALUE,Dice.MAX_VALUE));
         this.number = number;
     }
 

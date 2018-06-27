@@ -55,7 +55,6 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
         try {
             DraftPoolWrapper draftPoolWrapper = controller.getDraftPool();
             draftPoolView.drawDraftPool(draftPoolWrapper);
-            System.out.println("update draft pool");
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
@@ -76,9 +75,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
     public void onDiceAdd(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         DiceWrapper dice = parser.getDice(message);
-        Platform.runLater(() -> {
-            draftPoolView.addDiceToDraftPool(dice);
-        });
+        Platform.runLater(() -> draftPoolView.addDiceToDraftPool(dice));
     }
 
     /**
@@ -88,9 +85,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
     public void onDiceRemove(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         DiceWrapper dice = parser.getDice(message);
-        Platform.runLater(() -> {
-            draftPoolView.removeDiceFromDraftPool(dice);
-        });
+        Platform.runLater(() -> draftPoolView.removeDiceFromDraftPool(dice));
     }
 
     /**
@@ -100,9 +95,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
     public void onDicesAdd(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         List<DiceWrapper> dices = parser.getDiceList(message);
-        Platform.runLater(() -> {
-            dices.forEach(dice -> draftPoolView.removeDiceFromDraftPool(dice));
-        });
+        Platform.runLater(() -> dices.forEach(draftPoolView::removeDiceFromDraftPool));
     }
 
     /**
@@ -112,9 +105,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
     public void onDraftPoolReroll(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         List<DiceWrapper> dices = parser.getDiceList(message);
-        Platform.runLater(() -> {
-            draftPoolView.reRollDraftPool(dices);
-        });
+        Platform.runLater(() -> draftPoolView.reRollDraftPool(dices));
     }
 
     /**
@@ -122,9 +113,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
      */
     @Override
     public void onDraftPoolClear() throws IOException {
-        Platform.runLater(() -> {
-            draftPoolView.clearDraftPool();
-        });
+        Platform.runLater(draftPoolView::clearDraftPool);
     }
 
     @Override

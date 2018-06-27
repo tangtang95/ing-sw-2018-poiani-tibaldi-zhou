@@ -129,7 +129,7 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
         JSONParser jsonParser = new JSONParser();
         JSONArray jsonArray;
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/privateObjectiveCards.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(GameInjector.FILE_PATH_3));
             for (Object object : Objects.requireNonNull(jsonArray)) {
                 JSONObject privateObjectiveCard = (JSONObject) object;
                 if (privateObjectiveCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject
@@ -137,7 +137,7 @@ public class PrivateObjectiveCard extends Card implements IScore, JSONable {
                     return new PrivateObjectiveCard(
                             (String) privateObjectiveCard.get(GameInjector.CARD_NAME),
                             (String) privateObjectiveCard.get(GameInjector.CARD_DESCRIPTION),
-                            Color.valueOf((String) privateObjectiveCard.get("cardColor")));
+                            Color.valueOf((String) privateObjectiveCard.get(GameInjector.CARD_COLOR)));
             }
         } catch (IOException | ParseException | NullPointerException e) {
             return null;

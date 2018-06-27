@@ -1,5 +1,7 @@
 package org.poianitibaldizhou.sagrada.network.socket.messages;
 
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
+
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -12,7 +14,7 @@ import java.util.logging.Logger;
 
 public class Request implements Serializable {
     private final String methodName;
-    private final Object[] methodParameters;
+    private final transient Object[] methodParameters;
 
     /**
      * Constructor.
@@ -52,16 +54,16 @@ public class Request implements Serializable {
      */
     public Object invokeMethod(Object target) throws IOException {
         Method[] methods = target.getClass().getMethods();
-        for (int i = 0; i < methods.length; i++) {
-            if (methods[i].getName().equals(methodName)) {
+        for (Method method : methods) {
+            if (method.getName().equals(methodName)) {
                 try {
-                    return methods[i].invoke(target, methodParameters);
+                    return method.invoke(target, methodParameters);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
                 }
             }
         }
-        throw new IOException("invocation failed, cannot find method from all the target's method");
+        throw new IOException(ServerMessage.INVOCATION_ERROR);
     }
 
     /**

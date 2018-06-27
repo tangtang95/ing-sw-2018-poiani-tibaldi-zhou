@@ -11,6 +11,7 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PlayerScoreWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.net.URL;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class ScorePlayerGraphicsController extends GraphicsController implements
             itemRoot.getChildren().add(item);
             tableView.setRoot(itemRoot);
         });
-        winnerLabel.setText(String.format("Il vincitore è %s", winner.getUsername()));
+        winnerLabel.setText(String.format(ClientMessage.THE_WINNER_IS, winner.getUsername()));
     }
 
 

@@ -15,6 +15,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IPlayerFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.ISchemaCardFakeObserver;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.*;
 
@@ -172,7 +173,7 @@ public abstract class Player implements IVictoryPoints, JSONable {
      */
     public void setPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
         if (!containsPrivateObjectiveCard(privateObjectiveCard))
-            throw new IllegalArgumentException("PrivateObjectiveCard doesn't exist in the player");
+            throw new IllegalArgumentException(ServerMessage.PLAYER_ILLEGAL_ARGUMENT);
         for (int i = 0; i < privateObjectiveCards.size(); i++) {
             if (privateObjectiveCards.get(i).equals(privateObjectiveCard))
                 indexOfPrivateObjectiveCard = i;
@@ -223,8 +224,8 @@ public abstract class Player implements IVictoryPoints, JSONable {
     }
 
     private boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
-        for (int i = 0; i < privateObjectiveCards.size(); i++) {
-            if (privateObjectiveCards.get(i).equals(privateObjectiveCard))
+        for (PrivateObjectiveCard privateObjectiveCard1 : privateObjectiveCards) {
+            if (privateObjectiveCard1.equals(privateObjectiveCard))
                 return true;
         }
         return false;

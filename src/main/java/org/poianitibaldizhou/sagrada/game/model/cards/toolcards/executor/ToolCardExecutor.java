@@ -14,6 +14,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.IComman
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +130,7 @@ public class ToolCardExecutor extends Thread{
 
     private void runCommands() {
         if(coreCommands == null || preCommands == null){
-            throw new IllegalStateException("SEVERE ERROR: Need to set the commands before starting the thread");
+            throw new IllegalStateException(ServerMessage.TOOL_CARD_EXECUTOR_ILLEGAL_STATE);
         }
         try {
             setTemporaryObjects();
@@ -139,7 +140,7 @@ public class ToolCardExecutor extends Thread{
             invokeCommands(coreCommands);
             updateObjects();
         } catch (InterruptedException e) {
-            Logger.getAnonymousLogger().log(Level.INFO, "Invocation of commands interrupted");
+            Logger.getAnonymousLogger().log(Level.INFO, ServerMessage.TOOL_CARD_EXECUTOR_INVALID_COMMAND);
             Thread.currentThread().interrupt();
         } finally {
             setIsExecutingCommands(false);
@@ -307,7 +308,7 @@ public class ToolCardExecutor extends Thread{
 
     public void addSkipTurnPlayer(Player player, int turn) {
         if (turn < TurnState.FIRST_TURN || turn > TurnState.SECOND_TURN)
-            throw new IllegalArgumentException("Turn has to be 1 or 2");
+            throw new IllegalArgumentException(ServerMessage.TURN_ILLEGAL_ARGUMENT);
         skipTurnPlayers.put(player, turn);
     }
 }

@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.network.strategycontroller;
 
 import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -28,9 +29,9 @@ public class RMIStrategyController implements StrategyController{
             gameController = (IGameController) LocateRegistry.getRegistry(ipAddress, port)
                     .lookup("gamecontroller");
         } catch (RemoteException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot find RMI registry");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ServerMessage.NOT_FIND_RMI_REGISTRY);
         } catch (NotBoundException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot find RMI controller");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ServerMessage.NOT_FIND_RMI_CONTROLLER);
         }
     }
 

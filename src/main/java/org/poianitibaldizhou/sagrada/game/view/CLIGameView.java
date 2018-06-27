@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCa
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -90,7 +91,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                 );
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                        ClientMessage.NETWORK_ERROR, Level.ERROR);
             }
         });
 
@@ -103,7 +104,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     public void onPublicObjectiveCardsDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
-                buildMessage("Public objective cards valid for this game: ").
+                buildMessage(ClientMessage.PUBLIC_OBJECTIVE_CARD_VALID).
                 buildGraphicPublicObjectiveCards(clientGetMessage.getPublicObjectiveCards(jString)).toString(),
                 Level.STANDARD);
     }
@@ -116,7 +117,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
         BuildGraphic buildGraphic = new BuildGraphic();
         List<ToolCardWrapper> toolCards = clientGetMessage.getToolCards(jString);
         PrinterManager.consolePrint(buildGraphic.
-                        buildMessage("Tool cards valid for this game: ").
+                        buildMessage(ClientMessage.TOOL_CARD_VALID).
                         buildGraphicToolCards(toolCards).toString(),
                 Level.STANDARD);
         for (ToolCardWrapper t : toolCards)
@@ -141,7 +142,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
             List<PrivateObjectiveCardWrapper> privateObjectiveCards = clientGetMessage.getPrivateObjectiveCards(message);
 
             buildGraphic.buildGraphicPrivateObjectiveCards(privateObjectiveCards);
-            buildGraphic.buildMessage("Choose a private objective card:");
+            buildGraphic.buildMessage(ClientMessage.CHOOSE_PRIVATE_OBJECTIVE_CARD);
             PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 
 
@@ -150,7 +151,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                             createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION,Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION,Level.INFORMATION);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -163,7 +164,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
     public void onPrivateObjectiveCardDraw(String jString) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.
-                        buildMessage("Private objective cards valid for this game: ").
+                        buildMessage(ClientMessage.PRIVATE_OBJECTIVE_CARD_VALID).
                         buildGraphicPrivateObjectiveCards(clientGetMessage.getPrivateObjectiveCards(jString)).toString(),
                 Level.STANDARD);
     }
@@ -182,7 +183,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
 
         for (int i = 0; i < schemaCards.size(); i++)
             buildGraphic.buildMessage("                   [" + (i + 1) + "]").buildGraphicSchemaCard(schemaCards.get(i));
-        buildGraphic.buildMessage("Choose a schema card:");
+        buildGraphic.buildMessage(ClientMessage.CHOOSE_SCHEMA_CARD);
         PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
 
         try {
@@ -191,7 +192,7 @@ public class CLIGameView extends UnicastRemoteObject implements IGameView {
                             createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION,Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION,Level.INFORMATION);
         }
     }
 

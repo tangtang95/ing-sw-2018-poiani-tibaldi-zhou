@@ -13,6 +13,7 @@ import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -218,6 +219,6 @@ public class MultiPlayerGame extends Game{
                 return nextPlayer;
             nextPlayer = getNextPlayer(currentRoundPlayer, Direction.COUNTER_CLOCKWISE);
         }
-        throw new IllegalStateException("SEVERE ERROR: No winners founded");
+        throw new IllegalStateException(ServerMessage.NO_WINNER_ERROR);
     }
 }

@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PublicObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.List;
 import java.util.logging.Level;
@@ -63,7 +64,7 @@ public class SetupGameState extends IStateGame {
             try {
                 game.addToolCard(toolCards.draw());
             } catch (EmptyCollectionException e) {
-                LOGGER.log(Level.SEVERE, "Error in injectToolCards for empty collection", e);
+                LOGGER.log(Level.SEVERE, ServerMessage.EMPTY_COLLECTION_ERROR, e);
             }
         }
     }
@@ -78,7 +79,7 @@ public class SetupGameState extends IStateGame {
             try {
                 game.addPublicObjectiveCard(publicObjectiveCards.draw());
             } catch (EmptyCollectionException e) {
-                LOGGER.log(Level.SEVERE, "Error in injectPublicObjectiveCards for empty collection", e);
+                LOGGER.log(Level.SEVERE, ServerMessage.EMPTY_COLLECTION_ERROR, e);
             }
         }
     }
@@ -97,7 +98,7 @@ public class SetupGameState extends IStateGame {
         try {
             player = drawablePlayers.draw();
         } catch (EmptyCollectionException e) {
-            LOGGER.log(Level.SEVERE, "Error in getRandomStartPlayer for empty collection", e);
+            LOGGER.log(Level.SEVERE, ServerMessage.EMPTY_COLLECTION_ERROR, e);
         }
         return player;
     }

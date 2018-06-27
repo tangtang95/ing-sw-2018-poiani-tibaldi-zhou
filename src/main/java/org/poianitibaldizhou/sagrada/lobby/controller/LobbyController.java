@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObser
 import org.poianitibaldizhou.sagrada.network.LobbyNetworkManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -60,14 +61,14 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         try {
             token = lobbyManager.login(username);
         } catch (IllegalArgumentException e) {
-            view.err("An user with this username already exists");
+            view.err(ServerMessage.USER_ALREADY_EXIST);
             return serverCreateMessage.createTokenMessage("").buildMessage();
         }
 
         lobbyNetworkManager.putView(token, view);
 
         try {
-            view.ack("You are now logged as: " + username);
+            view.ack(ServerMessage.YUO_ARE_LOGGED + username);
         } catch (IOException e) {
             return serverCreateMessage.reconnectErrorMessage();
         }
@@ -82,14 +83,14 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         final String token = networkGetItem.getToken(message);
         final String username = networkGetItem.getUserName(message);
 
-        if (!authorize(token, username))
+        if (isAuthorize(token, username))
             return;
 
         lobbyNetworkManager.clearObserver();
 
         lobbyManager.userLeaveLobby(lobbyManager.getUserByToken(token));
 
-        lobbyNetworkManager.getViewByToken(token).ack("Lobby left");
+        lobbyNetworkManager.getViewByToken(token).ack(ServerMessage.LOBBY_LEFT);
         lobbyNetworkManager.removeView(token);
     }
 
@@ -101,15 +102,15 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
         final String token = networkGetItem.getToken(message);
         final String username = networkGetItem.getUserName(message);
 
-        if (!authorize(token, username)) {
-            throw new IOException("Authorization failed");
+        if (isAuthorize(token, username)) {
+            throw new IOException(ServerMessage.AUTHORIZATION_FAILED);
         }
 
         lobbyNetworkManager.clearObserver();
 
         lobbyManager.userJoinLobby(lobbyObserver, lobbyManager.getUserByToken(token));
         try {
-            lobbyNetworkManager.getViewByToken(token).ack("You're now in the lobby");
+            lobbyNetworkManager.getViewByToken(token).ack(ServerMessage.YUO_ARE_IN_LOBBY);
         } catch (IOException e) {
             lobbyManager.getLobbyObserverManager().signalDisconnection(token);
         }
@@ -145,10 +146,10 @@ public class LobbyController extends UnicastRemoteObject implements ILobbyContro
      * @param username user's username
      * @return true if token matches username, false otherwise
      */
-    private boolean authorize(String token, String username) {
+    private boolean isAuthorize(String token, String username) {
         User user;
         user = lobbyManager.getUserByToken(token);
-        return user.getName().equals(username);
+        return !user.getName().equals(username);
     }
 
     /**

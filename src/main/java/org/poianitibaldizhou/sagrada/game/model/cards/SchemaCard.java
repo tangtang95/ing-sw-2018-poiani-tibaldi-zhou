@@ -176,7 +176,7 @@ public class SchemaCard implements JSONable {
      * @return true if the dice can be placed on the point
      */
     @Contract(pure = true)
-    public boolean isDicePositionable(Dice dice, Position position) {
+    private boolean isDicePositionable(Dice dice, Position position) {
         return isDicePositionable(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
 

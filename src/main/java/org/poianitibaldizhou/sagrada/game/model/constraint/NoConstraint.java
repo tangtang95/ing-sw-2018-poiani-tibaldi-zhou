@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class NoConstraint implements IConstraint {
      */
     @Override
     public int getIndexValue() {
-        throw new IllegalStateException("SEVERE ERROR: Cannot be implemented");
+        throw new IllegalStateException(ServerMessage.NO_CONSTRAINT_ILLEGAL_STATE);
     }
 
     /**

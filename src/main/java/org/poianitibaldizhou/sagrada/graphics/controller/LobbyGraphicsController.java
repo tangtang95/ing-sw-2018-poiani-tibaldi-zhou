@@ -17,6 +17,7 @@ import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.graphics.view.LobbyView;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,6 +39,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
     private LobbyModel lobbyModel;
     private LobbyView lobbyView;
 
+    private static final String TITLE_BOX = "Errore di connessione";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,9 +60,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
      */
     public void initLobbyModel(String username, ConnectionManager connectionManager) throws NetworkException {
         lobbyModel = new LobbyModel(username, connectionManager);
-        sceneManager.getPrimaryStage().setOnCloseRequest((event -> {
-            connectionManager.close();
-        }));
+        sceneManager.getPrimaryStage().setOnCloseRequest((event -> connectionManager.close()));
         try {
             lobbyModel.login(lobbyView, lobbyView);
         } catch (IOException e) {
@@ -76,7 +76,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         try {
             users =  lobbyModel.getUsers();
         } catch (IOException e) {
-            AlertBox.displayBox("Errore di connessione", "L'operazione è fallita per problemi di connessione");
+            AlertBox.displayBox(TITLE_BOX, ClientMessage.OPERATION_ERROR);
         }
         return users;
     }
@@ -100,9 +100,9 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
             controller.initMultiPlayerGame(lobbyModel.getToken(), lobbyModel.getUsername(), gameName, lobbyModel.getConnectionManager());
             playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.replaceScene(root));
         } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.LOAD_FXML_ERROR);
         } catch (NetworkException e) {
-            AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
+            AlertBox.displayBox(TITLE_BOX, ClientMessage.CONNECTION_ERROR);
         }
     }
 
@@ -140,7 +140,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         try {
             lobbyModel.leave();
         } catch (IOException e) {
-            AlertBox.displayBox("Errore di connessione", "L'operazione è fallita per problemi di connessione");
+            AlertBox.displayBox(TITLE_BOX, ClientMessage.OPERATION_ERROR);
         }
         playSceneTransition(corePane, event -> sceneManager.popScene());
     }

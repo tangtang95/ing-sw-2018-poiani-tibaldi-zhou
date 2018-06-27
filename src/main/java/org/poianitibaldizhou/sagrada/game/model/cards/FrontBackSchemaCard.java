@@ -47,7 +47,7 @@ public class FrontBackSchemaCard implements JSONable {
         return schemaCards.get(0);
     }
 
-    public SchemaCard getBackSchemaCard() {
+    private SchemaCard getBackSchemaCard() {
         return schemaCards.get(1);
     }
 
@@ -75,10 +75,9 @@ public class FrontBackSchemaCard implements JSONable {
     /**
      * Convert a json string in a FrontBackSchemaCard object.
      *
-     * @param jsonObject a JSONObject that contains a FrontBackSchemaCard.
      * @return a FrontBackSchemaCard object.
      */
-    public static FrontBackSchemaCard toObject(JSONObject jsonObject) {
+    public static FrontBackSchemaCard toObject() {
         /*This method is empty because the client never send a publicObjectiveCard*/
         return null;
     }

@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -113,12 +114,12 @@ public class ConsoleListener {
                     throw new CommandNotFoundException();
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
+                        ClientMessage.ERROR_READING, Level.ERROR);
                 break;
             } catch (NumberFormatException e) {
-                PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.ERROR);
+                PrinterManager.consolePrint(ClientMessage.NOT_A_NUMBER, Level.ERROR);
             } catch (CommandNotFoundException e) {
-                PrinterManager.consolePrint(BuildGraphic.COMMAND_NOT_FOUND, Level.ERROR);
+                PrinterManager.consolePrint(ClientMessage.COMMAND_NOT_FOUND, Level.ERROR);
                 key = 0;
             }
         } while (key < 1);
@@ -182,12 +183,12 @@ public class ConsoleListener {
                     }
                 } catch (IOException e) {
                     PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                            BuildGraphic.ERROR_READING, Level.ERROR);
+                            ClientMessage.ERROR_READING, Level.ERROR);
                     break;
                 } catch (NumberFormatException e) {
-                    PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.ERROR);
+                    PrinterManager.consolePrint(ClientMessage.NOT_A_NUMBER, Level.ERROR);
                 } catch (CommandNotFoundException e) {
-                    PrinterManager.consolePrint(BuildGraphic.COMMAND_NOT_FOUND, Level.ERROR);
+                    PrinterManager.consolePrint(ClientMessage.COMMAND_NOT_FOUND, Level.ERROR);
                 }
             }
         }

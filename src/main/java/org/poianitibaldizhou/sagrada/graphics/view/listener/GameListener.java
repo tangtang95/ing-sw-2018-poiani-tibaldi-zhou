@@ -25,6 +25,7 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCard
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -48,6 +49,9 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     private static final double TOOL_CARD_SHOW_SCALE = 1;
 
     private static final double PADDING = 10;
+
+    private static final String CSS_CLASS1 = "on-notify-pane-card";
+    private static final String CSS_CLASS2 = "on-board-card";
 
     /**
      * Constructor.
@@ -90,9 +94,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     public void err(String err) throws IOException {
         /*NOT IMPORTANT FOR GUI*/
         Logger.getAnonymousLogger().log(Level.INFO, err);
-        Platform.runLater(() -> {
-            showMessage(getActivePane(), err, MessageType.ERROR);
-        });
+        Platform.runLater(() -> showMessage(getActivePane(), err, MessageType.ERROR));
     }
 
     /**
@@ -125,7 +127,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 }
 
             } catch (IOException e) {
-                this.showCrashErrorMessage("Errore di connessione");
+                this.showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             }
         });
     }
@@ -163,7 +165,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                     controller.bindToolCard(listener.getToolCardView().getToolCardWrapper(), listener);
                 }
             } catch (IOException e) {
-                showCrashErrorMessage("Errore di connessione");
+                showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             }
         });
     }
@@ -190,9 +192,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     public void onPrivateObjectiveCardDraw(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         List<PrivateObjectiveCardWrapper> privateObjectiveCards = parser.getPrivateObjectiveCards(message);
-        Platform.runLater(() -> {
-            this.showPrivateObjectiveCards(privateObjectiveCards);
-        });
+        Platform.runLater(() -> this.showPrivateObjectiveCards(privateObjectiveCards));
     }
 
     /**
@@ -203,9 +203,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         ClientGetMessage parser = new ClientGetMessage();
         List<FrontBackSchemaCardWrapper> frontBackSchemaCards = parser.getFrontBackSchemaCards(message);
 
-        Platform.runLater(() -> {
-            this.showFrontBackSchemaCards(frontBackSchemaCards);
-        });
+        Platform.runLater(() -> this.showFrontBackSchemaCards(frontBackSchemaCards));
     }
 
     /**
@@ -281,7 +279,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 playerListenerMap.putIfAbsent(orderedUsers.get(i), playerListener);
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot initialize SchemaCardListener");
-                showCrashErrorMessage("Errore di connessione");
+                showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             }
         }
     }
@@ -305,18 +303,18 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             frontBackSchemaCardViewList.add(frontBackSchemaCardView);
         });
 
-        drawCenteredPanes(notifyPane, frontBackSchemaCardViewList, "on-notify-pane-card");
+        drawCenteredPanes(notifyPane, frontBackSchemaCardViewList, CSS_CLASS1);
         ToggleGroup toggleGroup = new ToggleGroup();
         drawRadioButtons(toggleGroup, frontBackSchemaCardViewList);
         HBox helperBox = showHelperText(notifyPane,
-                "Hai ricevuto due window pattern fronte e retro, per girarle premi sulle carte e trascinale");
+                ClientMessage.INSTRUCTION_MESSAGE1);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
 
         JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
         continueButton.setOnAction(event -> {
             if (toggleGroup.getSelectedToggle() == null) {
-                showMessage(notifyPane, "Devi scegliere una delle due Carte Schema fronte o retro", MessageType.ERROR);
+                showMessage(notifyPane, ClientMessage.CHOOSE_SCHEMA_CARD_ITA, MessageType.ERROR);
                 return;
             }
             FrontBackSchemaCardView schemaCardView = (FrontBackSchemaCardView) toggleGroup.getSelectedToggle().getUserData();
@@ -325,10 +323,10 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 toggleGroup.getToggles().forEach(toggle -> ((RadioButton) toggle).setDisable(true));
                 ((Button) event.getSource()).setDisable(true);
             } catch (IOException e) {
-                showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+                showMessage(notifyPane, ClientMessage.CONNECTION_ERROR, MessageType.ERROR);
                 return;
             }
-            showMessage(notifyPane, "In attesa degli altri giocatori", MessageType.INFO);
+            showMessage(notifyPane, ClientMessage.WAIT_FOR_USER, MessageType.INFO);
         });
 
         helperBox.getChildren().addAll(spacer, continueButton);
@@ -357,18 +355,18 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         privateObjectiveCards.forEach(privateObjectiveCardWrapper ->
                 privateObjectiveCardViews.add(new PrivateObjectiveCardView(privateObjectiveCardWrapper,
                         PRIVATE_OBJECTIVE_CARD_SHOW_SCALE)));
-        drawCenteredPanes(notifyPane, privateObjectiveCardViews, "on-notify-pane-card");
+        drawCenteredPanes(notifyPane, privateObjectiveCardViews, CSS_CLASS1);
         ToggleGroup toggleGroup = new ToggleGroup();
         drawRadioButtons(toggleGroup, privateObjectiveCardViews);
         HBox helperBox = showHelperText(notifyPane,
-                "Prima del calcolo dei punti scegli una delle Carte Private che desideri");
+                ClientMessage.INSTRUCTION_MESSAGE2);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
 
         JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
         continueButton.setOnAction(event -> {
             if (toggleGroup.getSelectedToggle() == null) {
-                showMessage(notifyPane, "Devi scegliere una delle Carte Private", MessageType.ERROR);
+                showMessage(notifyPane, ClientMessage.CHOOSE_PRIVATE_OBJECTIVE_CARD_ITA, MessageType.ERROR);
                 return;
             }
             PrivateObjectiveCardView privateObjectiveCardView = (PrivateObjectiveCardView) toggleGroup
@@ -378,7 +376,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 toggleGroup.getToggles().forEach(toggle -> ((RadioButton) toggle).setDisable(true));
                 ((Button) event.getSource()).setDisable(true);
             } catch (IOException e) {
-                showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+                showMessage(notifyPane, ClientMessage.CONNECTION_ERROR, MessageType.ERROR);
                 Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             }
         });
@@ -429,7 +427,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
     private Pane drawPublicObjectiveCardsView(Pane corePane, List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double scale) {
         Pane container = new Pane();
-        container.getStyleClass().add("on-board-card");
+        container.getStyleClass().add(CSS_CLASS2);
 
 
         DoubleBinding y = new SimpleDoubleProperty(PADDING)
@@ -466,11 +464,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                         new PublicObjectiveCardView(publicObjectiveCard, PUBLIC_OBJECTIVE_CARD_SHOW_SCALE);
                 publicObjectiveCardViews.add(cardView);
             });
-            drawCenteredPanes(notifyPane, publicObjectiveCardViews, "on-notify-pane-card");
+            drawCenteredPanes(notifyPane, publicObjectiveCardViews, CSS_CLASS1);
             drawSimpleCloseHelperBox(notifyPane, "Carte obiettivo pubbliche");
 
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
         event.consume();
     }
@@ -496,7 +494,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         }
 
         toolCardsContainer.setOnMousePressed(this::onToolCardsPressed);
-        toolCardsContainer.getStyleClass().add("on-board-card");
+        toolCardsContainer.getStyleClass().add(CSS_CLASS2);
 
         corePane.getChildren().add(toolCardsContainer);
 
@@ -514,11 +512,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                     Pane cardView = new ToolCardView(toolCardWrapper, TOOL_CARD_SHOW_SCALE);
                     toolCardViews.add(cardView);
                 });
-                drawCenteredPanes(notifyPane, toolCardViews, "on-notify-pane-card");
+                drawCenteredPanes(notifyPane, toolCardViews, CSS_CLASS1);
                 drawSimpleCloseHelperBox(notifyPane, "Carte utensili");
             }
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
         event.consume();
     }
@@ -543,7 +541,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         DoubleBinding cardX = x.add(container.widthProperty().divide(2));
         container.translateXProperty().bind(getPivotX(cardX, container.widthProperty(), 0.5));
         container.translateYProperty().bind(getPivotY(y, container.heightProperty(), 0.5));
-        container.getStyleClass().add("on-board-card");
+        container.getStyleClass().add(CSS_CLASS2);
         container.setOnMousePressed(this::onPrivateObjectivePressed);
         corePane.getChildren().add(container);
     }
@@ -577,10 +575,10 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                         new PrivateObjectiveCardView(privateObjectiveCardWrapper, PRIVATE_OBJECTIVE_CARD_SHOW_SCALE);
                 privateObjectiveCardViewList.add(cardView);
             });
-            drawCenteredPanes(notifyPane, privateObjectiveCardViewList, "on-notify-pane-card");
+            drawCenteredPanes(notifyPane, privateObjectiveCardViewList, CSS_CLASS1);
             drawSimpleCloseHelperBox(notifyPane, "Carte obiettivo private");
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
         event.consume();
     }

@@ -31,7 +31,7 @@ public class SkipTurn implements ICommand {
         return CommandFlow.MAIN;
     }
 
-    public int getTurnValue() {
+    private int getTurnValue() {
         return turnValue;
     }
 

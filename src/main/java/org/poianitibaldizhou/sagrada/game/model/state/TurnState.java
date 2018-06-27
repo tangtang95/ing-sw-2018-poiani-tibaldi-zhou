@@ -18,6 +18,7 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.SelectActionSt
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceDiceAction;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.UseCardAction;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -305,7 +306,7 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     public void addSkipTurnPlayer(Player player, int turn) {
         if (turn < FIRST_TURN || turn > SECOND_TURN)
-            throw new IllegalArgumentException("Turn has to be 1 or 2");
+            throw new IllegalArgumentException(ServerMessage.TURN_ILLEGAL_ARGUMENT);
         this.skipTurnPlayers.put(player, turn);
     }
 

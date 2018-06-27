@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IDraftPoolFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -123,7 +124,7 @@ public class DraftPool implements JSONable {
                 return;
             }
         }
-        throw new DiceNotFoundException("DraftPool.useDice() failed due to non existence of the dice in the pool");
+        throw new DiceNotFoundException(ServerMessage.DRAFT_POOL_DICE_NOT_FOUND);
     }
 
     /**

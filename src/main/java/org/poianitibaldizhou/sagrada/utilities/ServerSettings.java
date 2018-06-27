@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada;
+package org.poianitibaldizhou.sagrada.utilities;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

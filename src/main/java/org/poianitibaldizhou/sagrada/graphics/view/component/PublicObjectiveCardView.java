@@ -7,8 +7,6 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PublicObjectiveCar
 
 public class PublicObjectiveCardView extends Pane {
 
-    private ImageView cardView;
-
     private static final String CARD_IMAGE_PATH = "images/cards/public-objective-cards.png";
     private static final String CARD_JSON_PATH = "images/cards/public-objective-cards.json";
 
@@ -21,7 +19,7 @@ public class PublicObjectiveCardView extends Pane {
      */
     public PublicObjectiveCardView(PublicObjectiveCardWrapper publicObjectiveCard, double scale){
         String cardKey = GraphicsUtils.convertNameIntoObjectiveCardKey(publicObjectiveCard.getName());
-        cardView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
+        ImageView cardView = GraphicsUtils.getImageView(cardKey + ".png", CARD_IMAGE_PATH, CARD_JSON_PATH, scale);
 
         this.getChildren().add(cardView);
     }

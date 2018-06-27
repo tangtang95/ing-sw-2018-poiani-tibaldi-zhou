@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
      * @param screenManager manager for handler the changed of the screen.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
+    CLIReconnectToGameScreen(ConnectionManager connectionManager, ScreenManager screenManager) throws RemoteException {
         super(connectionManager,screenManager);
         this.clientCreateMessage = new ClientCreateMessage();
         this.clientGetMessage = new ClientGetMessage();
@@ -94,7 +95,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         consoleListener.setCommandMap(commandMap);
         CLIBasicScreen.clearScreen();
-        PrinterManager.consolePrint("Re-connecting to your game...", Level.INFORMATION);
+        PrinterManager.consolePrint(ClientMessage.RECONNECT_TO_YOUR_GAME, Level.INFORMATION);
         if (userList != null && token != null && gameName != null) {
             try {
                 Map<String, IPlayerObserver> cliPlayerViewMap = new HashMap<>();
@@ -143,11 +144,11 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 screenManager.replaceScreen(new CLIMultiPlayerScreen(connectionManager, screenManager, gameName, token));
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                        ClientMessage.NETWORK_ERROR, Level.ERROR);
                 screenManager.popScreen();
             }
         } else {
-            PrinterManager.consolePrint("Re-connecting failed.", Level.ERROR);
+            PrinterManager.consolePrint(ClientMessage.RECONNECT_FAILED, Level.ERROR);
             screenManager.popScreen();
         }
     }
@@ -160,7 +161,7 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
         consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
 
-        PrinterManager.consolePrint("Provide an username: \n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.PROVIDE_AN_USERNAME, Level.STANDARD);
 
         while(username == null) {
             try {
@@ -177,13 +178,13 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
+                        ClientMessage.ERROR_READING, Level.ERROR);
                 break;
             } catch (IllegalArgumentException e) {
                 username = null;
             } catch(NullPointerException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                        ClientMessage.NETWORK_ERROR, Level.ERROR);
             }
         }
         consoleListener.wakeUpCommandConsole();

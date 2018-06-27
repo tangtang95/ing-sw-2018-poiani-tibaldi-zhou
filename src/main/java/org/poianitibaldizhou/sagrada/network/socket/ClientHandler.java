@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.ControllerManager;
 import org.poianitibaldizhou.sagrada.network.socket.messages.*;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -50,7 +51,7 @@ public class ClientHandler implements Runnable {
      */
     public synchronized void sendResponse(Object obj) throws IOException {
         if (!(obj instanceof Response || obj instanceof NotifyMessage))
-            throw new IllegalArgumentException("The object passed is not a Response or a NotifyMessage");
+            throw new IllegalArgumentException(ServerMessage.CLIENT_HANDLER_ILLEGAL_ARGUMENT);
         objectOutputStream.writeObject(obj);
         objectOutputStream.flush();
     }

@@ -37,6 +37,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.Obj
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IStateObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -62,6 +63,9 @@ public class StateListener extends AbstractView implements IStateObserver {
     private static final double SCHEMA_CARD_SHOW_SIZE = 1;
     private static final double TOOL_CARD_SHOW_SIZE = 1;
     private static final double DICE_SHOW_SIZE = 0.6;
+
+    private static final String NEGATIVE_BUTTON = "negative-button";
+    private static final String POSITIVE_BUTTON = "positive-button";
 
     /**
      * Constructor.
@@ -142,7 +146,7 @@ public class StateListener extends AbstractView implements IStateObserver {
                     getOrdinalNumberStrings().get(round), turn, turnUser.getUsername().toUpperCase()));
             topBarBox.setOpacity(0.7);
             topBarBox.setAlignment(Pos.CENTER);
-            JFXButton button = GraphicsUtils.getButton("Esci", "negative-button");
+            JFXButton button = GraphicsUtils.getButton("Esci", NEGATIVE_BUTTON);
             button.setOnAction(this::onQuitGameButtonAction);
             topBarBox.getChildren().add(button);
 
@@ -157,14 +161,14 @@ public class StateListener extends AbstractView implements IStateObserver {
 
             if (turnUser.getUsername().equals(controller.getUsername())) {
                 //SHOW COMMANDS
-                helperBox = showHelperText(corePane, "Tocca a te, scegli una delle seguenti azioni");
+                helperBox = showHelperText(corePane, ClientMessage.CHOOSE_ACTION_ITA);
 
                 Region spacer = new Region();
                 HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-                JFXButton placeDiceButton = GraphicsUtils.getButton("Piazza un dado", "positive-button");
-                JFXButton useCardButton = GraphicsUtils.getButton("Usa una Carta Utensile", "positive-button");
-                JFXButton endTurnButton = GraphicsUtils.getButton("Termina il tuo turno", "negative-button");
+                JFXButton placeDiceButton = GraphicsUtils.getButton("Piazza un dado", POSITIVE_BUTTON);
+                JFXButton useCardButton = GraphicsUtils.getButton("Usa una Carta Utensile", POSITIVE_BUTTON);
+                JFXButton endTurnButton = GraphicsUtils.getButton("Termina il tuo turno", NEGATIVE_BUTTON);
 
                 placeDiceButton.setOnAction(this::onPlaceDiceButtonPressed);
                 useCardButton.setOnAction(this::onUseCardButtonPressed);
@@ -177,7 +181,7 @@ public class StateListener extends AbstractView implements IStateObserver {
 
                 helperBox.getChildren().addAll(spacer, placeDiceButton, useCardButton, endTurnButton);
             } else {
-                helperBox = showHelperText(corePane, String.format("%s turno del giocatore: %s",
+                helperBox = showHelperText(corePane, String.format(ClientMessage.PLAYER_TURN,
                         getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()));
             }
             helperBox.setOpacity(0.7);
@@ -208,7 +212,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         ClientGetMessage parser = new ClientGetMessage();
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
-            Label stateMessageLabel = createLabelMessage(String.format("E\' stato saltato il turno del giocatore: %s",
+            Label stateMessageLabel = createLabelMessage(String.format(ClientMessage.PLAYER_SKIP_TURN,
                     turnUser.getUsername()));
             corePane.getChildren().add(stateMessageLabel);
         });
@@ -289,13 +293,12 @@ public class StateListener extends AbstractView implements IStateObserver {
         clearNotifyPane(false);
         activateNotifyPane();
 
-        HBox helperPane = showHelperText(notifyPane, "Piazza un dado della Riserva sulla tua Carta Schema " +
-                "rispettando le regole");
+        HBox helperPane = showHelperText(notifyPane, ClientMessage.PLACE_DICE_FROM_DRAFT_POOL);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-        JFXButton cancelButton = GraphicsUtils.getButton("Annulla", "negative-button");
+        JFXButton cancelButton = GraphicsUtils.getButton("Annulla", NEGATIVE_BUTTON);
 
         cancelButton.setOnAction(this::onCancelButtonPressed);
 
@@ -354,8 +357,7 @@ public class StateListener extends AbstractView implements IStateObserver {
 
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-            showCrashErrorMessage("Errore di connessione");
-            return;
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 
@@ -365,7 +367,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         try {
             millisTimeout = controller.getMillisTimeout();
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
         long endRequestTime = System.currentTimeMillis();
@@ -386,9 +388,9 @@ public class StateListener extends AbstractView implements IStateObserver {
             event.setDropCompleted(true);
             event.consume();
         } catch (ParseException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.PARSE_EXCEPTION);
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 
@@ -396,13 +398,13 @@ public class StateListener extends AbstractView implements IStateObserver {
         clearNotifyPane(false);
         activateNotifyPane();
 
-        HBox helperPane = showHelperText(notifyPane, "Scegli una delle Carte Utensili");
+        HBox helperPane = showHelperText(notifyPane, ClientMessage.CHOOSE_TOOL_CARD);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-        JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
-        JFXButton cancelButton = GraphicsUtils.getButton("Annulla", "negative-button");
+        JFXButton continueButton = GraphicsUtils.getButton("Continua", POSITIVE_BUTTON);
+        JFXButton cancelButton = GraphicsUtils.getButton("Annulla", NEGATIVE_BUTTON);
 
 
         cancelButton.setOnAction(this::onCancelButtonPressed);
@@ -436,7 +438,7 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     private void onUseCardContinueButtonPressed(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, "Devi scegliere una Carta Utensile", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_TOOL_CARD, MessageType.ERROR);
             return;
         }
         ToolCardView toolCardView = (ToolCardView) toggleGroup.getSelectedToggle().getUserData();
@@ -450,7 +452,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             ((Button) actionEvent.getSource()).setDisable(true);
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-            showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CONNECTION_ERROR, MessageType.ERROR);
         }
     }
 
@@ -459,7 +461,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             controller.endTurn();
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 
@@ -468,7 +470,7 @@ public class StateListener extends AbstractView implements IStateObserver {
             controller.quitGame();
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 

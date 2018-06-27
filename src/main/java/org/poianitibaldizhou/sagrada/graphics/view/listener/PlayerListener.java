@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.PlayerView;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -43,9 +44,7 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
     public void onFavorTokenChange(String value) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         Integer favorTokenUsed = parser.getValue(value);
-        Platform.runLater(() -> {
-            playerView.decreaseFavorToken(favorTokenUsed);
-        });
+        Platform.runLater(() -> playerView.decreaseFavorToken(favorTokenUsed));
     }
 
     /**
@@ -66,17 +65,15 @@ public class PlayerListener extends AbstractView implements IPlayerObserver {
             int token = controller.getOwnToken();
             playerView.drawFavorToken(token);
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(!(obj instanceof PlayerListener)) return false;
+        return this == obj || obj instanceof PlayerListener && username.equals(((PlayerListener) obj).username);
 
-        return username.equals(((PlayerListener) obj).username);
     }
 
     @Override

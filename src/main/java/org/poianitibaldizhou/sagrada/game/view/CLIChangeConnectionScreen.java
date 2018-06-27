@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -39,11 +40,11 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
         Command changeConnectionCommand = new Command(
                 connectionManager.getNetworkType() == (ConnectionType.RMI) ?
                         ConnectionType.SOCKET.name() : ConnectionType.RMI.name(),
-                "Change the connection mode");
+                ClientMessage.CHANGE_CONNECTION);
         changeConnectionCommand.setCommandAction(() -> changeConnection(changeConnectionCommand.getCommandText()));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
-        Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");
+        Command goBackCommand = new Command(GO_BACK, ClientMessage.GO_TO_START_MENU);
         goBackCommand.setCommandAction(screenManager::popScreen);
         commandMap.put(goBackCommand.getCommandText(), goBackCommand);
     }
@@ -58,10 +59,10 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
         PrinterManager.consolePrint(buildGraphic.
-                buildMessage("----------------------Select Connection Menu-----------------------").
-                buildMessage("Current connection mode: " + connectionManager.getNetworkType().name()).
+                buildMessage(ClientMessage.SELECT_CONNECTION_MENU).
+                buildMessage(ClientMessage.CURRENT_CONNECTION_MODE + connectionManager.getNetworkType().name()).
                 buildGraphicHelp(commandMap).
-                buildMessage("Change connection mode or go to Start Game Menu: ").
+                buildMessage(ClientMessage.CHANGE_CONNECTION_OR_GO_BACK).
                 toString(), Level.STANDARD);
 
         consoleListener.setCommandMap(commandMap);

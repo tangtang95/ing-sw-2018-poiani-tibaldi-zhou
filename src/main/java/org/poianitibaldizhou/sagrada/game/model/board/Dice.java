@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.Objects;
 
@@ -40,8 +41,7 @@ public class Dice implements JSONable {
      */
     public Dice(NumberConstraint numberConstraint, ColorConstraint colorConstraint) {
         if (numberConstraint.getNumber() < MIN_VALUE || numberConstraint.getNumber() > MAX_VALUE)
-            throw new IllegalArgumentException("Invalid number: number must be in range [" +
-                    MIN_VALUE + "," + MAX_VALUE + "]");
+            throw new IllegalArgumentException(String.format(ServerMessage.INVALID_DICE_NUMBER,MIN_VALUE,MAX_VALUE));
         this.numberConstraint = numberConstraint;
         this.colorConstraint = colorConstraint;
     }

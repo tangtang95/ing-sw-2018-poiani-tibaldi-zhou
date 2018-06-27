@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.network.protocol;
 /**
  * This class is used to define all constants needed for communication protocol.
  */
-public class SharedConstants {
+public final class SharedConstants {
 
 
     private SharedConstants() { }
@@ -77,6 +77,6 @@ public class SharedConstants {
     public static final String GET_ERROR = "Can't get because you're not logged or you are not part of the " +
             "specified game or the specified does not exist or the requested object does not exist";
     public static final String RECONNECT_ERROR = "Error reconnecting";
-    public static final String ERROR_TEMINATE_GAME = "Game has terminated";
+    public static final String ERROR_TERMINATE_GAME = "Game has terminated";
 
 }

@@ -22,6 +22,7 @@ import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class AbstractView extends UnicastRemoteObject {
 
@@ -129,7 +130,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
         notifyPane.setVisible(false);
     }
 
-    protected Pane getBackgroundPane(boolean isFastCloseable) {
+    private Pane getBackgroundPane(boolean isFastCloseable) {
         Pane backgroundPane = new Pane();
         backgroundPane.setOpacity(0.6);
         backgroundPane.setStyle("-fx-background-color: black");
@@ -178,8 +179,7 @@ public abstract class AbstractView extends UnicastRemoteObject {
     }
 
     protected void drawRadioButtons(ToggleGroup toggleGroup, List<Pane> panes) {
-        for (int i = 0; i < panes.size(); i++) {
-            Pane pane = panes.get(i);
+        for (Pane pane : panes) {
             JFXRadioButton radioButton = GraphicsUtils.getRadioButton("",
                     "radio-button-notify-pane", Color.WHITE, Color.DEEPSKYBLUE);
             radioButton.setToggleGroup(toggleGroup);
@@ -260,4 +260,20 @@ public abstract class AbstractView extends UnicastRemoteObject {
      */
     public abstract void updateView();
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractView)) return false;
+        if (!super.equals(o)) return false;
+        AbstractView that = (AbstractView) o;
+        return Objects.equals(getController(), that.getController()) &&
+                Objects.equals(corePane, that.corePane) &&
+                Objects.equals(notifyPane, that.notifyPane);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(super.hashCode(), getController(), corePane, notifyPane);
+    }
 }

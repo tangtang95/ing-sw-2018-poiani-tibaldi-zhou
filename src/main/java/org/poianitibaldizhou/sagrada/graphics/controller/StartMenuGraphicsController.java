@@ -26,6 +26,7 @@ import org.poianitibaldizhou.sagrada.graphics.model.ConnectionModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -131,7 +132,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         });
 
         NumberValidator numberValidator = new NumberValidator();
-        numberValidator.setMessage("Solo numeri");
+        numberValidator.setMessage(ClientMessage.ONLY_NUMBER);
         portTextField.setValidators(numberValidator);
         portTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue){
@@ -140,7 +141,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         });
 
         IPAddressValidator ipAddressValidator = new IPAddressValidator();
-        ipAddressValidator.setMessage("Non è un indirizzo IP");
+        ipAddressValidator.setMessage(ClientMessage.IP_ERROR);
         ipTextField.setValidators(ipAddressValidator);
         ipTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if(!newValue)
@@ -252,9 +253,9 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+                Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.LOAD_FXML_ERROR);
             } catch (NetworkException e) {
-                AlertBox.displayBox("Errore di connessione", "Non è stato possibile connettersi al server");
+                AlertBox.displayBox("Errore di connessione", ClientMessage.CONNECTION_ERROR);
             } finally {
                 onReconnectCloseButton(actionEvent);
             }
@@ -283,7 +284,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+                Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.LOAD_FXML_ERROR);
             } catch (NetworkException e) {
                 AlertBox.displayBox("Errore del server", e.getInnerException().getMessage());
             } finally {
@@ -317,9 +318,9 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
                 Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-                Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+                Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.LOAD_FXML_ERROR);
             } catch (NetworkException e) {
-                AlertBox.displayBox("Errore di connessione", "Non è possibile collegarsi al server");
+                AlertBox.displayBox("Errore di connessione", ClientMessage.CONNECTION_ERROR);
             } finally {
                 onMultiPlayerCloseButton(actionEvent);
             }
@@ -360,13 +361,13 @@ public class StartMenuGraphicsController extends GraphicsController implements I
 
     private ValidatorBase getRequiredFieldValidator(){
         ValidatorBase requiredValidator = new RequiredFieldValidator();
-        requiredValidator.setMessage("Obbligatorio");
+        requiredValidator.setMessage(ClientMessage.OBLIGATORY);
         return requiredValidator;
     }
 
     private ValidatorBase getUsernameFieldValidator(){
         ValidatorBase usernameValidator = new UsernameValidator();
-        usernameValidator.setMessage("Solo caratteri alfanumerici");
+        usernameValidator.setMessage(ClientMessage.ONLY_CHARACTER);
         return  usernameValidator;
     }
 

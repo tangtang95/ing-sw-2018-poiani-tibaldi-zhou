@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.*;
 
@@ -60,10 +61,10 @@ public abstract class PublicObjectiveCard extends Card implements IScore, JSONab
         for (IConstraint constraint : constraints) {
             if (type == ObjectiveCardType.COLOR) {
                 if (!(constraint instanceof ColorConstraint))
-                    throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
+                    throw new IllegalArgumentException(ServerMessage.CONSTRAINT_ARE_DIFFERENT);
             } else
                 if (type == ObjectiveCardType.NUMBER && !(constraint instanceof NumberConstraint)) {
-                    throw new IllegalArgumentException("constraints has different type than PlacementRestrictionType given");
+                    throw new IllegalArgumentException(ServerMessage.CONSTRAINT_ARE_DIFFERENT);
             }
         }
 

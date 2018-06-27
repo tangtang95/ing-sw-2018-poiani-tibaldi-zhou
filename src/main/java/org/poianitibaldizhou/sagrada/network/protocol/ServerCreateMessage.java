@@ -67,8 +67,8 @@ public class ServerCreateMessage {
     @SuppressWarnings("unchecked")
     public String getGameTerminatedErrorMessage() {
         JSONObject main = new JSONObject();
-        main.put(SharedConstants.TYPE, SharedConstants.ERROR_TEMINATE_GAME);
-        main.put(SharedConstants.BODY, SharedConstants.ERROR_TEMINATE_GAME);
+        main.put(SharedConstants.TYPE, SharedConstants.ERROR_TERMINATE_GAME);
+        main.put(SharedConstants.BODY, SharedConstants.ERROR_TERMINATE_GAME);
         Map<String, JSONObject> error = new HashMap<>();
         error.putIfAbsent(SharedConstants.ERROR_TERMINATE_GAME_KEY, main);
         return JSONObject.toJSONString(error);

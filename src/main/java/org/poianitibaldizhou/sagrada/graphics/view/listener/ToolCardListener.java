@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.component.ToolCardView;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -51,9 +52,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
     public void onTokenChange(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         Integer value = parser.getValue(message);
-        Platform.runLater(() -> {
-            toolCardView.increaseToken(value);
-        });
+        Platform.runLater(() -> toolCardView.increaseToken(value));
     }
 
     /**
@@ -73,7 +72,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
             ToolCardWrapper toolCardWrapper = controller.getToolCardByName(toolCardView.getToolCardWrapper());
             toolCardView.redrawToken(toolCardWrapper.getToken());
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
 
@@ -81,9 +80,7 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof ToolCardListener)) return false;
-        return toolCardName.equals(((ToolCardListener) obj).toolCardName);
+        return this == obj || obj instanceof ToolCardListener && toolCardName.equals(((ToolCardListener) obj).toolCardName);
     }
 
     @Override

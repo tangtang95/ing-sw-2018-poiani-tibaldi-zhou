@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 public final class HistoryObject {
 
@@ -33,24 +34,24 @@ public final class HistoryObject {
         switch (objectMessageType){
             case COLOR:
                 ColorWrapper colorWrapper = (ColorWrapper) object;
-                return String.format("Hai scelto precedentemente il colore: %s", colorWrapper.name().toLowerCase());
+                return String.format(ClientMessage.COLOR_CHOSEN, colorWrapper.name().toLowerCase());
             case NONE:
                 return "";
             case DICE:
                 DiceWrapper diceWrapper = (DiceWrapper) object;
-                return String.format("Hai scelto precedentemente il dado: %s", diceWrapper.toString());
+                return String.format(ClientMessage.DICE_CHOSEN, diceWrapper.toString());
             case POSITION:
                 PositionWrapper positionWrapper = (PositionWrapper) object;
-                return String.format("Hai scelto precedentemente la posizione: %s", positionWrapper.toString());
+                return String.format(ClientMessage.POSITION_CHOSEN, positionWrapper.toString());
             case ANSWER:
                 Boolean answer = (Boolean) object;
-                return String.format("Hai scelto precedentemente di %s continuare", (answer) ? "" : "non");
+                return String.format(ClientMessage.ACTION_CHOSEN, (answer) ? "" : "non");
             case VALUE:
                 Integer value = (Integer) object;
-                return String.format("Hai scelto precedentemente il valore: %s", value);
+                return String.format(ClientMessage.VALUE_CHOSEN, value);
             case TOOL_CARD:
                 ToolCardWrapper toolCardWrapper = (ToolCardWrapper) object;
-                return String.format("La Carta Utensile in uso è: %s, la cui descrizione: %s",
+                return String.format(ClientMessage.TOOL_CARD_CHOSEN,
                         toolCardWrapper.getName(), toolCardWrapper.getDescription());
         }
         return "";

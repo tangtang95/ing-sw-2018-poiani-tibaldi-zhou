@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.RMIStrategyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 /**
  * OVERVIEW: Manages the connection of a certain client to the server, allowing to switch the network connection
@@ -76,7 +77,7 @@ public class ConnectionManager implements StrategyController {
                 strategyController = new SocketStrategyController(ipAddress, port);
                 break;
             default:
-                throw new IllegalArgumentException("network type undefined");
+                throw new IllegalArgumentException(ServerMessage.NETWORK_UNDEFINED);
         }
     }
 

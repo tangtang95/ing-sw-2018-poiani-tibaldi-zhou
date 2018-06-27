@@ -28,7 +28,7 @@ public class LobbyNetworkManager {
 
     /**
      * Returns the map of client's token and their view map
-     * @return
+     * @return the map of view.
      */
     public Map<String, IView> getViewMap() {
         return viewMap;
@@ -81,7 +81,7 @@ public class LobbyNetworkManager {
     /**
      * Pings the client in the lobby
      */
-    public synchronized void ping() {
+    private synchronized void ping() {
         if (lobbyManager.isLobbyActive()) {
             lobbyManager.getLobby().getLobbyObserverMap().forEach((k, v) -> v.onPing());
         }

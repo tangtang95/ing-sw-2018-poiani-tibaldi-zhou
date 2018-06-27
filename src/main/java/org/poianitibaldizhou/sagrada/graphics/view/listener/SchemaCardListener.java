@@ -11,6 +11,7 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -85,7 +86,7 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
             try {
                 schemaCardView.removeDice(diceWrapper, positionWrapper);
             } catch (IOException e) {
-                showCrashErrorMessage("Errore di sincronismo");
+                showCrashErrorMessage(ClientMessage.SYNCHRONIZED_ERROR);
             }
         });
     }

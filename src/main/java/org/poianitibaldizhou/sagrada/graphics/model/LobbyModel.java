@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObser
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -65,7 +66,7 @@ public class LobbyModel {
         String request = builder.createUsernameMessage(username).buildMessage();
         String response = connectionManager.getLobbyController().login(request, view);
         token = parser.getToken(response);
-        if(token == null) throw new IOException("username già presente");
+        if(token == null) throw new IOException(ClientMessage.USER_ALREADY_EXIST);
 
         request = builder.createTokenMessage(token).createUsernameMessage(username).buildMessage();
         connectionManager.getLobbyController().join(request, observer);

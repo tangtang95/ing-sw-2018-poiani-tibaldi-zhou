@@ -4,6 +4,7 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
 import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class Position implements JSONable {
      */
     public Position(int row, int column) {
         if (SchemaCard.isOutOfBounds(row, column))
-            throw new IllegalArgumentException("Row and column is out of bounds");
+            throw new IllegalArgumentException(ServerMessage.POSITION_ILLEGAL_ARGUMENT);
         this.row = row;
         this.column = column;
     }
@@ -87,7 +88,7 @@ public class Position implements JSONable {
      * @return a JSONObject.
      */
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked","Duplicates"})
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
         JSONObject position = new JSONObject();

@@ -9,7 +9,7 @@ import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 
 public abstract class GraphicsController {
 
-    protected SceneManager sceneManager;
+    SceneManager sceneManager;
 
     public void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;

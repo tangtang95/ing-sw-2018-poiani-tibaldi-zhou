@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import org.json.simple.parser.ParseException;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +25,7 @@ public class GraphicsUtils {
     private static final double PADDING = 10;
 
     private GraphicsUtils() {
-        throw new IllegalStateException("Cannot instantiate GraphicsUtils");
+        throw new IllegalStateException(ClientMessage.GRAPHICS_UTILS_INSTANCE_ERROR);
     }
 
     /**
@@ -83,9 +84,9 @@ public class GraphicsUtils {
             imageView.setFitWidth(rectangle2D.getWidth() * scale);
             imageView.setFitHeight(rectangle2D.getHeight() * scale);
         } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "File not founded");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.FILE_NOT_FOUND);
         } catch (ParseException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Parse failed");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.PARSE_EXCEPTION);
         }
     }
 
@@ -140,9 +141,9 @@ public class GraphicsUtils {
         try {
             textureParser = new TextureJSONParser(jsonResourcePath);
         } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "File not founded");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.FILE_NOT_FOUND);
         } catch (ParseException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Parse failed");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.PARSE_EXCEPTION);
         }
         return (textureParser == null) ? new Point2D(0, 0) : textureParser.getImageSize();
     }
@@ -191,7 +192,7 @@ public class GraphicsUtils {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
-    protected static DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
+    private static DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 

@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.FavorToken;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class MultiPlayer extends Player {
 
     public static MultiPlayer newInstance(@NotNull Player player) {
         if(!(player instanceof MultiPlayer))
-            throw new IllegalArgumentException("SEVERE ERROR: player is not a MultiPlayer, do not call this method from MultiPlayer");
+            throw new IllegalArgumentException(ServerMessage.MULTI_PLAYER_ILLEGAL_ARGUMENT);
         return new MultiPlayer(player);
     }
 

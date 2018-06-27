@@ -1,13 +1,14 @@
 package org.poianitibaldizhou.sagrada.network.observers.fakeobservers;
 
 import org.jetbrains.annotations.Contract;
-import org.poianitibaldizhou.sagrada.ServerSettings;
+import org.poianitibaldizhou.sagrada.utilities.ServerSettings;
 import org.poianitibaldizhou.sagrada.exception.InvalidActionException;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.observers.GameObserverManager;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IStateFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.io.IOException;
 import java.util.List;
@@ -84,7 +85,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 Thread.sleep(TIME);
                 handleTimeoutSetUpPlayer();
             } catch (InterruptedException e) {
-                Logger.getAnonymousLogger().log(Level.INFO, "TimeoutThread interrupted");
+                Logger.getAnonymousLogger().log(Level.INFO, ServerMessage.TIMEOUT_INTERRUPT);
                 Thread.currentThread().interrupt();
             }
         };
@@ -112,7 +113,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 Thread.sleep(TIME);
                 handleTimeoutTurnState(turnUser);
             } catch (InterruptedException e) {
-                Logger.getAnonymousLogger().log(Level.INFO, "TimeoutThread interrupted");
+                Logger.getAnonymousLogger().log(Level.INFO, ServerMessage.TIMEOUT_INTERRUPT);
                 Thread.currentThread().interrupt();
             }
         };
@@ -198,7 +199,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 Thread.sleep(TIME_JOIN);
                 handleTimeoutJoin();
             } catch (InterruptedException e) {
-                Logger.getAnonymousLogger().log(Level.INFO, "TimeoutThread interrupted");
+                Logger.getAnonymousLogger().log(Level.INFO, ServerMessage.TIMEOUT_INTERRUPT);
                 Thread.currentThread().interrupt();
             }
         };
@@ -249,7 +250,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 }
             }
         } catch (InvalidActionException e) {
-            Logger.getAnonymousLogger().log(Level.INFO, "Impossible because have to happen in this way");
+            Logger.getAnonymousLogger().log(Level.INFO, ServerMessage.INVALID_ACTION);
         }
     }
 
@@ -266,7 +267,7 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
                 }
             }
         } catch (InvalidActionException e) {
-            Logger.getAnonymousLogger().log(Level.INFO, "Impossible because have to happen in this way");
+            Logger.getAnonymousLogger().log(Level.INFO, ServerMessage.INVALID_ACTION);
         }
     }
 

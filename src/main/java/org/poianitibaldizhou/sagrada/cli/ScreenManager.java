@@ -1,6 +1,7 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.jetbrains.annotations.Contract;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -87,7 +88,7 @@ public class ScreenManager {
      * @return the screen at the top of the stack (null if the stack is empty)
      */
     @Contract(pure = true)
-    public synchronized IScreen topScreen() {
+    private synchronized IScreen topScreen() {
         if (screens.isEmpty())
             return null;
         return screens.peek();
@@ -107,7 +108,7 @@ public class ScreenManager {
                 currentThread.start();
             }
         } catch (EmptyStackException e) {
-            Logger.getAnonymousLogger().log(Level.INFO, "No screen available");
+            Logger.getAnonymousLogger().log(Level.INFO, ClientMessage.NO_SCREEN_AVAILABLE);
         }
     }
 

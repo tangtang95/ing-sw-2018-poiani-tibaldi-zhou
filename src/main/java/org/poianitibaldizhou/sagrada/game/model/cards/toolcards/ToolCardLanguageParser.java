@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice.DiceRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement.PlacementRestrictionType;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -38,19 +39,19 @@ public class ToolCardLanguageParser {
     public Node<ICommand> parseToolCard(String description) {
         Node<ICommand> commandsRoot = null;
 
-        Pattern p = Pattern.compile("\\[(.*?)\\]");
+        Pattern p = Pattern.compile("\\[(.*?)]");
         Matcher m = p.matcher(description);
 
         boolean firstCheck = m.find();
 
         if(!firstCheck)
-            throw new IllegalArgumentException("This is not a command " + description);
+            throw new IllegalArgumentException(ServerMessage.LANGUAGE_PARSER_ILLEGAL_ARGUMENT1 + description);
 
         while(firstCheck) {
             String temp  = m.group(1);
             String[] c = temp.split("-");
             if(grammar.get(c[1]) == null || c.length != 2)
-                throw new IllegalArgumentException("Command not recognized " + c[1]);
+                throw new IllegalArgumentException(ServerMessage.LANGUAGE_PARSER_ILLEGAL_ARGUMENT2+ c[1]);
             if(commandsRoot == null)
                 commandsRoot = new Node<>(grammar.get(c[1]));
             else

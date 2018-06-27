@@ -163,8 +163,8 @@ public class ToolCard extends Card implements JSONable {
     /**
      * Creates a new instance of the tool card
      *
-     * @param toolCard
-     * @return
+     * @param toolCard toolCard to create a copy.
+     * @return a new instance of a toolCard passed.
      */
     public static ToolCard newInstance(@NotNull ToolCard toolCard) {
         return new ToolCard(toolCard);
@@ -202,14 +202,14 @@ public class ToolCard extends Card implements JSONable {
         ToolCard card = null;
 
         try {
-            jsonArray = (JSONArray) jsonParser.parse(new FileReader("resources/toolCards.json"));
+            jsonArray = (JSONArray) jsonParser.parse(new FileReader(GameInjector.FILE_PATH_1));
             for (Object object : Objects.requireNonNull(jsonArray)) {
                 JSONObject toolCard = (JSONObject) object;
                 if (toolCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString())) {
-                    card = new ToolCard(Color.valueOf((String) toolCard.get("cardColour")),
+                    card = new ToolCard(Color.valueOf((String) toolCard.get(GameInjector.CARD_COLOR)),
                             (String) toolCard.get(GameInjector.CARD_NAME),
                             (String) toolCard.get(GameInjector.CARD_DESCRIPTION),
-                            (String) toolCard.get("action"));
+                            (String) toolCard.get(GameInjector.CARD_ACTION));
                     card.tokens = Integer.parseInt(jsonObject.get(JSON_TOKENS).toString());
                     break;
                 }

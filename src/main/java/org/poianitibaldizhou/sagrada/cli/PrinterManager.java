@@ -7,7 +7,7 @@ package org.poianitibaldizhou.sagrada.cli;
  * error: used to communicate error or particular exceptions.
  * information: used to communicate game information.
  */
-public class PrinterManager {
+public final class PrinterManager {
 
     /**
      * constructor

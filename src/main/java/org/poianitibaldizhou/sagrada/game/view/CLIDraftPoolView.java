@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IDraftPoolObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -72,7 +73,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
     @Override
     public void onDraftPoolReroll(String dices) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
-        String message = (cliStateView.getCurrentUser().getUsername() + " has re-rolled the draft pool.");
+        String message = (cliStateView.getCurrentUser().getUsername() + ClientMessage.HAS_RE_ROLL);
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(dices);
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).buildGraphicDices(diceWrapperList).toString(),
                 Level.INFORMATION);

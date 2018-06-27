@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.rmi.RemoteException;
 
@@ -30,7 +31,7 @@ public class CLIEndGame extends CLIBasicScreen {
      */
     @Override
     protected void initializeCommands() {
-        Command quit = new Command(QUIT, "Quit from current game");
+        Command quit = new Command(QUIT, ClientMessage.QUIT_GAME);
         quit.setCommandAction(screenManager::popScreen);
         commandMap.put(quit.getCommandText(), quit);
     }
@@ -44,8 +45,8 @@ public class CLIEndGame extends CLIBasicScreen {
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.
-                buildMessage("-----------------------------END GAME------------------------------").
+                buildMessage(ClientMessage.END_GAME).
                 buildGraphicHelp(commandMap).
-                buildMessage("Choose action: ").toString(), Level.STANDARD);
+                buildMessage(ClientMessage.CHOOSE_ACTION).toString(), Level.STANDARD);
     }
 }

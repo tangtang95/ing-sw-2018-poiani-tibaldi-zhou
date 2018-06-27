@@ -59,7 +59,7 @@ public class Node<T> {
         leftChild.setParent(parent);
     }
 
-    public void setParent(Node<T> parent) {
+    private void setParent(Node<T> parent) {
         this.parent = parent;
     }
 

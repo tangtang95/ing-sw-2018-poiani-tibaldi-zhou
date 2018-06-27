@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.game.model.GameInjector;
 import org.poianitibaldizhou.sagrada.game.model.cards.FrontBackSchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -57,7 +58,7 @@ public class SetupPlayerState extends IStateGame {
                 try {
                     schemaCardList.add(frontBackSchemaCards.draw());
                 } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.SEVERE, "Error for empty collection", e);
+                    LOGGER.log(Level.SEVERE, ServerMessage.EMPTY_COLLECTION_ERROR, e);
                 }
             }
             playerFrontBackSchemaCards.put(token, schemaCardList);
@@ -70,12 +71,12 @@ public class SetupPlayerState extends IStateGame {
                 try {
                     privateObjectiveCardList.add(privateObjectiveCards.draw());
                 } catch (EmptyCollectionException e) {
-                    LOGGER.log(Level.SEVERE, "Error for empty collection", e);
+                    LOGGER.log(Level.SEVERE, ServerMessage.EMPTY_COLLECTION_ERROR, e);
                 }
             }
             privateObjectiveCardMap.put(token, privateObjectiveCardList);
             if (!game.getGameObservers().containsKey(token))
-                throw new IllegalStateException("SEVERE ERROR: cannot find token");
+                throw new IllegalStateException(ServerMessage.CANNOT_FIND_TOKEN_ERROR);
             game.getGameObservers().get(token).onPrivateObjectiveCardDraw(privateObjectiveCardList);
         }
     }

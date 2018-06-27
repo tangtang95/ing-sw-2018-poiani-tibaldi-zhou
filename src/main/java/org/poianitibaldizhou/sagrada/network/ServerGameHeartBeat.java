@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.network;
 
-import org.poianitibaldizhou.sagrada.ServerSettings;
+import org.poianitibaldizhou.sagrada.utilities.ServerSettings;
 import org.poianitibaldizhou.sagrada.game.model.GameManager;
 
 import java.util.logging.Level;

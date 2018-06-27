@@ -21,16 +21,6 @@ public class BuildGraphic {
     private StringBuilder stringBuilder;
 
     /**
-     * Error Messages.
-     */
-    public static final String NOT_A_NUMBER = "Is not a number, please retry.\n";
-    public static final String COMMAND_NOT_FOUND = "Command not found, please retry.\n";
-    public static final String ERROR_READING = ": Error while reading from keyboard.\n";
-    public static final String NETWORK_ERROR = ": Network error.\n";
-    public static final String AUTOMATIC_ACTION = "The action was chosen automatically, due to the expiration of the timeout\n";
-    public static final String FATAL_ERROR = ": Fatal error. Please close the game and restart it\n";
-
-    /**
      * Card attributes.
      */
     private static final String NAME = "Card Name: ";

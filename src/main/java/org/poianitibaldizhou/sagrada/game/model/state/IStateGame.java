@@ -11,10 +11,9 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.Executo
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 public abstract class IStateGame {
-
-    private static final String ILLEGAL_STATE_EXCEPTION = "SEVERE ERROR: method not implemented in this state";
 
     protected Game game;
 
@@ -33,7 +32,7 @@ public abstract class IStateGame {
      *
      */
     public void nextRound() {
-        throw new IllegalStateException(ILLEGAL_STATE_EXCEPTION);
+        throw new IllegalStateException(ServerMessage.ILLEGAL_STATE_EXCEPTION);
     }
 
     /**
@@ -55,7 +54,7 @@ public abstract class IStateGame {
      *                                the player has already readied for the game
      */
     public void readyGame(String token) throws InvalidActionException {
-        throw new IllegalStateException(ILLEGAL_STATE_EXCEPTION);
+        throw new IllegalStateException(ServerMessage.ILLEGAL_STATE_EXCEPTION);
     }
 
     /**
@@ -84,7 +83,7 @@ public abstract class IStateGame {
      *
      */
     public void calculateVictoryPoints() {
-        throw new IllegalStateException(ILLEGAL_STATE_EXCEPTION);
+        throw new IllegalStateException(ServerMessage.ILLEGAL_STATE_EXCEPTION);
     }
 
     /**

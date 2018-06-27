@@ -22,6 +22,7 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardOb
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.net.URL;
@@ -87,7 +88,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
             controller.initScoreScene(winner, victoryPoints);
             playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.replaceScene(root));
         } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.SEVERE, "Cannot load FXML loader");
+            Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.LOAD_FXML_ERROR);
         }
     }
 
@@ -176,7 +177,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
         try {
             String response = connectionManager.getGameController().attemptReconnect(request);
             if(parser.hasReconnectError(response))
-                throw new NetworkException("No game available error");
+                throw new NetworkException(ClientMessage.NO_GAME_AVAILABLE);
             String token = parser.getToken(response);
             String gameName = parser.getGameName(response);
             gameModel = new GameModel(username, token, gameName, connectionManager);

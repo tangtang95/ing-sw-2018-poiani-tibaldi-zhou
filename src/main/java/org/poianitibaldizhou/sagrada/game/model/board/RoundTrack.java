@@ -8,6 +8,7 @@ import org.poianitibaldizhou.sagrada.exception.DiceNotFoundException;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IRoundTrackFakeObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,8 +29,8 @@ public class RoundTrack implements JSONable {
     public static final int FIRST_ROUND = 0;
     public static final int LAST_ROUND = NUMBER_OF_TRACK - 1;
 
-    private static final String ILLEGAL_ARGUMENT_MESSAGE = "Round must be in [" + LAST_ROUND + ",  " + FIRST_ROUND + "]. " +
-            "Round specified:  ";
+    private static final String ILLEGAL_ARGUMENT_MESSAGE = String.format(ServerMessage.ROUND_TRACK_ILLEGAL_ARGUMENT,
+            FIRST_ROUND, LAST_ROUND);
 
     /**
      * RoundTrack param for network protocol.

@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -37,7 +38,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      * @param username player's username
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIPlayerView(CLIStateView cliStateView, String username) throws RemoteException {
+    CLIPlayerView(CLIStateView cliStateView, String username) throws RemoteException {
         super();
         this.cliStateView = cliStateView;
         this.clientGetMessage = cliStateView.getClientGetMessage();
@@ -49,8 +50,8 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      */
     @Override
     public void onFavorTokenChange(String value) throws IOException {
-        String message = cliStateView.getCurrentUser().getUsername() + " has spent " +
-                clientGetMessage.getValue(value) + " token";
+        String message = String.format(ClientMessage.TOKEN_SPENT,
+                cliStateView.getCurrentUser().getUsername(),clientGetMessage.getValue(value));
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.INFORMATION);
     }
@@ -60,7 +61,7 @@ public class CLIPlayerView extends UnicastRemoteObject implements IPlayerObserve
      */
     @Override
     public void onSetOutcome(String outcome) throws IOException {
-        String message = "Your outcome is: " + clientGetMessage.getOutcome(outcome);
+        String message = ClientMessage.YOUR_OUTCOME + clientGetMessage.getOutcome(outcome);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.INFORMATION);
     }

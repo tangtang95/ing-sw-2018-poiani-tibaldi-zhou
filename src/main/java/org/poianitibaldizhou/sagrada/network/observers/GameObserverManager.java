@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class GameObserverManager {
 
-    Lock lock;
+    private Lock lock;
 
     private Set<String> disconnectedPlayer;
     private Set<String> disconnectedPlayerNotNotified;
@@ -96,7 +96,7 @@ public class GameObserverManager {
         }
     }
 
-    public void detachTimeoutObserver(String token) {
+    private void detachTimeoutObserver(String token) {
         synchronized (getGame()) {
             observerTimeoutHashMap.remove(token);
         }

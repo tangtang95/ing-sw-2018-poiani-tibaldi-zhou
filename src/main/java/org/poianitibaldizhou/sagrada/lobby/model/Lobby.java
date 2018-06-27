@@ -3,7 +3,6 @@ package org.poianitibaldizhou.sagrada.lobby.model;
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.ILobbyFakeObserver;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

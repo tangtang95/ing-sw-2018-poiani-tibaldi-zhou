@@ -111,9 +111,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
         ClientGetMessage parser = new ClientGetMessage();
         final String gameName = parser.getGameName(message);
 
-        Platform.runLater(() -> {
-            controller.gameStart(gameName);
-        });
+        Platform.runLater(() -> controller.gameStart(gameName));
     }
 
     /**
@@ -165,7 +163,7 @@ public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObser
     private void updateUserViews(){
         clearGrid();
         List<UserWrapper> users = controller.getUsers();
-        users.stream().forEach(this::addUser);
+        users.forEach(this::addUser);
         if(numberOfUsers > 1){
             setTimeoutLabel();
         }

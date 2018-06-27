@@ -33,11 +33,13 @@ import org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener.Obj
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,6 +52,11 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     private static final double TILE_SHOW_SCALE = 1;
     private static final double SCHEMA_CARD_SHOW_SCALE = 1;
     private static final double DICE_SCHEMA_SHOW_SCALE = 0.6;
+
+    private static final String NEGATIVE_BUTTON = "negative-button";
+    private static final String POSITIVE_BUTTON = "positive-button";
+    private static final String CSS_CLASS = "on-notify-pane-card";
+    private static final String BUTTON_TEXT = "Continua";
 
     /**
      * Constructor.
@@ -84,20 +91,20 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             clearNotifyPane(false);
             activateNotifyPane();
             drawHistoryButton();
-            HBox helperBox = showHelperText(notifyPane, "Scegli uno dei dadi nella lista: ");
+            HBox helperBox = showHelperText(notifyPane, ClientMessage.CHOOSE_DICE_FROM_LIST);
             List<Pane> diceViewList = new ArrayList<>();
             diceWrapperList.forEach(diceWrapper -> {
                 DiceView diceView = new DiceView(diceWrapper, DICE_SHOW_SCALE);
                 diceViewList.add(diceView);
             });
-            drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
+            drawCenteredPanes(notifyPane, diceViewList, CSS_CLASS);
             ToggleGroup toggleGroup = new ToggleGroup();
             drawRadioButtons(toggleGroup, diceViewList);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> fireDiceEvent(event, toggleGroup));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -115,20 +122,20 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             clearNotifyPane(false);
             activateNotifyPane();
             drawHistoryButton();
-            HBox helperBox = showHelperText(notifyPane, "Scegli il nuovo valore del dado: ");
+            HBox helperBox = showHelperText(notifyPane, ClientMessage.CHOOSE_DICE_VALUE);
             List<Pane> diceViewList = new ArrayList<>();
             for (int i = DiceWrapper.MIN_VALUE; i <= DiceWrapper.MAX_VALUE; i++) {
                 DiceView diceView = new DiceView(new DiceWrapper(diceWrapper.getColor(), i), DICE_SHOW_SCALE);
                 diceViewList.add(diceView);
             }
-            drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
+            drawCenteredPanes(notifyPane, diceViewList, CSS_CLASS);
             ToggleGroup toggleGroup = new ToggleGroup();
             drawRadioButtons(toggleGroup, diceViewList);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> fireValueEvent(event, toggleGroup));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -146,20 +153,20 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             clearNotifyPane(false);
             activateNotifyPane();
             drawHistoryButton();
-            HBox helperBox = showHelperText(notifyPane, "Scegli uno dei colori indicati per la mossa successiva: ");
+            HBox helperBox = showHelperText(notifyPane, ClientMessage.CHOOSE_COLOR_FOR_CONTINUE);
             List<Pane> colorViewList = new ArrayList<>();
             colorWrapperList.forEach(colorWrapper -> {
                 ColorView colorView = new ColorView(colorWrapper, TILE_SHOW_SCALE);
                 colorViewList.add(colorView);
             });
-            drawCenteredPanes(notifyPane, colorViewList, "on-notify-pane-card");
+            drawCenteredPanes(notifyPane, colorViewList, CSS_CLASS);
             ToggleGroup toggleGroup = new ToggleGroup();
             drawRadioButtons(toggleGroup, colorViewList);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> fireColorEvent(event, toggleGroup));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -178,7 +185,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             clearNotifyPane(false);
             activateNotifyPane();
             drawHistoryButton();
-            HBox helperBox = showHelperText(notifyPane, "Scegli il nuovo valore del dado: ");
+            HBox helperBox = showHelperText(notifyPane, ClientMessage.CHOOSE_DICE_VALUE);
             List<Pane> diceViewList = new ArrayList<>();
             if (diceWrapper.getNumber() + deltaValue <= DiceWrapper.MAX_VALUE)
                 diceViewList.add(new DiceView(new DiceWrapper(diceWrapper.getColor(),
@@ -186,14 +193,14 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             if (diceWrapper.getNumber() - deltaValue >= DiceWrapper.MIN_VALUE)
                 diceViewList.add(new DiceView(new DiceWrapper(diceWrapper.getColor(),
                         diceWrapper.getNumber() - deltaValue), DICE_SHOW_SCALE));
-            drawCenteredPanes(notifyPane, diceViewList, "on-notify-pane-card");
+            drawCenteredPanes(notifyPane, diceViewList, CSS_CLASS);
             ToggleGroup toggleGroup = new ToggleGroup();
             drawRadioButtons(toggleGroup, diceViewList);
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> fireValueEvent(event, toggleGroup));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -212,10 +219,10 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             clearNotifyPane(false);
             activateNotifyPane();
             drawHistoryButton();
-            HBox helperBox = showHelperText(notifyPane, "Scegli un dado dal Tracciato dei round: ");
+            HBox helperBox = showHelperText(notifyPane, ClientMessage.CHOOSE_DICE_FROM_ROUND_TRACK);
             RoundTrackView copyRoundTrackView = new RoundTrackView(roundTrackWrapper, ROUND_TRACK_SHOW_SCALE);
 
-            drawPane(notifyPane, copyRoundTrackView, "on-notify-pane-card",
+            drawPane(notifyPane, copyRoundTrackView, CSS_CLASS,
                     getPivotX(getCenterX(), copyRoundTrackView.widthProperty(), 0.5),
                     getPivotY(getCenterY(), copyRoundTrackView.heightProperty(), 0));
 
@@ -244,7 +251,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                     roundLabel.translateYProperty().bind(y);
                     notifyPane.getChildren().add(roundLabel);
 
-                    GraphicsUtils.drawCenteredPanes(notifyPane, diceViews, "on-notify-pane-card",
+                    GraphicsUtils.drawCenteredPanes(notifyPane, diceViews, CSS_CLASS,
                             getCenterX(), roundLabel.translateYProperty().add(roundLabel.heightProperty().add(PADDING * 3)));
 
                     drawRadioButtons(toggleGroup, diceViews);
@@ -256,7 +263,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> {
                 if (toggleGroup.getSelectedToggle() != null)
                     fireValueEvent(event, (Integer) toggleGroup.getUserData());
@@ -285,7 +292,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             schemaCardView.translateYProperty().bind(getPivotY(getCenterY(), schemaCardView.widthProperty(), 0.33));
             schemaCardView.setEffect(dropShadow);
             notifyPane.getChildren().add(schemaCardView);
-            String helperMessage = "Rimuovi un dado dalla Carta Schema rispettando la Carta Utensile";
+            String helperMessage = ClientMessage.REMOVE_DICE;
 
             schemaCardView.setOnMousePressed(event -> {
                 double x = event.getX();
@@ -301,7 +308,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> firePositionEvent(event, schemaCardView));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -327,8 +334,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             schemaCardView.translateYProperty().bind(getPivotY(getCenterY(), schemaCardView.widthProperty(), 0.33));
             schemaCardView.setEffect(dropShadow);
             notifyPane.getChildren().add(schemaCardView);
-            String helperMessage = "Piazza il dado in una cella rispettando le restrizioni di piazzamento della Carta" +
-                    " Utensile";
+            String helperMessage = ClientMessage.TOOL_CARD_PLACE_DICE;
             DiceView diceView = new DiceView(diceWrapper, DICE_SCHEMA_SHOW_SCALE);
 
             schemaCardView.setOnDragOver(event -> {
@@ -350,14 +356,14 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                         schemaCardView.removeDice(diceWrapper, oldPositionWrapper);
                     } catch (IOException e) {
                         Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-                        showCrashErrorMessage("Errore di sincronizzazione");
+                        showCrashErrorMessage(ClientMessage.SYNCHRONIZED_ERROR);
                         return;
                     }
                 }
 
                 PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
                 if (schemaCardView.getDiceByPosition(positionWrapper) != null) {
-                    showMessage(notifyPane, "Non puoi piazzare il dado su una cella piena", MessageType.ERROR);
+                    showMessage(notifyPane, ClientMessage.PLACE_DICE_ERROR, MessageType.ERROR);
                     return;
                 }
                 schemaCardView.setUserData(positionWrapper);
@@ -369,7 +375,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                     event.setDropCompleted(true);
                     event.consume();
                 } catch (ParseException e) {
-                    Logger.getAnonymousLogger().log(Level.SEVERE, "Parsing error");
+                    Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.PARSE_EXCEPTION);
                 }
             });
 
@@ -392,7 +398,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> firePositionEvent(event, schemaCardView));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -413,8 +419,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             drawHistoryButton();
             SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SHOW_SCALE);
             drawCenteredPane(notifyPane, schemaCardView, "");
-            String helperMessage = String.format("Rimuovi un dado del color %s dalla Carta Schema rispettando la " +
-                    "Carta Utensile", colorWrapper.name().toLowerCase());
+            String helperMessage = String.format(ClientMessage.REMOVE_DICE_BY_COLOR, colorWrapper.name().toLowerCase());
 
             schemaCardView.setOnMousePressed(event -> {
                 double x = event.getX();
@@ -423,9 +428,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                 schemaCardView.drawShadow(x, y);
                 PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
                 if (schemaCardView.getDiceByPosition(positionWrapper) == null)
-                    showMessage(notifyPane, "Nessun dado selezionato", MessageType.ERROR);
-                else if (schemaCardView.getDiceByPosition(positionWrapper).getColor() != colorWrapper)
-                    showMessage(notifyPane, "Il dado selezionato è del colore sbagliato", MessageType.ERROR);
+                    showMessage(notifyPane, ClientMessage.NO_DICE_SELECTED, MessageType.ERROR);
+                else if (Objects.requireNonNull(schemaCardView.getDiceByPosition(positionWrapper)).getColor() != colorWrapper)
+                    showMessage(notifyPane, ClientMessage.COLOR_DICE_IS_WRONG, MessageType.ERROR);
                 else
                     schemaCardView.setUserData(positionWrapper);
                 event.consume();
@@ -435,7 +440,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
             continueButton.setOnAction(event -> firePositionEvent(event, schemaCardView));
 
             helperBox.getChildren().addAll(spacer, continueButton);
@@ -448,7 +453,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     @Override
     public void notifyRepeatAction() throws IOException {
         Platform.runLater(() -> {
-            showMessage(notifyPane, "Hai sbagliato mossa, ripeti", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.REPEAT_ACTION, MessageType.ERROR);
             historyMessages.remove(historyMessages.size() - 1);
         });
     }
@@ -463,12 +468,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             deactivateNotifyPane();
-            showMessage(corePane, "L'esecuzione della Carta Utensile è stata interrotta per errore: " + error,
+            showMessage(corePane,  ClientMessage.TOOL_CARD_INTERRUPT_EXCEPTION + error,
                     MessageType.ERROR);
             try {
                 controller.updateAllViews();
             } catch (IOException e) {
-                showCrashErrorMessage("Errore di connessione");
+                showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
                 Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
             }
         });
@@ -483,12 +488,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             clearNotifyPane(false);
             activateNotifyPane();
             drawHistoryButton();
-            HBox helperBox = showHelperText(notifyPane, "Vuoi continuare l'esecuzione della Carta Utensile?");
+            HBox helperBox = showHelperText(notifyPane, ClientMessage.WOULD_YOU_CONTINUE);
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.SOMETIMES);
 
-            JFXButton continueButton = GraphicsUtils.getButton("Continua", "positive-button");
-            JFXButton cancelButton = GraphicsUtils.getButton("Annulla", "negative-button");
+            JFXButton continueButton = GraphicsUtils.getButton(BUTTON_TEXT, POSITIVE_BUTTON);
+            JFXButton cancelButton = GraphicsUtils.getButton("Annulla", NEGATIVE_BUTTON);
             continueButton.setOnAction(event -> fireAnswerEvent(event, true, cancelButton));
             cancelButton.setOnAction(event -> fireAnswerEvent(event, false, continueButton));
 
@@ -503,9 +508,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     public void notifyDiceReroll(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         DiceWrapper diceWrapper = parser.getDice(message);
-        Platform.runLater(() -> {
-            historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE));
-        });
+        Platform.runLater(() -> historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE)));
     }
 
     /**
@@ -516,7 +519,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             deactivateNotifyPane();
-            showMessage(corePane, "Carta Utensile eseguita con successo", MessageType.INFO);
+            showMessage(corePane, ClientMessage.TOOL_CARD_EXECUTION_SUCCESSFUL, MessageType.INFO);
         });
     }
 
@@ -528,7 +531,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         Platform.runLater(() -> {
             clearNotifyPane(false);
             deactivateNotifyPane();
-            showMessage(corePane, "A fine turno la ToolCard si attiverà", MessageType.INFO);
+            showMessage(corePane, ClientMessage.TOOL_CARD_END_TURN_ACTIVATION, MessageType.INFO);
         });
 
     }
@@ -540,9 +543,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     public void notifyDicePouredOver(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         DiceWrapper diceWrapper = parser.getDice(message);
-        Platform.runLater(() -> {
-            historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE));
-        });
+        Platform.runLater(() -> historyMessages.add(new HistoryObject(diceWrapper, ObjectMessageType.DICE)));
     }
 
     /**
@@ -564,7 +565,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     }
 
     private void drawHistoryButton(){
-        JFXButton button = GraphicsUtils.getButton("Cronologia", "negative-button");
+        JFXButton button = GraphicsUtils.getButton("Cronologia", NEGATIVE_BUTTON);
         button.setTranslateX(PADDING);
         button.setTranslateY(PADDING);
         button.setOnAction(event -> {
@@ -587,7 +588,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
     private void fireDiceEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, "Devi scegliere un dado", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_DICE, MessageType.ERROR);
             return;
         }
         DiceView diceView = (DiceView) toggleGroup.getSelectedToggle().getUserData();
@@ -599,13 +600,13 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             ((Button) actionEvent.getSource()).setDisable(true);
         } catch (IOException e) {
             historyMessages.remove(historyMessages.size() - 1);
-            showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CONNECTION_ERROR, MessageType.ERROR);
         }
     }
 
     private void fireColorEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, "Devi scegliere un colore", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_COLOR, MessageType.ERROR);
             return;
         }
         ColorView colorView = (ColorView) toggleGroup.getSelectedToggle().getUserData();
@@ -617,14 +618,14 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             ((Button) actionEvent.getSource()).setDisable(true);
         } catch (IOException e) {
             historyMessages.remove(historyMessages.size() - 1);
-            showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CONNECTION_ERROR, MessageType.ERROR);
         }
     }
 
     private void firePositionEvent(ActionEvent actionEvent, SchemaCardView schemaCardView) {
         try {
             if (schemaCardView.getUserData() == null) {
-                showMessage(notifyPane, "Devi scegliere una posizione", MessageType.ERROR);
+                showMessage(notifyPane, ClientMessage.CHOOSE_POSITION, MessageType.ERROR);
                 return;
             }
             PositionWrapper positionWrapper = (PositionWrapper) schemaCardView.getUserData();
@@ -633,7 +634,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             ((Button) actionEvent.getSource()).setDisable(true);
         } catch (IOException e) {
             historyMessages.remove(historyMessages.size() - 1);
-            showMessage(notifyPane, "Errore di connessione", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CONNECTION_ERROR, MessageType.ERROR);
         }
     }
 
@@ -645,13 +646,13 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             otherButton.setDisable(true);
         } catch (IOException e) {
             historyMessages.remove(historyMessages.size() - 1);
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 
     private void fireValueEvent(ActionEvent event, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, "Devi scegliere un valore", MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_VALUE, MessageType.ERROR);
             return;
         }
         int value = ((DiceView) toggleGroup.getSelectedToggle().getUserData()).getDiceWrapper().getNumber();
@@ -665,7 +666,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
             ((Button) event.getSource()).setDisable(true);
         } catch (IOException e) {
             historyMessages.remove(historyMessages.size() - 1);
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 }

@@ -17,6 +17,7 @@ import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.RoundTrackWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -72,7 +73,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
             RoundTrackWrapper roundTrackWrapper = controller.getRoundTrack();
             roundTrackView.drawRoundTrack(roundTrackWrapper);
         } catch (IOException e) {
-            showCrashErrorMessage("Errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }
     }
@@ -176,7 +177,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
             copyRoundTrackViews.forEach(trackView -> trackView.drawRoundTrack(roundTrack));
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
-            showCrashErrorMessage("errore di connessione");
+            showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
     }
 

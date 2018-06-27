@@ -1,6 +1,6 @@
 package org.poianitibaldizhou.sagrada.network;
 
-import org.poianitibaldizhou.sagrada.ClientSettings;
+import org.poianitibaldizhou.sagrada.utilities.ClientSettings;
 
 /**
  * OVERVIEW: representes the type of connections available for the various clients

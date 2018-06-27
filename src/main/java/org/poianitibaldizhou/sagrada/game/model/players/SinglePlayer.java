@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.SchemaCard;
 import org.poianitibaldizhou.sagrada.game.model.cards.objectivecards.PrivateObjectiveCard;
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class SinglePlayer extends Player {
 
     public static SinglePlayer newInstance(@NotNull Player player) {
         if(!(player instanceof SinglePlayer))
-            throw new IllegalArgumentException("SEVERE ERROR: player is not a single player, do not call this method directly");
+            throw new IllegalArgumentException(ServerMessage.SINGLE_PLAYER_ILLEGAL_ARGUMENT);
         return new SinglePlayer(player);
     }
 

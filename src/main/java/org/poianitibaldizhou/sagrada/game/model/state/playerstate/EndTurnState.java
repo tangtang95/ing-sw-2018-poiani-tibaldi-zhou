@@ -2,9 +2,6 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 public class EndTurnState extends IPlayerState {
 
     public EndTurnState(TurnState turnState) {
@@ -23,7 +20,6 @@ public class EndTurnState extends IPlayerState {
                 try {
                     turnState.getToolCardExecutor().waitToolCardExecutionEnd();
                 } catch (InterruptedException e) {
-                    Logger.getAnonymousLogger().log(Level.INFO, "toolCardExecution ended");
                     Thread.currentThread().interrupt();
                 }
                 turnState.notifyOnEndTurnState();

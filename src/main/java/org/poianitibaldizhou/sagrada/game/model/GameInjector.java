@@ -14,6 +14,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NumberConstraint;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,15 +37,17 @@ public class GameInjector {
      */
     public static final String CARD_NAME = "cardName";
     public static final String CARD_DESCRIPTION = "cardDescription";
+    public static final String CARD_COLOR = "cardColour";
+    public static final String CARD_ACTION = "action";
     private static final String CARD_POINTS = "cardPoints";
     private static final String CONSTRAINT_TYPE = "constraintType";
 
     /**
      * File path.
      */
-    private static final String FILE_PATH_1 = "resources/toolCards.json";
+    public static final String FILE_PATH_1 = "resources/toolCards.json";
     private static final String FILE_PATH_2 = "resources/publicObjectiveCards.json";
-    private static final String FILE_PATH_3 = "resources/privateObjectiveCards.json";
+    public static final String FILE_PATH_3 = "resources/privateObjectiveCards.json";
     private static final String FILE_PATH_4 = "resources/schemaCards.json";
 
     /**
@@ -68,15 +71,15 @@ public class GameInjector {
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_1));
         } catch (IOException | ParseException e) {
-            LOGGER.log(Level.FINE, "Parse exception in injectToolCards", e);
+            LOGGER.log(Level.SEVERE, ServerMessage.PARSE_EXCEPTION, e);
         }
 
         for (Object object : Objects.requireNonNull(jsonArray)) {
             JSONObject toolCard = (JSONObject) object;
-            toolCardDrawableCollection.addElement(new ToolCard(Color.valueOf((String) toolCard.get("cardColour")),
+            toolCardDrawableCollection.addElement(new ToolCard(Color.valueOf((String) toolCard.get(CARD_COLOR)),
                     (String) toolCard.get(CARD_NAME),
                     (String) toolCard.get(CARD_DESCRIPTION),
-                    (String) toolCard.get("action")));
+                    (String) toolCard.get(CARD_ACTION)));
         }
     }
 
@@ -109,7 +112,7 @@ public class GameInjector {
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_2));
         } catch (IOException | ParseException e) {
-            LOGGER.log(Level.FINE, "Parse exception in injectPublicObjectiveCards", e);
+            LOGGER.log(Level.SEVERE, ServerMessage.PARSE_EXCEPTION, e);
         }
 
         for (Object object : Objects.requireNonNull(jsonArray)) {
@@ -162,7 +165,7 @@ public class GameInjector {
                     ));
                     break;
                 default:
-                    throw new IllegalArgumentException("Wrong cardType in publicObjectiveCard.json");
+                    throw new IllegalArgumentException();
             }
         }
     }
@@ -181,7 +184,7 @@ public class GameInjector {
         try {
             jsonArray = (JSONArray) jsonParser.parse(new FileReader(FILE_PATH_3));
         } catch (IOException | ParseException e) {
-            LOGGER.log(Level.FINE, "Parse exception in injectPrivateObjectiveCards", e);
+            LOGGER.log(Level.SEVERE, ServerMessage.PARSE_EXCEPTION, e);
         }
         for (Object object : Objects.requireNonNull(jsonArray)) {
             JSONObject privateObjectiveCard = (JSONObject) object;
@@ -212,7 +215,7 @@ public class GameInjector {
                 frontBackSchemaCards.add(i, new FrontBackSchemaCard());
             }
         } catch (IOException | ParseException e) {
-            LOGGER.log(Level.FINE, "Parse exception in injectSchemaCard", e);
+            LOGGER.log(Level.SEVERE, ServerMessage.PARSE_EXCEPTION, e);
         }
 
         for (Object object : Objects.requireNonNull(jsonArray)) {

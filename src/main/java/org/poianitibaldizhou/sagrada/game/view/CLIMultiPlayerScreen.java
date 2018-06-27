@@ -3,6 +3,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.util.*;
@@ -12,21 +13,6 @@ import java.util.*;
  * he is not in his turn of play.
  */
 public class CLIMultiPlayerScreen extends GameModeStrategy {
-
-    /**
-     * The commands that player can use when is not his turn.
-     */
-    private static final String QUIT = "Quit game";
-    private static final String VIEW_DRAFT_POOL = "View the Draft Pool";
-    private static final String VIEW_ROUND_TRACK = "View the Round Track";
-    private static final String VIEW_TOOL_CARDS = "View the list of Tool Card";
-    private static final String VIEW_PUBLIC_OBJECTIVE_CARD = "View the public objective cards";
-    private static final String VIEW_SCHEMA_CARDS = "View Schema Cards";
-    private static final String VIEW_MY_SCHEMA = "View my schema Card";
-    private static final String VIEW_PRIVATE_OBJECTIVE_CARD = "View the private objective cards";
-    private static final String VIEW_MY_COINS = "View my coins";
-    private static final String VIEW_PLAYERS_COINS = "View players coins";
-    private static final String VIEW_TIME_TO_TIMEOUT = "View time to timeout";
 
     /**
      * Constructor.
@@ -51,49 +37,49 @@ public class CLIMultiPlayerScreen extends GameModeStrategy {
      * Initialize the ChangeConnection's commands.
      */
     protected void initializeCommands() {
-        Command viewDraftPool = new Command(VIEW_DRAFT_POOL, "View the game Draft Pool");
+        Command viewDraftPool = new Command(ClientMessage.VIEW_DRAFT_POOL, ClientMessage.VIEW_DRAFT_POOL_HELP);
         viewDraftPool.setCommandAction(this::viewDraftPool);
         commandMap.put(viewDraftPool.getCommandText(), viewDraftPool);
 
-        Command viewRoundTrack = new Command(VIEW_ROUND_TRACK, "View the game Round Track");
+        Command viewRoundTrack = new Command(ClientMessage.VIEW_ROUND_TRACK, ClientMessage.VIEW_ROUND_TRACK_HELP);
         viewRoundTrack.setCommandAction(this::viewRoundTrack);
         commandMap.put(viewRoundTrack.getCommandText(), viewRoundTrack);
 
-        Command viewToolCards = new Command(VIEW_TOOL_CARDS, "View the Tool Cards playable");
+        Command viewToolCards = new Command(ClientMessage.VIEW_TOOL_CARDS, ClientMessage.VIEW_TOOL_CARDS_HELP);
         viewToolCards.setCommandAction(this::viewToolCards);
         commandMap.put(viewToolCards.getCommandText(), viewToolCards);
 
-        Command viewPublicObjectiveCards = new Command(VIEW_PUBLIC_OBJECTIVE_CARD,
-                "View the Public Objective cards");
+        Command viewPublicObjectiveCards = new Command(ClientMessage.VIEW_PUBLIC_OBJECTIVE_CARD,
+                ClientMessage.VIEW_PUBLIC_OBJECTIVE_CARD_HELP);
         viewPublicObjectiveCards.setCommandAction(this::viewPublicObjectiveCards);
         commandMap.put(viewPublicObjectiveCards.getCommandText(), viewPublicObjectiveCards);
 
-        Command viewSchemaCards = new Command(VIEW_SCHEMA_CARDS, "View the Schema card of all players");
+        Command viewSchemaCards = new Command(ClientMessage.VIEW_SCHEMA_CARDS, ClientMessage.VIEW_SCHEMA_CARDS_HELP);
         viewSchemaCards.setCommandAction(this::viewSchemaCards);
         commandMap.put(viewSchemaCards.getCommandText(), viewSchemaCards);
 
-        Command viewMySchema = new Command(VIEW_MY_SCHEMA, "View my Schema card");
+        Command viewMySchema = new Command(ClientMessage.VIEW_MY_SCHEMA, ClientMessage.VIEW_MY_SCHEMA_HELP);
         viewMySchema.setCommandAction(this::viewMySchemaCard);
         commandMap.put(viewMySchema.getCommandText(), viewMySchema);
 
-        Command viewMyCoins = new Command(VIEW_MY_COINS, "View my expendable coins");
+        Command viewMyCoins = new Command(ClientMessage.VIEW_MY_COINS, ClientMessage.VIEW_MY_COINS_HELP);
         viewMyCoins.setCommandAction(this::viewMyCoins);
         commandMap.put(viewMyCoins.getCommandText(), viewMyCoins);
 
-        Command viewPlayersCoins = new Command(VIEW_PLAYERS_COINS, "View the coins of all players");
+        Command viewPlayersCoins = new Command(ClientMessage.VIEW_PLAYERS_COINS, ClientMessage.VIEW_PLAYERS_COINS_HELP);
         viewPlayersCoins.setCommandAction(this::viewPlayersCoins);
         commandMap.put(viewPlayersCoins.getCommandText(), viewPlayersCoins);
 
-        Command viewPrivateObjectiveCards = new Command(VIEW_PRIVATE_OBJECTIVE_CARD,
-                "View the Private Objective cards");
+        Command viewPrivateObjectiveCards = new Command(ClientMessage.VIEW_PRIVATE_OBJECTIVE_CARD,
+                ClientMessage.VIEW_PRIVATE_OBJECTIVE_CARD_HELP);
         viewPrivateObjectiveCards.setCommandAction(this::viewPrivateObjectiveCards);
         commandMap.put(viewPrivateObjectiveCards.getCommandText(), viewPrivateObjectiveCards);
 
-        Command viewTimeToTimeout = new Command(VIEW_TIME_TO_TIMEOUT, "View time to time out");
+        Command viewTimeToTimeout = new Command(ClientMessage.VIEW_TIME_TO_TIMEOUT, ClientMessage.VIEW_TIME_TO_TIMEOUT_HELP);
         viewTimeToTimeout.setCommandAction(this::viewTimeToTimeout);
         commandMap.put(viewTimeToTimeout.getCommandText(), viewTimeToTimeout);
 
-        Command quit = new Command(QUIT, "Quit from current game");
+        Command quit = new Command(ClientMessage.QUIT_GAME, ClientMessage.QUIT_GAME_HELP);
         quit.setCommandAction(this::quit);
         commandMap.put(quit.getCommandText(), quit);
     }
@@ -109,10 +95,10 @@ public class CLIMultiPlayerScreen extends GameModeStrategy {
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage());
             if (!clientGetMessage.hasTerminateGameError(response)) {
                 timeout = clientGetMessage.getTimeout(response);
-                PrinterManager.consolePrint("Time to timeout is: " + timeout, Level.STANDARD);
+                PrinterManager.consolePrint(ClientMessage.TIME_TO_TIMEOUT + timeout, Level.STANDARD);
             }
         } catch (IOException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR, Level.ERROR);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
     }
 
@@ -129,10 +115,10 @@ public class CLIMultiPlayerScreen extends GameModeStrategy {
             if(clientGetMessage.hasTerminateGameError(response))
                 return;
             coins = clientGetMessage.getMyCoins(response);
-            PrinterManager.consolePrint("Your coins: " + coins + "\n", Level.STANDARD);
+            PrinterManager.consolePrint(ClientMessage.YOUR_COINS + coins + "\n", Level.STANDARD);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
     }
 
@@ -150,11 +136,11 @@ public class CLIMultiPlayerScreen extends GameModeStrategy {
                 return;
             playersCoins = clientGetMessage.getPlayersCoins(response);
             playersCoins.forEach((k, v) ->
-                    PrinterManager.consolePrint("Coins of " + k.getUsername() + ": " + v.toString() + "\n",
+                    PrinterManager.consolePrint(String.format(ClientMessage.COINS_OF,k.getUsername(),v.toString()),
                             Level.STANDARD));
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
     }
 
@@ -172,12 +158,13 @@ public class CLIMultiPlayerScreen extends GameModeStrategy {
             if(clientGetMessage.hasTerminateGameError(response))
                 return;
             schemaCards = clientGetMessage.getSchemaCards(response);
-            Objects.requireNonNull(schemaCards).forEach((k, v) -> buildGraphic.buildMessage("Schema of Player:" + k).
+            Objects.requireNonNull(schemaCards).forEach((k, v) -> buildGraphic.buildMessage(
+                    ClientMessage.SCHEMA_CARD_OF+ k).
                     buildGraphicSchemaCard(v));
             PrinterManager.consolePrint(buildGraphic.toString(), Level.STANDARD);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
     }
 

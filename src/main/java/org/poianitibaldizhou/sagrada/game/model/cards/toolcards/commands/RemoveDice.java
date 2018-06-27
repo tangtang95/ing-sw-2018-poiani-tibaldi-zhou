@@ -15,7 +15,7 @@ import java.util.Objects;
 
 public class RemoveDice implements ICommand {
 
-    public PlacementRestrictionType getConstraintType() {
+    private PlacementRestrictionType getConstraintType() {
         return constraintType;
     }
 
@@ -55,8 +55,6 @@ public class RemoveDice implements ICommand {
         Position position;
         Dice removed;
         Color color;
-
-        System.out.println("REMOVE");
 
         if (this.constraintType == PlacementRestrictionType.COLOR) {
             color = toolCardExecutor.getNeededColor();

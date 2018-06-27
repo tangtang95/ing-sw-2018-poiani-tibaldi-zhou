@@ -45,7 +45,7 @@ public class RoundTrackView extends Pane{
      * Constructor.
      * Create an empty RoundTrackView (pane) without any dice
      *
-     * @param scale
+     * @param scale windows scale
      */
     public RoundTrackView(double scale){
         this.scale = scale;
