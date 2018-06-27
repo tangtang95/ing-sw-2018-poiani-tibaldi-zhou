@@ -1,6 +1,9 @@
 package org.poianitibaldizhou.sagrada.network.socket;
 
 import org.poianitibaldizhou.sagrada.ControllerManager;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IPlayerObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCardObserver;
+import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.socket.messages.*;
 import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
@@ -11,7 +14,9 @@ import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -114,6 +119,39 @@ public class ClientHandler implements Runnable {
                 request.replaceParameter(Proxy.newProxyInstance(
                         clazz.getClassLoader(), clazz.getInterfaces(),
                         new ProxyObserverInvocationHandler(this, parameters.get(i).hashCode())), i);
+            }
+            if(parameters.get(i) instanceof Map){
+                Map map = (Map) parameters.get(i);
+                if(map.values().toArray()[0] instanceof IPlayerObserver){
+                    Map<String, IPlayerObserver> playerObserverMap = new HashMap<>();
+                    map.forEach((key, value) -> {
+                        playerObserverMap.putIfAbsent((String) key, (IPlayerObserver) Proxy.newProxyInstance(
+                                IPlayerObserver.class.getClassLoader(), new Class[]{IPlayerObserver.class},
+                                new ProxyObserverInvocationHandler(this, value.hashCode())));
+                    });
+                    request.replaceParameter(playerObserverMap, i);
+                }
+                else if(map.values().toArray()[0] instanceof ISchemaCardObserver){
+                    Map<String, ISchemaCardObserver> schemaCardObserverMap = new HashMap<>();
+                    map.forEach((key, value) -> {
+                        schemaCardObserverMap.putIfAbsent((String) key, (ISchemaCardObserver) Proxy.newProxyInstance(
+                                ISchemaCardObserver.class.getClassLoader(), new Class[]{ISchemaCardObserver.class},
+                                new ProxyObserverInvocationHandler(this, value.hashCode())));
+                    });
+                    request.replaceParameter(schemaCardObserverMap, i);
+                }
+                else if(map.values().toArray()[0] instanceof IToolCardObserver){
+                    Map<String, IToolCardObserver> toolCardObserverMap = new HashMap<>();
+                    map.forEach((key, value) -> {
+                        toolCardObserverMap.putIfAbsent((String) key, (IToolCardObserver) Proxy.newProxyInstance(
+                                IToolCardObserver.class.getClassLoader(), new Class[]{IToolCardObserver.class},
+                                new ProxyObserverInvocationHandler(this, value.hashCode())));
+                    });
+                    request.replaceParameter(toolCardObserverMap, i);
+                }
+                else{
+                    throw new IllegalStateException();
+                }
             }
         }
     }

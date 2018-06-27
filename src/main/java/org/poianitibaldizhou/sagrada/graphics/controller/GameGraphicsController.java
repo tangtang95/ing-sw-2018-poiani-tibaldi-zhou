@@ -186,11 +186,18 @@ public class GameGraphicsController extends GraphicsController implements Initia
             Map<UserWrapper, Integer> coinMap = gameModel.getCoinsMap();
             List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers = gameModel.getOwnPrivateObjectiveCard();
             gameListener.drawUsers(userList, schemaCardWrapperMap, privateObjectiveCardWrappers, coinMap);
+            List<ToolCardWrapper> toolCardWrappers = gameModel.getToolCards();
+            gameListener.drawToolCards(toolCardWrappers, gameViewStrategy.getToolCardScale());
+            List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers = gameModel.getPublicObjectiveCards();
+            gameListener.drawPublicObjectiveCards(publicObjectiveCardWrappers, gameViewStrategy.getPublicObjectiveCardScale());
             connectionManager.getGameController().reconnect(
                     builder.createUsernameMessage(username).buildMessage(),
-                    gameListener, gameListener, roundTrackListener, stateListener, gameListener.getPlayerObservers(), gameListener.getToolCardObservers(),
-                    gameListener.getSchemaCardObservers(), draftPoolListener,
+                    gameListener, gameListener, roundTrackListener, stateListener, gameListener.getPlayerObservers(),
+                    gameListener.getToolCardObservers(), gameListener.getSchemaCardObservers(), draftPoolListener,
                     diceBagListener, timeoutListener);
+            updateAllViews();
+            drawRoundTrack();
+            drawDraftPool();
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
         }

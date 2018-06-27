@@ -141,9 +141,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers = parser.getPublicObjectiveCards(message);
 
         Platform.runLater(() -> {
-            publicObjectiveCardsContainer = drawPublicObjectiveCardsView(corePane, publicObjectiveCardWrappers,
-                    controller.getGameViewStrategy().getPublicObjectiveCardScale());
-            publicObjectiveCardsContainer.setOnMousePressed(this::onPublicObjectiveCardsPressed);
+            this.drawPublicObjectiveCards(publicObjectiveCardWrappers, controller.getGameViewStrategy().getPublicObjectiveCardScale());
             controller.drawRoundTrack();
             controller.drawDraftPool();
         });
@@ -282,6 +280,38 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
                 showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
             }
         }
+    }
+
+    public void drawPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double publicObjectiveCardScale) {
+        publicObjectiveCardsContainer = drawPublicObjectiveCardsView(corePane, publicObjectiveCardWrappers, publicObjectiveCardScale);
+        publicObjectiveCardsContainer.setOnMousePressed(this::onPublicObjectiveCardsPressed);
+    }
+
+    public void drawToolCards(List<ToolCardWrapper> toolCardWrappers, double scale) throws RemoteException {
+
+        toolCardsContainer = new Pane();
+
+        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING * 2);
+        DoubleBinding y = new SimpleDoubleProperty(0).add(corePane.heightProperty()
+                .multiply(AbstractView.HELPER_BAR_PERCENT_HEIGHT).add(PADDING));
+
+        toolCardsContainer.translateXProperty().bind(x);
+        toolCardsContainer.translateYProperty().bind(y);
+
+        for (int i = 0; i < toolCardWrappers.size(); i++) {
+            ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), scale);
+            toolCardView.setTranslateX(i * PADDING);
+            toolCardView.setTranslateY(i * PADDING);
+            ToolCardListener toolCardListener = new ToolCardListener(toolCardView, controller, corePane, notifyPane);
+            toolCardListeners.add(toolCardListener);
+            toolCardsContainer.getChildren().add(toolCardView);
+        }
+
+        toolCardsContainer.setOnMousePressed(this::onToolCardsPressed);
+        toolCardsContainer.getStyleClass().add(CSS_CLASS2);
+
+        corePane.getChildren().add(toolCardsContainer);
+
     }
 
     @Override
@@ -471,33 +501,6 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
         }
         event.consume();
-    }
-
-    private void drawToolCards(List<ToolCardWrapper> toolCardWrappers, double scale) throws RemoteException {
-
-        toolCardsContainer = new Pane();
-
-        DoubleBinding x = new SimpleDoubleProperty(0).add(PADDING * 2);
-        DoubleBinding y = new SimpleDoubleProperty(0).add(corePane.heightProperty()
-                .multiply(AbstractView.HELPER_BAR_PERCENT_HEIGHT).add(PADDING));
-
-        toolCardsContainer.translateXProperty().bind(x);
-        toolCardsContainer.translateYProperty().bind(y);
-
-        for (int i = 0; i < toolCardWrappers.size(); i++) {
-            ToolCardView toolCardView = new ToolCardView(toolCardWrappers.get(i), scale);
-            toolCardView.setTranslateX(i * PADDING);
-            toolCardView.setTranslateY(i * PADDING);
-            ToolCardListener toolCardListener = new ToolCardListener(toolCardView, controller, corePane, notifyPane);
-            toolCardListeners.add(toolCardListener);
-            toolCardsContainer.getChildren().add(toolCardView);
-        }
-
-        toolCardsContainer.setOnMousePressed(this::onToolCardsPressed);
-        toolCardsContainer.getStyleClass().add(CSS_CLASS2);
-
-        corePane.getChildren().add(toolCardsContainer);
-
     }
 
     private void onToolCardsPressed(MouseEvent event) {

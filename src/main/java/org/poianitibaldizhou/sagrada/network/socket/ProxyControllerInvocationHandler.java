@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.network.socket.messages.Request;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Map;
 
 /**
  * OVERVIEW: Represents a proxy controller client-side that reflects the calls with the
@@ -40,6 +41,10 @@ public class ProxyControllerInvocationHandler implements InvocationHandler {
             for (Object arg : args) {
                 if (arg instanceof UnicastRemoteObject)
                     serverHandler.addViewToHashMap(arg.hashCode(), arg);
+                if(arg instanceof Map){
+                    Map map = (Map) arg;
+                    map.forEach((key, value)-> serverHandler.addViewToHashMap(value.hashCode(), value));
+                }
             }
         }
         Request request = null;
