@@ -3,6 +3,11 @@ package org.poianitibaldizhou.sagrada.network.observers.realobservers;
 import java.io.IOException;
 import java.rmi.Remote;
 
+/**
+ * OVERVIEW: Real observer for a certain schema card. Real observer are observers client side that
+ * listen to changes and modification of the model. All the parameters of the methods are
+ * protocol string.
+ */
 public interface ISchemaCardObserver extends Remote {
 
     /**

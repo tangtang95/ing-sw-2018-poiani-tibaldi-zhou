@@ -13,6 +13,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @see IGameFakeObserver
+ */
 public class GameFakeObserver implements IGameFakeObserver {
     private IGameObserver realObserver;
     private GameObserverManager observerManager;

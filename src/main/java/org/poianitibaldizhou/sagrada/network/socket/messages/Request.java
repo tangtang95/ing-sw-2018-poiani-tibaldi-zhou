@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Represents the general request of executing a certain method
+ */
 public class Request implements Serializable {
     private final String methodName;
     private final Object[] methodParameters;
@@ -39,9 +42,14 @@ public class Request implements Serializable {
         this.methodParameters = request.getMethodParameters().toArray();
     }
 
+    /**
+     * Returns the list of the parameters necessary for the method invocation
+     *
+     * @return list of parameters necessary for the method invocation
+     */
     public List<Object> getMethodParameters() {
         List<Object> parameters = new ArrayList<>();
-        if(methodParameters != null)
+        if (methodParameters != null)
             parameters.addAll(Arrays.asList(methodParameters));
         return parameters;
     }

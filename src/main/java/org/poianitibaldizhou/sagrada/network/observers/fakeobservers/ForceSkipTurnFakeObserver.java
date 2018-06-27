@@ -11,6 +11,8 @@ import java.util.Map;
 /**
  * OVERVIEW: listen to the state of a certain game and
  * handles the skip turn of the disconnected players
+ *
+ * @see IStateFakeObserver
  */
 public class ForceSkipTurnFakeObserver implements IStateFakeObserver {
 

@@ -9,6 +9,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @see IRoundTrackFakeObserver
+ */
 public class RoundTrackFakeObserver implements IRoundTrackFakeObserver{
 
     private IRoundTrackObserver realObserver;

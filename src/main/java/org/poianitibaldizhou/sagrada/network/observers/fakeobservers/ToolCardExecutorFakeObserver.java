@@ -15,6 +15,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @see IToolCardExecutorFakeObserver
+ */
 public class ToolCardExecutorFakeObserver implements IToolCardExecutorFakeObserver {
 
     private String token;

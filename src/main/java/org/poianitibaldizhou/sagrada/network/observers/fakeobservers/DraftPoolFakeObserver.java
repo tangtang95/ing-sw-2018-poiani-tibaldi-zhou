@@ -9,6 +9,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @see IDraftPoolFakeObserver
+ */
 public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
     private IDraftPoolObserver realObserver;
     private String token;
@@ -87,7 +90,7 @@ public class DraftPoolFakeObserver implements IDraftPoolFakeObserver {
         Runnable runnable = () -> {
             try {
                 ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
-                realObserver.onDraftPoolReroll(serverCreateMessage.createDiceList(dices).buildMessage());
+                realObserver.onDraftPoolReRoll(serverCreateMessage.createDiceList(dices).buildMessage());
             } catch (IOException e) {
                 observerManager.signalDisconnection(token);
             }

@@ -12,7 +12,10 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class SocketStrategyController implements StrategyController {
+/**
+ * OVERVIEW: This allows the access to the controllers via socket
+ */
+public class SocketStrategyController implements NetworkStrategyController {
 
     private ILobbyController lobbyController;
     private IGameController gameController;
@@ -43,16 +46,25 @@ public class SocketStrategyController implements StrategyController {
                 new ProxyControllerInvocationHandler(serverHandler, ControllerType.GAME_CONTROLLER));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ILobbyController getLobbyController() {
         return lobbyController;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public IGameController getGameController() {
         return gameController;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() {
         try {

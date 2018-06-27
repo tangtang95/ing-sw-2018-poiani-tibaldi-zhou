@@ -89,7 +89,6 @@ public final class PrivateObjectiveCardWrapper extends CardWrapper implements JS
      */
     @Override
     public int hashCode() {
-
         return Objects.hash(getColor(),getName(),getDescription());
     }
 }

@@ -120,7 +120,8 @@ public class ClientCreateMessage {
     }
 
     /**
-     * Creates a message containing a private objective card 
+     * Creates a message containing a private objective card
+     *
      * @param privateObjectiveCardWrapper private objective card that needs to be sent
      * @return the ClientCreateMessage with the message added to the packed
      */

@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 /**
  * OVERVIEW : observe the state of the game and sets and handles timeout to various actions
+ * @see IStateFakeObserver
  */
 public class TimeOutFakeObserver implements IStateFakeObserver {
 

@@ -102,7 +102,7 @@ public class DraftPoolListener extends AbstractView implements IDraftPoolObserve
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(String message) throws IOException {
+    public void onDraftPoolReRoll(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         List<DiceWrapper> dices = parser.getDiceList(message);
         Platform.runLater(() -> draftPoolView.reRollDraftPool(dices));

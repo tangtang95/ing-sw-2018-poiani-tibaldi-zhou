@@ -8,6 +8,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
+/**
+ * @see ILobbyFakeObserver
+ */
 public class LobbyFakeObserver implements ILobbyFakeObserver {
 
     private String token;

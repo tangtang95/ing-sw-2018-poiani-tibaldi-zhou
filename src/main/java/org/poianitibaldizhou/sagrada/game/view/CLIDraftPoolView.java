@@ -71,7 +71,7 @@ public class CLIDraftPoolView extends UnicastRemoteObject implements IDraftPoolO
      * {@inheritDoc}
      */
     @Override
-    public void onDraftPoolReroll(String dices) throws IOException {
+    public void onDraftPoolReRoll(String dices) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         String message = (cliStateView.getCurrentUser().getUsername() + ClientMessage.HAS_RE_ROLL);
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(dices);

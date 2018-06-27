@@ -4,6 +4,11 @@ import org.poianitibaldizhou.sagrada.lobby.model.User;
 
 import java.util.Map;
 
+/**
+ * OVERVIEW: Fake observer for the state of the game.
+ * Fake observers are observer present on the server that listen to changes and modifications.
+ * In this way, the network part is decoupled from the model.
+ */
 public interface IStateFakeObserver {
 
     /**

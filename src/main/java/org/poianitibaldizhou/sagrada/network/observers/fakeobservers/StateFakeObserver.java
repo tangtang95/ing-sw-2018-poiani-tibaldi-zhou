@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @see IStateFakeObserver
+ */
 public class StateFakeObserver implements IStateFakeObserver {
 
     private String token;

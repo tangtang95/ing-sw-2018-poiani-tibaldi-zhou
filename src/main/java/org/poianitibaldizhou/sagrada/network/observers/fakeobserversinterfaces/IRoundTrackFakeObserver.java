@@ -4,6 +4,11 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
 import java.util.List;
 
+/**
+ * OVERVIEW: Fake observer for the round track.
+ * Fake observers are observer present on the server that listen to changes and modifications.
+ * In this way, the network part is decoupled from the model.
+ */
 public interface IRoundTrackFakeObserver {
 
     /**

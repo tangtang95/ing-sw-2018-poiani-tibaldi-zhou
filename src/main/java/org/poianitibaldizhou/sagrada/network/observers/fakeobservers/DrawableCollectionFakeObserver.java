@@ -9,6 +9,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * @see IDrawableCollectionFakeObserver
+ */
 public class DrawableCollectionFakeObserver<T extends JSONable> implements IDrawableCollectionFakeObserver<T> {
 
     private IDrawableCollectionObserver realObserver;
@@ -20,8 +23,8 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
      * Creates a fake observer of a drawable collection used to manage the asynchronous call made to various client
      * and network communication errors
      *
-     * @param token player's token of the real observer
-     * @param realObserver real drawable collection observer
+     * @param token           player's token of the real observer
+     * @param realObserver    real drawable collection observer
      * @param observerManager observer manager of the specified game
      */
     public DrawableCollectionFakeObserver(String token, IDrawableCollectionObserver realObserver, GameObserverManager observerManager) {
@@ -34,7 +37,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
      * {@inheritDoc}
      */
     @Override
-    public void onElementAdd(T elem)  {
+    public void onElementAdd(T elem) {
         Runnable runnable = () -> {
             try {
                 ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
@@ -51,7 +54,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
      * {@inheritDoc}
      */
     @Override
-    public void onElementsAdd(List<T> elemList)  {
+    public void onElementsAdd(List<T> elemList) {
         Runnable runnable = () -> {
             try {
                 ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
@@ -68,7 +71,7 @@ public class DrawableCollectionFakeObserver<T extends JSONable> implements IDraw
      * {@inheritDoc}
      */
     @Override
-    public void onElementDraw(T elem)  {
+    public void onElementDraw(T elem) {
         Runnable runnable = () -> {
             try {
                 ServerCreateMessage serverCreateMessage = new ServerCreateMessage();

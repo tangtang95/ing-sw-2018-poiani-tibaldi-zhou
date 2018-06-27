@@ -9,6 +9,11 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * OVERVIEW: Fake observer for the execution of the tool card.
+ * Fake observers are observer present on the server that listen to changes and modifications.
+ * In this way, the network part is decoupled from the model.
+ */
 public interface IToolCardExecutorFakeObserver {
 
     /**

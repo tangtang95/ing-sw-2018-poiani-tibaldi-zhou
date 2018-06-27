@@ -2,6 +2,10 @@ package org.poianitibaldizhou.sagrada.network.protocol;
 
 import org.json.simple.JSONObject;
 
+/**
+ * OVERVIEW: Represents an object that can be converted to JSON in order to be transmitted
+ * over the network.
+ */
 public interface JSONable {
 
     /**

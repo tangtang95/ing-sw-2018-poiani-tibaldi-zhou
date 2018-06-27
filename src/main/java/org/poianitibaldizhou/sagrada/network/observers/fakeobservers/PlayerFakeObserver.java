@@ -8,6 +8,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
+/**
+ * @see IPlayerFakeObserver
+ */
 public class PlayerFakeObserver implements IPlayerFakeObserver {
 
     private String token;

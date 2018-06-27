@@ -22,12 +22,11 @@ public class ServerGameHeartBeat extends Thread {
      * related to a certain game.
      *
      * @param gameNetworkManager game network manager of the server
-     *
-     * @param gameName    name of the game on which the heart beat acts
+     * @param gameName           name of the game on which the heart beat acts
      */
     public ServerGameHeartBeat(GameNetworkManager gameNetworkManager, GameManager gameManager, String gameName) {
         this.gameName = gameName;
-        this.gameNetworkManager= gameNetworkManager;
+        this.gameNetworkManager = gameNetworkManager;
         this.gameManager = gameManager;
     }
 

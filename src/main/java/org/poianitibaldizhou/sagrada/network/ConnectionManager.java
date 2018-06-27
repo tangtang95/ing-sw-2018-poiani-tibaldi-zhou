@@ -4,17 +4,17 @@ import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.RMIStrategyController;
 import org.poianitibaldizhou.sagrada.network.strategycontroller.SocketStrategyController;
-import org.poianitibaldizhou.sagrada.network.strategycontroller.StrategyController;
+import org.poianitibaldizhou.sagrada.network.strategycontroller.NetworkStrategyController;
 import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 /**
  * OVERVIEW: Manages the connection of a certain client to the server, allowing to switch the network connection
  * type of client easily
  */
-public class ConnectionManager implements StrategyController {
+public class ConnectionManager implements NetworkStrategyController {
 
     private ConnectionType networkType;
-    private StrategyController strategyController;
+    private NetworkStrategyController strategyController;
     private final String ipAddress;
     private int port;
 

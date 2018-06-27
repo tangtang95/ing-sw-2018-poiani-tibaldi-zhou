@@ -2,6 +2,13 @@ package org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces;
 
 import java.util.List;
 
+/**
+ * OVERVIEW: Fake observer for the drawable collection .
+ * Fake observers are observers present in the server that listen to changes and modification.
+ * In this way, the network part is decoupled from the model.
+ *
+ * @param <T> type of the elements present in the drawable collection
+ */
 public interface IDrawableCollectionFakeObserver<T> {
     /**
      * Notify that an element has been added to the DrawableCollection

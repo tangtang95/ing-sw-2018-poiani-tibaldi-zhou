@@ -7,6 +7,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
+/**
+ * @see IToolCardFakeObserver
+ */
 public class ToolCardFakeObserver implements IToolCardFakeObserver{
     private String token;
     private IToolCardObserver realObserver;

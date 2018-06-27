@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * OVERVIEW: Game observer manager that handles the observers of a specific game by using a thread queue of a single
- * thread.
+ * thread active in a certain moment.
  */
 public class GameObserverManager {
 
@@ -57,26 +57,49 @@ public class GameObserverManager {
 
     // GETTER
 
+    /**
+     * @return this manages the observer for the game returned
+     */
     @Contract(pure = true)
     public IGame getGame() {
         return game;
     }
 
+    /**
+     * Returns the map of the timeout observers currently active for this game
+     *
+     * @return map of timeout observer and the tokens that identify them
+     */
     @Contract(pure = true)
     public Map<String, ITimeOutObserver> getObserverTimeoutHashMap() {
         return new HashMap<>(observerTimeoutHashMap);
     }
 
+    /**
+     * Returns the list of the disconnected players
+     *
+     * @return list of disconnected players
+     */
     @Contract(pure = true)
     public Set<String> getDisconnectedPlayer() {
         return new HashSet<>(disconnectedPlayer);
     }
 
+    /**
+     * Returns the list of disconnected players whose disconnection hasn't been notified to other players yet.
+     *
+     * @return list of disconnected player whose disconnection hasn't been notified to other players yet
+     */
     @Contract(pure = true)
     public Set<String> getDisconnectedPlayerNotNotified() {
         return new HashSet<>(disconnectedPlayerNotNotified);
     }
 
+    /**
+     * Return the time missing to time out
+     *
+     * @return time left to time out (millis)
+     */
     @Contract(pure = true)
     public Long getTimeToTimeout() {
         return timeOutFakeObserver.getTimeToTimeout();
@@ -84,18 +107,34 @@ public class GameObserverManager {
 
     // MODIFIER
 
+    /**
+     * Set the timeout fake observer to the game managed by this.
+     *
+     * @param timeOutFakeObserver timeout fake observer that will be set
+     */
     public void setTimeOutFakeObserver(TimeOutFakeObserver timeOutFakeObserver) {
         synchronized (getGame()) {
             this.timeOutFakeObserver = timeOutFakeObserver;
         }
     }
 
+    /**
+     * Add a timeout real observer
+     *
+     * @param token           token that identify the timeout real observer
+     * @param timeOutObserver timeout real observer identified by token
+     */
     public void attachTimeoutObserver(String token, ITimeOutObserver timeOutObserver) {
         synchronized (getGame()) {
             observerTimeoutHashMap.putIfAbsent(token, timeOutObserver);
         }
     }
 
+    /**
+     * Detach a timeout real observer identified by token
+     *
+     * @param token token of the timeout observer to detach
+     */
     private void detachTimeoutObserver(String token) {
         synchronized (getGame()) {
             observerTimeoutHashMap.remove(token);
@@ -166,8 +205,8 @@ public class GameObserverManager {
     /**
      * Push the notification of the timeout of a a certain player identified by timedOutToken
      *
-     * @param token token that identifies the thread queue
-     * @param notify notify the timeout
+     * @param token         token that identifies the thread queue
+     * @param notify        notify the timeout
      * @param timedOutToken token of the player who timed out
      */
     public void pushTimeoutThread(String token, Runnable notify, String timedOutToken) {

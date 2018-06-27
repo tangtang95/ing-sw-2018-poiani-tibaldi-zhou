@@ -4,6 +4,11 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 
 import java.util.List;
 
+/**
+ * OVERVIEW: Fake observer for the draft pool.
+ * Fake observers are observer present on the server that listen to changes and modification.
+ * In this way, the network part is decoupled from the model.
+ */
 public interface IDraftPoolFakeObserver {
 
     /**

@@ -9,6 +9,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 
 import java.io.IOException;
 
+/**
+ * @see ISchemaCardFakeObserver
+ */
 public class SchemaCardFakeObserver implements ISchemaCardFakeObserver {
 
     private String token;

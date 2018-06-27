@@ -3,6 +3,11 @@ package org.poianitibaldizhou.sagrada.network.observers.realobservers;
 import java.io.IOException;
 import java.rmi.Remote;
 
+/**
+ * OVERVIEW: Real observer for the draft pool. Real observer are observers client side that
+ * listen to changes and modification of the model. All the parameters of the methods are
+ * protocol string.
+ */
 public interface IDraftPoolObserver extends Remote {
 
     /**
@@ -36,7 +41,7 @@ public interface IDraftPoolObserver extends Remote {
      *              performed
      * @throws IOException network error
      */
-    void onDraftPoolReroll(String dices) throws IOException;
+    void onDraftPoolReRoll(String dices) throws IOException;
 
     /**
      * Notify that the DraftPool has been cleared and that's, therefore, empty.
