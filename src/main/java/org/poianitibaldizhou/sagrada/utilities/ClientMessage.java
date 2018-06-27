@@ -124,6 +124,14 @@ public final class ClientMessage {
     public static final String TURN_MENU = "----------------------------IS YOUR TURN---------------------------\n";
     public static final String END_TURN_MENU = "-------------------------YOUR TURN IS FINISH-----------------------\n";
     public static final String TABLE_OF_POINTS_MENU = "--------------------------TABLE OF POINTS--------------------------\n";
+    public static final String LEAVE_COMMAND = "Leave";
+    public static final String TIMEOUT_COMMAND = "Timeout";
+    public static final String LOBBY_USER_COMMAND = "Show lobby users";
+    public static final String LEAVE_COMMAND_HELP = "Leave the lobby";
+    public static final String TIMEOUT_COMMAND_HELP = "Show time to reach timeout";
+    public static final String LOBBY_USER_COMMAND_HELP = "Show users in lobby";
+    public static final String LOBBY_MENU = "-----------------------Welcome to the Lobby------------------------\n";
+    public static final String GAME_STARTED = "\"----------------------------GAME STARTED---------------------------\n";
 
     /**
      * CLI info massages.
@@ -181,6 +189,9 @@ public final class ClientMessage {
     public static final String TOKEN_CHANGE = "Token on %s has been change to %d.";
     public static final String TOOL_CARD_DESTROY = "Tool card %s has been utilized and destroyed.";
     public static final String CHOOSE_TOOL_CARD = "Choose a Tool card: ";
+    public static final String USER_JOIN_LOBBY = "User %s joined the lobby.\n";
+    public static final String USER_LEFT_LOBBY = "User %s left the lobby.\n";
+    public static final String USER_LEAVE_LOBBY = "You have leave the lobby.\n";
 
     /**
      * CLI error messages.

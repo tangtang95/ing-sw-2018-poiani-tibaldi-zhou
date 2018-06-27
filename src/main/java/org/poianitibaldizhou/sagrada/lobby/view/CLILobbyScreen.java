@@ -47,13 +47,6 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     private transient ClientCreateMessage clientCreateMessage;
 
     /**
-     * Lobby commands.
-     */
-    private static final String LEAVE_COMMAND = "Leave";
-    private static final String TIMEOUT_COMMAND = "Timeout";
-    private static final String LOBBY_USER_COMMAND = "Show lobby users";
-
-    /**
      * constructor.
      *
      * @param connectionManager the network manager for connecting with the server.
@@ -79,11 +72,11 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
      */
     @Override
     protected void initializeCommands() {
-        Command leaveCommand = new Command(LEAVE_COMMAND, "Leave the lobby");
+        Command leaveCommand = new Command(ClientMessage.LEAVE_COMMAND, ClientMessage.LEAVE_COMMAND_HELP);
         leaveCommand.setCommandAction(this::leave);
         commandMap.put(leaveCommand.getCommandText(), leaveCommand);
 
-        Command timeoutCommand = new Command(TIMEOUT_COMMAND, "Show time to reach timeout");
+        Command timeoutCommand = new Command(ClientMessage.TIMEOUT_COMMAND, ClientMessage.TIMEOUT_COMMAND_HELP);
         timeoutCommand.setCommandAction(() -> {
             try {
                 String message = connectionManager.getLobbyController().getTimeout();
@@ -96,7 +89,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         });
         commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
 
-        Command showUserCommand = new Command(LOBBY_USER_COMMAND, "Show users in lobby");
+        Command showUserCommand = new Command(ClientMessage.LOBBY_USER_COMMAND, ClientMessage.LOBBY_USER_COMMAND_HELP);
         showUserCommand.setCommandAction(() -> {
             try {
                 String message = connectionManager.getLobbyController().getUsersInLobby();
@@ -129,7 +122,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     private void login() {
         consoleListener.stopCommandConsole();
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-        PrinterManager.consolePrint("Provide an username: \n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.PROVIDE_AN_USERNAME, Level.STANDARD);
         while(username == null) {
             try {
                 username = r.readLine();
@@ -169,7 +162,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     public void startCLI() {
         CLIBasicScreen.clearScreen();
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint("-----------------------Welcome to the Lobby------------------------\n",
+        PrinterManager.consolePrint(ClientMessage.LOBBY_MENU,
                 Level.STANDARD);
         login();
         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(),Level.STANDARD);
@@ -207,7 +200,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     public void onUserJoin(String user) throws IOException {
         UserWrapper userWrapper = clientGetMessage.getUserWrapper(user);
         if (!userWrapper.getUsername().equals(username))
-            PrinterManager.consolePrint("User " + userWrapper.getUsername() + " joined the Lobby\n", Level.INFORMATION);
+            PrinterManager.consolePrint(String.format(ClientMessage.USER_JOIN_LOBBY,userWrapper.getUsername()), Level.INFORMATION);
 
     }
 
@@ -218,9 +211,9 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     public void onUserExit(String user) throws IOException {
         UserWrapper userWrapper = clientGetMessage.getUserWrapper(user);
         if (!userWrapper.getUsername().equals(username)) {
-            PrinterManager.consolePrint("User " + userWrapper.getUsername() + " left the Lobby\n", Level.INFORMATION);
+            PrinterManager.consolePrint(String.format(ClientMessage.USER_LEFT_LOBBY,userWrapper.getUsername()), Level.INFORMATION);
         } else {
-            PrinterManager.consolePrint("You have left the lobby.\n", Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.USER_LEAVE_LOBBY, Level.INFORMATION);
             screenManager.popScreen();
         }
     }
@@ -232,7 +225,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
     public void onGameStart(String message) throws IOException {
         String gameName = clientGetMessage.getGameName(message);
 
-        PrinterManager.consolePrint("\"----------------------------GAME STARTED---------------------------\n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.GAME_STARTED, Level.STANDARD);
         try {
             screenManager.replaceScreen(new CLISetupGameScreen(connectionManager,screenManager,
                     new CLIMultiPlayerScreen(connectionManager,screenManager,gameName,token),
