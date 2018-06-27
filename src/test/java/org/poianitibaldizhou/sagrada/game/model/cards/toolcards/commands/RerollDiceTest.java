@@ -36,7 +36,7 @@ public class RerollDiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        command = new RerollDice();
+        command = new ReRollDice();
     }
 
     @Test
@@ -53,13 +53,13 @@ public class RerollDiceTest {
 
     @Test
     public void equalsTest() {
-        assertEquals(command, new RerollDice());
+        assertEquals(command, new ReRollDice());
         assertNotEquals(command, new AddDiceToDiceBag());
     }
 
     @Test
     public void hashCodeTest() {
-        assertEquals(new RerollDice().hashCode(), new RerollDice().hashCode());
-        assertNotEquals(new RerollDice().hashCode(), new AddDiceToDiceBag().hashCode());
+        assertEquals(new ReRollDice().hashCode(), new ReRollDice().hashCode());
+        assertNotEquals(new ReRollDice().hashCode(), new AddDiceToDiceBag().hashCode());
     }
 }

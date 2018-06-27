@@ -82,12 +82,12 @@ public class RemoveDiceFromDraftPoolTest {
     @Test
     public void equalsTest() {
         assertEquals(command, new RemoveDiceFromDraftPool());
-        assertNotEquals(command, new DrawDiceFromDicebag());
+        assertNotEquals(command, new DrawDiceFromDiceBag());
     }
 
     @Test
     public void testHashCode() {
         assertEquals(command.hashCode(), new RemoveDiceFromDraftPool().hashCode());
-        assertNotEquals(command.hashCode(), new DrawDiceFromDicebag().hashCode());
+        assertNotEquals(command.hashCode(), new DrawDiceFromDiceBag().hashCode());
     }
 }

@@ -7,11 +7,14 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
-public class RerollDraftPool implements ICommand {
+/**
+ * OVERVIEW: Commands for re-rolling every dice present in the draft pool
+ */
+public class ReRollDraftPool implements ICommand {
 
     /**
      * Re-roll every dice presents in the DraftPool.
-     * Doesn't require anything and doesn't change anything from and in toolcard.
+     * Doesn't require anything and doesn't change anything from and in tool card.
      *
      * @param player           player that invoked the ToolCard containing this command
      * @param toolCardExecutor ToolCard that used this command
@@ -27,11 +30,11 @@ public class RerollDraftPool implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof RerollDraftPool;
+        return object instanceof ReRollDraftPool;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(RerollDraftPool.class);
+        return Objects.hash(ReRollDraftPool.class);
     }
 }

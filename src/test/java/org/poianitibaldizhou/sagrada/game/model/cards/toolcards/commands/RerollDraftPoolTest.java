@@ -37,7 +37,7 @@ public class RerollDraftPoolTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        command  = new RerollDraftPool();
+        command  = new ReRollDraftPool();
         when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
     }
 
@@ -56,13 +56,13 @@ public class RerollDraftPoolTest {
 
     @Test
     public void equalsTest() {
-        assertEquals(command, new RerollDraftPool());
+        assertEquals(command, new ReRollDraftPool());
         assertNotEquals(command, new SkipTurn(1));
     }
 
     @Test
     public void hashCodeTest() {
-        assertEquals(new RerollDraftPool().hashCode(), new RerollDraftPool().hashCode());
-        assertNotEquals(new RerollDraftPool().hashCode(), new RerollDice().hashCode());
+        assertEquals(new ReRollDraftPool().hashCode(), new ReRollDraftPool().hashCode());
+        assertNotEquals(new ReRollDraftPool().hashCode(), new ReRollDice().hashCode());
     }
 }

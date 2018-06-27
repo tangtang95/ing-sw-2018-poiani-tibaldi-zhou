@@ -109,7 +109,7 @@ public class SwapDiceWithRoundTrackTest {
     @Test
     public void testEquals() {
         assertEquals(command, new SwapDiceWithRoundTrack());
-        assertNotEquals(command, new RerollDice());
+        assertNotEquals(command, new ReRollDice());
     }
 
     @Test

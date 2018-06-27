@@ -58,7 +58,7 @@ public class SkipTurnTest {
     @Test
     public void equalsTest() {
         assertNotEquals(skip1, skip2);
-        assertNotEquals(skip1, new RerollDice());
+        assertNotEquals(skip1, new ReRollDice());
         assertNotEquals(skip2, new AddDiceToDiceBag());
         assertEquals(skip1, new SkipTurn(1));
     }

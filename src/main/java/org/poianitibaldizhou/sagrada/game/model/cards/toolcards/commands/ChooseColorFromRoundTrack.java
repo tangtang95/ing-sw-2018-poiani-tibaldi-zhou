@@ -14,30 +14,33 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * OVERVIEW: Represents the command of choosing a color from a dice present in the round track
+ */
 public class ChooseColorFromRoundTrack implements ICommand {
 
     /**
      * Notify that player needs to choose a color from the dices present in the round track. It gives them the list of
-     * colors present in the current roundtrack.
+     * colors present in the current round track.
      * Doesn't require anything in ToolCard.
      *
-     * @param player player who invoked toolCard
+     * @param player           player who invoked toolCard
      * @param toolCardExecutor toolCard invoked
-     * @param turnState state in which the player acts
+     * @param turnState        state in which the player acts
      * @return CommandFlow.EMPTY_ROUND_TRACK if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
-        if(roundTrack.isEmpty())
+        if (roundTrack.isEmpty())
             return CommandFlow.EMPTY_ROUND_TRACK;
         Set<Color> colors = new HashSet<>();
         List<Dice> diceList;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
             diceList = roundTrack.getDices(i);
-            for(Dice d : diceList)
-                if(!colors.contains(d.getColor()))
+            for (Dice d : diceList)
+                if (!colors.contains(d.getColor()))
                     colors.add(d.getColor());
 
         }

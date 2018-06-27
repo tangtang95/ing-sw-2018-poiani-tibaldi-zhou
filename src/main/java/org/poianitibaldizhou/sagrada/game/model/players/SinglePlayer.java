@@ -46,6 +46,7 @@ public class SinglePlayer extends Player {
     }
 
     /**
+     * This method return null because player are never sent over the network protocol
      *
      * @return null
      */

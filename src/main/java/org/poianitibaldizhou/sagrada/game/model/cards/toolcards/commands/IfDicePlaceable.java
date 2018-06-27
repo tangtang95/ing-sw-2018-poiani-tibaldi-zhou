@@ -10,6 +10,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command that check if the dice present in the executor is positionable on the schema
+ * card
+ */
 public class IfDicePlaceable implements ICommand {
 
     /**

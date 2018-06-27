@@ -7,6 +7,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command necessary for clearing the value regarding the dice in the tool card
+ * executor
+ */
 public class ClearDice implements ICommand {
 
     /**

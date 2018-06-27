@@ -2,6 +2,10 @@ package org.poianitibaldizhou.sagrada.game.model.constraint;
 
 import jdk.nashorn.internal.ir.annotations.Immutable;
 
+/**
+ * OVERVIEW: Represents a general constraint. Constraint can be matched and therefore
+ * respected by other constraints of the same type.
+ */
 @Immutable
 public interface IConstraint {
     /**

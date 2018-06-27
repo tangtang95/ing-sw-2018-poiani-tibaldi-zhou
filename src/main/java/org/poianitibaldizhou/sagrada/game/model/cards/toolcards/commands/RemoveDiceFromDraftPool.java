@@ -10,6 +10,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Commands for removing the dice from the the draft pool
+ */
 public class RemoveDiceFromDraftPool implements ICommand {
 
     /**

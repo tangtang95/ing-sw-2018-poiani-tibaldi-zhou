@@ -8,6 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceD
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the command of checking if a dice has already been placed in the current
+ * turn
+ */
 public class CheckBeforeDiceChosen implements ICommand {
 
     /**

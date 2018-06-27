@@ -12,6 +12,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command that represents the payment with a dice for executing a tool card
+ */
 public class PayDice implements ICommand {
 
     private final Color color;

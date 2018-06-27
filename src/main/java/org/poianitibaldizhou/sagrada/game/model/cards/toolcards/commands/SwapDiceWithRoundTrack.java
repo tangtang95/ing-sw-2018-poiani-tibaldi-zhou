@@ -11,18 +11,22 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command for swapping a dice from the draft pool with one present in the round
+ * track
+ */
 public class SwapDiceWithRoundTrack implements ICommand {
 
     /**
-     * Requires the player to choose a dice from the roundtrack.
-     * The dice will be swapped with a specified one from the draftpool.
-     * It requires a dice in the toolcard (dice to put in the roundtrack) and it asks the client
+     * Requires the player to choose a dice from the round track.
+     * The dice will be swapped with a specified one from the draft pool.
+     * It requires a dice in the tool card (dice to put in the round track) and it asks the client
      * for a dice and a round.
      *
      * @param player           player who invoked the command
-     * @param toolCardExecutor invoked toolcard
+     * @param toolCardExecutor invoked tool card
      * @param turnState        state in which the player acts
-     * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.EMPTY_DRAFT_POOL
+     * @return CommandFlow.REPEAT if the specified dice is not present in the draf pool, CommandFlow.EMPTY_DRAFT_POOL
      * if the draftpool is empty, CommandFlow.EMPTY_ROUND_TRACK if the round track is empty, CommandFlow.MAIN otherwise.
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */

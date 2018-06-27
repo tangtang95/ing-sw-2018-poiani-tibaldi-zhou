@@ -15,6 +15,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.PlaceD
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command necessary for placing a dice on the schema card
+ */
 public class PlaceDice implements ICommand {
 
     private final PlacementRestrictionType tileConstraint;
@@ -44,7 +47,9 @@ public class PlaceDice implements ICommand {
         return diceConstraint;
     }
 
-    public boolean isNewPlacement(){ return isNewPlacement; }
+    public boolean isNewPlacement() {
+        return isNewPlacement;
+    }
 
     /**
      * Place a dice following the constraint given to the command.
@@ -60,7 +65,7 @@ public class PlaceDice implements ICommand {
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) throws InterruptedException {
-        if(isNewPlacement && turnState.hasActionUsed(new PlaceDiceAction()))
+        if (isNewPlacement && turnState.hasActionUsed(new PlaceDiceAction()))
             return CommandFlow.PLACEMENT_ALREADY_DONE;
 
         Dice dice;
@@ -84,7 +89,7 @@ public class PlaceDice implements ICommand {
             return CommandFlow.REPEAT;
         }
 
-        if(isNewPlacement)
+        if (isNewPlacement)
             turnState.addActionUsed(new PlaceDiceAction());
         return CommandFlow.MAIN;
     }

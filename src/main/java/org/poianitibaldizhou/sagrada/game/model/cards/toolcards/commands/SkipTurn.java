@@ -7,10 +7,19 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command that will make skip a turn to a certain player
+ */
 public class SkipTurn implements ICommand {
 
     private final int turnValue;
 
+    /**
+     * Constructor.
+     * Creates a skip turn command that will make skip the specified turn to the player
+     * who is executing the tool card
+     * @param turn turn that will be skipped
+     */
     public SkipTurn(int turn) {
         if (turn < TurnState.FIRST_TURN || turn > TurnState.SECOND_TURN)
             throw new IllegalArgumentException("Turn has to be 1 or 2");
@@ -31,7 +40,10 @@ public class SkipTurn implements ICommand {
         return CommandFlow.MAIN;
     }
 
-    private int getTurnValue() {
+    /**
+     * @return turn that will be skipped
+     */
+    public int getTurnValue() {
         return turnValue;
     }
 

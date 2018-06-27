@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents a constraint regarding an integer value.
+ */
 @Immutable
 public class NumberConstraint implements IConstraint {
 
@@ -62,6 +65,9 @@ public class NumberConstraint implements IConstraint {
         return getNumber() - 1;
     }
 
+    /**
+     * @return number of the constraint
+     */
     @Contract(pure = true)
     public int getNumber() {
         return number;

@@ -7,9 +7,18 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the command of checking that the tool card is being executed
+ * in a specific turn.
+ */
 public class CheckTurn implements ICommand {
     private final int turn;
 
+    /**
+     * Constructor.
+     * Creates a check turn command regarding a certain turn
+     * @param turn turn to check
+     */
     public CheckTurn(int turn) {
         if(turn < 1 || turn > 2)
             throw new IllegalArgumentException("illegal value of turn");

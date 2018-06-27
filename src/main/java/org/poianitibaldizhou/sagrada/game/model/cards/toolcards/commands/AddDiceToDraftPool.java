@@ -8,6 +8,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the command of adding a dice to the draft pool
+ */
 public class AddDiceToDraftPool implements ICommand {
 
     /**

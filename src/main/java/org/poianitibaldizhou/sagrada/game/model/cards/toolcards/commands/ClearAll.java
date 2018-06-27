@@ -7,6 +7,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Commands needed for clearing all the values that have been set in the tool
+ * card executor.
+ */
 public class ClearAll implements ICommand {
 
     /**

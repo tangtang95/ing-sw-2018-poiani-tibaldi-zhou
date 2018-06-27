@@ -9,7 +9,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.util.Objects;
 import java.util.Random;
 
-public class RerollDice implements ICommand {
+/**
+ * OVERVIEW: Commands for re-rerolling a certain dice
+ */
+public class ReRollDice implements ICommand {
 
     /**
      * Re-roll ToolCard's dice and set it to the ToolCard again for further uses.
@@ -36,11 +39,11 @@ public class RerollDice implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof RerollDice;
+        return object instanceof ReRollDice;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(RerollDice.class);
+        return Objects.hash(ReRollDice.class);
     }
 }
