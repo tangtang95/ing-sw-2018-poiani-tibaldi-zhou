@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.graphics.model;
 
-import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;

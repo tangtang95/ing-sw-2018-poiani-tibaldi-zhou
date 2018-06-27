@@ -73,7 +73,7 @@
                                 <archive>
                                     <manifest>
                                         <mainClass>
-                                            org.poianitibaldizhou.sagrada.graphics.ClientApp
+                                            org.poianitibaldizhou.sagrada.graphics.ClientGUIApp
                                         </mainClass>
                                     </manifest>
                                 </archive>

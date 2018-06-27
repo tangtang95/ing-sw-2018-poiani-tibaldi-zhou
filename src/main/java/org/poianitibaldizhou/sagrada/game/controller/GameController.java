@@ -592,9 +592,9 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      * {@inheritDoc}
      */
     @Override
-    public void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
-                          Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
-                          IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
+    public void reconnect(String message, IGameView gameView, IGameObserver gameObserver, IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
+                          Map<String, IPlayerObserver> playerObserver, Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver,
+                          IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver
                                   diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException {
         final String userName = serverGetMessage.getUserName(message);
         String token = null;

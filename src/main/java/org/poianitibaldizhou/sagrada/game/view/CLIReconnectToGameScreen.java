@@ -130,13 +130,11 @@ public class CLIReconnectToGameScreen extends CLIBasicScreen {
                 connectionManager.getGameController().reconnect(
                         clientCreateMessage.createTokenMessage(token).createUsernameMessage(username).buildMessage(),
                         new CLIGameView(cliStateView, connectionManager),
-                        cliStateView,
+                        new CLIGameView(cliStateView, connectionManager), new CLIRoundTrackView(cliStateView), cliStateView,
                         cliPlayerViewMap,
                         cliToolCardViewMap,
                         cliSchemaCardViewMap,
-                        new CLIGameView(cliStateView, connectionManager),
                         new CLIDraftPoolView(cliStateView),
-                        new CLIRoundTrackView(cliStateView),
                         new CLIDiceBagView(cliStateView),
                         new CLITimeoutView(cliStateView)
                 );

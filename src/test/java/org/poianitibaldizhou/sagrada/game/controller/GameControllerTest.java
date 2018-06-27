@@ -1624,8 +1624,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(tokenUser2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
         verify(view).err(anyString());
     }
@@ -1655,8 +1655,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(tokenUser2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(view).err(anyString());
@@ -1692,8 +1692,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(tokenUser2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(view).err(anyString());
@@ -1729,8 +1729,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(userName2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(view).err(anyString());
@@ -1766,8 +1766,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent("notExistingName", schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(view).err(anyString());
@@ -1805,8 +1805,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(userName2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(view).err(anyString());
@@ -1847,8 +1847,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(userName2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(gameNetworkManager, times(1)).putView(tokenUser, view);
@@ -1892,8 +1892,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(userName2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(gameNetworkManager, times(1)).putView(tokenUser, view);
@@ -1938,8 +1938,8 @@ public class GameControllerTest {
         stringISchemaCardObserverMap.putIfAbsent(userName2, schemaCardObserver2);
 
         String clientMessage = clientCreateMessage.createUsernameMessage(userName).buildMessage();
-        gameController.reconnect(clientMessage, view, stateObserver, playerObserverMap, toolCardObserverMap,
-                stringISchemaCardObserverMap, gameObserver, draftPoolObserver, roundTrackObserver, diceBagObserver,
+        gameController.reconnect(clientMessage, view, gameObserver, roundTrackObserver, stateObserver, playerObserverMap, toolCardObserverMap,
+                stringISchemaCardObserverMap, draftPoolObserver, diceBagObserver,
                 timeOutObserver);
 
         verify(gameNetworkManager, times(1)).putView(tokenUser, view);

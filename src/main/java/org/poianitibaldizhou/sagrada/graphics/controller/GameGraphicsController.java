@@ -188,8 +188,8 @@ public class GameGraphicsController extends GraphicsController implements Initia
             gameListener.drawUsers(userList, schemaCardWrapperMap, privateObjectiveCardWrappers, coinMap);
             connectionManager.getGameController().reconnect(
                     builder.createUsernameMessage(username).buildMessage(),
-                    gameListener, stateListener, gameListener.getPlayerObservers(), gameListener.getToolCardObservers(),
-                    gameListener.getSchemaCardObservers(),gameListener, draftPoolListener, roundTrackListener,
+                    gameListener, gameListener, roundTrackListener, stateListener, gameListener.getPlayerObservers(), gameListener.getToolCardObservers(),
+                    gameListener.getSchemaCardObservers(), draftPoolListener,
                     diceBagListener, timeoutListener);
         } catch (IOException e) {
             Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());

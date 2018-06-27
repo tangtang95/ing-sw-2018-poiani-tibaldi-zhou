@@ -15,7 +15,7 @@ import org.poianitibaldizhou.sagrada.graphics.utils.WindowSize;
 
 import java.util.Objects;
 
-public class ClientApp extends Application {
+public class ClientGUIApp extends Application {
 
     public static void main(String[] args){
         launch(args);
