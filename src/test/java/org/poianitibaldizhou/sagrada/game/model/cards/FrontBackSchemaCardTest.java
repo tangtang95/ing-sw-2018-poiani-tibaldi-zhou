@@ -117,11 +117,7 @@ public class FrontBackSchemaCardTest {
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}," +
                 "{\"type\":\"tile\",\"body\":{\"constraint\":null}}]]}}]}";
         JSONParser jsonParser = new JSONParser();
-        try {
-            assertEquals(null, FrontBackSchemaCard.toObject((JSONObject) jsonParser.parse(message)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        assertEquals(null, FrontBackSchemaCard.toObject());
 
     }
 

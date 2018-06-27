@@ -6,6 +6,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.lobby.model.LobbyManager;
+import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import org.poianitibaldizhou.sagrada.network.observers.LobbyObserverManager;
 import org.poianitibaldizhou.sagrada.lobby.model.User;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
@@ -44,6 +45,9 @@ public class LobbyControllerTest {
     @Mock
     private IView clientView1;
 
+    @Mock
+    private ILobbyView lobbyView;
+
     private LobbyController lobbyController;
 
     @Before
@@ -61,7 +65,7 @@ public class LobbyControllerTest {
     public void testLogin() throws Exception {
         String username = "username";
         when(lobbyManager.login(username)).thenReturn(NetworkUtility.encryptUsername(username));
-        String response = lobbyController.login(clientCreateMessage.createUsernameMessage(username).buildMessage(), clientView1);
+        String response = lobbyController.login(clientCreateMessage.createUsernameMessage(username).buildMessage(), lobbyView);
 
         assertEquals(NetworkUtility.encryptUsername(username), clientGetMessage.getToken(response));
     }
@@ -71,7 +75,7 @@ public class LobbyControllerTest {
         String username = "username";
         when(lobbyManager.login(username)).thenThrow(new IllegalArgumentException());
 
-        String response = lobbyController.login(clientCreateMessage.createUsernameMessage(username).buildMessage(), clientView1);
+        String response = lobbyController.login(clientCreateMessage.createUsernameMessage(username).buildMessage(), lobbyView);
 
         assertEquals("", clientGetMessage.getToken(response));
         verify(clientView1).err(anyString());

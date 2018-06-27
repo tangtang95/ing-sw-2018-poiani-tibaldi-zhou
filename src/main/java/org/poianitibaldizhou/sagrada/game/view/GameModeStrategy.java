@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.util.*;
@@ -143,7 +144,7 @@ public abstract class GameModeStrategy implements IScreen{
             schemaCard = clientGetMessage.getSchemaCard(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
         PrinterManager.consolePrint(buildGraphic.buildGraphicSchemaCard(schemaCard).toString(), Level.STANDARD);
     }
@@ -164,7 +165,7 @@ public abstract class GameModeStrategy implements IScreen{
             pocList = clientGetMessage.getPublicObjectiveCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
         PrinterManager.consolePrint(buildGraphic.buildGraphicPublicObjectiveCards(pocList).toString(), Level.STANDARD);
     }
@@ -185,7 +186,7 @@ public abstract class GameModeStrategy implements IScreen{
             toolCardWrapperList = clientGetMessage.getToolCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
         toolCardList = new ArrayList<>(Objects.requireNonNull(toolCardWrapperList));
         PrinterManager.consolePrint(buildGraphic.buildGraphicToolCards(toolCardWrapperList).toString(), Level.STANDARD);
@@ -207,7 +208,7 @@ public abstract class GameModeStrategy implements IScreen{
             roundTrackWrapper = clientGetMessage.getRoundTrack(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
         PrinterManager.consolePrint(buildGraphic.buildGraphicRoundTrack(roundTrackWrapper).toString(), Level.STANDARD);
     }
@@ -227,7 +228,7 @@ public abstract class GameModeStrategy implements IScreen{
                 return;
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
         draftPool = draftPoolWrapper;
         PrinterManager.consolePrint(buildGraphic.buildGraphicDraftPool(draftPoolWrapper).toString(), Level.STANDARD);
@@ -249,7 +250,7 @@ public abstract class GameModeStrategy implements IScreen{
             poc = clientGetMessage.getPrivateObjectiveCards(response);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
         PrinterManager.consolePrint(buildGraphic.buildGraphicPrivateObjectiveCards(poc).toString(), Level.STANDARD);
     }
@@ -264,7 +265,7 @@ public abstract class GameModeStrategy implements IScreen{
             );
             PrinterManager.consolePrint("You have left the game.\n", Level.INFORMATION);
         } catch (IOException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.FATAL_ERROR, Level.ERROR);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.FATAL_ERROR, Level.ERROR);
         }
 
         screenManager.popScreen();
@@ -319,9 +320,9 @@ public abstract class GameModeStrategy implements IScreen{
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
 
     }
@@ -347,9 +348,9 @@ public abstract class GameModeStrategy implements IScreen{
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
     }
 
@@ -363,7 +364,7 @@ public abstract class GameModeStrategy implements IScreen{
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
     }
 }

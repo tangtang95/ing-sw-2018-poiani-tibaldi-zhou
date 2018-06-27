@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -118,7 +119,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
 
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.ERROR_READING, Level.ERROR);
+                    ClientMessage.ERROR_READING, Level.ERROR);
         } catch (TimeoutException e) {
             /*NEVER THROWN HERE*/
         }

@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -90,7 +91,7 @@ public class CLISetupGameScreen extends CLIBasicScreen {
             );
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
             screenManager.popScreen();
         }
     }

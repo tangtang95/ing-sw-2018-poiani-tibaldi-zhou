@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -126,7 +127,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
                 currentUser = clientGetMessage.getUserWrapper(connectionManager.getGameController().getCurrentPlayer(clientCreateMessage.createGameNameMessage(gameName).
                         createTokenMessage(token).buildMessage()));
             } catch (IOException e) {
-                PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR,
+                PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.NETWORK_ERROR,
                         Level.ERROR);
             }
 
@@ -355,7 +356,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
                     screenManager.popWithoutStartInScreen();
                 screenManager.replaceScreen(new CLIEndGame(connectionManager, screenManager));
             } catch (RemoteException e) {
-                PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR,
+                PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.NETWORK_ERROR,
                         Level.ERROR);
             }
         }

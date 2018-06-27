@@ -9,6 +9,7 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                             consoleListener.readNumber(diceWrapperList.size()))).buildMessage();
             connectionManager.getGameController().setDice(message);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
     }
 
@@ -99,7 +100,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     .createValueMessage(consoleListener.readValue(6)).buildMessage();
             connectionManager.getGameController().setNewValue(message);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
     }
 
@@ -123,7 +124,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                             consoleListener.readNumber(colorWrapperList.size()))).buildMessage();
             connectionManager.getGameController().setColor(message);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
     }
 
@@ -167,12 +168,12 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                             createGameNameMessage(gameModeStrategy.getGameName()).createValueMessage(number).buildMessage();
                     connectionManager.getGameController().setNewValue(messageForController);
                 } else {
-                    PrinterManager.consolePrint(BuildGraphic.NOT_A_NUMBER, Level.STANDARD);
+                    PrinterManager.consolePrint(ClientMessage.NOT_A_NUMBER, Level.STANDARD);
                     number = -1;
                 }
             } while (number < 0);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
     }
 
@@ -344,7 +345,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     new PositionWrapper(row, column)).buildMessage();
             connectionManager.getGameController().setPosition(setMessage);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
 
     }
@@ -376,7 +377,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     createDiceMessage(roundTrack.getDicesForRound(roundNumber).get(diceNumber)).buildMessage();
             connectionManager.getGameController().setDice(setDiceMessage);
         } catch (TimeoutException e) {
-            PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.AUTOMATIC_ACTION, Level.INFORMATION);
         }
     }
 

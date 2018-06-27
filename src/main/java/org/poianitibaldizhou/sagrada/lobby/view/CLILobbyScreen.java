@@ -10,6 +10,7 @@ import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -90,7 +91,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                 PrinterManager.consolePrint(timeout + "\n",Level.STANDARD);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
+                        ClientMessage.ERROR_READING, Level.ERROR);
             }
         });
         commandMap.put(timeoutCommand.getCommandText(), timeoutCommand);
@@ -102,7 +103,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                 PrinterManager.consolePrint(clientGetMessage.getListOfUserWrapper(message).toString() + "\n", Level.STANDARD);
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
+                        ClientMessage.ERROR_READING, Level.ERROR);
             }
         });
         commandMap.put(showUserCommand.getCommandText(), showUserCommand);
@@ -115,10 +116,10 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
         try {
             controller.leave(clientCreateMessage.createTokenMessage(token).createUsernameMessage(username).buildMessage());
         } catch (RemoteException e) {
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + BuildGraphic.NETWORK_ERROR , Level.ERROR);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.NETWORK_ERROR , Level.ERROR);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.ERROR_READING , Level.ERROR);
+                    ClientMessage.ERROR_READING , Level.ERROR);
         }
     }
 
@@ -143,7 +144,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                 }
             } catch (IOException e) {
                 PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                        BuildGraphic.ERROR_READING, Level.ERROR);
+                        ClientMessage.ERROR_READING, Level.ERROR);
             } catch (IllegalArgumentException e) {
                 username = null;
             }
@@ -153,10 +154,10 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
             controller.join(clientCreateMessage.createUsernameMessage(username).createTokenMessage(token).buildMessage(), this);
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.ERROR_READING, Level.ERROR);
+                    ClientMessage.ERROR_READING, Level.ERROR);
         }
         consoleListener.wakeUpCommandConsole();
     }
@@ -238,7 +239,7 @@ public class CLILobbyScreen extends CLIBasicScreen implements ILobbyView, ILobby
                     new UserWrapper(username)));
         } catch (RemoteException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() +
-                    BuildGraphic.NETWORK_ERROR, Level.ERROR);
+                    ClientMessage.NETWORK_ERROR, Level.ERROR);
         }
     }
 
