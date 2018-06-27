@@ -53,7 +53,7 @@ public class ServerCreateMessageTest {
 
     @Test
     public void reconnectErrorMessage() {
-        String message = "{\"errorKey\":\"Error reconnecting\"}";
+        String message = "{\"errorKey\":{\"errorKey\":\"Error reconnecting\"}}";
         assertEquals(message,serverCreateMessage.reconnectErrorMessage());
     }
 

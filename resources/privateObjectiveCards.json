@@ -2,26 +2,26 @@
   {
     "cardName": "Sfumature Rosse - Privata",
     "cardDescription": "Somma dei valori su tutti i dadi rossi",
-    "cardColor": "RED"
+    "cardColour": "RED"
   },
   {
     "cardName": "Sfumature Gialle - Privata",
     "cardDescription": "Somma dei valori su tutti i dadi gialli",
-    "cardColor": "YELLOW"
+    "cardColour": "YELLOW"
   },
   {
     "cardName": "Sfumature Verdi - Privata",
     "cardDescription": "Somma dei valori su tutti i dadi verdi",
-    "cardColor": "GREEN"
+    "cardColour": "GREEN"
   },
   {
     "cardName": "Sfumature Blu - Privata",
     "cardDescription": "Somma dei valori su tutti i dadi blu",
-    "cardColor": "BLUE"
+    "cardColour": "BLUE"
   },
   {
     "cardName": "Sfumature Viola - Privata",
     "cardDescription": "Somma dei valori su tutti i dadi viola",
-    "cardColor": "PURPLE"
+    "cardColour": "PURPLE"
   }
 ]

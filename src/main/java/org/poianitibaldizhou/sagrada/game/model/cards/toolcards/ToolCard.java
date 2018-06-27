@@ -206,7 +206,7 @@ public class ToolCard extends Card implements JSONable {
             for (Object object : Objects.requireNonNull(jsonArray)) {
                 JSONObject toolCard = (JSONObject) object;
                 if (toolCard.get(GameInjector.CARD_NAME).toString().equals(jsonObject.get(JSON_NAME).toString())) {
-                    card = new ToolCard(Color.valueOf((String) toolCard.get(GameInjector.CARD_COLOR)),
+                    card = new ToolCard(Color.valueOf((String) toolCard.get(GameInjector.CARD_COLOUR)),
                             (String) toolCard.get(GameInjector.CARD_NAME),
                             (String) toolCard.get(GameInjector.CARD_DESCRIPTION),
                             (String) toolCard.get(GameInjector.CARD_ACTION));

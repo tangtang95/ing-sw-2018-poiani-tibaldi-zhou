@@ -37,7 +37,7 @@ public class GameInjector {
      */
     public static final String CARD_NAME = "cardName";
     public static final String CARD_DESCRIPTION = "cardDescription";
-    public static final String CARD_COLOR = "cardColour";
+    public static final String CARD_COLOUR = "cardColour";
     public static final String CARD_ACTION = "action";
     private static final String CARD_POINTS = "cardPoints";
     private static final String CONSTRAINT_TYPE = "constraintType";
@@ -76,7 +76,7 @@ public class GameInjector {
 
         for (Object object : Objects.requireNonNull(jsonArray)) {
             JSONObject toolCard = (JSONObject) object;
-            toolCardDrawableCollection.addElement(new ToolCard(Color.valueOf((String) toolCard.get(CARD_COLOR)),
+            toolCardDrawableCollection.addElement(new ToolCard(Color.valueOf((String) toolCard.get(CARD_COLOUR)),
                     (String) toolCard.get(CARD_NAME),
                     (String) toolCard.get(CARD_DESCRIPTION),
                     (String) toolCard.get(CARD_ACTION)));
@@ -191,7 +191,7 @@ public class GameInjector {
             privateObjectiveCardDrawableCollection.addElement(new PrivateObjectiveCard(
                     (String) privateObjectiveCard.get(CARD_NAME),
                     (String) privateObjectiveCard.get(CARD_DESCRIPTION),
-                    Color.valueOf((String) privateObjectiveCard.get("cardColor")
+                    Color.valueOf((String) privateObjectiveCard.get(CARD_COLOUR)
                     )));
         }
     }

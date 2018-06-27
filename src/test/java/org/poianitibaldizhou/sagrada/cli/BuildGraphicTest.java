@@ -9,6 +9,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 public class BuildGraphicTest {
 
     @DataPoint
@@ -35,7 +37,15 @@ public class BuildGraphicTest {
 
     @Test
     public void buildGraphicDices() {
-        System.out.println(buildGraphic.buildGraphicDices(diceWrappers).toString());
+        String test = "  [1]      [2]      [3]      [4]      [5]    \n" +
+                " -----    -----    -----    -----    -----   \n" +
+                "| 4/Y |  | 4/Y |  | 4/Y |  | 4/Y |  | 4/Y |  \n" +
+                " -----    -----    -----    -----    -----   \n" +
+                "  [6]      [7]      [8]      [9]      [10]    \n" +
+                " -----    -----    -----    -----    -----   \n" +
+                "| 4/Y |  | 4/Y |  | 4/Y |  | 4/Y |  | 4/Y |  \n" +
+                " -----    -----    -----    -----    -----   \n";
+        assertEquals(test,buildGraphic.buildGraphicDices(diceWrappers).toString());
     }
 
 

@@ -90,5 +90,6 @@ public final class ServerMessage {
     public static final String NOT_FIND_RMI_REGISTRY = "Cannot find RMI registry.";
     public static final String NOT_FIND_RMI_CONTROLLER = "Cannot find RMI controller.";
     public static final String NETWORK_UNDEFINED = "Network type undefined.";
+    public static final String SOCKET_CLOSE = "Socket closed";
 
 }
