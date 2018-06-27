@@ -6,6 +6,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.UseCardState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the action of the user of choosing and using a tool card
+ */
 public class UseCardAction implements IActionCommand {
 
     /**
@@ -28,11 +31,21 @@ public class UseCardAction implements IActionCommand {
         return Objects.hash(UseCardAction.class);
     }
 
+    /**
+     * Return null because this action is never sent to the client over the network
+     *
+     * @return null
+     */
     @Override
     public JSONObject toJSON() {
         return null;
     }
 
+    /**
+     * Creates a new use card action
+     *
+     * @return an instance of the action
+     */
     public static UseCardAction toObject() {
         return new UseCardAction();
     }

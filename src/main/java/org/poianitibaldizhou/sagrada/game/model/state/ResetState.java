@@ -6,10 +6,19 @@ import org.poianitibaldizhou.sagrada.game.model.Game;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * OVERVIEW: Represents the reset state of the game. This can be seen as the initial state of a game.
+ */
 public class ResetState extends IStateGame {
 
     private Set<String> playersReady;
 
+    /**
+     * Constructor.
+     * Creates the reset state for a certain game
+     *
+     * @param game game that is in this reset state
+     */
     public ResetState(Game game) {
         super(game);
         playersReady = new HashSet<>();

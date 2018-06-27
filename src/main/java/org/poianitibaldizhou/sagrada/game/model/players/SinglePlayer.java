@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * OVERVIEW: Represents a player playing the single player version of Sagrada
+ */
 public class SinglePlayer extends Player {
-
 
     /**
      * {@inheritDoc}
@@ -23,6 +25,10 @@ public class SinglePlayer extends Player {
         super(user, expendableDice, schemaCard, privateObjectiveCards);
     }
 
+    /**
+     * Private constructor for creating a new instance of a certain player
+     * @param player player that need to be copied
+     */
     private SinglePlayer(Player player) {
         super(player.user, player.coin, SchemaCard.newInstance(player.schemaCard), new ArrayList<>(player.privateObjectiveCards));
         this.outcome = player.outcome;
@@ -39,6 +45,14 @@ public class SinglePlayer extends Player {
                 .getScore(schemaCard) - schemaCard.getNumberOfEmptySpaces() * 3;
     }
 
+
+    /**
+     * Creates a new instance of player.
+     * Deep copy implemented.
+     *
+     * @param player a new instance of player will be created
+     * @return player new instance
+     */
     public static SinglePlayer newInstance(@NotNull Player player) {
         if(!(player instanceof SinglePlayer))
             throw new IllegalArgumentException(ServerMessage.SINGLE_PLAYER_ILLEGAL_ARGUMENT);

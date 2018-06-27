@@ -2,8 +2,18 @@ package org.poianitibaldizhou.sagrada.game.model.state.playerstate;
 
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+/**
+ * OVERVIEW: Represents the state of the end turn of a player
+ */
 public class EndTurnState extends IPlayerState {
 
+    /**
+     * Constructor.
+     * Creates the end turn state for the player. This needs the general turn state of the state machine
+     * of the game
+     *
+     * @param turnState game turn state in which the end turn of player occurs
+     */
     public EndTurnState(TurnState turnState) {
         super(turnState);
     }
@@ -15,7 +25,7 @@ public class EndTurnState extends IPlayerState {
     @Override
     public void endTurn() {
         turnState.getToolCardExecutor().setTurnEnded(true);
-        if(turnState.getToolCardExecutor().isExecutingCommands()) {
+        if (turnState.getToolCardExecutor().isExecutingCommands()) {
             Thread thread = new Thread(() -> {
                 try {
                     turnState.getToolCardExecutor().waitToolCardExecutionEnd();
@@ -26,8 +36,7 @@ public class EndTurnState extends IPlayerState {
                 turnState.nextTurn();
             });
             thread.start();
-        }
-        else {
+        } else {
             turnState.notifyOnEndTurnState();
             turnState.nextTurn();
         }

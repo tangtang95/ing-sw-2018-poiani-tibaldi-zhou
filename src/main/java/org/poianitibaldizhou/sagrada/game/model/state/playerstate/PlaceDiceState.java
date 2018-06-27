@@ -6,9 +6,18 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
+/**
+ * OVERVIEW: In this state the player places a dice
+ */
 public class PlaceDiceState extends IPlayerState {
 
-
+    /**
+     * Constructor.
+     * Creates the place dice state for the player. This needs the general turn state of the state machine
+     * of the game.
+     *
+     * @param turnState game turn state in which the placement occurs
+     */
     public PlaceDiceState(TurnState turnState) {
         super(turnState);
         turnState.notifyOnPlaceDiceState();

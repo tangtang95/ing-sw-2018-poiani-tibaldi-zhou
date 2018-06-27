@@ -1,5 +1,8 @@
 package org.poianitibaldizhou.sagrada.game.model.players;
 
+/**
+ * OVERVIEW: Represents an entity that can score some points
+ */
 public interface IVictoryPoints {
 
     /**

@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * OVERVIEW: Represents a player who is playing the multi player version of Sagrada.
+ */
 public class MultiPlayer extends Player {
-
 
     /**
      * {@inheritDoc}
@@ -22,7 +24,13 @@ public class MultiPlayer extends Player {
         super(user, favorToken, schemaCard, privateObjectiveCards);
     }
 
-    public MultiPlayer(Player player) {
+    /**
+     * Private constructor used in the new instance.
+     * Deep copy implemented.
+     *
+     * @param player a new player with the same state of player will be created
+     */
+    private MultiPlayer(Player player) {
         super(player.user, new FavorToken(player.getCoins()), SchemaCard.newInstance(player.schemaCard),
                 new ArrayList<>(player.privateObjectiveCards));
         this.outcome = player.outcome;
@@ -39,14 +47,22 @@ public class MultiPlayer extends Player {
                 .getScore(schemaCard) + getCoins() - schemaCard.getNumberOfEmptySpaces();
     }
 
+    /**
+     * A new instance of player will be created.
+     * Deep copy implemented.
+     *
+     * @param player
+     * @return
+     */
     public static MultiPlayer newInstance(@NotNull Player player) {
         if(!(player instanceof MultiPlayer))
             throw new IllegalArgumentException(ServerMessage.MULTI_PLAYER_ILLEGAL_ARGUMENT);
         return new MultiPlayer(player);
     }
 
-
     /**
+     * This method return null because player are never converted to json object, because
+     * they are not transmitted over the network
      *
      * @return null
      */

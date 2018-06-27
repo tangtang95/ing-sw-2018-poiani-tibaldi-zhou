@@ -4,6 +4,9 @@ import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 
+/**
+ * OVERVIEW: Represents the start of a certain round of the game.
+ */
 public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
 
     private Player currentRoundPlayer;
@@ -44,6 +47,9 @@ public class RoundStartState extends IStateGame implements ICurrentRoundPlayer {
         game.setState(new TurnState(game, currentRound, currentRoundPlayer, currentRoundPlayer, true));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Contract(pure = true)
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;

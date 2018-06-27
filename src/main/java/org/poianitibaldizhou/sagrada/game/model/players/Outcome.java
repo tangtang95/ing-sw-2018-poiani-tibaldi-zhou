@@ -4,6 +4,10 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.JSONable;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
+/**
+ * OVERVIEW: Represents the outcome of the game for a certain player. This include even
+ * the state "in game", if the game is not terminated yet.
+ */
 public enum Outcome implements JSONable{
     WIN,
     LOSE,

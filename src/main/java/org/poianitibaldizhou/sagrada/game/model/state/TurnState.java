@@ -25,6 +25,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * OVERVIEW: Represents the turn of a player during the game
+ */
 public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     private final Player currentRoundPlayer;
@@ -87,6 +90,9 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
         this.skipTurnPlayers = new HashMap<>(skipTurnPlayers);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init() {
         if ((skipTurnPlayers.containsKey(getCurrentTurnPlayer())
@@ -287,23 +293,51 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     // MODIFIERS
+
+    /**
+     * Remove a tool card from the game
+     *
+     * @param toolCard tool card that will be removed from the game
+     */
     public void removeToolCard(ToolCard toolCard) {
         game.removeToolCard(toolCard);
     }
 
+    /**
+     * Some players will skip their turn according to some actions that have performed.
+     *
+     * @param skipTurnPlayers map of player that will skip their turn, associated with the number of the turn
+     *                        that they will skip
+     */
     public void setSkipTurnPlayers(Map<Player, Integer> skipTurnPlayers) {
         this.skipTurnPlayers.clear();
         this.skipTurnPlayers.putAll(skipTurnPlayers);
     }
 
+    /**
+     * Change the player state
+     *
+     * @param playerState new player state
+     */
     public void setPlayerState(IPlayerState playerState) {
         this.playerState = playerState;
     }
 
+    /**
+     * Signals that a certain action has been used and add it to the list of the actions performed
+     *
+     * @param actionCommand action performed
+     */
     public void addActionUsed(IActionCommand actionCommand) {
         actionsUsed.add(actionCommand);
     }
 
+    /**
+     * Add a player to the list of the ones that will skip a certain turn
+     *
+     * @param player player that will skip a turn
+     * @param turn number of the turn that will be skipped
+     */
     public void addSkipTurnPlayer(Player player, int turn) {
         if (turn < FIRST_TURN || turn > SECOND_TURN)
             throw new IllegalArgumentException(ServerMessage.TURN_ILLEGAL_ARGUMENT);
@@ -311,14 +345,27 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     // NOTIFIERS
+
+    /**
+     * Notifies to the observers that a player wants to place a dice and has, therefore, entered the player state
+     * of placing a dice
+     */
     public void notifyOnPlaceDiceState() {
         game.getStateObservers().forEach((key, value) -> value.onPlaceDiceState(currentTurnPlayer.getUser()));
     }
 
+    /**
+     * Notifies to the observers that a player wants to use a tool card and has, therefore, entered the player state
+     * of using a tool card
+     */
     public void notifyOnUseToolCardState() {
         game.getStateObservers().forEach((key, value) -> value.onUseCardState(currentTurnPlayer.getUser()));
     }
 
+    /**
+     * Notifies to the observers that a player wants terminate his turn and has, therefore, entered the player state
+     * of ending a turn
+     */
     public void notifyOnEndTurnState() {
         game.getStateObservers().forEach((key, value) -> value.onEndTurnState(currentTurnPlayer.getUser()));
     }

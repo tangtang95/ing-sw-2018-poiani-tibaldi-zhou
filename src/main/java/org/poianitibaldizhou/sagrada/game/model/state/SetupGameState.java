@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Represents the setup state of the game.
+ */
 public class SetupGameState extends IStateGame {
 
     private static final Logger LOGGER = Logger.getLogger(SetupGameState.class.getName());

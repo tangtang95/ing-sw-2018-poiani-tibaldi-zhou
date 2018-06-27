@@ -8,7 +8,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.EndTurnState;
 
 import java.util.Objects;
 
-
+/**
+ * OVERVIEW: Represents the action of ending a turn
+ */
 public class EndTurnAction implements IActionCommand {
 
     /**
@@ -33,11 +35,21 @@ public class EndTurnAction implements IActionCommand {
         return Objects.hash(EndTurnAction.class);
     }
 
+    /**
+     * Return null because this action is never sent to the client over the network
+     *
+     * @return null
+     */
     @Override
     public JSONObject toJSON() {
         return null;
     }
 
+    /**
+     * Creates a new end turn action
+     *
+     * @return an instance of the action
+     */
     public static EndTurnAction toObject() {
         return new EndTurnAction();
     }

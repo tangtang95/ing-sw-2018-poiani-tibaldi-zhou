@@ -15,6 +15,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Represents the setup player state of the game. In this state the model waits for the player joins.
+ */
 public class SetupPlayerState extends IStateGame {
 
     private Set<String> playersReady;
@@ -113,7 +116,7 @@ public class SetupPlayerState extends IStateGame {
     @Override
     public void forceStateChange() {
         game.getUsers().forEach(user -> {
-            if(!playersReady.contains(user.getToken())) {
+            if (!playersReady.contains(user.getToken())) {
                 playersReady.add(user.getToken());
                 game.setPlayer(user.getToken(), playerFrontBackSchemaCards.get(user.getToken()).get(0).getFrontSchemaCard(),
                         privateObjectiveCardMap.get(user.getToken()));
@@ -125,11 +128,25 @@ public class SetupPlayerState extends IStateGame {
         game.setState(new SetupGameState(game));
     }
 
+    /**
+     * Returns true if a certain player is ready and has gone through the set up phase
+     *
+     * @param token player's token
+     * @return true if the player identified by token is ready, false otherwise
+     */
     @Contract(pure = true)
     public boolean isPlayerReady(String token) {
         return playersReady.contains(token);
     }
 
+    /**
+     * Returns true if schemaCard is contained in the ones that had been sent to the player
+     *
+     * @param token      player's token
+     * @param schemaCard schema card that need to be checked
+     * @return true if schemaCard is contained in the ones that had been sent to the player identified by token,
+     * false otherwise
+     */
     @Contract(pure = true)
     public boolean containsSchemaCard(String token, SchemaCard schemaCard) {
         for (FrontBackSchemaCard schema : playerFrontBackSchemaCards.get(token))
@@ -138,6 +155,12 @@ public class SetupPlayerState extends IStateGame {
         return false;
     }
 
+    /**
+     * Returns the list of front back schema cards associated to a certain player
+     *
+     * @param token player's token
+     * @return list of front back schema cards associated to a certain player
+     */
     @Contract(pure = true)
     public List<FrontBackSchemaCard> getSchemaCardsOfPlayer(String token) {
         List<FrontBackSchemaCard> schemaCards = new ArrayList<>();

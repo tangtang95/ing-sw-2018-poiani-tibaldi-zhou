@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * OVERVIEW: Represents the termination of the game when it has followed its normal course (e.g. the termination
+ * is not due to the fact that all the players are signaled as disconnected).
+ */
 public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
 
     private Map<Player, Integer> scoreMap = new HashMap<>();
@@ -31,7 +35,7 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
 
     /**
      * Initialize the state by notifying the observer and
-     *
+     * <p>
      * {@inheritDoc}
      */
     @Override
@@ -61,10 +65,10 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         game.setPlayersOutcome(scoreMap, currentRoundPlayer);
         Optional<Player> winner = game.getPlayers().stream().filter(player -> player.getOutcome() == Outcome.WIN).findFirst();
         game.getPlayers().forEach(player -> System.out.println(player.getOutcome()));
-        if(winner.isPresent())
+        if (winner.isPresent())
             game.getStateObservers().forEach((key, value) -> value.onResultGame(winner.get().getUser()));
         else
-            game.getStateObservers().forEach((key,value) -> value.onResultGame(new User("CPU", "CPUTOKEN")));
+            game.getStateObservers().forEach((key, value) -> value.onResultGame(new User("CPU", "CPUTOKEN")));
         game.terminateGame();
     }
 
@@ -85,6 +89,9 @@ public class EndGameState extends IStateGame implements ICurrentRoundPlayer {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;

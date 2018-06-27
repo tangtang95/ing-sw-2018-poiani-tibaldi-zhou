@@ -19,6 +19,9 @@ import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.util.*;
 
+/**
+ * OVERVIEW: Represents a player who is playing sagrada.
+ */
 public abstract class Player implements IVictoryPoints, JSONable {
 
     protected final ICoin coin;
@@ -50,10 +53,12 @@ public abstract class Player implements IVictoryPoints, JSONable {
     }
 
     // GETTER
+    @Contract(pure = true)
     public String getToken() {
         return user.getToken();
     }
 
+    @Contract(pure = true)
     public SchemaCard getSchemaCard() {
         return SchemaCard.newInstance(schemaCard);
     }
@@ -66,6 +71,7 @@ public abstract class Player implements IVictoryPoints, JSONable {
         return privateObjectiveCards.get(indexOfPrivateObjectiveCard);
     }
 
+    @Contract(pure = true)
     public Outcome getOutcome() {
         return outcome;
     }
@@ -75,6 +81,7 @@ public abstract class Player implements IVictoryPoints, JSONable {
         return user;
     }
 
+    @Contract(pure = true)
     public int getCoins() {
         return coin.getCoins();
     }
@@ -160,6 +167,15 @@ public abstract class Player implements IVictoryPoints, JSONable {
         schemaCard.setDice(dice, position, tileConstraint, diceConstraint);
     }
 
+    /**
+     * Place a dice on a certain position on the player' schema card.
+     * The placement restriction that need to be respected are both number and color, and the dice needs to have
+     * at least 1 adjacent dice.
+     *
+     * @param dice     dice that need to be placed
+     * @param position the dice will be placed on this position
+     * @throws RuleViolationException if the rules of the schema card are violated
+     */
     public void placeDice(Dice dice, Position position) throws RuleViolationException {
         placeDice(dice, position, PlacementRestrictionType.NUMBER_COLOR, DiceRestrictionType.NORMAL);
     }
@@ -223,6 +239,12 @@ public abstract class Player implements IVictoryPoints, JSONable {
         return newPlayer;
     }
 
+    /**
+     * Returns true if the player has the specified objective card, false otherwise
+     *
+     * @param privateObjectiveCard private objective card that need to be checked
+     * @return true if this has privateObjectiveCard among his private cards, false otherwise
+     */
     private boolean containsPrivateObjectiveCard(PrivateObjectiveCard privateObjectiveCard) {
         for (PrivateObjectiveCard privateObjectiveCard1 : privateObjectiveCards) {
             if (privateObjectiveCard1.equals(privateObjectiveCard))

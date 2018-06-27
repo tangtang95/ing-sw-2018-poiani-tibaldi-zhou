@@ -5,6 +5,9 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.Direction;
 import org.poianitibaldizhou.sagrada.game.model.Game;
 
+/**
+ * OVERVIEW: Represents the state in which a certain round has terminated.
+ */
 public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
 
     private Player currentRoundPlayer;
@@ -51,6 +54,9 @@ public class RoundEndState extends IStateGame implements ICurrentRoundPlayer {
             game.setState(new EndGameState(game, currentRoundPlayer));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Player getCurrentRoundPlayer() {
         return currentRoundPlayer;

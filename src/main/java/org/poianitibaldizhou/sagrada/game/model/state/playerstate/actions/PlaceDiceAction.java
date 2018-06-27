@@ -6,6 +6,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.playerstate.PlaceDiceState
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the action of the player that places a dice on the schema card
+ */
 public class PlaceDiceAction implements IActionCommand{
 
     /**
@@ -28,11 +31,21 @@ public class PlaceDiceAction implements IActionCommand{
         return Objects.hash(PlaceDiceAction.class);
     }
 
+    /**
+     * Return null because this action is never sent to the client over the network
+     *
+     * @return null
+     */
     @Override
     public JSONObject toJSON() {
         return null;
     }
 
+    /**
+     * Creates a new place dice action
+     *
+     * @return an instance of the action
+     */
     public static PlaceDiceAction toObject() {
         return new PlaceDiceAction();
     }

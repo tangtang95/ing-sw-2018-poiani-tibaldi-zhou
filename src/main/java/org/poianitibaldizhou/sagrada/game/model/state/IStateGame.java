@@ -13,10 +13,19 @@ import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.playerstate.actions.IActionCommand;
 import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
+/**
+ * OVERVIEW: Represents the state of a certain game
+ */
 public abstract class IStateGame {
 
     protected Game game;
 
+    /**
+     * Constructor.
+     * Creates a state for a certain game and set the general properties
+     *
+     * @param game game associated with this state
+     */
     protected IStateGame(Game game) {
         this.game = game;
     }

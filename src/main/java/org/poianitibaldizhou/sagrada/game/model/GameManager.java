@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * OVERVIEW: This not contains duplicate
+ * OVERVIEW: Game manager for the various games that are currently active.
+ * This not contains duplicate.
  */
 public class GameManager {
     private final Map<String, IGame> gameMap;
@@ -43,23 +44,36 @@ public class GameManager {
 
     // GETTER
 
+    /**
+     * Returns the game network manager
+     *
+     * @return game network manager for the active games
+     */
     public GameNetworkManager getGameNetworkManager() {
         return gameNetworkManager;
     }
 
+    /**
+     * @return list of active games
+     */
     @Contract(pure = true)
     public synchronized List<IGame> getGameList() {
         return new ArrayList<>(gameMap.values());
     }
 
-
+    /**
+     * Returns true if the game is not contained among the active ones
+     *
+     * @param gameName name of the game
+     * @return true if the game identified by gameName is active, false otherwise
+     */
     @Contract(pure = true)
     public synchronized boolean notContainsGame(final String gameName) {
         return !gameMap.containsKey(gameName);
     }
 
     /**
-     * Returs the list of the player of a certain game.
+     * Returns the list of the player of a certain game.
      * If none game with that name is present, return null
      *
      * @param gameName name of the game
@@ -70,6 +84,13 @@ public class GameManager {
         return gameMap.containsKey(gameName) ? new ArrayList<>(playersByGame.get(gameName)) : null;
     }
 
+    /**
+     * Returns the game observer manager of a certain game
+     *
+     * @param gameName name of the game
+     * @return game observer manager the manages the observers of the game identified
+     * by gameName
+     */
     public synchronized GameObserverManager getObserverManagerByGame(String gameName) {
         return gameObserverManagerMap.get(gameName);
     }
@@ -81,7 +102,7 @@ public class GameManager {
      * @return game associated with name
      */
     public synchronized IGame getGameByName(String name) throws IOException {
-        if(gameMap.get(name) == null)
+        if (gameMap.get(name) == null)
             throw new IOException();
         return gameMap.get(name);
     }
