@@ -398,7 +398,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         clearNotifyPane(false);
         activateNotifyPane();
 
-        HBox helperPane = showHelperText(notifyPane, ClientMessage.CHOOSE_TOOL_CARD);
+        HBox helperPane = showHelperText(notifyPane, ClientMessage.CHOOSE_TOOL_CARD_ITA);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.SOMETIMES);
@@ -438,7 +438,7 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     private void onUseCardContinueButtonPressed(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, ClientMessage.CHOOSE_TOOL_CARD, MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_TOOL_CARD_ITA, MessageType.ERROR);
             return;
         }
         ToolCardView toolCardView = (ToolCardView) toggleGroup.getSelectedToggle().getUserData();

@@ -120,7 +120,7 @@ public abstract class GameModeStrategy implements IScreen{
 
             PrinterManager.consolePrint(buildGraphic.
                             buildGraphicHelp(commandMap).
-                            buildMessage("Choose the action: ").toString(),
+                            buildMessage(ClientMessage.CHOOSE_ACTION).toString(),
                     Level.STANDARD);
             consoleListener.setCommandMap(commandMap);
             CLIStateView.setStart(false);
@@ -263,7 +263,7 @@ public abstract class GameModeStrategy implements IScreen{
             connectionManager.getGameController().quitGame(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
-            PrinterManager.consolePrint("You have left the game.\n", Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.YOU_LEFT_THE_GAME, Level.INFORMATION);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.FATAL_ERROR, Level.ERROR);
         }
@@ -280,13 +280,13 @@ public abstract class GameModeStrategy implements IScreen{
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
-                        buildMessage("Choose a row between 1 and 4 included:").toString(),
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_POSITION_ON_SCHEMA).
+                        buildMessage(ClientMessage.CHOOSE_ROW).toString(),
                 Level.STANDARD);
         try {
             int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
 
-            PrinterManager.consolePrint("Choose a column between 1 and 5 included:\n", Level.STANDARD);
+            PrinterManager.consolePrint(ClientMessage.CHOOSE_COLUMN, Level.STANDARD);
             int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
 
             return new PositionWrapper(row, column);
@@ -302,7 +302,7 @@ public abstract class GameModeStrategy implements IScreen{
         BuildGraphic buildGraphic = new BuildGraphic();
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a dice to place in your schema card:").toString(),
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_DICE).toString(),
                 Level.STANDARD);
         viewDraftPool();
         viewMySchemaCard();
@@ -335,7 +335,7 @@ public abstract class GameModeStrategy implements IScreen{
         ConsoleListener consoleListener = ConsoleListener.getInstance();
 
         viewToolCards();
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a Tool Card:").toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_TOOL_CARD).toString(), Level.STANDARD);
         try {
             ToolCardWrapper toolCardWrapper = toolCardList.get(consoleListener.readNumber(toolCardList.size()));
 

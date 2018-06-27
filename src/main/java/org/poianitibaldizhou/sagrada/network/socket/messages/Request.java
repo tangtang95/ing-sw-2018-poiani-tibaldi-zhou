@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class Request implements Serializable {
     private final String methodName;
-    private final transient Object[] methodParameters;
+    private final Object[] methodParameters;
 
     /**
      * Constructor.

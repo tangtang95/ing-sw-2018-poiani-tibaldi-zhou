@@ -2,6 +2,7 @@ package org.poianitibaldizhou.sagrada.game.view;
 
 import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.rmi.RemoteException;
 import java.util.Objects;
@@ -11,15 +12,6 @@ import java.util.Objects;
  * The class contain the command for starting the game.
  */
 public class CLIStartApplicationScreen extends CLIBasicScreen {
-
-    /**
-     * StartGame commands.
-     */
-    private static final String CHANGE_CONNECTION_MODE = "Change connection mode";
-    private static final String START_GAME = "Start game";
-    private static final String QUIT = "Quit";
-    private static final String RECONNECT = "Reconnect";
-
 
     /**
      * constructor.
@@ -38,21 +30,22 @@ public class CLIStartApplicationScreen extends CLIBasicScreen {
      */
     @Override
     protected void initializeCommands() {
-        Command changeConnectionCommand = new Command(CHANGE_CONNECTION_MODE, "Go to Change connection menu");
+        Command changeConnectionCommand = new Command(ClientMessage.CHANGE_CONNECTION_MODE,
+                ClientMessage.CHANGE_CONNECTION_MODE_HELP);
         changeConnectionCommand.setCommandAction(() ->
                 screenManager.pushScreen(new CLIChangeConnectionScreen(connectionManager, screenManager)));
         commandMap.put(changeConnectionCommand.getCommandText(), changeConnectionCommand);
 
-        Command startGameCommand = new Command(START_GAME, "Go to Game mode menu");
+        Command startGameCommand = new Command(ClientMessage.START_GAME, ClientMessage.START_GAME_HELP);
         startGameCommand.setCommandAction(() ->
                 screenManager.pushScreen(new CLISelectGameModeScreen(connectionManager, screenManager)));
         commandMap.put(startGameCommand.getCommandText(), startGameCommand);
 
-        Command quitCommand = new Command(QUIT, "Quit game");
+        Command quitCommand = new Command(ClientMessage.QUIT_GAME, ClientMessage.QUIT_GAME_HELP);
         quitCommand.setCommandAction(this::quit);
         commandMap.put(quitCommand.getCommandText(), quitCommand);
 
-        Command reconnectCommand = new Command(RECONNECT, "Reconnect to an on-going game");
+        Command reconnectCommand = new Command(ClientMessage.RECONNECT, ClientMessage.RECONNECT_HELP);
         reconnectCommand.setCommandAction(() ->
                 screenManager.pushScreen(new CLIReconnectToGameScreen(connectionManager,screenManager)));
         commandMap.putIfAbsent(reconnectCommand.getCommandText(), reconnectCommand);
@@ -70,9 +63,9 @@ public class CLIStartApplicationScreen extends CLIBasicScreen {
 
         PrinterManager.consolePrint(buildGraphic.
                 buildGraphicLogo().
-                buildMessage("-------------------------Start Game Menu---------------------------").
+                buildMessage(ClientMessage.START_GAME_MENU).
                 buildGraphicHelp(commandMap).
-                buildMessage("Choose action: ").toString(), Level.STANDARD);
+                buildMessage(ClientMessage.CHOOSE_ACTION).toString(), Level.STANDARD);
 
         consoleListener.setCommandMap(commandMap);
     }

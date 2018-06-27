@@ -31,7 +31,7 @@ public final class ClientMessage {
     public static final String CHOOSE_SCHEMA_CARD_ITA = "Devi scegliere una delle due Carte Schema fronte o retro.";
     public static final String INSTRUCTION_MESSAGE2 = "Prima del calcolo dei punti scegli una delle Carte Private che desideri.";
     public static final String CHOOSE_PRIVATE_OBJECTIVE_CARD_ITA = "Devi scegliere una delle Carte Private.";
-    public static final String CHOOSE_TOOL_CARD = "Devi scegliere una Carta Utensile.";
+    public static final String CHOOSE_TOOL_CARD_ITA = "Devi scegliere una Carta Utensile.";
     public static final String PLACE_DICE_FROM_DRAFT_POOL = "Piazza un dado della Riserva sulla tua Carta Schema rispettando le regoledi piazzamento.";
     public static final String CHOOSE_DICE_FROM_LIST = "Scegli uno dei dadi nella lista: ";
     public static final String CHOOSE_DICE_VALUE = "Scegli il nuovo valore del dado: ";
@@ -43,9 +43,9 @@ public final class ClientMessage {
     public static final String WOULD_YOU_CONTINUE = "Vuoi continuare l'esecuzione della Carta Utensile?";
     public static final String TOOL_CARD_EXECUTION_SUCCESSFUL = "Carta Utensile eseguita con successo.";
     public static final String TOOL_CARD_END_TURN_ACTIVATION = "A fine turno la ToolCard si attiverà.";
-    public static final String CHOOSE_DICE = "Devi scegliere un dado.";
-    public static final String CHOOSE_COLOR = "Devi scegliere un colore.";
-    public static final String CHOOSE_POSITION = "Devi scegliere una posizione.";
+    public static final String CHOOSE_DICE_ITA = "Devi scegliere un dado.";
+    public static final String CHOOSE_COLOR_ITA = "Devi scegliere un colore.";
+    public static final String CHOOSE_POSITION_ITA = "Devi scegliere una posizione.";
     public static final String CHOOSE_VALUE = "Devi scegliere un valore.";
 
     /**
@@ -100,6 +100,30 @@ public final class ClientMessage {
     public static final String VIEW_PLAYERS_COINS_HELP = "View the coins of all players";
     public static final String VIEW_TIME_TO_TIMEOUT_HELP = "View time to time out";
     public static final String QUIT_GAME_HELP = "Quit from current game";
+    public static final String SINGLE_PLAYER = "Single player";
+    public static final String MULTI_PLAYER = "Multi player";
+    public static final String GO_BACK = "Go back";
+    public static final String SINGLE_PLAYER_HELP = "Start in single player mode";
+    public static final String MULTI_PLAYER_HELP = "Start in multi player mode";
+    public static final String GO_BACK_HELP = "Go to Start Game Menu";
+    public static final String SELECT_GAME_MODE = "------------------------Select Game Mode---------------------------";
+    public static final String CHOOSE_GAME_MODE = "Choose the game mode or go to Start Game Menu: ";
+    public static final String PLACE_DICE = "Place dice";
+    public static final String PLAY_TOOL_CARD = "Play ToolCard";
+    public static final String END_TURN = "End turn";
+    public static final String PLACE_DICE_HELP = "Place a dice on Schema Card from Draft Pool";
+    public static final String PLAY_TOOL_CARD_HELP = "Play a Tool Card";
+    public static final String END_TURN_HELP = "End the turn";
+    public static final String START_GAME = "Start game";
+    public static final String RECONNECT = "Reconnect";
+    public static final String CHANGE_CONNECTION_MODE_HELP = "Go to Change connection menu";
+    public static final String START_GAME_HELP = "Go to Game mode menu";
+    public static final String RECONNECT_HELP = "Reconnect to an on-going game";
+    public static final String START_GAME_MENU = "-------------------------Start Game Menu---------------------------";
+    public static final String CHANGE_CONNECTION_MODE = "Change connection mode";
+    public static final String TURN_MENU = "----------------------------IS YOUR TURN---------------------------\n";
+    public static final String END_TURN_MENU = "-------------------------YOUR TURN IS FINISH-----------------------\n";
+    public static final String TABLE_OF_POINTS_MENU = "--------------------------TABLE OF POINTS--------------------------\n";
 
     /**
      * CLI info massages.
@@ -118,6 +142,45 @@ public final class ClientMessage {
     public static final String YOUR_OUTCOME = "Your outcome is: ";
     public static final String RECONNECT_TO_YOUR_GAME = "Re-connecting to your game...\n";
     public static final String PROVIDE_AN_USERNAME = "Provide an username: \n";
+    public static final String ADD_DICE_LIST_TO_ROUND = "%s added a list of dices to the round track at round %d.";
+    public static final String ADD_DICE_TO_ROUND = "%s added a list of dices to the round track at round %d.";
+    public static final String REMOVE_DICE_FROM_ROUND_TRACK = "%s  removed a dice from the round track at round %d.";
+    public static final String SWAP_DICE = "%s  swap a with the round track at round %d.";
+    public static final String OLD_DICE = "Old dice (no more present in round track) : ";
+    public static final String NEW_DICE = "New dice (added to the round track) : ";
+    public static final String PLACE_DICE_IN_POSITION = " has placed a dice in position ";
+    public static final String REMOVE_DICE_IN_POSITION = " has removed a dice in position ";
+    public static final String PROVIDE_DIFFICULTY = "Provide a difficulty ranging from 1 to 5: \n";
+    public static final String YOU_LEFT_THE_GAME = "You have left the game.\n";
+    public static final String GAME_SETUP = "Game setup.\n";
+    public static final String PLAYER_SETUP = "Players setup.\n";
+    public static final String ROUND_STARTED_WITH_PLAYER = "The round %d is started with player %s.\n";
+    public static final String USER_PLAYING = "Is the round %d, %s is playing.\n";
+    public static final String ROUND_END = "The round %d end.\n";
+    public static final String SKIP_TURN = "The turn of player %s skip.\n";
+    public static final String PLAYER_USE_TOOL_CARD = "The player %s use a toolCard.\n";
+    public static final String TURN_END = "The turn of %s is ended.\n";
+    public static final String WINNER_IS = "The winner is %s.\n";
+    public static final String TIMEOUT = "You have spent all the time for your turn.\n";
+    public static final String USER_HAS_TIMEOUT = "User %s has timeout.\n";
+    public static final String CHOOSE_DICE = "Choose a dice: ";
+    public static final String CHOOSE_NUMBER_BETWEEN_1_6 = "Choose a number between 1 and 6:\n";
+    public static final String COLOR = "Colors: \n";
+    public static final String CHOOSE_COLOR ="Choose a color: \n";
+    public static final String CHOOSE_DELTA_NUMBER = "Choose the number %d or %d:\n";
+    public static final String CHOOSE_THE_NUMBER = "Choose the number %d:\n";
+    public static final String CHOOSE_POSITION = "Choose a position on your Schema Card.\n";
+    public static final String CHOOSE_POSITION_WITH_COLOR = "Choose a position from your Schema Card with the color ";
+    public static final String CONTINUE_MESSAGE = "Do you want to continue? (y/n)\n";
+    public static final String RE_ROL_DICE = "The dice has been re-rolled: ";
+    public static final String DICE_POURED_OVER = "The dice has been poured-over: ";
+    public static final String CHOOSE_POSITION_ON_SCHEMA = "Choose a position on your Schema Card.\n";
+    public static final String CHOOSE_ROW = "Choose a row between 1 and 4 included:";
+    public static final String CHOOSE_COLUMN = "Choose a column between 1 and 5 included:\n";
+    public static final String CHOOSE_ROUND = "Choose a round: \n";
+    public static final String TOKEN_CHANGE = "Token on %s has been change to %d.";
+    public static final String TOOL_CARD_DESTROY = "Tool card %s has been utilized and destroyed.";
+    public static final String CHOOSE_TOOL_CARD = "Choose a Tool card: ";
 
     /**
      * CLI error messages.
@@ -130,5 +193,9 @@ public final class ClientMessage {
     public static final String FATAL_ERROR = ": Fatal error. Please close the game and restart it.\n";
     public static final String NO_SCREEN_AVAILABLE = "No screen available.";
     public static final String RECONNECT_FAILED = "Re-connecting failed.";
+    public static final String GAME_TERMINATION_ERROR = "The game has terminated before starting due to the fact that some players failed in joining the game";
+    public static final String COMMAND_ERROR = "There was an error with the last command which will be repeated.\n";
+    public static final String TOOL_CARD_ERROR = "You made an unforgivable mistake when using the Tool Card %s, so you will not be able to use it this turn.";
+    public static final String ERROR_TYPE = "ERROR TYPE: ";
 
 }

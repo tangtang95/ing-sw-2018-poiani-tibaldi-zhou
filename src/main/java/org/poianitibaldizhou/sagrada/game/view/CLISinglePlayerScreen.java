@@ -9,21 +9,6 @@ import java.io.IOException;
 public class CLISinglePlayerScreen extends GameModeStrategy {
 
     /**
-     * CLISinglePlayerScreen commands.
-     */
-    private static final String QUIT = "Quit game";
-    private static final String VIEW_DRAFT_POOL = "View the Draft Pool";
-    private static final String VIEW_ROUND_TRACK = "View the Round Track";
-    private static final String VIEW_TOOL_CARDS = "View the list of Tool Card";
-    private static final String VIEW_PUBLIC_OBJECTIVE_CARD = "View the public objective cards";
-    private static final String VIEW_MY_SCHEMA = "View my schema Card";
-    private static final String VIEW_PRIVATE_OBJECTIVE_CARD = "View the private objective cards";
-    private static final String PLACE_DICE = "Place dice";
-    private static final String PLAY_TOOL_CARD = "Play Tool Card";
-    private static final String END_TURN = "End Turn";
-
-
-    /**
      * Constructor.
      *
      * @param connectionManager the network manager for connecting with the server.
@@ -43,45 +28,45 @@ public class CLISinglePlayerScreen extends GameModeStrategy {
     }
 
     private void initializeCommands() {
-        Command viewDraftPool = new Command(VIEW_DRAFT_POOL, "View the game Draft Pool");
+        Command viewDraftPool = new Command(ClientMessage.VIEW_DRAFT_POOL, ClientMessage.VIEW_DRAFT_POOL_HELP);
         viewDraftPool.setCommandAction(this::viewDraftPool);
         commandMap.put(viewDraftPool.getCommandText(), viewDraftPool);
 
-        Command viewRoundTrack = new Command(VIEW_ROUND_TRACK, "View the game Round Track");
+        Command viewRoundTrack = new Command(ClientMessage.VIEW_ROUND_TRACK, ClientMessage.VIEW_ROUND_TRACK_HELP);
         viewRoundTrack.setCommandAction(this::viewRoundTrack);
         commandMap.put(viewRoundTrack.getCommandText(), viewRoundTrack);
 
-        Command viewToolCards = new Command(VIEW_TOOL_CARDS, "View the Tool Cards playable");
+        Command viewToolCards = new Command(ClientMessage.VIEW_TOOL_CARDS, ClientMessage.VIEW_TOOL_CARDS_HELP);
         viewToolCards.setCommandAction(this::viewToolCards);
         commandMap.put(viewToolCards.getCommandText(), viewToolCards);
 
-        Command viewPublicObjectiveCards = new Command(VIEW_PUBLIC_OBJECTIVE_CARD,
-                "View the Public Objective cards");
+        Command viewPublicObjectiveCards = new Command(ClientMessage.VIEW_PUBLIC_OBJECTIVE_CARD,
+                ClientMessage.VIEW_PUBLIC_OBJECTIVE_CARD_HELP);
         viewPublicObjectiveCards.setCommandAction(this::viewPublicObjectiveCards);
         commandMap.put(viewPublicObjectiveCards.getCommandText(), viewPublicObjectiveCards);
 
-        Command viewMySchema = new Command(VIEW_MY_SCHEMA, "View my Schema card");
+        Command viewMySchema = new Command(ClientMessage.VIEW_MY_SCHEMA, ClientMessage.VIEW_MY_SCHEMA_HELP);
         viewMySchema.setCommandAction(this::viewMySchemaCard);
         commandMap.put(viewMySchema.getCommandText(), viewMySchema);
 
-        Command viewPrivateObjectiveCards = new Command(VIEW_PRIVATE_OBJECTIVE_CARD,
-                "View the Private Objective cards");
+        Command viewPrivateObjectiveCards = new Command(ClientMessage.VIEW_PRIVATE_OBJECTIVE_CARD,
+                ClientMessage.VIEW_PRIVATE_OBJECTIVE_CARD_HELP);
         viewPrivateObjectiveCards.setCommandAction(this::viewPrivateObjectiveCards);
         commandMap.put(viewPrivateObjectiveCards.getCommandText(), viewPrivateObjectiveCards);
 
-        Command quit = new Command(QUIT, "Quit from current game");
+        Command quit = new Command(ClientMessage.QUIT_GAME, ClientMessage.QUIT_GAME_HELP);
         quit.setCommandAction(this::quitGame);
         commandMap.put(quit.getCommandText(), quit);
 
-        Command placeDice = new Command(PLACE_DICE, "Place a dice on Schema Card from Draft Pool");
+        Command placeDice = new Command(ClientMessage.PLACE_DICE, ClientMessage.PLACE_DICE_HELP);
         placeDice.setCommandAction(this::placeDice);
         commandMap.put(placeDice.getCommandText(), placeDice);
 
-        Command playToolCard = new Command(PLAY_TOOL_CARD, "Play a Tool Card");
+        Command playToolCard = new Command(ClientMessage.PLAY_TOOL_CARD, ClientMessage.PLAY_TOOL_CARD_HELP);
         playToolCard.setCommandAction(this::playToolCard);
         commandMap.put(playToolCard.getCommandText(), playToolCard);
 
-        Command endTurn = new Command(END_TURN, "End the turn");
+        Command endTurn = new Command(ClientMessage.END_TURN, ClientMessage.END_TURN_HELP);
         endTurn.setCommandAction(this::endTurn);
         commandMap.put(endTurn.getCommandText(), endTurn);
     }
@@ -94,7 +79,7 @@ public class CLISinglePlayerScreen extends GameModeStrategy {
             connectionManager.getGameController().quitGame(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
-            PrinterManager.consolePrint("You have left the game.\n", Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.YOU_LEFT_THE_GAME, Level.INFORMATION);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.FATAL_ERROR, Level.ERROR);
         }

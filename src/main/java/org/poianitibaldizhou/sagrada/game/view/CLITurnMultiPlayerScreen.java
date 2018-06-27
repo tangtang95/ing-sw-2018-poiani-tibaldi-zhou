@@ -13,14 +13,13 @@ import java.io.IOException;
 public class CLITurnMultiPlayerScreen extends CLIMultiPlayerScreen {
 
     /**
-     * The commands that player can use when is his turn.
+     * Constructor.
+     *
+     * @param networkManager the network manager for connecting with the server.
+     * @param screenManager manager for handler the changed of the screen.
+     * @param gameName name of game.
+     * @param token player's token.
      */
-    private static final String PLACE_DICE = "Place dice";
-    private static final String PLAY_TOOL_CARD = "Play Tool Card";
-    private static final String END_TURN = "End Turn";
-    private static final String QUIT = "Quit game";
-
-
     CLITurnMultiPlayerScreen(ConnectionManager networkManager, ScreenManager screenManager,
                                     String gameName, String token) {
         super(networkManager, screenManager, gameName, token);
@@ -35,19 +34,19 @@ public class CLITurnMultiPlayerScreen extends CLIMultiPlayerScreen {
     protected void initializeCommands() {
         super.initializeCommands();
 
-        Command placeDice = new Command(PLACE_DICE, "Place a dice on Schema Card from Draft Pool");
+        Command placeDice = new Command(ClientMessage.PLACE_DICE, ClientMessage.PLACE_DICE_HELP);
         placeDice.setCommandAction(this::placeDice);
         commandMap.put(placeDice.getCommandText(), placeDice);
 
-        Command playToolCard = new Command(PLAY_TOOL_CARD, "Play a Tool Card");
+        Command playToolCard = new Command(ClientMessage.PLAY_TOOL_CARD, ClientMessage.PLAY_TOOL_CARD_HELP);
         playToolCard.setCommandAction(this::playToolCard);
         commandMap.put(playToolCard.getCommandText(), playToolCard);
 
-        Command endTurn = new Command(END_TURN, "End the turn");
+        Command endTurn = new Command(ClientMessage.END_TURN, ClientMessage.END_TURN_HELP);
         endTurn.setCommandAction(this::endTurn);
         commandMap.put(endTurn.getCommandText(), endTurn);
 
-        Command quit = new Command(QUIT, "Quit from current game");
+        Command quit = new Command(ClientMessage.QUIT_GAME, ClientMessage.QUIT_GAME_HELP);
         quit.setCommandAction(this::quitGame);
         commandMap.put(quit.getCommandText(), quit);
     }
@@ -62,7 +61,7 @@ public class CLITurnMultiPlayerScreen extends CLIMultiPlayerScreen {
             connectionManager.getGameController().quitGame(
                     clientCreateMessage.createTokenMessage(token).createGameNameMessage(gameName).buildMessage()
             );
-            PrinterManager.consolePrint(this.getClass().getSimpleName() + "You have left the game.\n", Level.STANDARD);
+            PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.YOU_LEFT_THE_GAME, Level.STANDARD);
         } catch (IOException e) {
             PrinterManager.consolePrint(this.getClass().getSimpleName() + ClientMessage.FATAL_ERROR, Level.ERROR);
         }

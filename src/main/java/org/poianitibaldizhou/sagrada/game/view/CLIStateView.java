@@ -191,7 +191,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onSetupGame() {
-        PrinterManager.consolePrint("Game setup.\n", Level.INFORMATION);
+        PrinterManager.consolePrint(ClientMessage.GAME_SETUP, Level.INFORMATION);
     }
 
     /**
@@ -199,7 +199,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onSetupPlayer() {
-        PrinterManager.consolePrint("Players setup.\n", Level.INFORMATION);
+        PrinterManager.consolePrint(ClientMessage.PLAYER_SETUP, Level.INFORMATION);
     }
 
     /**
@@ -212,8 +212,8 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             UserWrapper roundUser = clientGetMessage.getRoundUser(jString);
             currentUser = roundUser;
             CLIBasicScreen.clearScreen();
-            PrinterManager.consolePrint("The round " + (round + 1) + " is started with player " +
-                    roundUser.getUsername() + "\n", Level.INFORMATION);
+            PrinterManager.consolePrint(String.format(ClientMessage.ROUND_STARTED_WITH_PLAYER,(round + 1),
+                    roundUser.getUsername()), Level.INFORMATION);
             if (round == 0)
                 screenManager.replaceScreen(roundStrategy);
             else {
@@ -242,13 +242,13 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
 
             if (turnUser.equals(myUser)) {
                 CLIBasicScreen.clearScreen();
-                PrinterManager.consolePrint("----------------------------IS YOUR TURN---------------------------\n",
+                PrinterManager.consolePrint(ClientMessage.TURN_MENU,
                         Level.STANDARD);
                 screenManager.pushScreen(turnStrategy);
 
             } else
-                PrinterManager.consolePrint("Is the round " + (round + 1) + ", " +
-                                turnUser.getUsername() + " is playing\n",
+                PrinterManager.consolePrint(String.format(ClientMessage.USER_PLAYING,(round + 1),
+                                turnUser.getUsername()),
                         Level.INFORMATION);
         }
     }
@@ -259,7 +259,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onRoundEnd(String jString) throws IOException {
         int round = clientGetMessage.getValue(jString);
-        PrinterManager.consolePrint("The round " + (round + 1) + " end\n", Level.INFORMATION);
+        PrinterManager.consolePrint(String.format(ClientMessage.ROUND_END, (round + 1)), Level.INFORMATION);
         setStart(true);
     }
 
@@ -277,8 +277,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     @Override
     public void onSkipTurnState(String jString) throws IOException {
         UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
-        PrinterManager.consolePrint("The turn of player " + turnUser.getUsername() +
-        "skip\n", Level.STANDARD);
+        PrinterManager.consolePrint(String.format(ClientMessage.SKIP_TURN,turnUser.getUsername()), Level.STANDARD);
     }
 
     /**
@@ -296,7 +295,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public void onUseCardState(String jString) throws IOException {
         UserWrapper user = clientGetMessage.getTurnUserWrapper(jString);
         if (!user.equals(myUser))
-            PrinterManager.consolePrint("The player " + user.getUsername() + " use a ToolCard\n",
+            PrinterManager.consolePrint(String.format(ClientMessage.PLAYER_USE_TOOL_CARD,user.getUsername()),
                 Level.INFORMATION);
     }
 
@@ -309,12 +308,12 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
             UserWrapper turnUser = clientGetMessage.getTurnUserWrapper(jString);
             if (turnUser.equals(myUser)) {
                 CLIBasicScreen.clearScreen();
-                PrinterManager.consolePrint("-------------------------YOUR TURN IS FINISH-----------------------\n",
+                PrinterManager.consolePrint(ClientMessage.END_TURN_MENU,
                         Level.STANDARD);
                 screenManager.popScreen();
                 setStart(true);
             } else
-                PrinterManager.consolePrint("The turn of " + turnUser.getUsername() + " is ending\n",
+                PrinterManager.consolePrint(String.format(ClientMessage.TURN_END,turnUser.getUsername()),
                         Level.INFORMATION);
         }
     }
@@ -333,7 +332,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
                 }
             }
             CLIBasicScreen.clearScreen();
-            PrinterManager.consolePrint("--------------------------TABLE OF POINTS--------------------------\n",
+            PrinterManager.consolePrint(ClientMessage.TABLE_OF_POINTS_MENU,
                     Level.STANDARD);
             Map<UserWrapper, Integer> points = clientGetMessage.getVictoryPoint(victoryPoints);
             Map<String, String> table = new HashMap<>();
@@ -349,7 +348,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
     public void onResultGame(String winner) throws IOException {
         synchronized (lock) {
             UserWrapper user = clientGetMessage.getUserWrapper(winner);
-            PrinterManager.consolePrint("The winner is " + user.getUsername() + "\n", Level.STANDARD);
+            PrinterManager.consolePrint(String.format(ClientMessage.WINNER_IS,user.getUsername()), Level.STANDARD);
 
             try {
                 if(screenManager.getNumberOfScreen() > 2)
@@ -367,8 +366,7 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
      */
     @Override
     public void onGameTerminationBeforeStarting() {
-        PrinterManager.consolePrint("The game has terminated before starting due to the fact that some" +
-                "players failed in joining the game", Level.ERROR);
+        PrinterManager.consolePrint(ClientMessage.GAME_TERMINATION_ERROR, Level.ERROR);
         screenManager.popScreen();
     }
 

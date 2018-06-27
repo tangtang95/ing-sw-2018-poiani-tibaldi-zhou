@@ -6,6 +6,7 @@ import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IRoundTrackObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -49,8 +50,7 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
     public void onDicesAddToRound(String message) throws IOException {
         Integer round = clientGetMessage.getValue(message);
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(message);
-        String printMessage = cliStateView.getCurrentUser().getUsername() +
-                " added a list of dices to the round track at round " + round + ".";
+        String printMessage = String.format(ClientMessage.ADD_DICE_LIST_TO_ROUND,cliStateView.getCurrentUser().getUsername(),round);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDices(diceWrapperList).toString(),
                 Level.INFORMATION);
@@ -63,8 +63,8 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
     public void onDiceAddToRound(String message) throws IOException {
         Integer round = clientGetMessage.getValue(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateView.getCurrentUser().getUsername() + " added a dice to the round track at round "
-                + round + ".";
+        String printMessage = String.format(ClientMessage.ADD_DICE_TO_ROUND,
+                cliStateView.getCurrentUser().getUsername(),round);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
                 Level.INFORMATION);
@@ -77,7 +77,8 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
     public void onDiceRemoveFromRound(String message) throws IOException {
         Integer round  = clientGetMessage.getValue(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateView.getCurrentUser().getUsername() + " removed a dice from the round track at round " + round + ".";
+        String printMessage = String.format(ClientMessage.REMOVE_DICE_FROM_ROUND_TRACK,
+                cliStateView.getCurrentUser().getUsername(),round);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
                 Level.INFORMATION);
@@ -93,10 +94,9 @@ public class CLIRoundTrackView extends UnicastRemoteObject implements IRoundTrac
         DiceWrapper newDice = clientGetMessage.getNewDice(message);
         Integer round = clientGetMessage.getValue(message);
 
-        String printMessage = cliStateView.getCurrentUser().getUsername() + " swap a with the round track at round "
-                + round + ".";
-        String message2 = "Old dice (no more present in round track) : ";
-        String message3 = "New dice (added to the round track) : ";
+        String printMessage = String.format(ClientMessage.SWAP_DICE,cliStateView.getCurrentUser().getUsername(),round);
+        String message2 = ClientMessage.OLD_DICE;
+        String message3 = ClientMessage.NEW_DICE;
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildMessage(message2).
                 buildGraphicDice(oldDice).buildMessage(message3).buildGraphicDice(newDice).toString(), Level.INFORMATION);

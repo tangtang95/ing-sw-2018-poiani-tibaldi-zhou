@@ -22,13 +22,6 @@ import java.util.concurrent.TimeoutException;
  */
 public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
 
-    /**
-     * SelectGameMode commands.
-     */
-    private static final String SINGLE_PLAYER = "Single player";
-    private static final String MULTI_PLAYER = "Multi player";
-    private static final String GO_BACK = "Go back";
-
     private final transient ClientCreateMessage clientCreateMessage;
     private final transient ClientGetMessage clientGetMessage;
 
@@ -53,16 +46,16 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
      */
     @Override
     protected void initializeCommands() {
-        Command singlePlayerCommand = new Command(SINGLE_PLAYER, "Start in single player mode");
+        Command singlePlayerCommand = new Command(ClientMessage.SINGLE_PLAYER, ClientMessage.SINGLE_PLAYER_HELP);
         singlePlayerCommand.setCommandAction(this::newSinglePlayerGame);
         commandMap.put(singlePlayerCommand.getCommandText(), singlePlayerCommand);
 
-        Command multiPlayerCommand = new Command(MULTI_PLAYER, "Start in multi player mode");
+        Command multiPlayerCommand = new Command(ClientMessage.MULTI_PLAYER, ClientMessage.MULTI_PLAYER_HELP);
         multiPlayerCommand.setCommandAction(() ->
                 screenManager.replaceScreen(new CLILobbyScreen(connectionManager, screenManager)));
         commandMap.put(multiPlayerCommand.getCommandText(), multiPlayerCommand);
 
-        Command goBackCommand = new Command(GO_BACK, "Go to Start Game Menu");
+        Command goBackCommand = new Command(ClientMessage.GO_BACK, ClientMessage.GO_BACK_HELP);
         goBackCommand.setCommandAction(screenManager::popScreen);
         commandMap.put(goBackCommand.getCommandText(), goBackCommand);
     }
@@ -76,9 +69,9 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
         BuildGraphic buildGraphic = new BuildGraphic();
 
         PrinterManager.consolePrint(buildGraphic.
-                        buildMessage("------------------------Select Game Mode---------------------------").
+                        buildMessage(ClientMessage.SELECT_GAME_MODE).
                         buildGraphicHelp(commandMap).
-                        buildMessage("Choose the game mode or go to Start Game Menu: ").toString(),
+                        buildMessage(ClientMessage.CHOOSE_GAME_MODE).toString(),
                 Level.STANDARD);
 
         ConsoleListener consoleListener = ConsoleListener.getInstance();
@@ -95,7 +88,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
         String username = null;
 
         BufferedReader r = new BufferedReader(new InputStreamReader(System.in));
-        PrinterManager.consolePrint("Provide an username: \n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.PROVIDE_AN_USERNAME, Level.STANDARD);
 
         try {
             while (username == null) {
@@ -104,7 +97,7 @@ public class CLISelectGameModeScreen extends CLIBasicScreen implements IView {
                     username = null;
             }
 
-            PrinterManager.consolePrint("Provide a difficulty ranging from 1 to 5: \n", Level.STANDARD);
+            PrinterManager.consolePrint(ClientMessage.PROVIDE_DIFFICULTY, Level.STANDARD);
             int difficulty = consoleListener.readValue(5);
 
             String message = connectionManager.getGameController().createSinglePlayer(clientCreateMessage.

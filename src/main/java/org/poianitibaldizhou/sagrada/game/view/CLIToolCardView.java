@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -32,7 +33,7 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
      * @param toolCardName the name of toolCard associated at this class.
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLIToolCardView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
+    CLIToolCardView(CLIStateView cliStateView, String toolCardName) throws RemoteException {
         super();
         this.clientGetMessage = cliStateView.getClientGetMessage();
         this.toolCardName = toolCardName;
@@ -44,7 +45,7 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
     @Override
     public void onTokenChange(String tokens) throws IOException {
         Integer value = clientGetMessage.getValue(tokens);
-        String message = "Token on " + toolCardName + "has been changed to: " + value;
+        String message = String.format(ClientMessage.TOKEN_CHANGE,toolCardName,value);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }
@@ -54,7 +55,7 @@ public class CLIToolCardView extends UnicastRemoteObject implements IToolCardObs
      */
     @Override
     public void onCardDestroy() {
-        String message = "Tool card " + toolCardName + "has been utilized and destroyed";
+        String message = String.format(ClientMessage.TOOL_CARD_DESTROY,toolCardName);
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(message).toString(), Level.STANDARD);
     }

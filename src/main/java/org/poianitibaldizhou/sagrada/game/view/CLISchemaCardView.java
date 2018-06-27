@@ -7,6 +7,7 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.ISchemaCard
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -55,7 +56,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
     public void onPlaceDice(String message) throws IOException {
         PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateView.getCurrentUser().getUsername() + " has placed a dice in position " +
+        String printMessage = cliStateView.getCurrentUser().getUsername() + ClientMessage.PLACE_DICE_IN_POSITION +
                 positionWrapper.toString();
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),
@@ -70,7 +71,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
     public void onDiceRemove(String message) throws IOException {
         PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
-        String printMessage = cliStateView.getCurrentUser().getUsername() + " has removed a dice in position " +
+        String printMessage = cliStateView.getCurrentUser().getUsername() + ClientMessage.REMOVE_DICE_IN_POSITION +
                 positionWrapper.toString();
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(printMessage).buildGraphicDice(diceWrapper).toString(),

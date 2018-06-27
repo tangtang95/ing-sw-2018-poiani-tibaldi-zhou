@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.cli.Level;
 import org.poianitibaldizhou.sagrada.cli.PrinterManager;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ITimeOutObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
+import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -29,7 +30,7 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
      *
      * @throws RemoteException thrown when calling methods in a wrong sequence or passing invalid parameter values.
      */
-    public CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
+    CLITimeoutView(CLIStateView cliStateView) throws RemoteException {
         super();
         this.clientGetMessage = new ClientGetMessage();
         this.cliStateView = cliStateView;
@@ -43,9 +44,9 @@ public class CLITimeoutView extends UnicastRemoteObject implements ITimeOutObser
         ConsoleListener consoleListener = ConsoleListener.getInstance();
         String username = clientGetMessage.getUserWrapper(message).getUsername();
         if(username.equals(cliStateView.getMyUser().getUsername())) {
-            PrinterManager.consolePrint("You have spent all the time for your turn\n", Level.INFORMATION);
+            PrinterManager.consolePrint(ClientMessage.TIMEOUT, Level.INFORMATION);
         } else {
-            PrinterManager.consolePrint("User " + username + " has timed out.\n", Level.INFORMATION);
+            PrinterManager.consolePrint(String.format(ClientMessage.USER_HAS_TIMEOUT, username), Level.INFORMATION);
         }
         consoleListener.stopReadNumber();
     }

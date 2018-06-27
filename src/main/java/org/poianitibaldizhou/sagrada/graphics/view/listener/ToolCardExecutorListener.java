@@ -588,7 +588,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
     private void fireDiceEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, ClientMessage.CHOOSE_DICE, MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_DICE_ITA, MessageType.ERROR);
             return;
         }
         DiceView diceView = (DiceView) toggleGroup.getSelectedToggle().getUserData();
@@ -606,7 +606,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
 
     private void fireColorEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
-            showMessage(notifyPane, ClientMessage.CHOOSE_COLOR, MessageType.ERROR);
+            showMessage(notifyPane, ClientMessage.CHOOSE_COLOR_ITA, MessageType.ERROR);
             return;
         }
         ColorView colorView = (ColorView) toggleGroup.getSelectedToggle().getUserData();
@@ -625,7 +625,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
     private void firePositionEvent(ActionEvent actionEvent, SchemaCardView schemaCardView) {
         try {
             if (schemaCardView.getUserData() == null) {
-                showMessage(notifyPane, ClientMessage.CHOOSE_POSITION, MessageType.ERROR);
+                showMessage(notifyPane, ClientMessage.CHOOSE_POSITION_ITA, MessageType.ERROR);
                 return;
             }
             PositionWrapper positionWrapper = (PositionWrapper) schemaCardView.getUserData();

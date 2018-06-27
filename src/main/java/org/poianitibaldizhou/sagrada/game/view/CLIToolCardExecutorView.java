@@ -74,7 +74,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         List<DiceWrapper> diceWrapperList = clientGetMessage.getDiceList(diceList);
 
         PrinterManager.consolePrint(buildGraphic.buildGraphicDices(diceWrapperList).
-                buildMessage("Choose a dice: ").toString(), Level.STANDARD);
+                buildMessage(ClientMessage.CHOOSE_DICE).toString(), Level.STANDARD);
 
         try {
             String message = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).
@@ -92,7 +92,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyNeedNewValue(String diceMessage) throws IOException {
-        PrinterManager.consolePrint("Choose a number between 1 and 6:\n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.CHOOSE_NUMBER_BETWEEN_1_6, Level.STANDARD);
 
         try {
             String message = clientCreateMessage.createGameNameMessage(gameModeStrategy.getGameName()).
@@ -111,11 +111,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     public void notifyNeedColor(String colors) throws IOException {
         List<ColorWrapper> colorWrapperList = clientGetMessage.getColorList(colors);
 
-        PrinterManager.consolePrint("Colors: \n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.COLOR, Level.STANDARD);
         for (int i = 0; i < colorWrapperList.size(); i++) {
             PrinterManager.consolePrint("[" + (i + 1) + "] " + colorWrapperList.get(i) + "\n", Level.STANDARD);
         }
-        PrinterManager.consolePrint("Choose a color: \n", Level.STANDARD);
+        PrinterManager.consolePrint(ClientMessage.CHOOSE_COLOR, Level.STANDARD);
 
         try {
             String message = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).
@@ -159,9 +159,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         try {
             do {
                 if (minNumber != maxNumber)
-                    PrinterManager.consolePrint("Choose the number " + minNumber + " or " + maxNumber + ":\n", Level.STANDARD);
+                    PrinterManager.consolePrint(String.format(ClientMessage.CHOOSE_DELTA_NUMBER,minNumber,maxNumber), Level.STANDARD);
                 else
-                    PrinterManager.consolePrint("Choose the number " + minNumber + ":\n", Level.STANDARD);
+                    PrinterManager.consolePrint(String.format(ClientMessage.CHOOSE_THE_NUMBER,minNumber), Level.STANDARD);
                 number = consoleListener.readNumber(maxNumber);
                 if (number == minNumber || number == maxNumber) {
                     String messageForController = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).
@@ -200,7 +200,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card\n").
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_POSITION).
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         schemaCardPosition();
     }
@@ -217,7 +217,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card with the color "
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_POSITION_WITH_COLOR
                 + color.name()).
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         schemaCardPosition();
@@ -228,8 +228,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      */
     @Override
     public void notifyRepeatAction() {
-        PrinterManager.consolePrint("There was an error with the last command" +
-                "which will be repeated.\n", Level.INFORMATION);
+        PrinterManager.consolePrint(ClientMessage.COMMAND_ERROR, Level.INFORMATION);
     }
 
     /**
@@ -238,9 +237,8 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     @Override
     public void notifyCommandInterrupted(String error) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage("ERROR TYPE: " + clientGetMessage.getCommandFlow(error)).
-                buildMessage("You made an unforgivable mistake when using the Tool Card " +
-                        toolCardName + ", so you will not be able to use it this turn.").toString(), Level.INFORMATION);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.ERROR_TYPE + clientGetMessage.getCommandFlow(error)).
+                buildMessage(String.format(ClientMessage.TOOL_CARD_ERROR,toolCardName)).toString(), Level.INFORMATION);
     }
 
     /**
@@ -255,7 +253,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         boolean answer = false;
 
         do {
-            PrinterManager.consolePrint("Do you want to continue? (y/n)\n", Level.STANDARD);
+            PrinterManager.consolePrint(ClientMessage.CONTINUE_MESSAGE, Level.STANDARD);
             response = r.readLine();
             switch (response) {
                 case "y":
@@ -268,7 +266,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                     doAgain = false;
                     break;
                 default:
-                    PrinterManager.consolePrint("Incorrect input\n", Level.ERROR);
+                    PrinterManager.consolePrint(ClientMessage.COMMAND_NOT_FOUND, Level.ERROR);
                     doAgain = true;
                     break;
             }
@@ -290,7 +288,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
 
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been re-rolled: ").buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.RE_ROL_DICE).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
     @Override
@@ -303,7 +301,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
 
         BuildGraphic buildGraphic = new BuildGraphic();
-        PrinterManager.consolePrint(buildGraphic.buildMessage("The dice has been poured-over: ").
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.DICE_POURED_OVER).
                 buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
@@ -318,7 +316,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         SchemaCardWrapper schemaCard = clientGetMessage.getSchemaCard(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position on your Schema Card\n").
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_POSITION_ON_SCHEMA).
                 buildGraphicDice(diceWrapper).
                 buildMessage(schemaCard.toString()).toString(), Level.STANDARD);
         schemaCardPosition();
@@ -332,12 +330,12 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     private void schemaCardPosition() throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
 
-        PrinterManager.consolePrint(buildGraphic.buildMessage("Choose a position from your Schema Card").
-                        buildMessage("Choose a row between 1 and 4 included:").toString(),
+        PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.CHOOSE_POSITION_ON_SCHEMA).
+                        buildMessage(ClientMessage.CHOOSE_ROW).toString(),
                 Level.STANDARD);
         try {
             int row = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_ROWS);
-            PrinterManager.consolePrint("Choose a column between 1 and 5 included:\n", Level.STANDARD);
+            PrinterManager.consolePrint(ClientMessage.CHOOSE_COLUMN, Level.STANDARD);
             int column = consoleListener.readNumber(SchemaCardWrapper.NUMBER_OF_COLUMNS);
 
             String setMessage = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).
@@ -361,11 +359,11 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         try {
 
             do {
-                PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
+                PrinterManager.consolePrint(ClientMessage.CHOOSE_ROUND, Level.STANDARD);
                 roundNumber = consoleListener.readNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
             } while (roundTrack.getDicesForRound(roundNumber).isEmpty());
 
-            PrinterManager.consolePrint("Choose a dice: \n", Level.STANDARD);
+            PrinterManager.consolePrint(ClientMessage.CHOOSE_DICE, Level.STANDARD);
             int diceNumber = consoleListener.readNumber(roundTrack.getDicesForRound(roundNumber).size());
 
             String setRoundMessage = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).createGameNameMessage(gameModeStrategy.getGameName())
