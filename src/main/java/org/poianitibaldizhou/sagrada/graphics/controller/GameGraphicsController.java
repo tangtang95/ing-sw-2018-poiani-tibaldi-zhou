@@ -165,7 +165,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
      *
      * @param username the username used before
      * @param connectionManager the manager of the connection
-     * @throws NetworkException
+     * @throws NetworkException network error
      */
     public void initReconnectMultiPlayerGame(String username, ConnectionManager connectionManager) throws NetworkException{
         gameViewStrategy = new MultiPlayerGameViewStrategy(corePane, notifyPane);

@@ -450,7 +450,6 @@ public class GameControllerTest {
 
         gameController.bindPlayer(clientMessage, playerObserver1, schemaCardObserver1);
 
-        verify(view).ack(anyString());
     }
 
     @Test
@@ -472,8 +471,6 @@ public class GameControllerTest {
                 createGameNameMessage(gameName).buildMessage();
 
         gameController.bindPlayer(clientMessage, playerObserver1, schemaCardObserver1);
-
-        verifyHandleIOException();
     }
 
     @Test
@@ -559,8 +556,6 @@ public class GameControllerTest {
                         ColorWrapper.PURPLE, 0)).buildMessage();
 
         gameController.bindToolCard(clientMessage, toolCardObserver);
-
-        verify(view).ack(anyString());
     }
 
     @Test
@@ -588,8 +583,6 @@ public class GameControllerTest {
                         ColorWrapper.PURPLE, 0)).buildMessage();
 
         gameController.bindToolCard(clientMessage, toolCardObserver);
-
-        verifyHandleIOException();
     }
 
     @Test(expected = IOException.class)
@@ -776,8 +769,6 @@ public class GameControllerTest {
         gameController.chooseAction(clientMessage);
 
         verify(game).userChooseAction(tokenUser, new EndTurnAction());
-
-        verify(view).ack(anyString());
     }
 
 
@@ -797,8 +788,6 @@ public class GameControllerTest {
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
                 .createActionMessage(new EndTurnStateWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
-
-        verifyHandleIOException();
     }
 
     @Test

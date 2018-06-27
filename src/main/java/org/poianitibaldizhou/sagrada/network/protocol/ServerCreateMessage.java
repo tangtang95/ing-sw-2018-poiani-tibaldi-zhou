@@ -79,10 +79,13 @@ public class ServerCreateMessage {
      *
      * @return a error message.
      */
+    @SuppressWarnings({"unchecked"})
     public String reconnectErrorMessage() {
-        Map<String, String> error = new HashMap<>();
-        error.putIfAbsent(SharedConstants.GET_ERROR_KEY, SharedConstants.RECONNECT_ERROR);
-        return JSONObject.toJSONString(error);
+        JSONObject main = new JSONObject();
+        JSONObject error = new JSONObject();
+        error.put(SharedConstants.GET_ERROR_KEY, SharedConstants.RECONNECT_ERROR);
+        main.put(SharedConstants.GET_ERROR_KEY, error);
+        return main.toJSONString();
     }
 
     /**

@@ -27,6 +27,7 @@ import org.poianitibaldizhou.sagrada.network.GameNetworkManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ServerGetMessage;
 import org.poianitibaldizhou.sagrada.utilities.NetworkUtility;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -78,7 +79,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
         System.out.println("User with token: " + token + "accessed: joinGame");
 
         if (gameManager.notContainsGame(gameName) || !gameManager.getPlayersByGame(gameName).contains(token)) {
-            view.err("The game doesn't exist or you are not signaled as an entering player");
+            view.err(ServerMessage.THE_GAME_DOSNT_EXIST);
             throw new IOException();
         }
 

@@ -688,7 +688,7 @@ public class ClientGetMessage {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean hasReconnectError(String message) {
         try {
-            jsonClientProtocol.getResponseByKey(message, SharedConstants.RECONNECT_ERROR).toString();
+            jsonClientProtocol.getResponseByKey(message, SharedConstants.GET_ERROR_KEY).toString();
         } catch (Exception e) {
             return false;
         }
