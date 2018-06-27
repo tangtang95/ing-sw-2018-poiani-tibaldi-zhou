@@ -19,7 +19,7 @@ public class DrawDiceFromDicebag implements ICommand {
      * @param player           player who invoked the ToolCard
      * @param toolCardExecutor ToolCard invoked that contains this command
      * @param turnState        state in which the player acts
-     * @return CommandFlow.EMPTY_DICEBAG in the DiceBag is empty, CommandFlow.MAIN otherwise
+     * @return CommandFlow.EMPTY_DICE_BAG in the DiceBag is empty, CommandFlow.MAIN otherwise
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
@@ -27,7 +27,7 @@ public class DrawDiceFromDicebag implements ICommand {
         try {
             dice = toolCardExecutor.getTemporaryDiceBag().draw();
         } catch (EmptyCollectionException e) {
-            return CommandFlow.EMPTY_DICEBAG;
+            return CommandFlow.EMPTY_DICE_BAG;
         }
         toolCardExecutor.setNeededDice(dice);
         return CommandFlow.MAIN;

@@ -4,6 +4,10 @@ import org.jetbrains.annotations.Contract;
 
 import java.util.*;
 
+/**
+ * Represents a tree of objects
+ * @param <T> objects contained in the tree
+ */
 public class Node<T> {
     private Node<T> rightChild = null;
     private Node<T> leftChild = null;
@@ -101,6 +105,11 @@ public class Node<T> {
         }
     }
 
+    /**
+     * @param o objected that need to be compared
+     * @return true if the the tree of objects are equals. This mean that this and
+     * o have the same structure and that the various items are equals
+     */
     @Override
     public boolean equals(Object o) {
         if(o == null)

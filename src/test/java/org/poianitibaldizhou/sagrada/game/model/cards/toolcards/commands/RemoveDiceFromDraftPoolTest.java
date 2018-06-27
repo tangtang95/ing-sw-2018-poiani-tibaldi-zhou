@@ -69,14 +69,14 @@ public class RemoveDiceFromDraftPoolTest {
     public void executeCommandTestFailNoDiceInDraftPool() throws Exception{
         when(executor.getTemporaryDraftPool()).thenReturn(draftPool);
         when(executor.getNeededDice()).thenReturn(new Dice(dice.getNumber()-1, dice.getColor()));
-        assertEquals(CommandFlow.NOT_DICE_IN_DRAFTPOOL, command.executeCommand(invokerPlayer,executor, stateGame));
+        assertEquals(CommandFlow.NOT_DICE_IN_DRAFT_POOL, command.executeCommand(invokerPlayer,executor, stateGame));
     }
 
     @Test
     public void executeCommandTestFailEmptyDraftPool() throws Exception {
         when(executor.getNeededDice()).thenReturn(dice);
         when(executor.getTemporaryDraftPool()).thenReturn(new DraftPool());
-        assertEquals(CommandFlow.EMPTY_DRAFTPOOL, command.executeCommand(invokerPlayer,executor, stateGame));
+        assertEquals(CommandFlow.EMPTY_DRAFT_POOL, command.executeCommand(invokerPlayer,executor, stateGame));
     }
 
     @Test

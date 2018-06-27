@@ -25,7 +25,7 @@ public interface IGameController extends Remote {
      * @param draftPoolObserver  player's draft pool observer
      * @param diceBagObserver    player's dice bag observer
      * @param timeOutObserver    player's time out observer
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void joinGame(String message, IGameView view, IGameObserver gameObserver,
                   IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver,
@@ -36,7 +36,7 @@ public interface IGameController extends Remote {
      * Player must be part of the specified game.
      *
      * @param message message containing player's token, his game name and the schema card that he had chosen
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void chooseSchemaCard(String message) throws IOException;
 
@@ -48,7 +48,7 @@ public interface IGameController extends Remote {
      *                           the game name
      * @param playerObserver     player's observer
      * @param schemaCardObserver schema card observer of the schema card of player
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void bindPlayer(String message, IPlayerObserver playerObserver
             , ISchemaCardObserver schemaCardObserver) throws IOException;
@@ -59,7 +59,7 @@ public interface IGameController extends Remote {
      *
      * @param message          message containing player's token, game's name and toolCard that need to be binded
      * @param toolCardObserver player's tool card observer
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void bindToolCard(String message, IToolCardObserver toolCardObserver) throws IOException;
 
@@ -68,7 +68,7 @@ public interface IGameController extends Remote {
      * The player must be part of the specified game.
      *
      * @param message message containing player's token, game's name and action that the player has chosen
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void chooseAction(String message) throws IOException;
 
@@ -77,7 +77,7 @@ public interface IGameController extends Remote {
      * The player must be part of the specified game.
      *
      * @param message message containing player's token, game's name, dice placed and position
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void placeDice(String message) throws IOException;
 
@@ -87,7 +87,7 @@ public interface IGameController extends Remote {
      *
      * @param executorObserver player's observer for tool card execution
      * @param message          message containing player's token, game's name and tool card that the player wants to use
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void useToolCard(String message, IToolCardExecutorObserver executorObserver) throws IOException;
 
@@ -97,7 +97,7 @@ public interface IGameController extends Remote {
      *
      * @param message message containing player's token, game's name and private objective card chosen by the
      *                player
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void choosePrivateObjectiveCard(String message) throws IOException;
 
@@ -106,7 +106,7 @@ public interface IGameController extends Remote {
      * This method assumes that game's toolcards contains the specified toolcard.
      *
      * @param message message containing player's token, game's name and dice to set
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void setDice(String message) throws IOException;
 
@@ -123,7 +123,7 @@ public interface IGameController extends Remote {
      * This method assumes that game's toolcards contains the specified toolcard.
      *
      * @param message message containing game played, player's token and color to set
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void setColor(String message) throws IOException;
 
@@ -132,7 +132,7 @@ public interface IGameController extends Remote {
      * This method assumes that game's toolcards contains the specified toolcard.
      *
      * @param message message containing game's name, player's token and position to set
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void setPosition(String message) throws IOException;
 
@@ -140,7 +140,7 @@ public interface IGameController extends Remote {
      * Set the player action to continue or not the action.
      *
      * @param message message containing game's name, player's token and player choice
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void setContinueAction(String message) throws IOException;
 
@@ -159,7 +159,7 @@ public interface IGameController extends Remote {
      * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
      * @param timeOutObserver    player's time out observer
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
                    Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
@@ -172,7 +172,7 @@ public interface IGameController extends Remote {
      * @param message message containing player's username
      * @return an error message if the reconnection is not possible for the specified username; otherwise the player list,
      * the game name and the player token
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String attemptReconnect(String message) throws IOException;
 
@@ -180,7 +180,7 @@ public interface IGameController extends Remote {
      * Get all the tool cards of a certain game
      *
      * @param message message containing the token of the player requesting the tool cards and the game's name
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getToolCards(String message) throws IOException;
 
@@ -188,7 +188,7 @@ public interface IGameController extends Remote {
      * Get the coins of a certain game and a certain user
      *
      * @param message message containing the token of the player requesting the coins and the game's name
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getMyCoins(String message) throws IOException;
 
@@ -196,7 +196,7 @@ public interface IGameController extends Remote {
      * Get all the coins of a certain game
      *
      * @param message message containing the token of the player requesting the coins and the game's name
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getPlayersCoins(String message) throws IOException;
 
@@ -205,7 +205,7 @@ public interface IGameController extends Remote {
      *
      * @param message message containing the token of the player requesting the public cards and the game's name
      * @return protocol message containing the public cards
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getPublicObjectiveCards(String message) throws IOException;
 
@@ -214,7 +214,7 @@ public interface IGameController extends Remote {
      *
      * @param message message containing the token of the player requesting his private cards and the game's name
      * @return protocol message containing the private cards
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getPrivateObjectiveCardByToken(String message) throws IOException;
 
@@ -223,7 +223,7 @@ public interface IGameController extends Remote {
      *
      * @param message message containing the token of the player requesting the schema cards and the game's name
      * @return protocol message containing the schema cards associated with that player
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getSchemaCards(String message) throws IOException;
 
@@ -231,7 +231,7 @@ public interface IGameController extends Remote {
      * Get the draft pool of a certain game
      *
      * @param message message containing the token of the player requesting the draft pool and the game's name
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getDraftPool(String message) throws IOException;
 
@@ -239,7 +239,7 @@ public interface IGameController extends Remote {
      * Get the round track of a certain game
      *
      * @param message message containing the token of the player requesting the draft pool and the name of the game
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getRoundTrack(String message) throws IOException;
 
@@ -247,7 +247,7 @@ public interface IGameController extends Remote {
      * Get the tool card of a certain game
      *
      * @param message message containing player's token, game's name and name of the requested tool card
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getToolCardByName(String message) throws IOException;
 
@@ -255,7 +255,7 @@ public interface IGameController extends Remote {
      * Get the current player of a certain game
      *
      * @param message message containing player's token and game name
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getCurrentPlayer(String message) throws IOException;
 
@@ -265,7 +265,7 @@ public interface IGameController extends Remote {
      *
      * @param message message containing player's token and game name
      * @return a message containing the schema card
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getSchemaCardByToken(String message) throws IOException;
 
@@ -274,7 +274,7 @@ public interface IGameController extends Remote {
      *
      * @param message a protocol message containing player's token and game name
      * @return a protocol message containing the list of user of the game by its name
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getListOfUser(String message) throws IOException;
 
@@ -285,7 +285,7 @@ public interface IGameController extends Remote {
      * @param message message containing the token of the player requesting the action
      *                and the name of the game
      * @return protocol message containing the time to timeout
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     String getTimeout(String message) throws IOException;
 
@@ -301,7 +301,7 @@ public interface IGameController extends Remote {
      * Signals that a player has chosen to quit the game
      *
      * @param message protocol message containing player's token and the name of the game
-     * @throws IOException network communication error
+     * @throws IOException network communication error or the game is terminated 
      */
     void quitGame(String message) throws IOException;
 }

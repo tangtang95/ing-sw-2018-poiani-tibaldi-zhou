@@ -55,7 +55,7 @@ public class DrawDiceFromDicebagTest {
     @Test
     public void executeCommandDrawFromEmptyDicebag() throws Exception {
         when(executor.getTemporaryDiceBag().draw()).thenThrow(EmptyCollectionException.class);
-        assertEquals(CommandFlow.EMPTY_DICEBAG, command.executeCommand(invokerPlayer, executor, state));
+        assertEquals(CommandFlow.EMPTY_DICE_BAG, command.executeCommand(invokerPlayer, executor, state));
     }
 
     @Test

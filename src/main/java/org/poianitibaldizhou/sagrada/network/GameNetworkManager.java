@@ -91,16 +91,6 @@ public class GameNetworkManager {
     }
 
     /**
-     * Replace a view of a certain client with another one
-     *
-     * @param token    client's token
-     * @param gameView clientt's new view
-     */
-    public void replaceView(String token, IGameView gameView) {
-        viewMap.replace(token, gameView);
-    }
-
-    /**
      * Insert a view of a certain client
      *
      * @param token    client's token
@@ -120,34 +110,38 @@ public class GameNetworkManager {
      * @return true if the game terminates, false otherwise
      */
     public synchronized boolean clearObservers(String gameName) {
-        synchronized (gameManager.getGameByName(gameName)) {
-            GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
-            Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
-            Set<String> disconnected = observerManager.getDisconnectedPlayer();
-            List<User> playerList = gameManager.getGameByName(gameName).getUsers();
+        try {
+            synchronized (gameManager.getGameByName(gameName)) {
+                GameObserverManager observerManager = gameManager.getObserverManagerByGame(gameName);
+                Set<String> toNotifyDisconnect = observerManager.getDisconnectedPlayerNotNotified();
+                Set<String> disconnected = observerManager.getDisconnectedPlayer();
+                List<User> playerList = gameManager.getGameByName(gameName).getUsers();
 
-            ping(gameName);
+                ping(gameName);
 
-            toNotifyDisconnect.forEach(disconnectedToken -> {
-                playerList.forEach(player -> {
-                    if (!disconnected.contains(player.getToken())) {
-                        try {
-                            Optional<User> user = playerList.stream().filter(u -> u.getToken().
-                                    equals(disconnectedToken)).findFirst();
-                            if (user.isPresent())
-                                viewMap.get(player.getToken()).err(user.get().getName() + " disconnected");
-                        } catch (IOException e) {
-                            observerManager.signalDisconnection(player.getToken());
+                for(String disconnectedToken : toNotifyDisconnect) {
+                    playerList.forEach(player -> {
+                        if (!disconnected.contains(player.getToken())) {
+                            try {
+                                Optional<User> user = playerList.stream().filter(u -> u.getToken().
+                                        equals(disconnectedToken)).findFirst();
+                                if (user.isPresent())
+                                    viewMap.get(player.getToken()).err(user.get().getName() + " disconnected");
+                            } catch (IOException e) {
+                                observerManager.signalDisconnection(player.getToken());
+                            }
                         }
-                    }
-                });
+                    });
 
-                gameManager.getGameByName(gameName).detachObservers(disconnectedToken);
-                observerManager.notifyDisconnection(disconnectedToken);
-                viewMap.remove(disconnectedToken);
-            });
+                    gameManager.getGameByName(gameName).detachObservers(disconnectedToken);
+                    observerManager.notifyDisconnection(disconnectedToken);
+                    viewMap.remove(disconnectedToken);
+                }
 
-            return gameManager.handleEndGame(gameManager.getGameByName(gameName), observerManager);
+                return gameManager.handleEndGame(gameManager.getGameByName(gameName), observerManager);
+            }
+        } catch(IOException e) {
+            return true;
         }
     }
 
@@ -158,16 +152,20 @@ public class GameNetworkManager {
      * @param gameName name of the game
      */
     private void ping(String gameName) {
-        gameManager.getGameByName(gameName).getPlayers().stream().map(Player::getToken).forEach(
-                token -> {
-                    try {
-                        if (viewMap.get(token) != null)
-                            viewMap.get(token).ping();
-                    } catch (IOException e) {
-                        gameManager.getObserverManagerByGame(gameName).signalDisconnection(token);
+        try {
+            gameManager.getGameByName(gameName).getPlayers().stream().map(Player::getToken).forEach(
+                    token -> {
+                        try {
+                            if (viewMap.get(token) != null)
+                                viewMap.get(token).ping();
+                        } catch (IOException e) {
+                            gameManager.getObserverManagerByGame(gameName).signalDisconnection(token);
+                        }
                     }
-                }
-        );
+            );
+        } catch(IOException e) {
+            // DO NOTHING BECAUSE THE GAME IS ALREADY TERMINATED
+        }
     }
 
 }

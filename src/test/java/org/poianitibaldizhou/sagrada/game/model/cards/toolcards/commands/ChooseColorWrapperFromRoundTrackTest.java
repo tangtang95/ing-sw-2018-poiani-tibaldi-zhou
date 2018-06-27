@@ -9,13 +9,10 @@ import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
@@ -124,7 +121,7 @@ public class ChooseColorWrapperFromRoundTrackTest {
             RoundTrack roundTrack = new RoundTrack();
             when(toolCardExecutor.getTemporaryRoundTrack()).thenReturn(roundTrack);
 
-            assertEquals(CommandFlow.EMPTY_ROUNDTRACK, command.executeCommand(player, toolCardExecutor, turnState));
+            assertEquals(CommandFlow.EMPTY_ROUND_TRACK, command.executeCommand(player, toolCardExecutor, turnState));
         }
 
         @Test

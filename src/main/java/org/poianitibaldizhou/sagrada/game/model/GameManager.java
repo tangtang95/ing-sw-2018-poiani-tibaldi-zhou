@@ -80,10 +80,9 @@ public class GameManager {
      * @param name name of the wanted game
      * @return game associated with name
      */
-    public synchronized IGame getGameByName(String name) {
-        // TODO: refactor in this way
-        //if(gameMap.get(name) == null)
-        //    throw new IOException();
+    public synchronized IGame getGameByName(String name) throws IOException {
+        if(gameMap.get(name) == null)
+            throw new IOException();
         return gameMap.get(name);
     }
 

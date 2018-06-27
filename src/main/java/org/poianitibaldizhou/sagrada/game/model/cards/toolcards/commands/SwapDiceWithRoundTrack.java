@@ -22,8 +22,8 @@ public class SwapDiceWithRoundTrack implements ICommand {
      * @param player           player who invoked the command
      * @param toolCardExecutor invoked toolcard
      * @param turnState        state in which the player acts
-     * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.EMPTY_DRAFTPOOL
-     * if the draftpool is empty, CommandFlow.EMPTY_ROUNDTRACK if the round track is empty, CommandFlow.MAIN otherwise.
+     * @return CommandFlow.REPEAT if the specified dice is not present in the drafpool, CommandFlow.EMPTY_DRAFT_POOL
+     * if the draftpool is empty, CommandFlow.EMPTY_ROUND_TRACK if the round track is empty, CommandFlow.MAIN otherwise.
      * @throws InterruptedException due to the wait() in toolcard.getNeededDice() and toolcard.getNeededValue()
      */
     @Override
@@ -35,7 +35,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
 
         if(roundTrack.isEmpty())
-            return CommandFlow.EMPTY_ROUNDTRACK;
+            return CommandFlow.EMPTY_ROUND_TRACK;
 
         toolCardExecutor.getObservers().forEach(observer -> observer.notifyNeedDiceFromRoundTrack(roundTrack));
 
@@ -51,7 +51,7 @@ public class SwapDiceWithRoundTrack implements ICommand {
         } catch (DiceNotFoundException e) {
             return CommandFlow.REPEAT;
         } catch (EmptyCollectionException e) {
-            return CommandFlow.EMPTY_DRAFTPOOL;
+            return CommandFlow.EMPTY_DRAFT_POOL;
         }
         return CommandFlow.MAIN;
     }

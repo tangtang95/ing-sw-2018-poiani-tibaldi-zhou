@@ -357,8 +357,8 @@ public class ClientGetMessageTest {
 
     @Test
     public void getCommandFlow() throws IOException {
-        String message = "{\"commandFlow\":{\"type\":\"commandFlow\",\"body\":\"NOT_DICE_IN_DRAFTPOOL\"}}";
-        assertEquals("NOT_DICE_IN_DRAFTPOOL", clientGetMessage.getCommandFlow(message));
+        String message = "{\"commandFlow\":{\"type\":\"commandFlow\",\"body\":\"NOT_DICE_IN_DRAFT_POOL\"}}";
+        assertEquals("NOT_DICE_IN_DRAFT_POOL", clientGetMessage.getCommandFlow(message));
     }
 
     @Test

@@ -32,7 +32,7 @@ public class PayDice implements ICommand {
             toolCardExecutor.getTemporaryDraftPool().useDice(dice);
         } catch (EmptyCollectionException | DiceNotFoundException e) {
             // Exception impossible to happen (already checked before)
-            return CommandFlow.NOT_DICE_IN_DRAFTPOOL;
+            return CommandFlow.NOT_DICE_IN_DRAFT_POOL;
         }
         return CommandFlow.MAIN;
     }

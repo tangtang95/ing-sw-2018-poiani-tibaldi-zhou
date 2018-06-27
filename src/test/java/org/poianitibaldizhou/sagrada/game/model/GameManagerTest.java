@@ -78,7 +78,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testJoinGame(){
+    public void testJoinGame() {
         List<User> list1 = new ArrayList<>();
         list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
         list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
@@ -120,7 +120,7 @@ public class GameManagerTest {
         gameManager.createMultiPlayerGame(game1, game1.getName());
         gameManager.terminateGame(game1.getName());
         assertEquals(0, gameManager.getGameList().size());
-        assertEquals(null,gameManager.getPlayersByGame(game1.getName()));
+        assertEquals(null, gameManager.getPlayersByGame(game1.getName()));
     }
 
     @Test
@@ -141,7 +141,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testContainsGameName() {
+    public void testContainsGameName() throws Exception {
         gameManager.createMultiPlayerGame(game1, game1.getName());
 
         assertFalse(gameManager.notContainsGame(game1.getName()));
@@ -158,7 +158,7 @@ public class GameManagerTest {
     }
 
     @Test(expected = Exception.class)
-    public void testCreateSinglePlayerAlreadyInGame() throws Exception{
+    public void testCreateSinglePlayerAlreadyInGame() throws Exception {
         List<User> list1 = new ArrayList<>();
         list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
         list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
@@ -180,7 +180,7 @@ public class GameManagerTest {
 
     @Test
     public void testHandleEndGameSinglePlayerTrue() throws Exception {
-        String username  = "username";
+        String username = "username";
         String token = NetworkUtility.encrypt(username);
         String gameName = gameManager.createSinglePlayerGame(username, 2);
 
@@ -194,7 +194,7 @@ public class GameManagerTest {
 
     @Test
     public void testHandleEndGameFalse() throws Exception {
-        String username  = "username";
+        String username = "username";
         String gameName = gameManager.createSinglePlayerGame(username, 2);
 
         assertFalse(gameManager.handleEndGame(gameManager.getGameByName(gameName), gameManager.getObserverManagerByGame(gameName)));
@@ -203,7 +203,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerNoPlayerLeft() {
+    public void testHandleEndGameMultiPlayerNoPlayerLeft() throws Exception {
         List<User> list1 = new ArrayList<>();
         list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
         list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
@@ -220,7 +220,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerOnePlayerLeft() {
+    public void testHandleEndGameMultiPlayerOnePlayerLeft() throws Exception {
         List<User> list1 = new ArrayList<>();
         list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
         list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
@@ -252,7 +252,7 @@ public class GameManagerTest {
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerFalse() {
+    public void testHandleEndGameMultiPlayerFalse() throws Exception{
         List<User> list1 = new ArrayList<>();
         list1.add(new User(playerList.get(0), NetworkUtility.encrypt(playerList.get(0))));
         list1.add(new User(playerList.get(1), NetworkUtility.encrypt(playerList.get(1))));
