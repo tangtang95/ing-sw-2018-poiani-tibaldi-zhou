@@ -5,12 +5,11 @@ import org.json.simple.JSONObject;
 import org.poianitibaldizhou.sagrada.network.protocol.SharedConstants;
 
 /**
- * Copy class of UseToolCardState in the game model.
- * Use toolCard action.
+ * Copy class of EndTurnState in the game model.
+ * End turn action.
  */
 @Immutable
-public final class UseToolCardStateWrapper implements IActionWrapper{
-
+public final class EndTurnActionWrapper implements IActionWrapper {
     /**
      * Convert a action in a JSONObject.
      *
@@ -20,7 +19,7 @@ public final class UseToolCardStateWrapper implements IActionWrapper{
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
         JSONObject main = new JSONObject();
-        main.put(SharedConstants.TYPE, SharedConstants.USE_TOOL_CARD_ACTION);
+        main.put(SharedConstants.TYPE, SharedConstants.END_TURN_ACTION);
         main.put(SharedConstants.BODY,new JSONObject());
         return main;
     }
@@ -28,7 +27,7 @@ public final class UseToolCardStateWrapper implements IActionWrapper{
     /**
      * @return null.
      */
-    public static UseToolCardStateWrapper toObject() {
+    public static EndTurnActionWrapper toObject() {
         return null;
     }
 }

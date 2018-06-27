@@ -153,7 +153,7 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
                 diceViews.clear();
 
                 RoundTrackWrapper roundTrackWrapper = copyRoundTrackView.getRoundTrackWrapper();
-                List<DiceWrapper> diceList = roundTrackWrapper.getDicesPerRound(round);
+                List<DiceWrapper> diceList = roundTrackWrapper.getDicesForRound(round);
                 diceList.forEach(diceWrapper -> diceViews.add(new DiceView(diceWrapper, DICE_SCALE)));
                 DoubleBinding y = copyRoundTrackView.translateYProperty()
                         .add(copyRoundTrackView.heightProperty()).add(PADDING*3);

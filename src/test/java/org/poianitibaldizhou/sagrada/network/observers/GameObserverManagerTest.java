@@ -28,16 +28,16 @@ public class GameObserverManagerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         tokenList = new ArrayList<>();
-        tokenList.add(NetworkUtility.encrypt("user1"));
-        tokenList.add(NetworkUtility.encrypt("user2"));
-        tokenList.add(NetworkUtility.encrypt("user3"));
-        tokenList.add(NetworkUtility.encrypt("user4"));
+        tokenList.add(NetworkUtility.encryptUsername("user1"));
+        tokenList.add(NetworkUtility.encryptUsername("user2"));
+        tokenList.add(NetworkUtility.encryptUsername("user3"));
+        tokenList.add(NetworkUtility.encryptUsername("user4"));
 
         List<User> userList = new ArrayList<>();
-        userList.add(new User("user1", NetworkUtility.encrypt("user1")));
-        userList.add(new User("user2", NetworkUtility.encrypt("user2")));
-        userList.add(new User("user3", NetworkUtility.encrypt("user3")));
-        userList.add(new User("user4", NetworkUtility.encrypt("user4")));
+        userList.add(new User("user1", NetworkUtility.encryptUsername("user1")));
+        userList.add(new User("user2", NetworkUtility.encryptUsername("user2")));
+        userList.add(new User("user3", NetworkUtility.encryptUsername("user3")));
+        userList.add(new User("user4", NetworkUtility.encryptUsername("user4")));
 
         when(game.getUsers()).thenReturn(userList);
 

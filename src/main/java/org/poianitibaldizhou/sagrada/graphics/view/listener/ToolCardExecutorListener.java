@@ -235,7 +235,7 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
                     notifyPane.getChildren().removeAll(roundLabel);
                     diceViews.clear();
 
-                    List<DiceWrapper> diceList = roundTrackWrapper.getDicesPerRound(round);
+                    List<DiceWrapper> diceList = roundTrackWrapper.getDicesForRound(round);
                     diceList.forEach(diceWrapper -> diceViews.add(new DiceView(diceWrapper, DICE_SCHEMA_SHOW_SCALE)));
                     DoubleBinding y = copyRoundTrackView.translateYProperty()
                             .add(copyRoundTrackView.heightProperty()).add(PADDING * 3);

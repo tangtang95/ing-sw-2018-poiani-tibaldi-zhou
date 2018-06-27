@@ -93,6 +93,6 @@ public class User implements JSONable {
      * @return a User object.
      */
     public static User toObject(JSONObject jsonObject) {
-        return new User(jsonObject.get(JSON_USER_NAME).toString(), NetworkUtility.encrypt(jsonObject.get(JSON_USER_NAME).toString()));
+        return new User(jsonObject.get(JSON_USER_NAME).toString(), NetworkUtility.encryptUsername(jsonObject.get(JSON_USER_NAME).toString()));
     }
 }

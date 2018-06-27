@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.lobby.controller;
 
+import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
-import org.poianitibaldizhou.sagrada.IView;
 
 import java.io.IOException;
 import java.rmi.Remote;
@@ -16,7 +16,7 @@ public interface ILobbyController extends Remote {
      * @return login's token
      * @throws IOException network communication error
      */
-    String login(String  message, IView view) throws IOException;
+    String login(String  message, ILobbyView view) throws IOException;
 
     /**
      * An user identified with token and username leaves the lobby.

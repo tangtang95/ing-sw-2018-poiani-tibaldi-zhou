@@ -14,8 +14,8 @@ import java.util.concurrent.ScheduledExecutorService;
  */
 public class LobbyObserverManager {
 
-    private Map<String, ScheduledExecutorService> scheduledExecutorServiceMap;
-    private Set<String> disconnectedUserNotNotified;
+    private final Map<String, ScheduledExecutorService> scheduledExecutorServiceMap;
+    private final Set<String> disconnectedUserNotNotified;
 
     /**
      * Constructor.

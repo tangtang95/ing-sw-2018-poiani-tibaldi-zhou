@@ -2,18 +2,18 @@ package org.poianitibaldizhou.sagrada.exception;
 
 public class InvalidActionException extends Exception {
 
-    private final Exception ruleViolationException;
+    private final Exception innerException;
 
     public InvalidActionException(){
-        ruleViolationException = new Exception("Simple Invalid Action because it's not the player turn");
+        innerException = new Exception("Simple Invalid Action because it's not the player turn");
     }
 
     public InvalidActionException(Exception e) {
-        ruleViolationException = e;
+        innerException = e;
     }
 
     public Exception getException(){
-        return ruleViolationException;
+        return innerException;
     }
 
 }

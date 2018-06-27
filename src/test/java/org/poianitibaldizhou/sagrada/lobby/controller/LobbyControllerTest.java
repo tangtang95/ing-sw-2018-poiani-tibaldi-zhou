@@ -60,10 +60,10 @@ public class LobbyControllerTest {
     @Test
     public void testLogin() throws Exception {
         String username = "username";
-        when(lobbyManager.login(username)).thenReturn(NetworkUtility.encrypt(username));
+        when(lobbyManager.login(username)).thenReturn(NetworkUtility.encryptUsername(username));
         String response = lobbyController.login(clientCreateMessage.createUsernameMessage(username).buildMessage(), clientView1);
 
-        assertEquals(NetworkUtility.encrypt(username), clientGetMessage.getToken(response));
+        assertEquals(NetworkUtility.encryptUsername(username), clientGetMessage.getToken(response));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class LobbyControllerTest {
     @Test
     public void testLeave() throws Exception {
         String username = "username";
-        String token = NetworkUtility.encrypt(username);
+        String token = NetworkUtility.encryptUsername(username);
         User user = new User(username, token);
 
         when(lobbyManager.getUserByToken(token)).thenReturn(user);
@@ -95,7 +95,7 @@ public class LobbyControllerTest {
     @Test
     public void failLeave() throws Exception{
         String username = "username";
-        String token = NetworkUtility.encrypt(username);
+        String token = NetworkUtility.encryptUsername(username);
         User user = new User("ciccio", "pasticcio");
 
         when(lobbyManager.getUserByToken(token)).thenReturn(user);
@@ -110,7 +110,7 @@ public class LobbyControllerTest {
     @Test
     public void testJoin() throws Exception {
         String username = "username";
-        String token = NetworkUtility.encrypt(username);
+        String token = NetworkUtility.encryptUsername(username);
         User user = new User(username, token);
 
         when(lobbyManager.getUserByToken(token)).thenReturn(user);
@@ -122,9 +122,9 @@ public class LobbyControllerTest {
     @Test
     public void testGetUsers() throws Exception {
         List<User> users = new ArrayList<>();
-        users.add(new User("user1", NetworkUtility.encrypt("user1")));
-        users.add(new User("user2", NetworkUtility.encrypt("user2")));
-        users.add(new User("user3", NetworkUtility.encrypt("user3")));
+        users.add(new User("user1", NetworkUtility.encryptUsername("user1")));
+        users.add(new User("user2", NetworkUtility.encryptUsername("user2")));
+        users.add(new User("user3", NetworkUtility.encryptUsername("user3")));
 
         when(lobbyManager.getLobbyUsers()).thenReturn(users);
 
@@ -151,7 +151,7 @@ public class LobbyControllerTest {
     @Test
     public void testHandleIOException() throws Exception {
         String username = "username";
-        String token = NetworkUtility.encrypt(username);
+        String token = NetworkUtility.encryptUsername(username);
         User user = new User(username, token);
 
         when(lobbyManager.getUserByToken(token)).thenReturn(user);

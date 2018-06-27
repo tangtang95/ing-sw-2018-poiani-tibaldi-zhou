@@ -115,8 +115,8 @@ public class GameControllerTest {
 
         userName = "username";
         userName2 = "username2";
-        tokenUser = NetworkUtility.encrypt(userName);
-        tokenUser2 = NetworkUtility.encrypt(userName2);
+        tokenUser = NetworkUtility.encryptUsername(userName);
+        tokenUser2 = NetworkUtility.encryptUsername(userName2);
         tokenOfPlayerPlayingInGame = new ArrayList<>();
         tokenOfPlayerPlayingInGame.add(tokenUser);
         tokenOfPlayerPlayingInGame.add(tokenUser2);
@@ -749,7 +749,7 @@ public class GameControllerTest {
         when(gameObserverManager.getDisconnectedPlayer()).thenReturn(Collections.singleton(tokenUser));
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
 
         verify(view).err(anyString());
@@ -765,7 +765,7 @@ public class GameControllerTest {
 
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
 
         verify(game).userChooseAction(tokenUser, new EndTurnAction());
@@ -786,7 +786,7 @@ public class GameControllerTest {
         doThrow(IOException.class).when(view).ack(anyString());
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
     }
 
@@ -801,7 +801,7 @@ public class GameControllerTest {
         doThrow(InvalidActionException.class).when(game).userChooseAction(tokenUser, new EndTurnAction());
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
 
         verify(game).userChooseAction(tokenUser, new EndTurnAction());
@@ -821,7 +821,7 @@ public class GameControllerTest {
         doThrow(IOException.class).when(view).err(anyString());
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
 
         verify(game).userChooseAction(tokenUser, new EndTurnAction());
@@ -834,7 +834,7 @@ public class GameControllerTest {
         when(gameManager.notContainsGame(gameName)).thenReturn(true);
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
     }
 
@@ -849,7 +849,7 @@ public class GameControllerTest {
         when(gameNetworkManager.clearObservers(gameName)).thenReturn(true);
 
         String clientMessage = clientCreateMessage.createTokenMessage(tokenUser).createGameNameMessage(gameName)
-                .createActionMessage(new EndTurnStateWrapper()).buildMessage();
+                .createActionMessage(new EndTurnActionWrapper()).buildMessage();
         gameController.chooseAction(clientMessage);
 
         verify(view).err(anyString());
@@ -2593,10 +2593,10 @@ public class GameControllerTest {
         ClientGetMessage clientGetMessage = new ClientGetMessage();
 
         RoundTrackWrapper roundTrackWrapper = clientGetMessage.getRoundTrack(response);
-        assertEquals(new DiceWrapper(ColorWrapper.BLUE, 1), roundTrackWrapper.getDicesPerRound(0).get(0));
+        assertEquals(new DiceWrapper(ColorWrapper.BLUE, 1), roundTrackWrapper.getDicesForRound(0).get(0));
         assertEquals(1, roundTrack.getDices(0).size());
         for (int i = 1; i < RoundTrackWrapper.NUMBER_OF_TRACK; i++) {
-            assertEquals(0, roundTrackWrapper.getDicesPerRound(i).size());
+            assertEquals(0, roundTrackWrapper.getDicesForRound(i).size());
         }
     }
 

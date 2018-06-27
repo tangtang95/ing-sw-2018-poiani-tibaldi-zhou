@@ -646,8 +646,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             HashMap<String, ISchemaCardObserver> schemaCardObserverHashMapToken = new HashMap<>();
             HashMap<String, IPlayerObserver> playerObserverHashMapToken = new HashMap<>();
 
-            schemaCardObserver.forEach((key, value) -> schemaCardObserverHashMapToken.putIfAbsent(NetworkUtility.encrypt(key),schemaCardObserver.get(key)));
-            playerObserver.forEach((key, value) -> playerObserverHashMapToken.putIfAbsent(NetworkUtility.encrypt(key), playerObserver.get(key)));
+            schemaCardObserver.forEach((key, value) -> schemaCardObserverHashMapToken.putIfAbsent(NetworkUtility.encryptUsername(key),schemaCardObserver.get(key)));
+            playerObserver.forEach((key, value) -> playerObserverHashMapToken.putIfAbsent(NetworkUtility.encryptUsername(key), playerObserver.get(key)));
 
             // Attaching observers
             final String finalToken = token;
@@ -674,7 +674,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
     public String attemptReconnect(String message) throws IOException {
         ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
         final String username = serverGetMessage.getUserName(message);
-        final String token = NetworkUtility.encrypt(username);
+        final String token = NetworkUtility.encryptUsername(username);
         final Optional<String> gameName;
         List<IGame> gameList = gameManager.getGameList();
 
@@ -1070,7 +1070,7 @@ public class GameController extends UnicastRemoteObject implements IGameControll
 
         String gameName = gameManager.createSinglePlayerGame(username, difficulty);
 
-        return serverCreateMessage.createGameNameMessage(gameName).createTokenMessage(NetworkUtility.encrypt(username)).buildMessage();
+        return serverCreateMessage.createGameNameMessage(gameName).createTokenMessage(NetworkUtility.encryptUsername(username)).buildMessage();
     }
 
     /**
@@ -1191,8 +1191,8 @@ public class GameController extends UnicastRemoteObject implements IGameControll
      */
     private boolean isObserverBindCorrect(IGame game, Map<String, IPlayerObserver> playerObserver, Map<String, ISchemaCardObserver> schemaCardObserver, Map<String, IToolCardObserver> toolCardObserver) {
 
-        List<String> playerKeys = playerObserver.keySet().stream().map(NetworkUtility::encrypt).collect(Collectors.toList());
-        List<String> schemaCardsKey = schemaCardObserver.keySet().stream().map(NetworkUtility::encrypt).collect(Collectors.toList());
+        List<String> playerKeys = playerObserver.keySet().stream().map(NetworkUtility::encryptUsername).collect(Collectors.toList());
+        List<String> schemaCardsKey = schemaCardObserver.keySet().stream().map(NetworkUtility::encryptUsername).collect(Collectors.toList());
 
         if (!(playerKeys.containsAll(gameManager.getPlayersByGame(game.getName())) &&
                 gameManager.getPlayersByGame(game.getName()).containsAll(playerKeys))) {

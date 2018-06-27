@@ -17,14 +17,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class GameObserverManager {
 
-    Lock lock;
+    private final Lock lock;
 
-    private Set<String> disconnectedPlayer;
-    private Set<String> disconnectedPlayerNotNotified;
-    private HashMap<String, ScheduledExecutorService> executorHashMap;
-    private HashMap<String, ITimeOutObserver> observerTimeoutHashMap;
+    private final Set<String> disconnectedPlayer;
+    private final Set<String> disconnectedPlayerNotNotified;
+    private final Map<String, ScheduledExecutorService> executorHashMap;
+    private final Map<String, ITimeOutObserver> observerTimeoutHashMap;
 
-    private IGame game;
+    private final IGame game;
     private TimeOutFakeObserver timeOutFakeObserver;
 
     public static final String TIME_OUT = "TimeOut";

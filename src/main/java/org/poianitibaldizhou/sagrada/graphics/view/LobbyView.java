@@ -11,6 +11,7 @@ import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.graphics.controller.LobbyGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
+import org.poianitibaldizhou.sagrada.lobby.view.ILobbyView;
 import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObserver;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
@@ -23,7 +24,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class LobbyView extends UnicastRemoteObject implements IView, ILobbyObserver{
+public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver{
 
 
     private transient LobbyGraphicsController controller;

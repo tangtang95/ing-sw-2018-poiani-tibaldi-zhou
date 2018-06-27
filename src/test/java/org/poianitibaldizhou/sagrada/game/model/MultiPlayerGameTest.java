@@ -51,9 +51,9 @@ public class MultiPlayerGameTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         userList = new ArrayList<>();
-        userList.add(new User("user1", NetworkUtility.encrypt("user1")));
-        userList.add(new User("user2", NetworkUtility.encrypt("user2")));
-        userList.add(new User("user3", NetworkUtility.encrypt("user3")));
+        userList.add(new User("user1", NetworkUtility.encryptUsername("user1")));
+        userList.add(new User("user2", NetworkUtility.encryptUsername("user2")));
+        userList.add(new User("user3", NetworkUtility.encryptUsername("user3")));
 
         multiPlayerGame = new MultiPlayerGame("Multi player game", userList, terminationGameManager);
     }
@@ -66,7 +66,7 @@ public class MultiPlayerGameTest {
 
     @Test
     public void testNumberOfDicesToThrow() {
-        userList.add(new User("user4", NetworkUtility.encrypt("user4")));
+        userList.add(new User("user4", NetworkUtility.encryptUsername("user4")));
         multiPlayerGame = new MultiPlayerGame("Multi player game", userList, terminationGameManager);
         assertEquals(9, multiPlayerGame.getNumberOfDicesToDraw());
 

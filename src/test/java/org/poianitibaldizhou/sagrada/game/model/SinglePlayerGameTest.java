@@ -55,7 +55,7 @@ public class SinglePlayerGameTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        user = new User("user", NetworkUtility.encrypt("user"));
+        user = new User("user", NetworkUtility.encryptUsername("user"));
 
         privateObjectiveCards = new ArrayList<>();
         privateObjectiveCards.add(new PrivateObjectiveCard("private1", "descr1", Color.BLUE));

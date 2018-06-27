@@ -30,7 +30,7 @@ public final class RoundTrackWrapper implements JSONable{
     /**
      * List of diceWrapper per rounds.
      */
-    private List<List<DiceWrapper>> dicesPerRound;
+    private List<List<DiceWrapper>> dicesForRound;
 
     /**
      * Constructor.
@@ -38,21 +38,21 @@ public final class RoundTrackWrapper implements JSONable{
      * @param dicesPerRound list of diceWrapper per round.
      */
     public RoundTrackWrapper(List<List<DiceWrapper>> dicesPerRound) {
-        this.dicesPerRound = new ArrayList<>(dicesPerRound);
+        this.dicesForRound = new ArrayList<>(dicesPerRound);
 
     }
 
     /**
      *
      * @param round the round of the roundTrack to get dices
-     * @return the collection of diceWrapper of the round given (empty list if the size of dicesPerRound < round)
+     * @return the collection of diceWrapper of the round given (empty list if the size of dicesForRound < round)
      */
-    public List<DiceWrapper> getDicesPerRound(int round){
+    public List<DiceWrapper> getDicesForRound(int round){
         if(round < 0 || round >= NUMBER_OF_TRACK)
             throw new IllegalArgumentException(round + " has to be from 0 to " + NUMBER_OF_TRACK);
-        if(dicesPerRound.size() <= round)
+        if(dicesForRound.size() <= round)
             return new ArrayList<>();
-        return new ArrayList<>(dicesPerRound.get(round));
+        return new ArrayList<>(dicesForRound.get(round));
     }
 
     /**
@@ -101,8 +101,8 @@ public final class RoundTrackWrapper implements JSONable{
         RoundTrackWrapper that = (RoundTrackWrapper) o;
         Boolean hasSameDices = true;
         for (int i = 0; i < NUMBER_OF_TRACK; i++) {
-            for (int j = 0; j < getDicesPerRound(i).size(); j++) {
-                if (!getDicesPerRound(i).get(j).equals(that.getDicesPerRound(i).get(j))) {
+            for (int j = 0; j < getDicesForRound(i).size(); j++) {
+                if (!getDicesForRound(i).get(j).equals(that.getDicesForRound(i).get(j))) {
                     hasSameDices = false;
                     break;
                 }
@@ -118,6 +118,6 @@ public final class RoundTrackWrapper implements JSONable{
      */
     @Override
     public int hashCode() {
-        return Objects.hash(dicesPerRound);
+        return Objects.hash(dicesForRound);
     }
 }

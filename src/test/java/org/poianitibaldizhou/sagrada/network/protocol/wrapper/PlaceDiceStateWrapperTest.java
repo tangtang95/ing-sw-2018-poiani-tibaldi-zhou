@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 public class PlaceDiceStateWrapperTest {
 
     @DataPoint
-    public static PlaceDiceStateWrapper placeDiceStateWrapper = new PlaceDiceStateWrapper();
+    public static PlaceDiceActionWrapper placeDiceStateWrapper = new PlaceDiceActionWrapper();
 
     @Test
     public void toJsonTest() {
@@ -18,6 +18,6 @@ public class PlaceDiceStateWrapperTest {
 
     @Test
     public void toObjectTest() {
-        assertEquals(null, PlaceDiceStateWrapper.toObject());
+        assertEquals(null, PlaceDiceActionWrapper.toObject());
     }
 }

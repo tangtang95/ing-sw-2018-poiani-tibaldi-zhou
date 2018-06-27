@@ -8,7 +8,8 @@ public final class NetworkUtility {
     /**
      * Private constructor.
      */
-    private NetworkUtility(){}
+    private NetworkUtility() {
+    }
 
     /**
      * Convert a username in string.
@@ -16,7 +17,7 @@ public final class NetworkUtility {
      * @param username to convert in string.
      * @return String.valueOf
      */
-    public static String encrypt(String username) {
+    public static String encryptUsername(String username) {
         return String.valueOf(username.hashCode());
     }
 }

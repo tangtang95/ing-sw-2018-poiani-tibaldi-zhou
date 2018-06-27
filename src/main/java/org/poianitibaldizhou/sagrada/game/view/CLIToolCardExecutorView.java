@@ -362,10 +362,10 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
             do {
                 PrinterManager.consolePrint("Choose a round: \n", Level.STANDARD);
                 roundNumber = consoleListener.readNumber(RoundTrackWrapper.NUMBER_OF_TRACK);
-            } while (roundTrack.getDicesPerRound(roundNumber).isEmpty());
+            } while (roundTrack.getDicesForRound(roundNumber).isEmpty());
 
             PrinterManager.consolePrint("Choose a dice: \n", Level.STANDARD);
-            int diceNumber = consoleListener.readNumber(roundTrack.getDicesPerRound(roundNumber).size());
+            int diceNumber = consoleListener.readNumber(roundTrack.getDicesForRound(roundNumber).size());
 
             String setRoundMessage = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).createGameNameMessage(gameModeStrategy.getGameName())
                     .createValueMessage(roundNumber).buildMessage();
@@ -373,7 +373,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
 
             String setDiceMessage = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).
                     createGameNameMessage(gameModeStrategy.getGameName()).
-                    createDiceMessage(roundTrack.getDicesPerRound(roundNumber).get(diceNumber)).buildMessage();
+                    createDiceMessage(roundTrack.getDicesForRound(roundNumber).get(diceNumber)).buildMessage();
             connectionManager.getGameController().setDice(setDiceMessage);
         } catch (TimeoutException e) {
             PrinterManager.consolePrint(BuildGraphic.AUTOMATIC_ACTION, Level.INFORMATION);
