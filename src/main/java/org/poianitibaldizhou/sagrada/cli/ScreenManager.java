@@ -65,6 +65,7 @@ public class ScreenManager {
         if(screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();
+        screens.pop();
     }
 
     /**

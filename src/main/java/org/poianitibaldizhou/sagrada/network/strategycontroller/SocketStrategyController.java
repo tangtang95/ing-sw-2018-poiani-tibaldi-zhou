@@ -5,6 +5,7 @@ import org.poianitibaldizhou.sagrada.game.controller.IGameController;
 import org.poianitibaldizhou.sagrada.lobby.controller.ILobbyController;
 import org.poianitibaldizhou.sagrada.lobby.controller.LobbyController;
 import org.poianitibaldizhou.sagrada.network.socket.*;
+import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
 
 import java.io.IOException;
 import java.lang.reflect.Proxy;
@@ -58,7 +59,7 @@ public class SocketStrategyController implements StrategyController {
         try {
             socket.close();
         } catch (IOException e) {
-            Logger.getAnonymousLogger().log(Level.FINE, "Socket closed");
+            Logger.getAnonymousLogger().log(Level.FINE, ServerMessage.SOCKET_CLOSE);
         }
         lobbyController = null;
         gameController = null;

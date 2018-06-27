@@ -182,7 +182,7 @@ public final class ClientMessage {
     public static final String CONTINUE_MESSAGE = "Do you want to continue? (y/n)\n";
     public static final String RE_ROL_DICE = "The dice has been re-rolled: ";
     public static final String DICE_POURED_OVER = "The dice has been poured-over: ";
-    public static final String CHOOSE_POSITION_ON_SCHEMA = "Choose a position on your Schema Card.\n";
+    public static final String CHOOSE_POSITION_ON_SCHEMA = "Choose a position on your Schema Card.";
     public static final String CHOOSE_ROW = "Choose a row between 1 and 4 included:";
     public static final String CHOOSE_COLUMN = "Choose a column between 1 and 5 included:\n";
     public static final String CHOOSE_ROUND = "Choose a round: \n";

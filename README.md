@@ -6,8 +6,8 @@
     - Matricola: 
     - Codice persona:
 - Tibaldi Mattia
-    - Matricola:
-    - Codice persona:
+    - Matricola: 843840
+    - Codice persona: 10521778
 - Zhou Tang-tang
     - Matricola: 847685
     - Codice persona: 10540904
