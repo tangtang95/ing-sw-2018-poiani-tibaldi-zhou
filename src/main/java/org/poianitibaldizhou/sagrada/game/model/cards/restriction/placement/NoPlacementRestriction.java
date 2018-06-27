@@ -3,6 +3,10 @@ package org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 
+/**
+ * OVERVIEW: This type of constraint represents the fact that the tile constraint must be
+ * ignored when placing a dice on it.
+ */
 public class NoPlacementRestriction implements IPlacementRestriction {
 
     /**

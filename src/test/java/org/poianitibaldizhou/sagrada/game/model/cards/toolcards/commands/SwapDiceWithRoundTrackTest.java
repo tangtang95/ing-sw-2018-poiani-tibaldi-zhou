@@ -12,9 +12,7 @@ import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
 import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
-import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.ToolCardExecutorFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardExecutorFakeObserver;
-import org.poianitibaldizhou.sagrada.network.observers.realobservers.IToolCardExecutorObserver;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
@@ -98,14 +96,14 @@ public class SwapDiceWithRoundTrackTest {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getNeededDice()).thenReturn(dice);
         doThrow(new EmptyCollectionException()).when(draftPool).useDice(dice);
-        assertEquals(CommandFlow.EMPTY_DRAFTPOOL, command.executeCommand(player, executor, stateGame));
+        assertEquals(CommandFlow.EMPTY_DRAFT_POOL, command.executeCommand(player, executor, stateGame));
     }
 
     @Test
     public void executeCommandEmptyRoundTrack() throws Exception {
         RoundTrack roundTrack = new RoundTrack();
         when(executor.getTemporaryRoundTrack()).thenReturn(roundTrack);
-        assertEquals(CommandFlow.EMPTY_ROUNDTRACK, command.executeCommand(player, executor, stateGame));
+        assertEquals(CommandFlow.EMPTY_ROUND_TRACK, command.executeCommand(player, executor, stateGame));
     }
 
     @Test

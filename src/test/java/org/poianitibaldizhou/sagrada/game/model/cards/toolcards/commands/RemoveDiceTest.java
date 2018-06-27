@@ -99,7 +99,7 @@ public class RemoveDiceTest {
     @Test
     public void testExecutionStopCantRemoveNoneConstraint() throws Exception {
         when(schemaCard.isEmpty()).thenReturn(true);
-        assertEquals(CommandFlow.EMPTY_SCHEMACARD, removeDice.executeCommand(invokerPlayer, executor, stateGame));
+        assertEquals(CommandFlow.EMPTY_SCHEMA_CARD, removeDice.executeCommand(invokerPlayer, executor, stateGame));
     }
 
     @Test

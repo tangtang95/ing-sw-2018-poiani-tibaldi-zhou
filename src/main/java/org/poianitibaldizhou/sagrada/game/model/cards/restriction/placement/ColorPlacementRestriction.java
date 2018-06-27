@@ -3,6 +3,10 @@ package org.poianitibaldizhou.sagrada.game.model.cards.restriction.placement;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Tile;
 
+/**
+ * OVERVIEW: Represents the color placement restriction on the schema card. This mean that
+ * the tile color constraint must be respected.
+ */
 public class ColorPlacementRestriction implements IPlacementRestriction {
 
     /**

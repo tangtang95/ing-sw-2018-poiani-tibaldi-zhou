@@ -46,7 +46,7 @@ public class RemoveDice implements ICommand {
      * @param turnState        state in which the player acts
      * @return CommandFlow.REPEAT if the specified position doesn't contain a dice or if the dice contain doesn't match
      * the specified color constraint. CommandFlow.NOT_EXISTING_DICE_OF_CERTAIN_COLOR if none dice of the specified color
-     * is present in schemacard, CommandFlow.EMPTY_SCHEMACARD if the schemacard is empty; CommandFlow.MAIN otherwise.
+     * is present in schemacard, CommandFlow.EMPTY_SCHEMA_CARD if the schemacard is empty; CommandFlow.MAIN otherwise.
      * @throws InterruptedException due to wait() in toolcard retrieving methods
      */
     @Override
@@ -70,7 +70,7 @@ public class RemoveDice implements ICommand {
             }
         } else {
             if (toolCardExecutor.getTemporarySchemaCard().isEmpty())
-                return CommandFlow.EMPTY_SCHEMACARD;
+                return CommandFlow.EMPTY_SCHEMA_CARD;
             observerList.forEach(obs -> obs.notifyNeedPositionForRemoving(toolCardExecutor.getTemporarySchemaCard()));
             position = toolCardExecutor.getNeededPosition();
         }

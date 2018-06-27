@@ -291,8 +291,8 @@ public class ServerCreateMessageTest {
 
     @Test
     public void createCommandFlowMessage() {
-        String message = "{\"commandFlow\":{\"type\":\"commandFlow\",\"body\":\"NOT_DICE_IN_DRAFTPOOL\"}}";
-        assertEquals(message,serverCreateMessage.createCommandFlowMessage(CommandFlow.NOT_DICE_IN_DRAFTPOOL).buildMessage());
+        String message = "{\"commandFlow\":{\"type\":\"commandFlow\",\"body\":\"NOT_DICE_IN_DRAFT_POOL\"}}";
+        assertEquals(message,serverCreateMessage.createCommandFlowMessage(CommandFlow.NOT_DICE_IN_DRAFT_POOL).buildMessage());
     }
 
     @Test

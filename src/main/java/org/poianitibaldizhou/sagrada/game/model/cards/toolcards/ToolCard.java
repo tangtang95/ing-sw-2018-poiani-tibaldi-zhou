@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * OVERVIEW: Each instance of ToolCard has always tokens >= 0
  */
-public class ToolCard extends Card implements JSONable{
+public class ToolCard extends Card implements JSONable {
 
     private final Color color;
     private int tokens;
@@ -72,70 +72,100 @@ public class ToolCard extends Card implements JSONable{
     }
 
     //GETTER
+
+    /**
+     * Returns the observers that listen to the modification of this.
+     *
+     * @return map of string and fake tool card observer: represents the observers listening this
+     */
     @Contract(pure = true)
     public Map<String, IToolCardFakeObserver> getObserverMap() {
         return new HashMap<>(observerMap);
     }
 
+    /**
+     * Returns the number of tokens of the tool card
+     *
+     * @return number of tokens of the tool card
+     */
     @Contract(pure = true)
     public int getTokens() {
         return tokens;
     }
 
+    /**
+     * Returns the color of the tool card
+     *
+     * @return color of the tool card
+     */
     @Contract(pure = true)
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Return the cost of the tool card.
+     *
+     * @return cost of the tool card
+     */
     @Contract(pure = true)
     public int getCost() {
         return (tokens == 0) ? LOW_COST : HIGH_COST;
     }
 
+    /**
+     * Returns the tree of commands of the tool card
+     *
+     * @return tree of commands of the tool card
+     */
     public Node<ICommand> getCommands() {
         return commands;
     }
 
     //MODIFIERS
+
+    /**
+     * Adds a certain number of tokens on the tool card
+     *
+     * @param tokens tokens that need to be added on this
+     */
     public void addTokens(final int tokens) {
         this.tokens += tokens;
         observerMap.forEach((key, value) -> value.onTokenChange(tokens));
     }
 
+    /**
+     * Notify that the tool card is destroyed
+     */
     public void destroyToolCard() {
         observerMap.forEach((key, value) -> value.onCardDestroy());
     }
 
+    /**
+     * Attach a tool card fake observer to this.
+     *
+     * @param token    token that identify the observers
+     * @param observer tool card observer that need to be attached
+     */
     public void attachToolCardObserver(String token, IToolCardFakeObserver observer) {
         observerMap.put(token, observer);
     }
 
+    /**
+     * Detach a tool card observer from this.
+     *
+     * @param token identifies the observer that needs to be removed
+     */
     public void detachToolCardObserver(String token) {
         observerMap.remove(token);
     }
 
     /**
-     * @param o the other object to compare
-     * @return true if the toolCard has the same tokens, color, name, description and commands.
+     * Creates a new instance of the tool card
+     *
+     * @param toolCard
+     * @return
      */
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        ToolCard toolCard = (ToolCard) o;
-        return tokens == toolCard.tokens &&
-                color == toolCard.color &&
-                this.commands.equals(toolCard.getCommands()) &&
-                this.getName().equals(toolCard.getName()) &&
-                this.getDescription().equals(toolCard.getDescription());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName(), getDescription(), color, tokens, commands);
-    }
-
     public static ToolCard newInstance(@NotNull ToolCard toolCard) {
         return new ToolCard(toolCard);
     }
@@ -156,7 +186,7 @@ public class ToolCard extends Card implements JSONable{
         toolCardJSON.put(JSON_COST, this.getCost());
         toolCardJSON.put(JSON_TOKENS, this.getTokens());
         main.put(SharedConstants.TYPE, SharedConstants.TOOL_CARD);
-        main.put(SharedConstants.BODY,toolCardJSON);
+        main.put(SharedConstants.BODY, toolCardJSON);
         return main;
     }
 
@@ -190,4 +220,25 @@ public class ToolCard extends Card implements JSONable{
         return card;
     }
 
+    /**
+     * @param o the other object to compare
+     * @return true if the toolCard has the same tokens, color, name, description and commands.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ToolCard toolCard = (ToolCard) o;
+        return tokens == toolCard.tokens &&
+                color == toolCard.color &&
+                this.commands.equals(toolCard.getCommands()) &&
+                this.getName().equals(toolCard.getName()) &&
+                this.getDescription().equals(toolCard.getDescription());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getDescription(), color, tokens, commands);
+    }
 }

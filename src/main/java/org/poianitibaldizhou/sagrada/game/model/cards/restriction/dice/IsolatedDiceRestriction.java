@@ -1,5 +1,9 @@
 package org.poianitibaldizhou.sagrada.game.model.cards.restriction.dice;
 
+/**
+ * OVERVIEW: Represents the isolated dice restriction during the placement phase of a dice on the schema card.
+ * This means the the dice must be placed with the restriction of 0 adjacent dices.
+ */
 public class IsolatedDiceRestriction implements IDiceRestriction {
 
     /**

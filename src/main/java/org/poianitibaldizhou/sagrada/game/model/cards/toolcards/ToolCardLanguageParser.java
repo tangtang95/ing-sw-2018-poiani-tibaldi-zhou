@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * OVERVIEW: Represents the parser for the tool card language.
+ */
 public class ToolCardLanguageParser {
     private static Map<String, ICommand> grammar;
 

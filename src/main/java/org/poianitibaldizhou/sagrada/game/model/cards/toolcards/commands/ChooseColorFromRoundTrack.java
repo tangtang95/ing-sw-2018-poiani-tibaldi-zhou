@@ -24,14 +24,14 @@ public class ChooseColorFromRoundTrack implements ICommand {
      * @param player player who invoked toolCard
      * @param toolCardExecutor toolCard invoked
      * @param turnState state in which the player acts
-     * @return CommandFlow.EMPTY_ROUNDTRACK if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
+     * @return CommandFlow.EMPTY_ROUND_TRACK if the RoundTrack doesn't contain any dice, CommandFlow.MAIN otherwise
      */
     @Override
     public CommandFlow executeCommand(Player player, ToolCardExecutor toolCardExecutor, TurnState turnState) {
         List<IToolCardExecutorFakeObserver> observerList = toolCardExecutor.getObservers();
         RoundTrack roundTrack = toolCardExecutor.getTemporaryRoundTrack();
         if(roundTrack.isEmpty())
-            return CommandFlow.EMPTY_ROUNDTRACK;
+            return CommandFlow.EMPTY_ROUND_TRACK;
         Set<Color> colors = new HashSet<>();
         List<Dice> diceList;
         for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
