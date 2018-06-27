@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.graphics.view.listener.executorListener;
+package org.poianitibaldizhou.sagrada.graphics.view;
 
 import org.jetbrains.annotations.Contract;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ColorWrapper;

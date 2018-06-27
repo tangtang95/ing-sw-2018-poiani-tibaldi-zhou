@@ -150,20 +150,20 @@ public interface IGameController extends Remote {
      *
      * @param message            message containing player's username
      * @param gameView           player's game view
+     * @param gameObserver       player's game observer
+     * @param roundTrackObserver player's round track observer
      * @param stateObserver      player's state observer
      * @param playerObserver     player's players observer (the key of the map are the tokens of the players in the game)
      * @param toolCardObserver   player's tool card observer (the key are the tool card's name)
      * @param schemaCardObserver player's schema card observers (the key are the player's token owning that card)
-     * @param gameObserver       player's game observer
      * @param draftPoolObserver  player's draft pool observer
-     * @param roundTrackObserver player's round track observer
      * @param diceBagObserver    player's dice bag observer
      * @param timeOutObserver    player's time out observer
-     * @throws IOException network communication error or the game is terminated 
+     * @throws IOException network communication error or the game is terminated
      */
-    void reconnect(String message, IGameView gameView, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
-                   Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver, IGameObserver gameObserver,
-                   IDraftPoolObserver draftPoolObserver, IRoundTrackObserver roundTrackObserver, IDrawableCollectionObserver
+    void reconnect(String message, IGameView gameView, IGameObserver gameObserver, IRoundTrackObserver roundTrackObserver, IStateObserver stateObserver, Map<String, IPlayerObserver> playerObserver,
+                   Map<String, IToolCardObserver> toolCardObserver, Map<String, ISchemaCardObserver> schemaCardObserver,
+                   IDraftPoolObserver draftPoolObserver, IDrawableCollectionObserver
                            diceBagObserver, ITimeOutObserver timeOutObserver) throws IOException;
 
     /**
