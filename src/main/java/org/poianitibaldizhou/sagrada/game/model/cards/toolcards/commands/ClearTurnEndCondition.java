@@ -7,6 +7,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command necessary for clearing the value regarding the condition regarding
+ * the end turn in the tool card executor
+ */
 public class ClearTurnEndCondition implements ICommand {
 
     /**

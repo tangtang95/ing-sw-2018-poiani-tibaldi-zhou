@@ -10,6 +10,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command that modify the value of a dice
+ */
 public class ModifyDiceValue implements ICommand {
 
     /**

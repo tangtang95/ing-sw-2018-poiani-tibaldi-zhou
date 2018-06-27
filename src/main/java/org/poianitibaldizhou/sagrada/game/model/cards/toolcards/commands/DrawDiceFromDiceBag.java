@@ -9,7 +9,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
-public class DrawDiceFromDicebag implements ICommand {
+/**
+ * OVERVIEW: Command necessary for drawing a dice from the dice bag
+ */
+public class DrawDiceFromDiceBag implements ICommand {
 
     /**
      * Draws a dice from the DiceBag.
@@ -35,11 +38,11 @@ public class DrawDiceFromDicebag implements ICommand {
 
     @Override
     public boolean equals(Object object) {
-        return object instanceof DrawDiceFromDicebag;
+        return object instanceof DrawDiceFromDiceBag;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(DrawDiceFromDicebag.class);
+        return Objects.hash(DrawDiceFromDiceBag.class);
     }
 }

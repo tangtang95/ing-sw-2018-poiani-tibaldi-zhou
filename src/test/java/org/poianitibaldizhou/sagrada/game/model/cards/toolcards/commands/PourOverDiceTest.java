@@ -63,6 +63,6 @@ public class PourOverDiceTest {
     @Test
     public void hashCodeTest() {
         assertEquals(new PourOverDice().hashCode(), new PourOverDice().hashCode());
-        assertNotEquals(new PourOverDice().hashCode(), new RerollDice().hashCode());
+        assertNotEquals(new PourOverDice().hashCode(), new ReRollDice().hashCode());
     }
 }

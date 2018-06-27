@@ -8,10 +8,20 @@ import org.poianitibaldizhou.sagrada.game.model.constraint.ColorConstraint;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: This is the coin used in the single player version of Sagrada. The coin that
+ * are used are the dice present in the draft pool
+ */
 public class ExpendableDice implements ICoin {
 
     private final transient Game game;
 
+    /**
+     * Constructor.
+     * Creates the coin for a specific game.
+     *
+     * @param game game in which the expandable dice are used
+     */
     public ExpendableDice(Game game) {
         this.game = game;
     }
@@ -27,11 +37,19 @@ public class ExpendableDice implements ICoin {
                 .map(Dice::getColorConstraint).anyMatch(constraint -> constraint.equals(colorConstraint));
     }
 
+    /**
+     * This action is not possible with the expandable dice, therefore this method throws
+     * an illegal state exception
+     */
     @Override
     public int getCoins() {
         throw new IllegalStateException();
     }
 
+    /**
+     * This action is not possible with the expandable dice, therefore this method throws
+     * an illegal state exception
+     */
     @Override
     public void removeCoins(int cost) {
         throw new IllegalStateException();

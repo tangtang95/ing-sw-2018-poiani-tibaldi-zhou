@@ -10,32 +10,63 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Full card with front schemaCard and Back schemaCard.
+ * OVERVIEW: Represents a card with two schema on it.
  */
 public class FrontBackSchemaCard implements JSONable {
 
     private List<SchemaCard> schemaCards;
 
+    /**
+     * Constructor.
+     * Creates a front back schema card.
+     * Schemas are not present yet.
+     */
     public FrontBackSchemaCard() {
         this.schemaCards = new ArrayList<>();
     }
 
+    /**
+     * Set the schema card on this.
+     *
+     * @param schemaCard schema card that will be added
+     */
     public void setSchemaCard(SchemaCard schemaCard) {
         this.schemaCards.add(SchemaCard.newInstance(schemaCard));
     }
 
+    /**
+     * Return the number of schemas present in this
+     *
+     * @return
+     */
     public int size() {
         return schemaCards.size();
     }
 
+    /**
+     * @return list containing all the schemas that have been added to this
+     */
     public List<SchemaCard> getSchemaCards() {
         return schemaCards;
     }
 
+    /**
+     * Check that this contains schemaCard
+     *
+     * @param schemaCard schema card that will be checked
+     * @return true if this contains schemaCard
+     */
     public boolean contains(SchemaCard schemaCard) {
         return schemaCards.contains(schemaCard);
     }
 
+    /**
+     * Creates a new instance of front back schema card.
+     * Deep copy implemented.
+     *
+     * @param frontBackSchemaCard front back schema card that needs to be copied and instancied
+     * @return a new instance of frontBackSchemaCard
+     */
     public static FrontBackSchemaCard newInstance(FrontBackSchemaCard frontBackSchemaCard) {
         FrontBackSchemaCard schemaCardList = new FrontBackSchemaCard();
         for (SchemaCard s : frontBackSchemaCard.getSchemaCards())
@@ -43,11 +74,21 @@ public class FrontBackSchemaCard implements JSONable {
         return schemaCardList;
     }
 
+    /**
+     * Returns the frontal schema
+     *
+     * @return frontal schema
+     */
     public SchemaCard getFrontSchemaCard() {
         return schemaCards.get(0);
     }
 
-    private SchemaCard getBackSchemaCard() {
+    /**
+     * Return the back schema
+     *
+     * @return back schema
+     */
+    public SchemaCard getBackSchemaCard() {
         return schemaCards.get(1);
     }
 
@@ -56,7 +97,6 @@ public class FrontBackSchemaCard implements JSONable {
      *
      * @return a JSONObject.
      */
-
     @Override
     @SuppressWarnings("unchecked")
     public JSONObject toJSON() {
@@ -73,12 +113,12 @@ public class FrontBackSchemaCard implements JSONable {
     }
 
     /**
-     * Convert a json string in a FrontBackSchemaCard object.
+     * Return null because the client never send a front back schema card
      *
-     * @return a FrontBackSchemaCard object.
+     * @param jsonObject a JSONObject that contains a FrontBackSchemaCard.
+     * @return null
      */
-    public static FrontBackSchemaCard toObject() {
-        /*This method is empty because the client never send a publicObjectiveCard*/
+    public static FrontBackSchemaCard toObject(JSONObject jsonObject) {
         return null;
     }
 

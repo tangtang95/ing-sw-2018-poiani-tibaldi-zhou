@@ -22,7 +22,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class ToolCardExecutor extends Thread{
+/**
+ * OVERVIEW: This class manages the execution of a certain tool card.
+ */
+public class ToolCardExecutor extends Thread {
     // Monitors
     private final Object diceMonitor;
     private final Object colorMonitor;
@@ -56,7 +59,13 @@ public class ToolCardExecutor extends Thread{
     private Game game;
     private TurnState turnState;
 
-
+    /**
+     * Constructor.
+     *
+     * @param game      game that contains the tool card that needs to be executed
+     * @param player    player that has executed the tool card
+     * @param turnState turn in which the tool card is executed
+     */
     public ToolCardExecutor(Game game, Player player, TurnState turnState) {
         diceMonitor = new Object();
         colorMonitor = new Object();
@@ -81,27 +90,55 @@ public class ToolCardExecutor extends Thread{
         this.game = game;
     }
 
+    /**
+     * Run the commands of the tool card that need to be executed by this.
+     */
     @Override
     public void run() {
         runCommands();
     }
 
+    /**
+     * Set the fact the tool card execution is started and starts the execution.
+     */
     @Override
     public void start() {
         setIsExecutingCommands(true);
         super.start();
     }
 
+    /**
+     * Set the core commands of the tool card execution
+     *
+     * @param commands core commands of the tool card
+     */
     public void setCoreCommands(Node<ICommand> commands) {
         this.coreCommands = commands;
     }
 
-    public void setPreCommands(Node<ICommand> commands) { this.preCommands = commands; }
+    /**
+     * Set the pre commands of the tool card execution.
+     *
+     * @param commands pre commands of the tool card
+     */
+    public void setPreCommands(Node<ICommand> commands) {
+        this.preCommands = commands;
+    }
 
+    /**
+     * Add an tool card executor observer to the tool card
+     *
+     * @param observer observer that needs to listen to the execution of the tool card
+     */
     public void addObserver(IToolCardExecutorFakeObserver observer) {
         this.observers.add(observer);
     }
 
+    /**
+     * Returns the list of observers that listen to the execution of the tool card
+     *
+     * @return list of observers that listen to the execution of the tool card
+     */
     public List<IToolCardExecutorFakeObserver> getObservers() {
         return observers;
     }
@@ -128,8 +165,11 @@ public class ToolCardExecutor extends Thread{
         turnState.setSkipTurnPlayers(skipTurnPlayers);
     }
 
+    /**
+     * Run the commands of the tool card.
+     */
     private void runCommands() {
-        if(coreCommands == null || preCommands == null){
+        if (coreCommands == null || preCommands == null) {
             throw new IllegalStateException(ServerMessage.TOOL_CARD_EXECUTOR_ILLEGAL_STATE);
         }
         try {
@@ -147,6 +187,7 @@ public class ToolCardExecutor extends Thread{
             turnState.releaseToolCardExecution();
         }
         observers.forEach(IToolCardExecutorFakeObserver::notifyExecutionEnded);
+
     }
 
     /**
@@ -174,6 +215,7 @@ public class ToolCardExecutor extends Thread{
             }
         } while (root != null);
     }
+
 
     public void setNeededValue(Integer neededValue) {
         synchronized (valueMonitor) {
@@ -236,15 +278,15 @@ public class ToolCardExecutor extends Thread{
     }
 
     public boolean getNeededAnswer() throws InterruptedException {
-        synchronized (answerMonitor){
-            while(neededAnswer == null)
+        synchronized (answerMonitor) {
+            while (neededAnswer == null)
                 answerMonitor.wait();
             return neededAnswer;
         }
     }
 
-    public void setNeededAnswer(boolean answer){
-        synchronized (answerMonitor){
+    public void setNeededAnswer(boolean answer) {
+        synchronized (answerMonitor) {
             this.neededAnswer = answer;
             answerMonitor.notifyAll();
         }
@@ -302,10 +344,19 @@ public class ToolCardExecutor extends Thread{
         return temporarySchemaCard;
     }
 
+    /**
+     * Interrupt the commands execution of the tool card
+     */
     public void interruptCommandsInvocation() {
         this.interrupt();
     }
 
+    /**
+     * Signal the fact that a player need to skip a certain turn
+     *
+     * @param player player that will skip a turn
+     * @param turn   number of the turn that will be skipped by player
+     */
     public void addSkipTurnPlayer(Player player, int turn) {
         if (turn < TurnState.FIRST_TURN || turn > TurnState.SECOND_TURN)
             throw new IllegalArgumentException(ServerMessage.TURN_ILLEGAL_ARGUMENT);

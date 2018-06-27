@@ -390,40 +390,6 @@ public class SchemaCard implements JSONable {
     }
 
     /**
-     * Override of the equals method
-     *
-     * @param obj the other object to compare
-     * @return true if *hasSameTiles(same constraint and same dice placed on it)* &&
-     * this.getName().equals(obj.getName()) &&
-     * this.getDifficultyValue() == obj.getDifficultyValue();
-     */
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
-            return true;
-        if (!(obj instanceof SchemaCard))
-            return false;
-        SchemaCard other = (SchemaCard) obj;
-        boolean hasSameTiles = true;
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
-                if (!getTile(new Position(i, j)).equals(other.getTile(new Position(i, j))))
-                    hasSameTiles = false;
-            }
-        }
-        return hasSameTiles && this.getName().equals(other.getName()) && this.getDifficulty() == other.getDifficulty();
-    }
-
-    @Override
-    public int hashCode() {
-        List<Tile> tiles = new ArrayList<>();
-        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
-            tiles.addAll(Arrays.asList(tileMatrix[i]).subList(0, NUMBER_OF_COLUMNS));
-        }
-        return Objects.hash(SchemaCard.class, name, tiles, difficulty);
-    }
-
-    /**
      * Given row and column, return whether or not the position is out of bounds according
      * to the matrix tile
      *
@@ -564,5 +530,39 @@ public class SchemaCard implements JSONable {
             stringBuilder.append("  -----   -----   -----   -----   -----  \n");
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * Override of the equals method
+     *
+     * @param obj the other object to compare
+     * @return true if *hasSameTiles(same constraint and same dice placed on it)* &&
+     * this.getName().equals(obj.getName()) &&
+     * this.getDifficultyValue() == obj.getDifficultyValue();
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof SchemaCard))
+            return false;
+        SchemaCard other = (SchemaCard) obj;
+        boolean hasSameTiles = true;
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
+                if (!getTile(new Position(i, j)).equals(other.getTile(new Position(i, j))))
+                    hasSameTiles = false;
+            }
+        }
+        return hasSameTiles && this.getName().equals(other.getName()) && this.getDifficulty() == other.getDifficulty();
+    }
+
+    @Override
+    public int hashCode() {
+        List<Tile> tiles = new ArrayList<>();
+        for (int i = 0; i < NUMBER_OF_ROWS; i++) {
+            tiles.addAll(Arrays.asList(tileMatrix[i]).subList(0, NUMBER_OF_COLUMNS));
+        }
+        return Objects.hash(SchemaCard.class, name, tiles, difficulty);
     }
 }

@@ -5,9 +5,17 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 import java.util.Objects;
 
 
+/**
+ * OVERVIEW: Coins used in the multi player game. They are just an integer value.
+ */
 public class FavorToken implements ICoin {
     private int numberOfFavorToken;
 
+    /**
+     * Constructor.
+     * Creates the coin for a certain purpose, initialized at the specified value.
+     * @param numberOfFavorToken number of initial coin
+     */
     public FavorToken(int numberOfFavorToken) {
         this.numberOfFavorToken = numberOfFavorToken;
     }

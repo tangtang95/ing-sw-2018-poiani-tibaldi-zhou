@@ -11,6 +11,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Command that modify the dice value of a certain and specified delta
+ */
 public class ModifyDiceValueByDelta implements ICommand {
 
     private final int value;

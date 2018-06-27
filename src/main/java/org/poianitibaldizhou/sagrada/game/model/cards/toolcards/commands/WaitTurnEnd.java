@@ -8,6 +8,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the command of waiting to the end of the turn to proceed in the
+ * execution
+ */
 public class WaitTurnEnd implements ICommand {
 
     /**

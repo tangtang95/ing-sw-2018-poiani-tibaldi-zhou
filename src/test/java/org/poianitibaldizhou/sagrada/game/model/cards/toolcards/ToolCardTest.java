@@ -37,7 +37,7 @@ public class ToolCardTest {
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         commands = new Node<>(new ChooseDice());
         commands.addAtIndex(new AddDiceToDraftPool(), 2);
-        commands.addAtIndex(new RerollDice(), 4);
+        commands.addAtIndex(new ReRollDice(), 4);
 
         observerList = new HashMap<>();
         observerList.put("obs1",observer1);
@@ -82,7 +82,7 @@ public class ToolCardTest {
                 "[1-Choose dice][2-Add dice to DraftPool][4-Reroll dice]");
         Node<ICommand> commands = new Node<>(new ChooseDice());
         commands.addAtIndex(new AddDiceToDraftPool(), 2);
-        commands.addAtIndex(new RerollDice(), 4);
+        commands.addAtIndex(new ReRollDice(), 4);
         assertEquals("name", card.getName());
         assertEquals("description", card.getDescription());
         assertEquals(Color.BLUE, card.getColor());

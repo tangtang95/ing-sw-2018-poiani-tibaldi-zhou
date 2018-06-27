@@ -72,7 +72,7 @@ public class ToolCardLanguageParser {
         grammar.put("Remove dice", new RemoveDice(PlacementRestrictionType.NONE));
         grammar.put("Remove dice of a certain color", new RemoveDice(PlacementRestrictionType.COLOR));
         grammar.put("Swap dice with RoundTrack", new SwapDiceWithRoundTrack());
-        grammar.put("Reroll dice", new RerollDice());
+        grammar.put("Reroll dice", new ReRollDice());
         grammar.put("Place old dice", new PlaceDice(DiceRestrictionType.NORMAL,
                 PlacementRestrictionType.NUMBER_COLOR, false));
         grammar.put("Place new dice", new PlaceDice(DiceRestrictionType.NORMAL,
@@ -91,9 +91,9 @@ public class ToolCardLanguageParser {
                 PlacementRestrictionType.NUMBER_COLOR, true));
         grammar.put("Add dice to DraftPool", new AddDiceToDraftPool());
         grammar.put("Add dice to Dicebag", new AddDiceToDiceBag());
-        grammar.put("Draw dice from Dicebag", new DrawDiceFromDicebag());
+        grammar.put("Draw dice from Dicebag", new DrawDiceFromDiceBag());
         grammar.put("Modify dice value", new ModifyDiceValue());
-        grammar.put("Reroll DraftPool", new RerollDraftPool());
+        grammar.put("Reroll DraftPool", new ReRollDraftPool());
         grammar.put("Check second turn", new CheckTurn(2));
         grammar.put("Check first turn", new CheckTurn(1));
         grammar.put("Check before choose dice", new CheckBeforeDiceChosen());

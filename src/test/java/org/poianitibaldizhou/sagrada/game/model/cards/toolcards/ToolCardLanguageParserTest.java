@@ -41,16 +41,16 @@ public class ToolCardLanguageParserTest {
         commands.addAtIndex(new RemoveDice(PlacementRestrictionType.NONE),4);
         commands.addAtIndex(new RemoveDice(PlacementRestrictionType.COLOR),8);
         commands.addAtIndex(new SwapDiceWithRoundTrack(), 16);
-        commands.addAtIndex(new RerollDice(), 32);
+        commands.addAtIndex(new ReRollDice(), 32);
         commands.addAtIndex(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER_COLOR, false), 64);
         commands.addAtIndex(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.COLOR, false), 128);
         commands.addAtIndex(new PlaceDice(DiceRestrictionType.NORMAL, PlacementRestrictionType.NUMBER, false), 256);
         commands.addAtIndex(new PlaceDice(DiceRestrictionType.ISOLATED, PlacementRestrictionType.NUMBER_COLOR, false), 512);
         commands.addAtIndex(new AddDiceToDraftPool(), 1024);
         commands.addAtIndex(new AddDiceToDiceBag(), 2048);
-        commands.addAtIndex(new DrawDiceFromDicebag(), 4096);
+        commands.addAtIndex(new DrawDiceFromDiceBag(), 4096);
         commands.addAtIndex(new ModifyDiceValue(), 8192);
-        commands.addAtIndex(new RerollDraftPool(), 16384);
+        commands.addAtIndex(new ReRollDraftPool(), 16384);
         commands.addAtIndex(new CheckTurn(2), 32768);
         commands.addAtIndex(new CheckTurn(1), 65536);
         commands.addAtIndex(new CheckBeforeDiceChosen(), 131072);
@@ -99,7 +99,7 @@ public class ToolCardLanguageParserTest {
     @Test
     public void testSingleCommand() {
         String command = new String("[1-Reroll dice]");
-        Node<ICommand> commands = new Node(new RerollDice());
+        Node<ICommand> commands = new Node(new ReRollDice());
 
         System.out.println(commands);
 

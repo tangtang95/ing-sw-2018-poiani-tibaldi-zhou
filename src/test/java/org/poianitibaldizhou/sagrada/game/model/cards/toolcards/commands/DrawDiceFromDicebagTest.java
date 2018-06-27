@@ -31,7 +31,7 @@ public class DrawDiceFromDicebagTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        command = new DrawDiceFromDicebag();
+        command = new DrawDiceFromDiceBag();
         when(executor.getTemporaryDiceBag()).thenReturn(diceBag);
     }
 
@@ -60,14 +60,14 @@ public class DrawDiceFromDicebagTest {
 
     @Test
     public void equals() throws Exception {
-        assertEquals(new DrawDiceFromDicebag(), command);
+        assertEquals(new DrawDiceFromDiceBag(), command);
         assertNotEquals(new Object(), command);
     }
 
     @Test
     public void testHashCode() {
-        assertEquals(new DrawDiceFromDicebag().hashCode(), new DrawDiceFromDicebag().hashCode());
-        assertNotEquals(new DrawDiceFromDicebag().hashCode(), new AddDiceToDraftPool().hashCode());
+        assertEquals(new DrawDiceFromDiceBag().hashCode(), new DrawDiceFromDiceBag().hashCode());
+        assertNotEquals(new DrawDiceFromDiceBag().hashCode(), new AddDiceToDraftPool().hashCode());
     }
 
 }

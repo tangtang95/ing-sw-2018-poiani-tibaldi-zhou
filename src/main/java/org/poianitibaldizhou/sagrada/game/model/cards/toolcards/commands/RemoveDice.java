@@ -13,11 +13,10 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Commands that remove a dice from the schema card
+ */
 public class RemoveDice implements ICommand {
-
-    private PlacementRestrictionType getConstraintType() {
-        return constraintType;
-    }
 
     private final PlacementRestrictionType constraintType;
 
@@ -30,6 +29,16 @@ public class RemoveDice implements ICommand {
         if (type != PlacementRestrictionType.NONE && type != PlacementRestrictionType.COLOR)
             throw new IllegalArgumentException("Type of restriction not allowed for this command");
         this.constraintType = type;
+    }
+
+    /**
+     * Returns the restriction for removing the dice. (e.g. it may be available to
+     * remove only a dice of a certain color)
+     *
+     * @return restriction to follow when removing a dice
+     */
+    public PlacementRestrictionType getConstraintType() {
+        return constraintType;
     }
 
     /**

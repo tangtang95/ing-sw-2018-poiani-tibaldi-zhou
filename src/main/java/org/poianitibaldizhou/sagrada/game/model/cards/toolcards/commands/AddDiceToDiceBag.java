@@ -8,6 +8,9 @@ import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents the commend of adding a dice to the dice bag.
+ */
 public class AddDiceToDiceBag implements ICommand {
 
     /**

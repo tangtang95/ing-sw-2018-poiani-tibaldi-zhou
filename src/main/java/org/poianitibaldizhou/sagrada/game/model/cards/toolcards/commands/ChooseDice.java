@@ -10,6 +10,9 @@ import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.I
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Represents the command of choosing a dice from the draft pool
+ */
 public class ChooseDice implements ICommand {
 
     /**

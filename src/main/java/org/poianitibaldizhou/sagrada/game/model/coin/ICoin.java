@@ -2,10 +2,11 @@ package org.poianitibaldizhou.sagrada.game.model.coin;
 
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.ToolCard;
 
-import java.io.Serializable;
-
-
-public interface ICoin extends Serializable {
+/**
+ * OVERVIEW: Represents the entity of the coin that can be used in the game. This change
+ * from single player to multi player
+ */
+public interface ICoin {
 
     /**
      * Return if the toolCard passed is usable or not

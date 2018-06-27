@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * OVERVIEW: Represents a constraint regarding the color.
+ */
 @Immutable
 public class ColorConstraint implements IConstraint {
 
@@ -37,6 +40,9 @@ public class ColorConstraint implements IConstraint {
         return allColorConstraints;
     }
 
+    /**
+     *@return color of the constraint
+     */
     @Contract(pure = true)
     public Color getColor() {
         return color;
@@ -74,10 +80,12 @@ public class ColorConstraint implements IConstraint {
         return obj instanceof ColorConstraint && this.getColor() == ((ColorConstraint) obj).getColor();
     }
 
+    @Override
     public String toString() {
         return color.name().substring(0, 1);
     }
 
+    @Override
     public int hashCode() {
         return Objects.hash(getColor());
     }
