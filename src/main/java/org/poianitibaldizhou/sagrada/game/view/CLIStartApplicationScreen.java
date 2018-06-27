@@ -78,7 +78,6 @@ public class CLIStartApplicationScreen extends CLIBasicScreen {
         System.exit(0);
     }
 
-
     /**
      * @param o the other object to compare.
      * @return true if the CLIStartApplicationScreen has the same commandMap.
@@ -97,7 +96,6 @@ public class CLIStartApplicationScreen extends CLIBasicScreen {
      */
     @Override
     public int hashCode() {
-
         return Objects.hash(super.hashCode(), commandMap);
     }
 }

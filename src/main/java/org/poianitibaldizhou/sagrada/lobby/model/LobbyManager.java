@@ -58,10 +58,18 @@ public class LobbyManager {
         lobbyNetworkManager = new LobbyNetworkManager(this);
     }
 
+    /**
+     * Returns the lobby currently active
+     *
+     * @return lobby currently active
+     */
     public Lobby getLobby() {
         return lobby;
     }
 
+    /**
+     * @return returns the lobby network manager
+     */
     public LobbyNetworkManager getLobbyNetworkManager() {
         return lobbyNetworkManager;
     }
@@ -84,6 +92,9 @@ public class LobbyManager {
         setTimeout();
     }
 
+    /**
+     * Creates a game
+     */
     private synchronized void createGame() {
         String gameName = managerMediator.createMultiPlayerGame(lobby.getUserList());
         lobby.gameStart(gameName);

@@ -18,9 +18,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * OVERVIEW: Lobby controller of the MVC pattern for lobby stage of Sagrada.
- * Clients interact with this class for accessing, logging, leaving the lobby, that is the place in which
- * the players wait for the game to start
+ * @see ILobbyController
  */
 public class LobbyController extends UnicastRemoteObject implements ILobbyController {
     private final transient LobbyManager lobbyManager;

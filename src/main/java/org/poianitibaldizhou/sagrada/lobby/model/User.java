@@ -28,7 +28,7 @@ public class User implements JSONable {
      * Constructor.
      * Creates a new User with a certain name and token.
      *
-     * @param name User's name
+     * @param name  User's name
      * @param token User's token
      */
     public User(@NotNull String name, @NotNull String token) {
@@ -52,11 +52,17 @@ public class User implements JSONable {
         return name;
     }
 
+    /**
+     * Two users are equals if they have same user name and token
+     *
+     * @param object object that need to be compared
+     * @return true if this is equals object, false otherwise
+     */
     @Override
     public boolean equals(Object object) {
-        if(!(object instanceof User))
+        if (!(object instanceof User))
             return false;
-        User u = (User)object;
+        User u = (User) object;
         return u.getName().equals(this.name) && u.getToken().equals(this.getToken());
     }
 
@@ -67,7 +73,7 @@ public class User implements JSONable {
 
     @Override
     public String toString() {
-        return "Username: " + this.name + " ;" +this.token;
+        return "Username: " + this.name + " ;" + this.token;
     }
 
     /**
@@ -82,7 +88,7 @@ public class User implements JSONable {
         JSONObject jsonObject = new JSONObject();
         jsonObject.putIfAbsent(JSON_USER_NAME, this.getName());
         main.put(SharedConstants.TYPE, SharedConstants.USER);
-        main.put(SharedConstants.BODY,jsonObject);
+        main.put(SharedConstants.BODY, jsonObject);
         return main;
     }
 

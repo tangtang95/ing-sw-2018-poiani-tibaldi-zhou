@@ -22,11 +22,17 @@ public class CLISinglePlayerScreen extends GameModeStrategy {
         initializeCommands();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isSinglePlayer() {
         return true;
     }
 
+    /**
+     * Initialize the commands available for this screen
+     */
     private void initializeCommands() {
         Command viewDraftPool = new Command(ClientMessage.VIEW_DRAFT_POOL, ClientMessage.VIEW_DRAFT_POOL_HELP);
         viewDraftPool.setCommandAction(this::viewDraftPool);

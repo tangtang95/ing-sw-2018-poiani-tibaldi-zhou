@@ -6,17 +6,22 @@ import org.poianitibaldizhou.sagrada.network.observers.realobservers.ILobbyObser
 import java.io.IOException;
 import java.rmi.Remote;
 
+/**
+ * OVERVIEW: Lobby controller of the MVC pattern for lobby stage of Sagrada.
+ * Clients interact with this class for accessing, logging, leaving the lobby, that is the place in which
+ * the players wait for the game to start
+ */
 public interface ILobbyController extends Remote {
     /**
      * Implements the login of an User with an username and a view.
      * If an User is already logged with username, returns an empty token (login is thus failed).
      *
      * @param message user's name
-     * @param view     user's view
+     * @param view    user's view
      * @return login's token
      * @throws IOException network communication error
      */
-    String login(String  message, ILobbyView view) throws IOException;
+    String login(String message, ILobbyView view) throws IOException;
 
     /**
      * An user identified with token and username leaves the lobby.
@@ -32,7 +37,7 @@ public interface ILobbyController extends Remote {
      * in order to receive notification of what happens.
      * If the user has already joined, signals an error message to the user's view.
      *
-     * @param message   message containing the user's token and the user's name
+     * @param message       message containing the user's token and the user's name
      * @param lobbyObserver observer of the lobby for the client
      * @throws IOException network communication error
      */

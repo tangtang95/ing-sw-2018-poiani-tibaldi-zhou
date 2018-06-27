@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * OVERVIEW: Represents a lobby as a set of users waiting for the game to start
- *
+ * <p>
  * This doesn't contains duplicates.
  * userList.size() >= 0 && userList.size() <= MAX_PLAYER
  * lobbyObserverMap.size() >= 0 && lobbyObserverMap.size() <= MAX_PLAYER
@@ -38,32 +38,63 @@ public class Lobby {
 
     // GETTER
 
+    /**
+     * Returns the list of the users that are currently in the lobby.
+     * List is copied in a new list.
+     *
+     * @return list of the users that are currently in the lobby
+     */
     @Contract(pure = true)
     public List<User> getUserList() {
         return new ArrayList<>(userList);
     }
 
+    /**
+     * Returns true if the game is started, false otherwise
+     *
+     * @return true if the game is started, false otherwise
+     */
     @Contract(pure = true)
     public boolean isGameStarted() {
         return gameStarted;
     }
 
+    /**
+     * Return the name of the lobby
+     *
+     * @return name of the lobby
+     */
     @Contract(pure = true)
     public String getName() {
         return name;
     }
 
-
+    /**
+     * Returns the observers that are listening this lobby
+     *
+     * @return observers listening this
+     */
     public Map<String, ILobbyFakeObserver> getLobbyObserverMap() {
         return new HashMap<>(lobbyObserverMap);
     }
 
     // MODIFIER
 
+    /**
+     * Attach a new observer to the lobby
+     *
+     * @param token             token that identifies the observer
+     * @param lobbyFakeObserver lobby fake observer that will listen this
+     */
     public void attachObserver(String token, ILobbyFakeObserver lobbyFakeObserver) {
         lobbyObserverMap.putIfAbsent(token, lobbyFakeObserver);
     }
 
+    /**
+     * Detach a certain observer identified by token
+     *
+     * @param token identify the observer that will be detached
+     */
     public void detachObserver(String token) {
         lobbyObserverMap.remove(token);
     }
@@ -77,7 +108,7 @@ public class Lobby {
      * @return true if the lobby is full after the player join, false otherwise
      */
     public boolean join(User user) {
-        if(userList.size() == MAX_PLAYER)
+        if (userList.size() == MAX_PLAYER)
             throw new IllegalStateException();
         this.userList.add(user);
         lobbyObserverMap.forEach((key, value) -> value.onUserJoin(user));

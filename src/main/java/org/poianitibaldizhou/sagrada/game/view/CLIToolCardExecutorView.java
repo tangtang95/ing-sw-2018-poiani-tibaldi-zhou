@@ -50,10 +50,17 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
      * Reference of name of tooCard associated with this class.
      */
     private final transient String toolCardName;
-    
+
     private final transient GameModeStrategy gameModeStrategy;
 
-    
+    /**
+     * Constructor.
+     * Creates the view for viewing the actions during the execution of the tool card
+     *
+     * @param gameModeStrategy handles the differences between single player and multi player
+     * @param toolCardName name of the executed tool card
+     * @throws RemoteException rmi constructor throw
+     */
     CLIToolCardExecutorView(GameModeStrategy gameModeStrategy, String toolCardName) throws RemoteException {
         super();
         this.consoleListener = ConsoleListener.getInstance();
@@ -62,7 +69,6 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         this.clientCreateMessage = new ClientCreateMessage();
         this.toolCardName = toolCardName;
         this.connectionManager = gameModeStrategy.getConnectionManager();
-
     }
 
     /**
@@ -159,9 +165,9 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         try {
             do {
                 if (minNumber != maxNumber)
-                    PrinterManager.consolePrint(String.format(ClientMessage.CHOOSE_DELTA_NUMBER,minNumber,maxNumber), Level.STANDARD);
+                    PrinterManager.consolePrint(String.format(ClientMessage.CHOOSE_DELTA_NUMBER, minNumber, maxNumber), Level.STANDARD);
                 else
-                    PrinterManager.consolePrint(String.format(ClientMessage.CHOOSE_THE_NUMBER,minNumber), Level.STANDARD);
+                    PrinterManager.consolePrint(String.format(ClientMessage.CHOOSE_THE_NUMBER, minNumber), Level.STANDARD);
                 number = consoleListener.readNumber(maxNumber);
                 if (number == minNumber || number == maxNumber) {
                     String messageForController = clientCreateMessage.createTokenMessage(gameModeStrategy.getToken()).
@@ -238,7 +244,7 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
     public void notifyCommandInterrupted(String error) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
         PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.ERROR_TYPE + clientGetMessage.getCommandFlow(error)).
-                buildMessage(String.format(ClientMessage.TOOL_CARD_ERROR,toolCardName)).toString(), Level.INFORMATION);
+                buildMessage(String.format(ClientMessage.TOOL_CARD_ERROR, toolCardName)).toString(), Level.INFORMATION);
     }
 
     /**
@@ -291,11 +297,17 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
         PrinterManager.consolePrint(buildGraphic.buildMessage(ClientMessage.RE_ROL_DICE).buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public void notifyExecutionEnded(){
+    public void notifyExecutionEnded() {
         /* NOT NEEDED */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyDicePouredOver(String message) throws IOException {
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
@@ -305,10 +317,17 @@ public class CLIToolCardExecutorView extends UnicastRemoteObject implements IToo
                 buildGraphicDice(diceWrapper).toString(), Level.STANDARD);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void notifyWaitTurnEnd() {
-        /* NOT NEEDED */
+        /* NOT DISPLAYED */
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void notifyNeedPositionForPlacement(String message) throws IOException {
         BuildGraphic buildGraphic = new BuildGraphic();
