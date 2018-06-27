@@ -54,6 +54,7 @@ public class CLISchemaCardView extends UnicastRemoteObject implements ISchemaCar
      */
     @Override
     public void onPlaceDice(String message) throws IOException {
+        System.out.println("ON PLACE DICE ");
         PositionWrapper positionWrapper = clientGetMessage.getPosition(message);
         DiceWrapper diceWrapper = clientGetMessage.getDice(message);
         String printMessage = cliStateView.getCurrentUser().getUsername() + ClientMessage.PLACE_DICE_IN_POSITION +

@@ -639,7 +639,6 @@ public class GameController extends UnicastRemoteObject implements IGameControll
             // Attaching observer and view regarding the re-connected player
             gameNetworkManager.putView(token, gameView);
 
-            //
             HashMap<String, ISchemaCardObserver> schemaCardObserverHashMapToken = new HashMap<>();
             HashMap<String, IPlayerObserver> playerObserverHashMapToken = new HashMap<>();
 

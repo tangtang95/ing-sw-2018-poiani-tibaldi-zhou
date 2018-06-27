@@ -101,6 +101,4 @@ public class ClientSettings {
 
         return value;
     }
-
-
 }
