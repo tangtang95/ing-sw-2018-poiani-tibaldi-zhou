@@ -27,6 +27,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Graphic controller for handling the lobby phase of Sagrada
+ */
 public class LobbyGraphicsController extends GraphicsController implements Initializable {
 
     @FXML
@@ -41,6 +44,9 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
 
     private static final String TITLE_BOX = "Errore di connessione";
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         labelTimeout.getParent().setVisible(false);
@@ -54,7 +60,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
     /**
      * Init method for instantiation of Lobby
      *
-     * @param username the username chosen
+     * @param username          the username chosen
      * @param connectionManager the manager of the connection
      * @throws NetworkException if cannot connect to server or the username is already in use
      */
@@ -74,13 +80,18 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
     public List<UserWrapper> getUsers() {
         List<UserWrapper> users = null;
         try {
-            users =  lobbyModel.getUsers();
+            users = lobbyModel.getUsers();
         } catch (IOException e) {
             AlertBox.displayBox(TITLE_BOX, ClientMessage.OPERATION_ERROR);
         }
         return users;
     }
 
+    /**
+     * Get the user name of the user who is playing with this client
+     *
+     * @return user name of the user who is playing with this client
+     */
     public String getMyUsername() {
         return lobbyModel.getUsername();
     }
@@ -111,21 +122,20 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
      *
      * @param millisTime the remaining time until the game start
      */
-    public void onTimeoutSet(final long millisTime){
-        labelTimeout.setText(String.valueOf(Math.round(millisTime/1000.0)));
+    public void onTimeoutSet(final long millisTime) {
+        labelTimeout.setText(String.valueOf(Math.round(millisTime / 1000.0)));
         long startTime = System.currentTimeMillis();
-        if(timeoutAnimation != null)
+        if (timeoutAnimation != null)
             timeoutAnimation.stop();
 
         timeoutAnimation = new Timeline(new KeyFrame(
                 Duration.millis(500),
                 event -> {
                     long deltaTime = millisTime - (System.currentTimeMillis() - startTime);
-                    if(deltaTime < 0){
+                    if (deltaTime < 0) {
                         labelTimeout.setText("00");
-                    }
-                    else{
-                        labelTimeout.setText(String.format("%02d", Math.round(deltaTime/1000.0)));
+                    } else {
+                        labelTimeout.setText(String.format("%02d", Math.round(deltaTime / 1000.0)));
                     }
 
                 }
@@ -135,6 +145,11 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         labelTimeout.getParent().setVisible(true);
     }
 
+    /**
+     * Action associated to the leave button. Leaves the lobby and pop the scene
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onLeaveButtonAction(ActionEvent actionEvent) {
         try {
@@ -145,10 +160,19 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
         playSceneTransition(corePane, event -> sceneManager.popScene());
     }
 
+    /**
+     * Get timeout in millis
+     *
+     * @return timeout in millis
+     * @throws IOException network communication error
+     */
     public int getTimeout() throws IOException {
         return lobbyModel.getTimeout();
     }
 
+    /**
+     * Hide the label of the timeout
+     */
     public void hideTimeoutLabel() {
         labelTimeout.getParent().setVisible(false);
     }

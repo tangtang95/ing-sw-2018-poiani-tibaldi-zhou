@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 import java.util.ArrayDeque;
 import java.util.EmptyStackException;
 
+/**
+ * OVERVIEW: Manages all the inside the GUI application
+ */
 public class SceneManager {
 
     private StackPane stackPane;
@@ -69,19 +72,31 @@ public class SceneManager {
         pushScene(newScene);
     }
 
+    /**
+     * @return primary stage. This is the primary stage that javafx launches
+     */
     public Stage getPrimaryStage() {
         return (Stage) stackPane.getScene().getWindow();
     }
 
+    /**
+     * @return scene width
+     */
     public double getSceneWidth() {
         return windowSize.getWidth();
     }
 
+    /**
+     * @return scene height
+     */
     public double getSceneHeight() {
         return windowSize.getHeight();
     }
 
+    /**
+     * @return current scene
+     */
     public Pane getCurrentScene() {
-        return (Pane)sceneStack.peek();
+        return (Pane) sceneStack.peek();
     }
 }

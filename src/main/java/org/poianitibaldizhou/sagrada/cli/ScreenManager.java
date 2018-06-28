@@ -10,6 +10,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 
+/**
+ * OVERVIEW: Manages the various screen as a stack of screen. So the screen that will be active
+ * is the last one that has been pushed.
+ */
 public class ScreenManager {
 
     private final Deque<IScreen> screens;
@@ -24,10 +28,14 @@ public class ScreenManager {
         currentThread = null;
     }
 
+    /**
+     * Return the current thread active on the CLI client
+     *
+     * @return current thread active on the CLI client
+     */
     public Thread getCurrentThread() {
         return currentThread;
     }
-
 
     /**
      * Push and start the screen into the stack screens, but before that stop the current thread
@@ -47,7 +55,7 @@ public class ScreenManager {
      * @return the screen at the top of the stack
      * @throws EmptyStackException if the stack of screen is empty
      */
-    public synchronized IScreen popScreen(){
+    public synchronized IScreen popScreen() {
         if (screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();
@@ -62,7 +70,7 @@ public class ScreenManager {
      * @throws EmptyStackException if the stack of screen is empty
      */
     public synchronized void popWithoutStartInScreen() {
-        if(screens.isEmpty())
+        if (screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();
         screens.pop();
@@ -75,7 +83,7 @@ public class ScreenManager {
      * @param screen the new screen to replace the top screen
      * @throws EmptyStackException if the stack of screen is empty
      */
-    public synchronized void replaceScreen(IScreen screen){
+    public synchronized void replaceScreen(IScreen screen) {
         if (screens.isEmpty())
             throw new EmptyStackException();
         stopCurrentThread();
@@ -102,6 +110,9 @@ public class ScreenManager {
         return screens.size();
     }
 
+    /**
+     * If there is at least a screen pushed, is start the thread associated with it.
+     */
     private void startThread() {
         try {
             if (topScreen() != null) {
@@ -113,6 +124,9 @@ public class ScreenManager {
         }
     }
 
+    /**
+     * Stop the current thread that is being executed
+     */
     private void stopCurrentThread() {
         if (currentThread != null && currentThread.isAlive())
             currentThread.interrupt();

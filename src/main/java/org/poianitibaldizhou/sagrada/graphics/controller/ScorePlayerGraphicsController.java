@@ -17,14 +17,19 @@ import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+/**
+ * OVERVIEW: Controller used when the scores are displayed
+ */
 public class ScorePlayerGraphicsController extends GraphicsController implements Initializable{
-
 
     @FXML
     public JFXTreeTableView<PlayerScoreWrapper> tableView;
     @FXML
     public Label winnerLabel;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -65,6 +70,11 @@ public class ScorePlayerGraphicsController extends GraphicsController implements
     }
 
 
+    /**
+     * Return to the main scene
+     *
+     * @param actionEvent event associated with the press of the back button
+     */
     @FXML
     public void onBackButtonAction(ActionEvent actionEvent) {
         ((Button)actionEvent.getSource()).setDisable(true);

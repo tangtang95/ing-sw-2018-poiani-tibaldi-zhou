@@ -11,25 +11,45 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * OVERVIEW: Class the manages the communication between the game manager and the lobby manager. This has been implemented
+ * for decoupling purposes.
+ */
 public class MediatorManager {
 
     private GameManager gameManager;
     private LobbyManager lobbyManager;
 
-    public MediatorManager(){
+    /**
+     * Constructor.
+     * Creates a mediator manager that allows the communications between the game manager and the lobby manager
+     */
+    public MediatorManager() {
         gameManager = new GameManager(this);
         lobbyManager = new LobbyManager(this);
     }
 
-    public GameManager getGameManager(){
+    /**
+     * @return server game manager
+     */
+    public GameManager getGameManager() {
         return gameManager;
     }
 
-    public LobbyManager getLobbyManager(){
+    /**
+     * @return server lobby manager
+     */
+    public LobbyManager getLobbyManager() {
         return lobbyManager;
     }
 
-    public String createMultiPlayerGame(List<User> users)  {
+    /**
+     * Creates a multi player game with the list of users who joined the lobby
+     *
+     * @param users list of users of the multi player game that will be created
+     * @return name of the multi player game that has been created
+     */
+    public String createMultiPlayerGame(List<User> users) {
         String gameName = UUID.randomUUID().toString();
         IGame game = new MultiPlayerGame(gameName, users, new TerminationGameManager(gameName, gameManager));
         gameManager.createMultiPlayerGame(game, gameName);
@@ -43,9 +63,9 @@ public class MediatorManager {
      * @return true if a player with username is already playing in some game, false otherwise
      */
     public boolean isAlreadyPlayingAGame(String username) {
-        for(IGame game : gameManager.getGameList()) {
-            for(User user : game.getUsers()) {
-                if(user.getName().equals(username))
+        for (IGame game : gameManager.getGameList()) {
+            for (User user : game.getUsers()) {
+                if (user.getName().equals(username))
                     return true;
             }
         }

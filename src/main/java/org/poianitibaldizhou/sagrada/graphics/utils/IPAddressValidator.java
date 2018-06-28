@@ -8,6 +8,9 @@ import javafx.scene.control.TextInputControl;
  */
 public class IPAddressValidator extends ValidatorBase{
 
+    /**
+     * Evaluate if the string is correct and match with the ip structure
+     */
     @Override
     protected void eval() {
         if (this.srcControl.get() instanceof TextInputControl) {
@@ -15,6 +18,9 @@ public class IPAddressValidator extends ValidatorBase{
         }
     }
 
+    /**
+     * Evaluate the input of a text field and match it with the ip structure
+     */
     private void evalTextInputField() {
         TextInputControl textField = (TextInputControl)this.srcControl.get();
         if(textField.getText().isEmpty())

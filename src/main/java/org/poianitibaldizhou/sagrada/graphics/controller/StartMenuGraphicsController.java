@@ -34,6 +34,9 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW:
+ */
 public class StartMenuGraphicsController extends GraphicsController implements Initializable {
 
     @FXML
@@ -98,6 +101,9 @@ public class StartMenuGraphicsController extends GraphicsController implements I
 
     private ConnectionModel connectionModel;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initializeConnectionView();
@@ -106,27 +112,37 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         initializeReconnectView();
     }
 
+
+    /**
+     * Init the view for the reconnection
+     */
     private void initializeReconnectView() {
         reconnectUsernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
     }
 
+    /**
+     * Init the view for the multi player game
+     */
     private void initializeMultiPlayerView() {
         usernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
     }
 
-    private void initializeConnectionView(){
+    /**
+     * Init the view for the changing the connection mode
+     */
+    private void initializeConnectionView() {
         connectionModel = new ConnectionModel();
         connectionType.textProperty().bind(connectionModel.connectionTypeProperty());
         connectionToggleGroup = new ToggleGroup();
         radioButtonRMI.setToggleGroup(connectionToggleGroup);
         radioButtonSocket.setToggleGroup(connectionToggleGroup);
         radioButtonRMI.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue && portTextField.getText().equals(String.valueOf(ConnectionType.SOCKET.getPort()))){
+            if (newValue && portTextField.getText().equals(String.valueOf(ConnectionType.SOCKET.getPort()))) {
                 portTextField.setText(String.valueOf(ConnectionType.RMI.getPort()));
             }
         });
         radioButtonSocket.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue && portTextField.getText().equals(String.valueOf(ConnectionType.RMI.getPort()))){
+            if (newValue && portTextField.getText().equals(String.valueOf(ConnectionType.RMI.getPort()))) {
                 portTextField.setText(String.valueOf(ConnectionType.SOCKET.getPort()));
             }
         });
@@ -135,7 +151,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         numberValidator.setMessage(ClientMessage.ONLY_NUMBER);
         portTextField.setValidators(numberValidator);
         portTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue){
+            if (!newValue) {
                 portTextField.validate();
             }
         });
@@ -144,13 +160,16 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         ipAddressValidator.setMessage(ClientMessage.IP_ERROR);
         ipTextField.setValidators(ipAddressValidator);
         ipTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if(!newValue)
+            if (!newValue)
                 ipTextField.validate();
         });
 
     }
 
-    private void initializeSinglePlayerView(){
+    /**
+     * Init the view for the single player
+     */
+    private void initializeSinglePlayerView() {
         singlePlayerUsernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
 
         difficultyToggleGroup = new ToggleGroup();
@@ -171,13 +190,18 @@ public class StartMenuGraphicsController extends GraphicsController implements I
     /**
      * Init method for StartMenuScene
      */
-    public void initStartMenuScene(){
-        menuButtonPane.setPrefWidth(sceneManager.getSceneWidth()*0.4);
-        menuButtonPane.setPadding(new Insets(sceneManager.getSceneHeight()/10, 0, 0, sceneManager.getSceneWidth()/20));
-        rightPane.setPrefWidth(sceneManager.getSceneWidth()*0.6);
+    public void initStartMenuScene() {
+        menuButtonPane.setPrefWidth(sceneManager.getSceneWidth() * 0.4);
+        menuButtonPane.setPadding(new Insets(sceneManager.getSceneHeight() / 10, 0, 0, sceneManager.getSceneWidth() / 20));
+        rightPane.setPrefWidth(sceneManager.getSceneWidth() * 0.6);
     }
 
 
+    /**
+     * Start the multi player game
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void startMultiPlayerGame(ActionEvent actionEvent) {
         closeEveryPane();
@@ -186,6 +210,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         multiPlayerPane.toFront();
     }
 
+    /**
+     * Start the single player game
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void startSinglePlayerGame(ActionEvent actionEvent) {
         closeEveryPane();
@@ -194,6 +223,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         singlePlayerPane.toFront();
     }
 
+    /**
+     * Change the connection
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void changeConnectionMode(ActionEvent actionEvent) {
         updateConnectionPaneView();
@@ -203,7 +237,12 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         connectionPane.toFront();
     }
 
-    private void playOpenMenuPaneTransition(Node node){
+    /**
+     * Handles the single animation when clicking a button of the main menu
+     *
+     * @param node object that is animated
+     */
+    private void playOpenMenuPaneTransition(Node node) {
         TranslateTransition translateTransition = new TranslateTransition(Duration.millis(500), node);
         translateTransition.fromXProperty().bind(rightPane.translateXProperty().subtract(rightPane.widthProperty().divide(3)));
         translateTransition.toXProperty().bind(rightPane.translateXProperty());
@@ -215,6 +254,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         fadeTransition.play();
     }
 
+    /**
+     * Quit Sagrada client
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void quitGame(ActionEvent actionEvent) {
         playSceneTransition(sceneManager.getCurrentScene(), event -> {
@@ -223,6 +267,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         });
     }
 
+    /**
+     * Shows the reconnect menu
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onReconnectButtonAction(ActionEvent actionEvent) {
         closeEveryPane();
@@ -231,15 +280,25 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         reconnectPane.toFront();
     }
 
+    /**
+     * Close the reconnect menu
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onReconnectCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
         reconnectUsernameTextField.setText("");
     }
 
+    /**
+     * Reconnect to a game
+     *
+     * @param actionEvent press button event
+     */
     @FXML
     public void onReconnectPlayButton(ActionEvent actionEvent) {
-        if(reconnectUsernameTextField.validate()){
+        if (reconnectUsernameTextField.validate()) {
 
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
@@ -262,15 +321,25 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         }
     }
 
+    /**
+     * Close the multi player menu
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onMultiPlayerCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
         usernameTextField.setText("");
     }
 
+    /**
+     * Join the lobby
+     *
+     * @param actionEvent play multi player button event
+     */
     @FXML
     public void onMultiPlayerPlayButton(ActionEvent actionEvent) {
-        if(usernameTextField.validate()){
+        if (usernameTextField.validate()) {
 
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/lobby.fxml"));
 
@@ -293,6 +362,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         }
     }
 
+    /**
+     * Close single player menu
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onSinglePlayerCloseButton(ActionEvent actionEvent) {
         difficultyToggleGroup.selectToggle(radioButtonMedium);
@@ -300,11 +374,16 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         singlePlayerUsernameTextField.setText("");
     }
 
+    /**
+     * Init single player game
+     *
+     * @param actionEvent single player play button event
+     */
     @FXML
     public void onSinglePlayerPlayButton(ActionEvent actionEvent) {
-        if(difficultyToggleGroup.getSelectedToggle() == null)
+        if (difficultyToggleGroup.getSelectedToggle() == null)
             return;
-        if(singlePlayerUsernameTextField.validate()) {
+        if (singlePlayerUsernameTextField.validate()) {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
             try {
@@ -327,15 +406,25 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         }
     }
 
+    /**
+     * Close the change connection menu
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onConnectionCloseButton(ActionEvent actionEvent) {
         closeEveryPane();
         updateConnectionPaneView();
     }
 
+    /**
+     * Apply the changes to the connection
+     *
+     * @param actionEvent not used
+     */
     @FXML
     public void onConnectionApplyButton(ActionEvent actionEvent) {
-        if(ipTextField.validate() && portTextField.validate()) {
+        if (ipTextField.validate() && portTextField.validate()) {
             connectionModel.setIpAddress(ipTextField.getText());
             connectionModel.setPort(Integer.parseInt(portTextField.getText()));
             connectionModel.setConnectionType(((RadioButton) connectionToggleGroup.getSelectedToggle()).getText());
@@ -343,15 +432,21 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         }
     }
 
-    private void updateConnectionPaneView(){
+    /**
+     * Update the pane regarding the change of the connection
+     */
+    private void updateConnectionPaneView() {
         String ipText = (connectionModel.getIpAddress().equals("localhost")) ? "" : connectionModel.getIpAddress();
         ipTextField.setText(ipText);
         portTextField.setText(String.valueOf(connectionModel.getPort()));
         RadioButton selectedRadioButton = (connectionModel.getConnectionType().equals(ConnectionType.RMI.name()))
-                ? radioButtonRMI: radioButtonSocket;
+                ? radioButtonRMI : radioButtonSocket;
         connectionToggleGroup.selectToggle(selectedRadioButton);
     }
 
+    /**
+     * Close every pane: reconnect, connection, single player and multi player
+     */
     private void closeEveryPane() {
         reconnectPane.setVisible(false);
         connectionPane.setVisible(false);
@@ -359,17 +454,21 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         multiPlayerPane.setVisible(false);
     }
 
-    private ValidatorBase getRequiredFieldValidator(){
+    /**
+     * @return return the validator for obligatory fields
+     */
+    private ValidatorBase getRequiredFieldValidator() {
         ValidatorBase requiredValidator = new RequiredFieldValidator();
         requiredValidator.setMessage(ClientMessage.OBLIGATORY);
         return requiredValidator;
     }
 
-    private ValidatorBase getUsernameFieldValidator(){
+    /**
+     * @return return the validator for only character fields
+     */
+    private ValidatorBase getUsernameFieldValidator() {
         ValidatorBase usernameValidator = new UsernameValidator();
         usernameValidator.setMessage(ClientMessage.ONLY_CHARACTER);
-        return  usernameValidator;
+        return usernameValidator;
     }
-
-
 }
