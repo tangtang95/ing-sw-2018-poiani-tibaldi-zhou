@@ -21,7 +21,7 @@ public class ClientSettings {
      * private constructor that hides the public implicit one
      */
     private ClientSettings() {
-       // DO NOTHING
+       throw new IllegalStateException();
     }
 
     /**

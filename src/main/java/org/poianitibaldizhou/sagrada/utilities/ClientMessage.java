@@ -8,7 +8,7 @@ public final class ClientMessage {
     /**
      * private constructor.
      */
-    private ClientMessage(){}
+    private ClientMessage(){throw  new IllegalStateException();}
 
     /**
      * Graphic info massages.

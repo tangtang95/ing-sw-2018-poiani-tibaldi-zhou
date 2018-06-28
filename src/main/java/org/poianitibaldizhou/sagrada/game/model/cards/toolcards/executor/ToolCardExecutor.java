@@ -55,7 +55,7 @@ public class ToolCardExecutor extends Thread {
     private RoundTrack temporaryRoundTrack;
     private SchemaCard temporarySchemaCard;
 
-    private Map<Player, Integer> skipTurnPlayers;
+    private Map<Player, Integer> temporarySkipTurnPlayers;
     private Game game;
     private TurnState turnState;
 
@@ -151,7 +151,7 @@ public class ToolCardExecutor extends Thread {
         this.temporaryDiceBag = game.getDiceBag();
         this.temporaryRoundTrack = game.getRoundTrack();
         this.temporarySchemaCard = player.getSchemaCard();
-        this.skipTurnPlayers = turnState.getSkipTurnPlayers();
+        this.temporarySkipTurnPlayers = turnState.getSkipTurnPlayers();
     }
 
     /**
@@ -162,7 +162,7 @@ public class ToolCardExecutor extends Thread {
         game.setDiceBag(temporaryDiceBag);
         game.setRoundTrack(temporaryRoundTrack);
         player.setSchemaCard(temporarySchemaCard);
-        turnState.setSkipTurnPlayers(skipTurnPlayers);
+        turnState.setSkipTurnPlayers(temporarySkipTurnPlayers);
     }
 
     /**
@@ -360,6 +360,6 @@ public class ToolCardExecutor extends Thread {
     public void addSkipTurnPlayer(Player player, int turn) {
         if (turn < TurnState.FIRST_TURN || turn > TurnState.SECOND_TURN)
             throw new IllegalArgumentException(ServerMessage.TURN_ILLEGAL_ARGUMENT);
-        skipTurnPlayers.put(player, turn);
+        temporarySkipTurnPlayers.put(player, turn);
     }
 }

@@ -265,8 +265,8 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
     }
 
     // GETTER
-    public boolean hasActionUsed(PlaceDiceAction placeDiceAction) {
-        return actionsUsed.contains(placeDiceAction);
+    public boolean hasActionUsed(IActionCommand actionCommand) {
+        return actionsUsed.contains(actionCommand);
     }
 
     public Map<Player, Integer> getSkipTurnPlayers() {

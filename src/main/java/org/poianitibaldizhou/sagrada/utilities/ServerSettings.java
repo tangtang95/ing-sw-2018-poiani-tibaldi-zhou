@@ -25,7 +25,7 @@ public class ServerSettings {
      * private constructor that hides the public implicit one
      */
     private ServerSettings() {
-        // DO NOTHING
+        throw new IllegalStateException();
     }
 
     /**

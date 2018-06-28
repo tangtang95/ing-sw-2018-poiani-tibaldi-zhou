@@ -9,6 +9,7 @@ public final class NetworkUtility {
      * Private constructor.
      */
     private NetworkUtility() {
+        throw new IllegalStateException();
     }
 
     /**
