@@ -5,6 +5,9 @@ import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PrivateObjectiveCardWrapper;
 
+/**
+ * OVERVIEW: Represents the view for a private objective card
+ */
 public class PrivateObjectiveCardView extends Pane {
 
     private ImageView cardView;

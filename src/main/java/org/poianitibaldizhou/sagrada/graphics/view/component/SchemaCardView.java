@@ -18,6 +18,9 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.TileWrapper;
 
 import java.io.IOException;
 
+/**
+ * OVERVIEW: Represents the view for a schema card
+ */
 public class SchemaCardView extends Pane {
 
     private ImageView schemaCardImage;
@@ -121,10 +124,16 @@ public class SchemaCardView extends Pane {
         shadowImage.setVisible(false);
     }
 
+    /**
+     * @return image view of the schema card
+     */
     public ImageView getImageView() {
         return schemaCardImage;
     }
 
+    /**
+     * @return schema card that is viewed by this class
+     */
     public SchemaCardWrapper getSchemaCardWrapper() {
         return schemaCardWrapper;
     }
@@ -235,6 +244,12 @@ public class SchemaCardView extends Pane {
         }
     }
 
+    /**
+     * Draws the difficulty token on a schema card
+     *
+     * @param scale indicates the scale of the token compared to the schema card
+     * @return image drawn
+     */
     private ImageView drawDifficultyToken(double scale) {
         Image difficultyImage = new Image(getClass().getClassLoader().getResourceAsStream("images/schemaCards/difficulty.png"));
         ImageView imageView = new ImageView(difficultyImage);
@@ -243,6 +258,9 @@ public class SchemaCardView extends Pane {
         return imageView;
     }
 
+    /**
+     * Clear all the dices from the schema card
+     */
     private void clearAllDice() {
         for (int i = 0; i < NUMBER_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {

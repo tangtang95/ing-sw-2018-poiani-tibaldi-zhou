@@ -12,7 +12,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DraftPoolView extends Pane{
+/**
+ * OVERVIEW: Represents the view for the draft pool
+ */
+public class DraftPoolView extends Pane {
 
     private List<DiceView> diceViewList;
     private final double scale;
@@ -34,7 +37,7 @@ public class DraftPoolView extends Pane{
      *
      * @param scale the scale value
      */
-    public DraftPoolView(double scale){
+    public DraftPoolView(double scale) {
         this.scale = scale;
         diceViewList = new ArrayList<>();
         ImageView draftPoolImage = GraphicsUtils.getSimpleImageView(IMAGE_PATH, scale);
@@ -50,8 +53,8 @@ public class DraftPoolView extends Pane{
     public void drawDraftPool(DraftPoolWrapper draftPoolWrapper) {
         clearDraftPool();
         for (int i = 0; i < draftPoolWrapper.size(); i++) {
-            int row = i/COLUMNS;
-            int column = i%COLUMNS;
+            int row = i / COLUMNS;
+            int column = i % COLUMNS;
             drawDice(draftPoolWrapper.getDice(i), row, column);
         }
     }
@@ -61,9 +64,9 @@ public class DraftPoolView extends Pane{
      *
      * @param diceWrapper the new dice to add
      */
-    public void addDiceToDraftPool(DiceWrapper diceWrapper){
-        int row = (diceViewList.size())/COLUMNS;
-        int column = (diceViewList.size())%COLUMNS;
+    public void addDiceToDraftPool(DiceWrapper diceWrapper) {
+        int row = (diceViewList.size()) / COLUMNS;
+        int column = (diceViewList.size()) % COLUMNS;
         drawDice(diceWrapper, row, column);
     }
 
@@ -72,9 +75,9 @@ public class DraftPoolView extends Pane{
      *
      * @param diceWrapper the dice to remove
      */
-    public void removeDiceFromDraftPool(DiceWrapper diceWrapper){
-        for (DiceView diceView: diceViewList) {
-            if(diceView.getDiceWrapper().equals(diceWrapper)){
+    public void removeDiceFromDraftPool(DiceWrapper diceWrapper) {
+        for (DiceView diceView : diceViewList) {
+            if (diceView.getDiceWrapper().equals(diceWrapper)) {
                 this.getChildren().remove(diceView);
                 diceViewList.remove(diceView);
                 return;
@@ -111,8 +114,15 @@ public class DraftPoolView extends Pane{
         }
     }
 
-    private void drawDice(DiceWrapper diceWrapper, int row, int column){
-        DiceView diceView = new DiceView(diceWrapper, scale*DICE_SCALE);
+    /**
+     * Draw a dice
+     *
+     * @param diceWrapper dice that will be drawn
+     * @param row         dice will be drawn on this row
+     * @param column      dice will be drawn on this column
+     */
+    private void drawDice(DiceWrapper diceWrapper, int row, int column) {
+        DiceView diceView = new DiceView(diceWrapper, scale * DICE_SCALE);
         diceViewList.add(diceView);
 
         DoubleBinding offset = this.widthProperty().multiply(PADDING_PERCENT);

@@ -13,6 +13,9 @@ import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.FrontBackSchemaCardWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
+/**
+ * OVERVIEW: Represents the view for a front back schema car
+ */
 public class FrontBackSchemaCardView extends Pane {
 
     private SchemaCardView frontSchemaCard;

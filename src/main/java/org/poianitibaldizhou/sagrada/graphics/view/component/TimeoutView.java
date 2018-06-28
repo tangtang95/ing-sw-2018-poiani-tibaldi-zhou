@@ -9,6 +9,9 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
+/**
+ * OVERVIEW: Represents the view for the timeout
+ */
 public class TimeoutView extends StackPane {
 
     private Label timeoutLabel;
