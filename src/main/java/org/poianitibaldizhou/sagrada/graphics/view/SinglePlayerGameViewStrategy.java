@@ -5,6 +5,9 @@ import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
+/**
+ * Single player gui strategy for draw the view.
+ */
 public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
 
     private final Pane corePane;
@@ -26,26 +29,46 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
         this.corePane = corePane;
     }
 
+    /**
+     * @return the private objective card scale.
+     */
     @Override
     public double getPrivateObjectiveCardScale() {
         return PRIVATE_OBJECTIVE_CARD_SCALE;
     }
 
+    /**
+     * @return the round track scale.
+     */
     @Override
     public double getRoundTrackScale() {
         return ROUND_TRACK_SCALE;
     }
 
+    /**
+     * @return the center X of round track.
+     */
     @Override
     public DoubleBinding getRoundTrackCenterX() {
         return corePane.widthProperty().divide(2);
     }
 
+    /**
+     * @return the center Y of round track.
+     */
     @Override
     public DoubleBinding getRoundTrackCenterY() {
         return corePane.heightProperty().divide(5);
     }
 
+    /**
+     * draw the schema card in the correct position
+     *
+     * @param targetPane        the pane to draw on
+     * @param schemaCardWrapper the model of the schemaCard to draw
+     * @param angle             the angle to rotate
+     * @return the schema card drown.
+     */
     @Override
     public SchemaCardView drawSchemaCardView(Pane targetPane, SchemaCardWrapper schemaCardWrapper, double angle) {
         SchemaCardView schemaCardView = new SchemaCardView(schemaCardWrapper, SCHEMA_CARD_SCALE);
@@ -57,16 +80,25 @@ public class SinglePlayerGameViewStrategy implements IGameViewStrategy{
         return schemaCardView;
     }
 
+    /**
+     * @return the public objective card scale.
+     */
     @Override
     public double getPublicObjectiveCardScale() {
         return PUBLIC_OBJECTIVE_CARD_SCALE;
     }
 
+    /**
+     * @return the tool card scale.
+     */
     @Override
     public double getToolCardScale() {
         return TOOL_CARD_SCALE;
     }
 
+    /**
+     * @return false because there aren't timeout in single player.
+     */
     @Override
     public boolean hasTimeout() {
         return false;

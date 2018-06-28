@@ -6,6 +6,9 @@ import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.view.component.SchemaCardView;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.SchemaCardWrapper;
 
+/**
+ * Multi player gui strategy for draw the view.
+ */
 public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
 
     private Pane corePane;
@@ -114,34 +117,78 @@ public class MultiPlayerGameViewStrategy implements IGameViewStrategy {
         return true;
     }
 
+    /**
+     * @return the width of pane.
+     */
     private DoubleBinding getWidth() {
         return notifyPane.widthProperty().divide(1);
     }
 
+    /**
+     * @return the height of pane.
+     */
     private DoubleBinding getHeight() {
         return notifyPane.heightProperty().divide(1);
     }
 
+    /**
+     * @return the coordinate X of center pane.
+     */
     private DoubleBinding getCenterX() {
         return notifyPane.widthProperty().divide(2);
     }
 
+    /**
+     * @return the coordinate Y of center pane.
+     */
     private DoubleBinding getCenterY() {
         return notifyPane.heightProperty().divide(2);
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param x listener on x position.
+     * @param width listener on width.
+     * @param pivotX system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param x listener on x position.
+     * @param width listener on width.
+     * @param pivotX system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param y listener on y position.
+     * @param height listener on height.
+     * @param pivotY system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param y listener on y position.
+     * @param height listener on height.
+     * @param pivotY system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }

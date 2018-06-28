@@ -7,21 +7,36 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PositionWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
+/**
+ * Class for save the chronology of player's action.
+ */
 public final class HistoryObject {
 
     private final Object object;
     private final ObjectMessageType objectMessageType;
 
+    /**
+     * Constructor.
+     *
+     * @param object object to save
+     * @param objectMessageType action type
+     */
     public HistoryObject(Object object, ObjectMessageType objectMessageType) {
         this.object = object;
         this.objectMessageType = objectMessageType;
     }
 
+    /**
+     * @return the type message.
+     */
     @Contract(pure = true)
     public ObjectMessageType getObjectMessageType() {
         return objectMessageType;
     }
 
+    /**
+     * @return the saved object.
+     */
     @Contract(pure = true)
     public Object getObject() {
         return object;

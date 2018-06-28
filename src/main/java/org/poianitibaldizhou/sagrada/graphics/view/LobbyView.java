@@ -24,6 +24,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Lobby gui.
+ */
 public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobbyObserver{
 
 
@@ -123,16 +126,30 @@ public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobby
         Logger.getAnonymousLogger().log(Level.FINEST, "onPing");
     }
 
+    /**
+     * equals method
+     *
+     * @param obj object to compare.
+     * @return true if the obj is equal at this.
+     */
     @Override
     public boolean equals(Object obj) {
         return obj instanceof LobbyView;
     }
 
+    /**
+     * @return the hash code
+     */
     @Override
     public int hashCode() {
         return this.getClass().getSimpleName().hashCode();
     }
 
+    /**
+     * Add user at the lobby.
+     *
+     * @param user to add.
+     */
     private void addUser(UserWrapper user) {
         UserView userView = (UserView) userViews.get(numberOfUsers);
         userView.drawRetro();
@@ -157,10 +174,16 @@ public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobby
         numberOfUsers++;
     }
 
+    /**
+     * Clear the lobby user.
+     */
     private void clearGrid(){
         numberOfUsers = 0;
     }
 
+    /**
+     * Update the user view.
+     */
     private void updateUserViews(){
         clearGrid();
         List<UserWrapper> users = controller.getUsers();
@@ -173,6 +196,9 @@ public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobby
         }
     }
 
+    /**
+     * Set the lobby timeout.
+     */
     private void setTimeoutLabel(){
         try {
             long currentTime = System.currentTimeMillis();
@@ -184,38 +210,85 @@ public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobby
         }
     }
 
+    /**
+     * hide time out to lobby.
+     */
     private void hideTimeoutLabel() {
         controller.hideTimeoutLabel();
     }
 
+    /**
+     * @return the pane width.
+     */
     private DoubleBinding getWidth() {
         return corePane.widthProperty().divide(1);
     }
 
+    /**
+     * @return th pane height.
+     */
     private DoubleBinding getHeight() {
         return corePane.heightProperty().divide(1);
     }
 
+    /**
+     * @return the pane center on variable X.
+     */
     private DoubleBinding getCenterX() {
         return corePane.widthProperty().divide(2);
     }
 
+    /**
+     * @return the pane center on variable Y.
+     */
     private DoubleBinding getCenterY() {
         return corePane.heightProperty().divide(2);
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param x listener on x position.
+     * @param width listener on width.
+     * @param pivotX system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param x listener on x position.
+     * @param width listener on width.
+     * @param pivotX system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
         return x.subtract(width.multiply(1 - pivotX));
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param y listener on y position.
+     * @param height listener on height.
+     * @param pivotY system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
 
+    /**
+     * return the correct position for fixing an object on the screen.
+     *
+     * @param y listener on y position.
+     * @param height listener on height.
+     * @param pivotY system reference.
+     * @return the correct position.
+     */
     private DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
         return y.subtract(height.multiply(1 - pivotY));
     }
