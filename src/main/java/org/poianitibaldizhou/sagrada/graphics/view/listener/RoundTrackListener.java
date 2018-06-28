@@ -15,6 +15,7 @@ import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.graphics.view.AbstractView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.DiceView;
 import org.poianitibaldizhou.sagrada.graphics.view.component.RoundTrackView;
+import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.DiceWrapper;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.RoundTrackWrapper;
 import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
@@ -83,6 +84,10 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
      */
     @Override
     public void onDicesAddToRound(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        int round = parser.getValue(message);
+        if(round == RoundTrackWrapper.NUMBER_OF_TRACK - 1)
+            return;
         Platform.runLater(this::updateRoundTrack);
     }
 
@@ -91,6 +96,10 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
      */
     @Override
     public void onDiceAddToRound(String message) throws IOException {
+        ClientGetMessage parser = new ClientGetMessage();
+        int round = parser.getValue(message);
+        if(round == RoundTrackWrapper.NUMBER_OF_TRACK - 1)
+            return;
         Platform.runLater(this::updateRoundTrack);
     }
 
