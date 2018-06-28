@@ -5,6 +5,9 @@ import javafx.scene.layout.Pane;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PublicObjectiveCardWrapper;
 
+/**
+ * OVERVIEW: Represents the view of a public objective card
+ */
 public class PublicObjectiveCardView extends Pane {
 
     private static final String CARD_IMAGE_PATH = "images/cards/public-objective-cards.png";

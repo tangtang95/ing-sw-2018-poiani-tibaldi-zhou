@@ -18,6 +18,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Contains the values that are used in the game session. Furthermore, it makes requests to the server
+ * to get or pass information.
+ */
 public class GameModel {
 
     private ConnectionManager connectionManager;
@@ -45,10 +49,17 @@ public class GameModel {
     }
 
     // GETTER
+
+    /**
+     * @return name of the game
+     */
     public String getGameName() {
         return gameName;
     }
 
+    /**
+     * @return user name of the user playing with this client
+     */
     public String getUsername() {
         return username;
     }
@@ -220,6 +231,12 @@ public class GameModel {
         return parser.getPlayersCoins(response);
     }
 
+    /**
+     * Get the schema card of the player who is playing with this client
+     *
+     * @return schema card of the player who is playing with this client
+     * @throws IOException network communication error or the game is terminated
+     */
     public SchemaCardWrapper getOwnSchemaCard() throws IOException {
         ClientCreateMessage builder = new ClientCreateMessage();
         ClientGetMessage parser = new ClientGetMessage();

@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Contains the values used in the lobby phase of sagrada. Furthermore, it makes requests to the server to
+ * get or pass information
+ */
 public class LobbyModel {
 
     private ConnectionManager connectionManager;
@@ -27,7 +31,7 @@ public class LobbyModel {
     /**
      * Constructor.
      * Create a lobby model that contains username and the manager of the connection; This object makes
-     * request to the server to get or pass information
+     * requests to the server to get or pass information
      *
      * @param username the username of the client
      * @param connectionManager the manager of the connection
@@ -38,20 +42,30 @@ public class LobbyModel {
     }
 
     // GETTER
+
+    /**
+     * @return username of the player who is playing with this client
+     */
     public String getUsername() {
         return username;
     }
 
+    /**
+     * @return token of the player who is playing with this client
+     */
     public String getToken() {
         return token;
     }
 
+    /**
+     * @return connection manager for managing the connections with the server
+     */
     public ConnectionManager getConnectionManager() {
         return connectionManager;
     }
 
-
     // SERVER REQUESTS
+
     /**
      * Login request to the server
      *

@@ -11,6 +11,9 @@ import javafx.scene.text.TextAlignment;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.ToolCardWrapper;
 
+/**
+ * OVERVIEW: Represents the view for a tool card
+ */
 public class ToolCardView extends Pane{
 
     private final ImageView imageView;
@@ -73,10 +76,20 @@ public class ToolCardView extends Pane{
         this.getChildren().add(tokenView);
     }
 
+    /**
+     * Return the tool card that is viewed with this class
+     * @return
+     */
     public ToolCardWrapper getToolCardWrapper() {
         return toolCardWrapper;
     }
 
+    /**
+     * Draw the token on the tool card
+     *
+     * @param numbersOfToken number of tokens to draw
+     * @return token that has been drawn
+     */
     private Canvas drawToken(int numbersOfToken){
         Canvas canvas = new Canvas(imageView.getFitWidth()*ICON_PERCENT_RADIUS,
                 imageView.getFitWidth()*ICON_PERCENT_RADIUS);

@@ -20,10 +20,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Class with static methods that have utilities for the graphics of Sagrada
+ */
 public class GraphicsUtils {
 
     private static final double PADDING = 10;
 
+    /**
+     * Private illegal constructor.
+     * The class has only static methods.
+     */
     private GraphicsUtils() {
         throw new IllegalStateException(ClientMessage.GRAPHICS_UTILS_INSTANCE_ERROR);
     }
@@ -167,14 +174,13 @@ public class GraphicsUtils {
             DoubleBinding x = centerX.subtract(totalWidth.divide(2))
                     .add(panes.get(i).widthProperty().multiply(i)).add(padding.multiply(i));
 
-            panes.get(i).translateXProperty().bind(getPivotX(x, panes.get(i).widthProperty(), 1));
+            panes.get(i).translateXProperty().bind(x.subtract(panes.get(i).widthProperty().multiply(0)));
             panes.get(i).translateYProperty().bind(posY);
             if (!classCSS.isEmpty())
                 panes.get(i).getStyleClass().add(classCSS);
             targetPane.getChildren().add(panes.get(i));
         }
     }
-
 
     /**
      * @param resourceFolderPath the resource path to the folder
@@ -186,21 +192,5 @@ public class GraphicsUtils {
     public static Image getImage(String resourceFolderPath, String imageKey, double width, double height) {
         return new Image(GraphicsUtils.class.getClassLoader().getResourceAsStream(resourceFolderPath + imageKey),
                 width, height, true, true);
-    }
-
-    protected static DoubleBinding getPivotX(DoubleBinding x, DoubleBinding width, double pivotX) {
-        return x.subtract(width.multiply(1 - pivotX));
-    }
-
-    private static DoubleBinding getPivotX(DoubleBinding x, ReadOnlyDoubleProperty width, double pivotX) {
-        return x.subtract(width.multiply(1 - pivotX));
-    }
-
-    protected static DoubleBinding getPivotY(DoubleBinding y, DoubleBinding height, double pivotY) {
-        return y.subtract(height.multiply(1 - pivotY));
-    }
-
-    protected static DoubleBinding getPivotY(DoubleBinding y, ReadOnlyDoubleProperty height, double pivotY) {
-        return y.subtract(height.multiply(1 - pivotY));
     }
 }

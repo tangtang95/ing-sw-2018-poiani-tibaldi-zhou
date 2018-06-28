@@ -18,7 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class RoundTrackView extends Pane{
+/**
+ * OVERVIEW: Represents the view for the round track
+ */
+public class RoundTrackView extends Pane {
 
     private final ImageView roundTrackImage;
     private final double scale;
@@ -37,7 +40,7 @@ public class RoundTrackView extends Pane{
     //based on dice width
     private static final double ICON_PERCENT_RADIUS = 0.6;
 
-    private static final double DICE_SCALE = 0.3;
+    private static final double DICE_SCALE = 0.303;
 
     /**
      * Constructor.
@@ -45,15 +48,15 @@ public class RoundTrackView extends Pane{
      *
      * @param scale windows scale
      */
-    public RoundTrackView(double scale){
+    public RoundTrackView(double scale) {
         this.scale = scale;
         diceViewList = new ArrayList<>();
         roundTrack = new RoundTrackWrapper(new ArrayList<>());
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
         roundTrackImage = new ImageView(image);
         roundTrackImage.setPreserveRatio(true);
-        roundTrackImage.setFitWidth(image.getWidth()*scale);
-        roundTrackImage.setFitHeight(image.getHeight()*scale);
+        roundTrackImage.setFitWidth(image.getWidth() * scale);
+        roundTrackImage.setFitHeight(image.getHeight() * scale);
         this.getChildren().add(roundTrackImage);
     }
 
@@ -62,16 +65,16 @@ public class RoundTrackView extends Pane{
      * Create a RoundTrackView (pane) that contains every diceView inside the roundTrack passed
      *
      * @param roundTrack the model of the roundTrack
-     * @param scale the scale value
+     * @param scale      the scale value
      */
-    public RoundTrackView(RoundTrackWrapper roundTrack, double scale){
+    public RoundTrackView(RoundTrackWrapper roundTrack, double scale) {
         this.scale = scale;
         diceViewList = new ArrayList<>();
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
         roundTrackImage = new ImageView(image);
         roundTrackImage.setPreserveRatio(true);
-        roundTrackImage.setFitWidth(image.getWidth()*scale);
-        roundTrackImage.setFitHeight(image.getHeight()*scale);
+        roundTrackImage.setFitWidth(image.getWidth() * scale);
+        roundTrackImage.setFitHeight(image.getHeight() * scale);
         this.getChildren().add(roundTrackImage);
 
         drawRoundTrack(roundTrack);
@@ -92,7 +95,7 @@ public class RoundTrackView extends Pane{
      * @param round the number of the round to get dices from
      * @return a list of dices that are inside the round passed
      */
-    public List<DiceWrapper> getDices(int round){
+    public List<DiceWrapper> getDices(int round) {
         return roundTrack.getDicesForRound(round);
     }
 
@@ -106,16 +109,21 @@ public class RoundTrackView extends Pane{
     /**
      * Add an event handler (onMousePressed) to the dice of the chosen round
      *
-     * @param round the chosen round
+     * @param round        the chosen round
      * @param eventHandler the event to add
      */
     public void setDicePressedEvent(int round, EventHandler<? super MouseEvent> eventHandler) {
-        if(diceViewList.size() <= round)
+        if (diceViewList.size() <= round)
             return;
         diceViewList.get(round).setOnMousePressed(eventHandler);
     }
 
-    private void drawDices(RoundTrackWrapper roundTrack){
+    /**
+     * Draw the dices of the round track
+     *
+     * @param roundTrack dices of this round track will be drawn
+     */
+    private void drawDices(RoundTrackWrapper roundTrack) {
 
         for (int i = 0; i < RoundTrackWrapper.NUMBER_OF_TRACK; i++) {
             Optional<DiceWrapper> diceOptional = roundTrack.getDicesForRound(i).stream().findFirst();
@@ -125,13 +133,22 @@ public class RoundTrackView extends Pane{
         }
     }
 
-    private void drawDice(DiceWrapper dice, int round, double imageWidth, double imageHeight, int numberOfDices){
-        long firstOffsetX = Math.round(FIRST_OFFSET_X_PERCENT*imageWidth);
-        long offsetX = Math.round(OFFSET_X_PERCENT*imageWidth);
-        long offsetY = Math.round(OFFSET_Y_PERCENT*imageHeight);
+    /**
+     * Draw a dice
+     *
+     * @param dice dice that will be drawn
+     * @param round dice belongs to this round on the round track
+     * @param imageWidth width of the image
+     * @param imageHeight height of the image
+     * @param numberOfDices number of dices present in that round
+     */
+    private void drawDice(DiceWrapper dice, int round, double imageWidth, double imageHeight, int numberOfDices) {
+        long firstOffsetX = Math.round(FIRST_OFFSET_X_PERCENT * imageWidth);
+        long offsetX = Math.round(OFFSET_X_PERCENT * imageWidth);
+        long offsetY = Math.round(OFFSET_Y_PERCENT * imageHeight);
 
-        DiceView diceView = new DiceView(dice, scale*DICE_SCALE);
-        diceView.setTranslateX(firstOffsetX + diceView.getImageWidth()*round + offsetX*round);
+        DiceView diceView = new DiceView(dice, scale * DICE_SCALE);
+        diceView.setTranslateX(firstOffsetX + diceView.getImageWidth() * round + offsetX * round);
         diceView.setTranslateY(offsetY);
         this.getChildren().add(diceView);
         diceViewList.add(diceView);
@@ -139,6 +156,12 @@ public class RoundTrackView extends Pane{
         drawNumberOfDicesIcon(diceView, numberOfDices);
     }
 
+    /**
+     * Draw the icon that represents the number of dices present in a certain round of the round track
+     *
+     * @param diceView dice view on which the number of dices will appear
+     * @param numberOfDices number of dices present in a certain round of the round track
+     */
     private void drawNumberOfDicesIcon(DiceView diceView, int numberOfDices) {
         // TODO REFACTOR there are duplicates
         Canvas canvas = new Canvas(diceView.getImageWidth() * ICON_PERCENT_RADIUS * 1.5,
@@ -148,7 +171,7 @@ public class RoundTrackView extends Pane{
         gc.fillOval(0, 0, diceView.getImageWidth() * ICON_PERCENT_RADIUS,
                 diceView.getImageHeight() * ICON_PERCENT_RADIUS);
         gc.setFill(Color.BLACK);
-        gc.setFont(Font.font(ICON_PERCENT_RADIUS*diceView.getImageWidth()));
+        gc.setFont(Font.font(ICON_PERCENT_RADIUS * diceView.getImageWidth()));
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
         gc.fillText(String.valueOf(numberOfDices), diceView.getImageWidth() * ICON_PERCENT_RADIUS / 2,
@@ -160,7 +183,10 @@ public class RoundTrackView extends Pane{
         diceView.getChildren().add(canvas);
     }
 
-    private void clearDices(){
+    /**
+     * Clear the dices from the image of the round track
+     */
+    private void clearDices() {
         diceViewList.forEach(diceView -> this.getChildren().remove(diceView));
     }
 

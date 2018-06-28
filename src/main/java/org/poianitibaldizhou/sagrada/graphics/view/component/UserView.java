@@ -12,6 +12,9 @@ import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
 
+/**
+ * OVERVIEW: Represents the view for an user
+ */
 public class UserView extends Pane {
 
     private ImageView imageView;

@@ -8,7 +8,7 @@ public final class ServerMessage {
     /**
      * private constructor.
      */
-    private ServerMessage(){}
+    private ServerMessage(){throw new IllegalStateException();}
 
     /**
      * gameView.err

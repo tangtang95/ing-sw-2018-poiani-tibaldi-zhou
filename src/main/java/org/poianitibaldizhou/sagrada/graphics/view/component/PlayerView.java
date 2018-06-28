@@ -10,6 +10,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.UserWrapper;
 
+/**
+ * OVERVIEW: Represents the pane for the player
+ */
 public class PlayerView extends Pane {
 
     private Label nameLabel;

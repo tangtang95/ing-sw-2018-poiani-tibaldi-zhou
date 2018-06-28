@@ -20,7 +20,7 @@ public abstract class IPlayerState {
      * Constructor.
      * Creates the player state of a certain turn of the game
      *
-     * @param turnState
+     * @param turnState the current turnState
      */
     protected IPlayerState(TurnState turnState) {
         this.turnState = turnState;

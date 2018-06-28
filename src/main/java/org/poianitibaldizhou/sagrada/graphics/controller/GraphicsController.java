@@ -7,10 +7,19 @@ import javafx.scene.Node;
 import javafx.util.Duration;
 import org.poianitibaldizhou.sagrada.graphics.utils.SceneManager;
 
+/**
+ * OVERVIEW: Represents the standard controller that regroups the basic operations needed to various controller
+ * implemented
+ */
 public abstract class GraphicsController {
 
     SceneManager sceneManager;
 
+    /**
+     * Set the scene manager used to pass from a scene to another one
+     *
+     * @param sceneManager scene manager that will be set
+     */
     public void setSceneManager(SceneManager sceneManager) {
         this.sceneManager = sceneManager;
     }

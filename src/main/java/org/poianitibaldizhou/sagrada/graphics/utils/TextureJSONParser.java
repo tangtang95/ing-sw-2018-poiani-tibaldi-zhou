@@ -9,7 +9,9 @@ import org.json.simple.parser.ParseException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-
+/**
+ * OVERVIEW: Read the json of the sprite sheets 
+ */
 public class TextureJSONParser {
 
     private JSONObject root;

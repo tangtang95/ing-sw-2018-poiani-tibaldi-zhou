@@ -11,6 +11,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.Contract;
 
+/**
+ * OVERVIEW: Display an alert box
+ */
 public class AlertBox {
 
     @Contract(" -> fail")
@@ -18,6 +21,12 @@ public class AlertBox {
         throw new IllegalStateException();
     }
 
+    /**
+     * Display an alert box
+     *
+     * @param title title of the alert box
+     * @param text text of the alert box
+     */
     public static void displayBox(String title, String text){
         Stage popup = new Stage();
 
@@ -43,6 +52,4 @@ public class AlertBox {
 
         popup.showAndWait();
     }
-
-
 }

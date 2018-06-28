@@ -3,7 +3,7 @@ package org.poianitibaldizhou.sagrada.network.socket.messages;
 import java.io.Serializable;
 
 /**
- * OVERVIEW:
+ * OVERVIEW: Represents a notify message that are sent from the server to the client
  */
 public class NotifyMessage implements Serializable{
 
@@ -22,11 +22,21 @@ public class NotifyMessage implements Serializable{
         this.request = new Request(methodName, methodParameters);
         this.observerHashcode = observerHashcode;
     }
-    
+
+    /**
+     * Returns the observer hash code for identify the observer
+     *
+     * @return observer hash code
+     */
     public int getObserverHashcode(){
         return observerHashcode;
     }
 
+    /**
+     * Return the request that the server will make to the client
+     *
+     * @return request that the server will make to the client
+     */
     public Request getRequest(){
         return request;
     }
