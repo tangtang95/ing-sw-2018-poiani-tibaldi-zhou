@@ -131,7 +131,13 @@ public final class ClientMessage {
     public static final String TIMEOUT_COMMAND_HELP = "Show time to reach timeout";
     public static final String LOBBY_USER_COMMAND_HELP = "Show users in lobby";
     public static final String LOBBY_MENU = "-----------------------Welcome to the Lobby------------------------\n";
-    public static final String GAME_STARTED = "\"----------------------------GAME STARTED---------------------------\n";
+    public static final String GAME_STARTED = "----------------------------GAME STARTED---------------------------\n";
+    public static final String WELCOME = "----------------------------WELCOME---------------------------";
+    public static final String GUI = "GUI";
+    public static final String CLI = "CLI";
+    public static final String GUI_HELP = "Launch game with GUI";
+    public static final String CLI_HELP = "Launch game with CLI";
+    public static final String CHOOSE_START_MODE = "Choose the start mode:";
 
     /**
      * CLI info massages.
