@@ -44,6 +44,7 @@ public class UserTest {
         assertEquals(user, new User("name", NetworkUtility.encryptUsername("name")));
         assertNotEquals(user, new User("name", "name"));
         assertNotEquals(user, new User("notEqualsName", NetworkUtility.encryptUsername("name")));
+        assertNotEquals(user, null);
     }
 
     @Test
