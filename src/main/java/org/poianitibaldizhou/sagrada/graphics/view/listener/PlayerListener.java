@@ -15,6 +15,9 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of a player
+ */
 public class PlayerListener extends AbstractView implements IPlayerObserver {
 
     private final transient PlayerView playerView;

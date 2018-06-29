@@ -1,4 +1,4 @@
-package org.poianitibaldizhou.sagrada.game.view;
+package org.poianitibaldizhou.sagrada.cli.game;
 
 import org.poianitibaldizhou.sagrada.cli.ConsoleListener;
 import org.poianitibaldizhou.sagrada.cli.Level;

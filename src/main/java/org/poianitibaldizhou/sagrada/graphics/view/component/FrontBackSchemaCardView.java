@@ -53,6 +53,11 @@ public class FrontBackSchemaCardView extends Pane {
         this.getChildren().add(this.currentSchemaCard);
     }
 
+    /**
+     * Drop a shadow when the mouse gets over the front back schema cards
+     *
+     * @param event mouse over the schema card
+     */
     private void onMouseEntered(MouseEvent event){
         DropShadow effect = new DropShadow(6, Color.AQUA);
         frontSchemaCard.getImageView().setEffect(effect);
@@ -60,12 +65,22 @@ public class FrontBackSchemaCardView extends Pane {
         event.consume();
     }
 
+    /**
+     * Disable the effects of the on mouse entered when the cursor exits the front back schema card
+     *
+     * @param event mouse cursor leaves the schema card
+     */
     private void onMouseExited(MouseEvent event){
         frontSchemaCard.getImageView().setEffect(null);
         backSchemaCard.getImageView().setEffect(null);
         event.consume();
     }
 
+    /**
+     * Init point of the front back schema card rotation.
+     *
+     * @param event pressed mouse event
+     */
     private void onMousePressed(MouseEvent event){
         if(transition != null)
             transition.stop();
@@ -73,6 +88,11 @@ public class FrontBackSchemaCardView extends Pane {
         event.consume();
     }
 
+    /**
+     * Rotate the front back schema card
+     *
+     * @param event mouse drag event
+     */
     private void onMouseDragged(MouseEvent event){
         double distance = event.getSceneX() - initialX;
         this.setRotate(this.getRotate() + distance * ROTATE_AMPLIFY);
@@ -80,6 +100,13 @@ public class FrontBackSchemaCardView extends Pane {
         event.consume();
     }
 
+    /**
+     * Listen to the rotation of the schema card. Checks the angles in order to change the card image.
+     *
+     * @param observable not used
+     * @param oldValue angle old value
+     * @param newValue  angle new value
+     */
     private void onRotateListener(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         if (oldValue.doubleValue() <= 90 && newValue.doubleValue() > 90) {
             this.setRotate(270);
@@ -104,6 +131,11 @@ public class FrontBackSchemaCardView extends Pane {
         }
     }
 
+    /**
+     * Stop the rotation and start and automatic rotation that will make the card appear in a frontal way
+     *
+     * @param event released mouse event
+     */
     private void onMouseReleased(MouseEvent event) {
         Node source = (Node) event.getSource();
         transition = new RotateTransition(Duration.millis(500), source);

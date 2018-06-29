@@ -10,6 +10,9 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of the dice bag
+ */
 public class DiceBagListener extends AbstractView implements IDrawableCollectionObserver {
 
     /**

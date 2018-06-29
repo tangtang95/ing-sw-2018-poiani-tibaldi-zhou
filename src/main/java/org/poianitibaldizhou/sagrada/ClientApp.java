@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada;
 
 import org.poianitibaldizhou.sagrada.cli.ScreenManager;
-import org.poianitibaldizhou.sagrada.game.view.CLIStartApplicationScreen;
+import org.poianitibaldizhou.sagrada.cli.game.CLIStartApplicationScreen;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 import org.poianitibaldizhou.sagrada.utilities.ClientSettings;

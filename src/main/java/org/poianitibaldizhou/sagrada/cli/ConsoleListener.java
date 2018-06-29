@@ -1,7 +1,7 @@
 package org.poianitibaldizhou.sagrada.cli;
 
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
-import org.poianitibaldizhou.sagrada.game.view.CLIBasicScreen;
+import org.poianitibaldizhou.sagrada.cli.game.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 
 import java.io.BufferedReader;

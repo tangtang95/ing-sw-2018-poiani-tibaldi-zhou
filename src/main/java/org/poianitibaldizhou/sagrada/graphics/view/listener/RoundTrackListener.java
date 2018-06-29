@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of the round track
+ */
 public class RoundTrackListener extends AbstractView implements IRoundTrackObserver {
 
     private final transient RoundTrackView roundTrackView;
@@ -179,6 +182,9 @@ public class RoundTrackListener extends AbstractView implements IRoundTrackObser
         mouseEvent.consume();
     }
 
+    /**
+     * Updates the round track with the correct one presents on the server
+     */
     private void updateRoundTrack(){
         try {
             RoundTrackWrapper roundTrack = controller.getRoundTrack();

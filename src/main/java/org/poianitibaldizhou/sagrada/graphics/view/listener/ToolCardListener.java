@@ -15,6 +15,9 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of a tool card
+ */
 public class ToolCardListener extends AbstractView implements IToolCardObserver {
 
     private transient ToolCardView toolCardView;
@@ -37,10 +40,16 @@ public class ToolCardListener extends AbstractView implements IToolCardObserver 
         this.toolCardName = toolCardView.getToolCardWrapper().getName();
     }
 
+    /**
+     * @return tool card listened by this
+     */
     public ToolCardView getToolCardView() {
         return toolCardView;
     }
 
+    /**
+     * @return name of the tool card listened by this
+     */
     public String getToolCardName() {
         return toolCardName;
     }

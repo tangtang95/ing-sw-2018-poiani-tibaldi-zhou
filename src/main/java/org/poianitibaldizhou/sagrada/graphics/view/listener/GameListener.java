@@ -33,6 +33,9 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of the game
+ */
 public class GameListener extends AbstractView implements IGameView, IGameObserver {
 
     private transient Pane publicObjectiveCardsContainer;
@@ -58,7 +61,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
      * Create a Game listener that update majorly the corePane when there are new notifies
      *
      * @param controller the game controller of the GUI
-     * @param corePane the core view of the game
+     * @param corePane   the core view of the game
      * @param notifyPane the view of the game to show the image on a greater size
      * @throws RemoteException network error
      */
@@ -235,10 +238,10 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
     /**
      * Draw every player of the Game, his schemaCard, his name, his favorTokens and his privateObjectiveCards
      *
-     * @param users the list of user
-     * @param schemaCardWrapperMap the map of schemaCard
+     * @param users                        the list of user
+     * @param schemaCardWrapperMap         the map of schemaCard
      * @param privateObjectiveCardWrappers the list of private objective cards
-     * @param favorTokenMap the map of favor tokens
+     * @param favorTokenMap                the map of favor tokens
      */
     public void drawUsers(List<UserWrapper> users, Map<UserWrapper, SchemaCardWrapper> schemaCardWrapperMap,
                           List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
@@ -261,7 +264,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
 
             // DRAW PRIVATE OBJECTIVE CARD
             if (i == 0)
-                drawPrivateObjectiveCard(privateObjectiveCardWrappers, pocX, pocY);
+                drawPrivateObjectiveCards(privateObjectiveCardWrappers, pocX, pocY);
             else
                 drawRetroPrivateObjectiveCard(pocX, pocY, angle);
 
@@ -282,11 +285,24 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         }
     }
 
+    /**
+     * Draw the public objective cars
+     *
+     * @param publicObjectiveCardWrappers public objective cards that will be drawn
+     * @param publicObjectiveCardScale    scale of the public objective cards images
+     */
     public void drawPublicObjectiveCards(List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double publicObjectiveCardScale) {
         publicObjectiveCardsContainer = drawPublicObjectiveCardsView(corePane, publicObjectiveCardWrappers, publicObjectiveCardScale);
         publicObjectiveCardsContainer.setOnMousePressed(this::onPublicObjectiveCardsPressed);
     }
 
+    /**
+     * Draw the tool cards
+     *
+     * @param toolCardWrappers tool cards that will be drawn
+     * @param scale            scale of the tool card images
+     * @throws RemoteException due to the creation of a listener
+     */
     public void drawToolCards(List<ToolCardWrapper> toolCardWrappers, double scale) throws RemoteException {
 
         toolCardsContainer = new Pane();
@@ -324,6 +340,12 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         return this.getClass().getSimpleName().hashCode();
     }
 
+    /**
+     * Shows the front back schema cards.
+     * This method is used when a focus on the front back schema card is needed
+     *
+     * @param frontBackSchemaCardList front back schema cards that will be shown
+     */
     private void showFrontBackSchemaCards(List<FrontBackSchemaCardWrapper> frontBackSchemaCardList) {
 
         List<Pane> frontBackSchemaCardViewList = new ArrayList<>();
@@ -362,6 +384,12 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         helperBox.getChildren().addAll(spacer, continueButton);
     }
 
+    /**
+     * Show the private cards.
+     * This method is used when a focus on the private cards is needed.
+     *
+     * @param privateObjectiveCards private cards that will be shown
+     */
     private void showPrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
 
         DoubleBinding x = getWidth().subtract(PADDING);
@@ -380,6 +408,12 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         }
     }
 
+    /**
+     * Show a dialog that enable the user to choose a private objective cards.
+     * This method gives a focus on the private objective cards.
+     *
+     * @param privateObjectiveCards the schema card that will be chosen belongs to this list
+     */
     private void showChoosePrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCards) {
         List<Pane> privateObjectiveCardViews = new ArrayList<>();
         privateObjectiveCards.forEach(privateObjectiveCardWrapper ->
@@ -414,9 +448,15 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         helperBox.getChildren().addAll(spacer, continueButton);
     }
 
-
-
-    private PlayerView drawUser(UserWrapper userWrapper, int favorTokens, Point2D direction) throws RemoteException {
+    /**
+     * Draw an user
+     *
+     * @param userWrapper user that will be drawn
+     * @param favorTokens user's favor tokens
+     * @param direction   indicates where to drawn the user
+     * @return player view of the drawn user
+     */
+    private PlayerView drawUser(UserWrapper userWrapper, int favorTokens, Point2D direction) {
         PlayerView playerView;
         if (favorTokens >= 0)
             playerView = new PlayerView(userWrapper, favorTokens);
@@ -455,6 +495,14 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         return playerView;
     }
 
+    /**
+     * Draw the public cards
+     *
+     * @param corePane                    used to draw the public cards
+     * @param publicObjectiveCardWrappers public cards that will be drawn
+     * @param scale                       scale of the public cards
+     * @return pane that contains the public cards
+     */
     private Pane drawPublicObjectiveCardsView(Pane corePane, List<PublicObjectiveCardWrapper> publicObjectiveCardWrappers, double scale) {
         Pane container = new Pane();
         container.getStyleClass().add(CSS_CLASS2);
@@ -481,7 +529,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         return container;
     }
 
-
+    /**
+     * Actions performed when the public cards are pressed
+     *
+     * @param event pressed mouse event
+     */
     private void onPublicObjectiveCardsPressed(MouseEvent event) {
         clearNotifyPane(true);
         activateNotifyPane();
@@ -503,6 +555,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         event.consume();
     }
 
+    /**
+     * Action performed when the tool cards are pressed
+     *
+     * @param event pressed mouse event
+     */
     private void onToolCardsPressed(MouseEvent event) {
         clearNotifyPane(true);
         activateNotifyPane();
@@ -524,6 +581,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         event.consume();
     }
 
+    /**
+     * Destroy a tool cards from the list of tool cards of the game
+     *
+     * @param toolCardListener tool card listener of the tool card that will be destroyed
+     */
     public void destroyToolCard(ToolCardListener toolCardListener) {
         toolCardsContainer.getChildren().remove(toolCardListener.getToolCardView());
         toolCardListeners.remove(toolCardListener);
@@ -531,8 +593,15 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
             corePane.getChildren().remove(toolCardsContainer);
     }
 
-    private void drawPrivateObjectiveCard(List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
-                                          DoubleBinding x, DoubleBinding y) {
+    /**
+     * Draw the private objective cards
+     *
+     * @param privateObjectiveCardWrappers private cards that will be drawn
+     * @param x                            where to draw the card on the x axis
+     * @param y                            where to draw the card on the y axis
+     */
+    private void drawPrivateObjectiveCards(List<PrivateObjectiveCardWrapper> privateObjectiveCardWrappers,
+                                           DoubleBinding x, DoubleBinding y) {
         Pane container = new Pane();
         for (int i = 0; i < privateObjectiveCardWrappers.size(); i++) {
             PrivateObjectiveCardView cardView = new PrivateObjectiveCardView(
@@ -549,6 +618,13 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         corePane.getChildren().add(container);
     }
 
+    /**
+     * Draw the retro of the private objective card
+     *
+     * @param x     where to draw the retro of the private card on the x axis
+     * @param y     where to draw the retro of the private card on the y axis
+     * @param angle
+     */
     private void drawRetroPrivateObjectiveCard(DoubleBinding x, DoubleBinding y, double angle) {
         PrivateObjectiveCardView cardView = new PrivateObjectiveCardView(
                 controller.getGameViewStrategy().getPrivateObjectiveCardScale());
@@ -566,6 +642,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         cardView.toFront();
     }
 
+    /**
+     * Action performed when the private cards are pressed
+     *
+     * @param event pressed mouse event
+     */
     private void onPrivateObjectivePressed(MouseEvent event) {
         clearNotifyPane(true);
         activateNotifyPane();
@@ -586,6 +667,15 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         event.consume();
     }
 
+    /**
+     * Return the list of users. The first element is the one who is playing with this application; the following
+     * order follows the turn rotation.
+     *
+     * @param users list of users ordered by turn in which the first element is not the one who is playing
+     *              with this client
+     * @return list of users ordered by turn and in which the first element is the one who is playing with this
+     * client
+     */
     private List<UserWrapper> getUsersOrdered(final List<UserWrapper> users) {
         List<UserWrapper> orderedUsers = new ArrayList<>(users);
         while (!orderedUsers.get(0).getUsername().equals(controller.getUsername())) {

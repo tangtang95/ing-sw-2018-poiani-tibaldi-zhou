@@ -48,6 +48,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of the state
+ */
 public class StateListener extends AbstractView implements IStateObserver {
 
     private final transient SequentialTransition sequentialTransition;
@@ -72,7 +75,7 @@ public class StateListener extends AbstractView implements IStateObserver {
      * Create a State Listener that show messages to the client every time a notify is called
      *
      * @param controller the game controller of the GUI
-     * @param corePane the core view of the game
+     * @param corePane   the core view of the game
      * @param notifyPane the view of the game to show the image on a greater size
      * @throws RemoteException network error
      */
@@ -127,7 +130,7 @@ public class StateListener extends AbstractView implements IStateObserver {
      */
     @Override
     public void onRoundStart(String message) throws IOException {
-         /* NOT NEEDED */
+        /* NOT NEEDED */
     }
 
     /**
@@ -289,6 +292,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         return this.getClass().getSimpleName().hashCode();
     }
 
+    /**
+     * Action performed when the place dice button is pressed
+     *
+     * @param actionEvent press button event
+     */
     private void onPlaceDiceButtonPressed(ActionEvent actionEvent) {
         clearNotifyPane(false);
         activateNotifyPane();
@@ -361,6 +369,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
+    /**
+     * Return the timeout in millis
+     *
+     * @return timeout in millis
+     */
     private long getTimeout() {
         long requestTime = System.currentTimeMillis();
         long millisTimeout = 0;
@@ -374,6 +387,12 @@ public class StateListener extends AbstractView implements IStateObserver {
         return millisTimeout - (endRequestTime - requestTime);
     }
 
+    /**
+     * Drag and drop regarding the placement of the dice
+     *
+     * @param event          drag event
+     * @param schemaCardView schema card view on which the dice will be placed
+     */
     private void onSchemaCardDragDropped(DragEvent event, SchemaCardView schemaCardView) {
         schemaCardView.removeShadow();
         final Dragboard dragboard = event.getDragboard();
@@ -394,6 +413,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
+    /**
+     * Action performed when the use card button is pressed
+     *
+     * @param actionEvent press button event
+     */
     private void onUseCardButtonPressed(ActionEvent actionEvent) {
         clearNotifyPane(false);
         activateNotifyPane();
@@ -431,11 +455,22 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
+    /**
+     * Action performed when the cancel button is pressed
+     *
+     * @param actionEvent press button event
+     */
     private void onCancelButtonPressed(ActionEvent actionEvent) {
         clearNotifyPane(false);
         deactivateNotifyPane();
     }
 
+    /**
+     * Action performed that enable the choice of the tool card that will be used
+     *
+     * @param actionEvent press button event
+     * @param toggleGroup manager of the tool card radio buttons
+     */
     private void onUseCardContinueButtonPressed(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
             showMessage(notifyPane, ClientMessage.CHOOSE_TOOL_CARD_ITA, MessageType.ERROR);
@@ -456,6 +491,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
+    /**
+     * Action performed when the end turn button is pressed
+     *
+     * @param actionEvent press button event
+     */
     private void onEndTurnButtonPressed(ActionEvent actionEvent) {
         try {
             controller.endTurn();
@@ -465,6 +505,11 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
+    /**
+     * Action performed when the quit game button is pressed
+     *
+     * @param actionEvent press button event
+     */
     private void onQuitGameButtonAction(ActionEvent actionEvent) {
         try {
             controller.quitGame();
@@ -474,7 +519,12 @@ public class StateListener extends AbstractView implements IStateObserver {
         }
     }
 
-
+    /**
+     * Create a label message of a certain text
+     *
+     * @param text text of the label
+     * @return label that will be created
+     */
     private Label createLabelMessage(String text) {
         Label label = new Label(text);
         label.getStyleClass().add("state-message");
@@ -496,6 +546,9 @@ public class StateListener extends AbstractView implements IStateObserver {
         return label;
     }
 
+    /**
+     * @return ordinal number from one to ten in italian
+     */
     private List<String> getOrdinalNumberStrings() {
         List<String> ordinalNumberStrings = new ArrayList<>();
         ordinalNumberStrings.add("Primo");

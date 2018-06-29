@@ -43,6 +43,9 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of the execution of a tool card
+ */
 public class ToolCardExecutorListener extends AbstractView implements IToolCardExecutorObserver {
 
     private final transient List<HistoryObject> historyMessages;
@@ -564,6 +567,9 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         return this.getClass().getSimpleName().hashCode();
     }
 
+    /**
+     * Draw the history button regarding the tool card execution
+     */
     private void drawHistoryButton(){
         JFXButton button = GraphicsUtils.getButton("Cronologia", NEGATIVE_BUTTON);
         button.setTranslateX(PADDING);
@@ -579,6 +585,11 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         notifyPane.getChildren().add(button);
     }
 
+    /**
+     * Show the history messages regarding the tool card execution
+     *
+     * @param historyBox vertical box container where the messages will be shawn
+     */
     private void showHistoryMessages(VBox historyBox) {
         historyMessages.forEach(historyObject -> {
             Label messageLabel = new Label(historyObject.getMessage());
@@ -586,6 +597,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         });
     }
 
+    /**
+     * Sends a dice to the controller
+     *
+     * @param actionEvent action event regarding the continue button
+     * @param toggleGroup toggle group that contains the dice that will be sent
+     */
     private void fireDiceEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
             showMessage(notifyPane, ClientMessage.CHOOSE_DICE_ITA, MessageType.ERROR);
@@ -604,6 +621,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         }
     }
 
+    /**
+     * Sends a color to the controller
+     *
+     * @param actionEvent action event regarding the continue button
+     * @param toggleGroup toggle group that contains the color that will be sent
+     */
     private void fireColorEvent(ActionEvent actionEvent, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
             showMessage(notifyPane, ClientMessage.CHOOSE_COLOR_ITA, MessageType.ERROR);
@@ -622,6 +645,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         }
     }
 
+    /**
+     * Sends a position to the controller
+     *
+     * @param actionEvent action event regarding the continue button
+     * @param schemaCardView schema card view that will contain the position that will sent
+     */
     private void firePositionEvent(ActionEvent actionEvent, SchemaCardView schemaCardView) {
         try {
             if (schemaCardView.getUserData() == null) {
@@ -638,6 +667,13 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         }
     }
 
+    /**
+     * Sends an answer to the controller
+     *
+     * @param event action event regarding the continue button
+     * @param answer answer that will be sent
+     * @param otherButton the button that was not pressed
+     */
     private void fireAnswerEvent(ActionEvent event, boolean answer, Button otherButton) {
         try {
             historyMessages.add(new HistoryObject(answer, ObjectMessageType.ANSWER));
@@ -650,6 +686,12 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         }
     }
 
+    /**
+     * Sends an integer value to the controller
+     *
+     * @param event action event regarding the continue button
+     * @param toggleGroup toggle group that contains the value that will be sent
+     */
     private void fireValueEvent(ActionEvent event, ToggleGroup toggleGroup) {
         if (toggleGroup.getSelectedToggle() == null) {
             showMessage(notifyPane, ClientMessage.CHOOSE_VALUE, MessageType.ERROR);
@@ -658,6 +700,13 @@ public class ToolCardExecutorListener extends AbstractView implements IToolCardE
         int value = ((DiceView) toggleGroup.getSelectedToggle().getUserData()).getDiceWrapper().getNumber();
         fireValueEvent(event, value);
     }
+
+    /**
+     * Sends an integer value to the controller
+     *
+     * @param event action event regarding the continue button
+     * @param value value that will be sent
+     */
 
     private void fireValueEvent(ActionEvent event, int value) {
         try {

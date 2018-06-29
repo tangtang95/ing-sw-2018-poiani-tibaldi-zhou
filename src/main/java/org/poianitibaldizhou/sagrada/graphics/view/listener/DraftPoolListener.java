@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of the draft pool
+ */
 public class DraftPoolListener extends AbstractView implements IDraftPoolObserver{
 
     private final transient DraftPoolView draftPoolView;

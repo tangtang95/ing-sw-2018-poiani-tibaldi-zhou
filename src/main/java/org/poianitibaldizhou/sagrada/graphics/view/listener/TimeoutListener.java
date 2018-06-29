@@ -12,6 +12,9 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 
 
+/**
+ * OVERVIEW: Listen to the modification of the timeout s
+ */
 public class TimeoutListener extends AbstractView implements ITimeOutObserver {
 
     /**

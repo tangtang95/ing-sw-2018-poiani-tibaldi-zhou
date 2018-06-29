@@ -1,8 +1,8 @@
-package org.poianitibaldizhou.sagrada.game.view;
+package org.poianitibaldizhou.sagrada.cli.game;
 
 import org.poianitibaldizhou.sagrada.IView;
 import org.poianitibaldizhou.sagrada.cli.*;
-import org.poianitibaldizhou.sagrada.lobby.view.CLILobbyScreen;
+import org.poianitibaldizhou.sagrada.cli.lobby.CLILobbyScreen;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientCreateMessage;
 import org.poianitibaldizhou.sagrada.network.protocol.ClientGetMessage;

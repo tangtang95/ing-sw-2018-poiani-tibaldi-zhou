@@ -19,6 +19,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * OVERVIEW: Listen to the modification of a schema card
+ */
 public class SchemaCardListener extends AbstractView implements ISchemaCardObserver{
 
     private final transient SchemaCardView schemaCardView;
@@ -91,6 +94,9 @@ public class SchemaCardListener extends AbstractView implements ISchemaCardObser
         });
     }
 
+    /**
+     * @return schema card listened by this
+     */
     public SchemaCardView getSchemaCardView() {
         return schemaCardView;
     }
