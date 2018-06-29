@@ -18,6 +18,7 @@ import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCar
 import org.poianitibaldizhou.sagrada.game.model.coin.ExpendableDice;
 import org.poianitibaldizhou.sagrada.game.model.constraint.IConstraint;
 import org.poianitibaldizhou.sagrada.game.model.constraint.NoConstraint;
+import org.poianitibaldizhou.sagrada.game.model.players.MultiPlayer;
 import org.poianitibaldizhou.sagrada.game.model.players.Outcome;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.players.SinglePlayer;
@@ -156,7 +157,8 @@ public class SinglePlayerGameTest {
     @Test(expected = Exception.class)
     public void testForceGameTerminationTest() {
         singlePlayerGame.setState(stateGame);
-        singlePlayerGame.forceGameTermination(any(Player.class));
+        singlePlayerGame.forceGameTermination(new SinglePlayer(user, new ExpendableDice(singlePlayerGame),
+                schemaCard, privateObjectiveCards));
     }
 
     @Test

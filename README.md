@@ -3,8 +3,8 @@
 ## Membri del gruppo
 
 - Poiani Riccardo
-    - Matricola: 
-    - Codice persona:
+    - Matricola: 846379
+    - Codice persona: 10533902
 - Tibaldi Mattia
     - Matricola: 843840
     - Codice persona: 10521778

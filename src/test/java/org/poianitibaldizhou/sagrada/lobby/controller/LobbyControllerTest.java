@@ -78,7 +78,7 @@ public class LobbyControllerTest {
         String response = lobbyController.login(clientCreateMessage.createUsernameMessage(username).buildMessage(), lobbyView);
 
         assertEquals("", clientGetMessage.getToken(response));
-        verify(clientView1).err(anyString());
+        verify(lobbyView).err(anyString());
     }
 
     @Test
