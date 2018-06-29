@@ -147,7 +147,13 @@ public class GameManagerTest {
         assertFalse(gameManager.notContainsGame(game1.getName()));
         assertTrue(gameManager.notContainsGame(game2.getName()));
 
-        assertNull(gameManager.getGameByName(game2.getName()));
+        IGame game = null;
+        try {
+            game = gameManager.getGameByName(game2.getName());
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertNull(game);
+        }
     }
 
     @Test(expected = Exception.class)
@@ -180,7 +186,7 @@ public class GameManagerTest {
 
     @Test
     public void testHandleEndGameSinglePlayerTrue() throws Exception {
-        String username  = "username";
+        String username = "username";
         String token = NetworkUtility.encryptUsername(username);
         String gameName = gameManager.createSinglePlayerGame(username, 2);
 
@@ -189,7 +195,13 @@ public class GameManagerTest {
 
         assertTrue(gameManager.handleEndGame(gameManager.getGameByName(gameName), gameObserverManager));
 
-        assertNull(gameManager.getGameByName(gameName));
+        IGame game = null;
+        try {
+            game = gameManager.getGameByName(gameName);
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertNull(game);
+        }
     }
 
     @Test
@@ -216,7 +228,13 @@ public class GameManagerTest {
 
         assertTrue(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
 
-        assertNull(gameManager.getGameByName(game1.getName()));
+        IGame game = null;
+        try {
+            game = gameManager.getGameByName(game1.getName());
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertNull(game);
+        }
     }
 
     @Test
@@ -248,11 +266,17 @@ public class GameManagerTest {
 
         assertTrue(gameManager.handleEndGame(game1, gameManager.getObserverManagerByGame(game1.getName())));
 
-        assertNull(gameManager.getGameByName(game1.getName()));
+        IGame game = null;
+        try {
+            game = gameManager.getGameByName(game1.getName());
+            fail("Exception expected");
+        } catch (Exception e) {
+            assertNull(game);
+        }
     }
 
     @Test
-    public void testHandleEndGameMultiPlayerFalse() throws Exception{
+    public void testHandleEndGameMultiPlayerFalse() throws Exception {
         List<User> list1 = new ArrayList<>();
         list1.add(new User(playerList.get(0), NetworkUtility.encryptUsername(playerList.get(0))));
         list1.add(new User(playerList.get(1), NetworkUtility.encryptUsername(playerList.get(1))));
