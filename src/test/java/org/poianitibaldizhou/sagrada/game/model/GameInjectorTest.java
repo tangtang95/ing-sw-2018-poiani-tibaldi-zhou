@@ -96,7 +96,7 @@ public class GameInjectorTest {
                 ,"[1-Choose dice][2-Remove dice from DraftPool][4-Reroll dice][8-If Dice placeable][16-Place new dice][17-Add dice to DraftPool][32-CA][34-CA]"
         ));
         toolCardDrawableCollection.addElement(new ToolCard(Color.BLUE, "Martelletto",
-                "Tira nuovamente tutti i dadi della riserva. Questa carta puo' essere usata solo durante" +
+                "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante" +
                         " il tuo secondo turno, prima di scegliere il secondo dado"
                 ,"[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]"
         ));

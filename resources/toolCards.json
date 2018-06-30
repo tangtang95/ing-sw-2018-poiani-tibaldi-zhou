@@ -38,7 +38,7 @@
   {
     "cardName": "Martelletto",
     "cardColour": "BLUE",
-    "cardDescription": "Tira nuovamente tutti i dadi della riserva. Questa carta puo' essere usata solo durante il tuo secondo turno, prima di scegliere il secondo dado",
+    "cardDescription": "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante il tuo secondo turno, prima di scegliere il secondo dado",
     "action": "[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]"
   },
   {
