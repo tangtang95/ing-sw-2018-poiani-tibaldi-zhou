@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.junit.experimental.theories.DataPoint;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.*;
 import org.poianitibaldizhou.sagrada.game.model.board.Dice;
 import org.poianitibaldizhou.sagrada.game.model.cards.Position;
@@ -111,7 +110,7 @@ public class RemoveDiceTest {
     }
 
     @Test
-    public void testExecutionSucceedColorConstraint() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void testExecutionSucceedColorConstraint() throws Exception {
         Dice dice = new Dice(1, Color.BLUE);
         when(executor.getNeededPosition()).thenReturn(position);
         when(executor.getNeededDice()).thenReturn(dice);
@@ -131,7 +130,7 @@ public class RemoveDiceTest {
     }
 
     @Test
-    public void testExecutionSucceedNoneConstraint() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void testExecutionSucceedNoneConstraint() throws Exception {
         Dice dice = new Dice(1, Color.RED);
         when(executor.getNeededPosition()).thenReturn(position);
         when(schemaCard.isEmpty()).thenReturn(false);

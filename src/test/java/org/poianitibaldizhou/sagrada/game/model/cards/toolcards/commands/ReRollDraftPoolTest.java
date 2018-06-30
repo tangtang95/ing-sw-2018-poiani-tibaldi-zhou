@@ -5,21 +5,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.board.DraftPool;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
-
-import java.rmi.RemoteException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class RerollDraftPoolTest {
+public class ReRollDraftPoolTest {
     private ICommand command;
 
     @Mock
@@ -50,7 +46,7 @@ public class RerollDraftPoolTest {
     }
 
     @Test
-    public void executeCommandTest() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void executeCommandTest() throws Exception {
         assertEquals(CommandFlow.MAIN, command.executeCommand(invokerPlayer, executor, stateGame));
     }
 

@@ -5,13 +5,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +47,7 @@ public class SkipTurnTest {
     }
 
     @Test
-    public void testExecuteCommand() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void testExecuteCommand() throws Exception {
         TurnState turnState = mock(TurnState.class);
         assertEquals(CommandFlow.MAIN, skip1.executeCommand(player, executor, state));
         assertEquals(CommandFlow.MAIN, skip2.executeCommand(player, executor, state));
