@@ -42,11 +42,13 @@ public final class ClientMessage {
     public static final String REMOVE_DICE_BY_COLOR = "Rimuovi un dado del color %s dalla Carta Schema rispettando la Carta Utensile.";
     public static final String WOULD_YOU_CONTINUE = "Vuoi continuare l'esecuzione della Carta Utensile?";
     public static final String TOOL_CARD_EXECUTION_SUCCESSFUL = "Carta Utensile eseguita con successo.";
-    public static final String TOOL_CARD_END_TURN_ACTIVATION = "A fine turno la ToolCard si attiverà.";
+    public static final String TOOL_CARD_END_TURN_ACTIVATION = "A fine turno la Carta Utensile si attiverà.";
     public static final String CHOOSE_DICE_ITA = "Devi scegliere un dado.";
     public static final String CHOOSE_COLOR_ITA = "Devi scegliere un colore.";
     public static final String CHOOSE_POSITION_ITA = "Devi scegliere una posizione.";
     public static final String CHOOSE_VALUE = "Devi scegliere un valore.";
+    public static final String INFO_MESSAGE_END_TURN = "%s ha terminato il suo turno\n";
+    public static final String INFO_MESSAGE_USE_CARD = "%s sta utilizzando una Carta Utensile\n";
 
     /**
      * Graphics error messages.

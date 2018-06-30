@@ -229,6 +229,11 @@ public class SchemaCardView extends Pane {
         shadowImage.setVisible(false);
     }
 
+    public Point2D getShadowPosition(){
+        return new Point2D(shadowImage.translateXProperty().add(shadowImage.widthProperty().divide(2)).get(),
+                shadowImage.translateYProperty().add(shadowImage.heightProperty().divide(2)).get());
+    }
+
     /**
      * Draw the schemaCard based on the model of the schemaCard given
      *

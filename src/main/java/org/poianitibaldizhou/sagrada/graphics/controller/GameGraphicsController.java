@@ -1,11 +1,15 @@
 package org.poianitibaldizhou.sagrada.graphics.controller;
 
+import javafx.animation.ParallelTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import org.poianitibaldizhou.sagrada.exception.NetworkException;
 import org.poianitibaldizhou.sagrada.graphics.model.GameModel;
 import org.poianitibaldizhou.sagrada.graphics.utils.Difficulty;
@@ -27,10 +31,7 @@ import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,6 +57,10 @@ public class GameGraphicsController extends GraphicsController implements Initia
     private IGameViewStrategy gameViewStrategy;
 
     private GameModel gameModel;
+    private Deque<VBox> stackMessages;
+    private Thread messageHandlerThread;
+
+    private static final long TIME_BETWEEN_TWO_MESSAGES_IN_MILLIS = 1000;
 
     /**
      * Initialize the notify pane, which a pane for showing the objects in a bigger way
@@ -64,6 +69,36 @@ public class GameGraphicsController extends GraphicsController implements Initia
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         initNotifyPane();
+        stackMessages = new ArrayDeque<>();
+        messageHandlerThread = new Thread(()->{
+            while (true) {
+                synchronized (stackMessages) {
+                    while (stackMessages.isEmpty()) {
+                        try {
+                            stackMessages.wait();
+                        } catch (InterruptedException e) {
+                            Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
+                            Thread.currentThread().interrupt();
+                            return;
+                        }
+                    }
+                    Platform.runLater(()->{
+                        VBox messageBox = stackMessages.pop();
+                        messageBox.setVisible(true);
+                        ParallelTransition transition = (ParallelTransition) messageBox.getUserData();
+                        transition.play();
+                    });
+                }
+                try {
+                    Thread.sleep(TIME_BETWEEN_TWO_MESSAGES_IN_MILLIS);
+                } catch (InterruptedException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, e.toString());
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+            }
+        });
+        messageHandlerThread.start();
     }
 
     /**
@@ -511,7 +546,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
      */
     public void quitGame() throws IOException {
         gameModel.quitGame();
-        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.popScene());
+        popGameScene();
     }
 
     /**
@@ -522,5 +557,32 @@ public class GameGraphicsController extends GraphicsController implements Initia
      */
     public long getMillisTimeout() throws IOException {
         return gameModel.getMillisTimeout();
+    }
+
+    /**
+     * Pop the actual game scene from the sceneManager
+     */
+    public void popGameScene() {
+        messageHandlerThread.interrupt();
+        playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.popScene());
+    }
+
+    /**
+     * Push the container inside the stack of messages handled by another thread
+     * @param container
+     */
+    public void pushMessage(VBox container) {
+        synchronized (stackMessages) {
+            stackMessages.push(container);
+            stackMessages.notifyAll();
+        }
+    }
+
+    /**
+     * Add a text message to the logger text area
+     * @param text the message to add
+     */
+    public void addMessageToLoggerTextArea(String text) {
+        gameListener.addLoggerMessage(text);
     }
 }

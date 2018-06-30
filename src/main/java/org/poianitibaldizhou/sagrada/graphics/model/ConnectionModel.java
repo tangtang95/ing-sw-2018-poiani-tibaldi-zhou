@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
+import org.poianitibaldizhou.sagrada.utilities.ClientSettings;
 
 /**
  * Contains the values used for the connection
@@ -16,16 +17,14 @@ public class ConnectionModel {
 
     private StringProperty connectionType;
 
-    private static final String LOCAL_HOST = "localhost";
-
     /**
      * Constructor.
      * Create a connection model that contains ip address, port and type of connection
      */
     public ConnectionModel() {
-        ipAddress = new SimpleStringProperty(LOCAL_HOST);
-        port = new SimpleIntegerProperty(ConnectionType.RMI.getPort());
-        connectionType = new SimpleStringProperty(ConnectionType.RMI.name());
+        ipAddress = new SimpleStringProperty(ClientSettings.getIP());
+        port = new SimpleIntegerProperty(ClientSettings.getSocketPort());
+        connectionType = new SimpleStringProperty(ConnectionType.SOCKET.name());
     }
 
     /**
