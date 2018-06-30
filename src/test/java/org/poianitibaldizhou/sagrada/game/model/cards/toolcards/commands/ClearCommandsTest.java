@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
 import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
@@ -37,7 +36,7 @@ public class ClearCommandsTest {
     }
 
     @Test
-    public void clearAll() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void clearAll() throws InterruptedException {
         command = new ClearAll();
         assertEquals(command, new ClearAll());
         assertNotEquals(command, new AddDiceToDiceBagTest());
@@ -53,7 +52,7 @@ public class ClearCommandsTest {
     }
 
     @Test
-    public void clearColor() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void clearColor() throws InterruptedException {
         command = new ClearColor();
         assertEquals(command, new ClearColor());
         assertNotEquals(command, new AddDiceToDiceBagTest());
@@ -66,7 +65,7 @@ public class ClearCommandsTest {
     }
 
     @Test
-    public void clearValue() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void clearValue() throws InterruptedException{
         command = new ClearValue();
         assertEquals(command, new ClearValue());
         assertNotEquals(command, new AddDiceToDiceBagTest());
@@ -79,7 +78,7 @@ public class ClearCommandsTest {
     }
 
     @Test
-    public void clearPosition() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void clearPosition() throws Exception{
         command = new ClearPosition();
         assertEquals(command, new ClearPosition());
         assertNotEquals(command, new AddDiceToDiceBagTest());

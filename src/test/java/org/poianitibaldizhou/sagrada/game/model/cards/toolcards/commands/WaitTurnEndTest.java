@@ -5,13 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.poianitibaldizhou.sagrada.exception.ExecutionCommandException;
-import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.CommandFlow;
 import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.executor.ToolCardExecutor;
+import org.poianitibaldizhou.sagrada.game.model.players.Player;
 import org.poianitibaldizhou.sagrada.game.model.state.TurnState;
-
-import java.rmi.RemoteException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -46,7 +43,7 @@ public class WaitTurnEndTest {
     }
 
     @Test
-    public void executeCommandTest() throws InterruptedException, RemoteException, ExecutionCommandException {
+    public void executeCommandTest() throws Exception {
         assertEquals(CommandFlow.MAIN, command.executeCommand(player, executor,state ));
         verify(executor, times(1)).waitForTurnEnd();
     }
