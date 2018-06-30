@@ -91,10 +91,16 @@
                 <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
                 <plugin>
                     <artifactId>maven-resources-plugin</artifactId>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
                     <version>3.0.2</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <configuration>
+                        <encoding>UTF-8</encoding>
+                    </configuration>
                     <version>3.7.0</version>
                 </plugin>
                 <plugin>
@@ -103,7 +109,6 @@
                     <configuration>
                         <runOrder>random</runOrder>
                     </configuration>
-
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>

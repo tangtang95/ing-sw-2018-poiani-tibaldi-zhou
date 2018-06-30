@@ -2,14 +2,16 @@ package org.poianitibaldizhou.sagrada.game.model.cards.toolcards;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.poianitibaldizhou.sagrada.game.model.Color;
-import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.*;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.AddDiceToDraftPool;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ChooseDice;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ICommand;
+import org.poianitibaldizhou.sagrada.game.model.cards.toolcards.commands.ReRollDice;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobservers.ToolCardFakeObserver;
 import org.poianitibaldizhou.sagrada.network.observers.fakeobserversinterfaces.IToolCardFakeObserver;
 
@@ -173,18 +175,14 @@ public class ToolCardTest {
     }
 
     @Test
-    public void testToObject(){
-        ToolCard trueToolCard = new ToolCard(Color.BLUE,
-                "Martelletto",
-                "Tira nuovamente tutti i dadi della riserva. Questa carta può essere usata solo durante il tuo secondo turno, prima di scegliere il secondo dado",
-                "[1-Check second turn][2-Check before choose dice][4-Reroll DraftPool][8-CA]");
-        String message = "{\"name\":\"Martelletto\",\"token\":0}";
+    public void testToObject() throws Exception {
+        ToolCard trueToolCard = new ToolCard(Color.YELLOW, "Lathekin",
+                "Muovi esattamente due dadi, rispettando tutte le restrizioni di piazzamento",
+                "[1-Remove dice][2-CP][4-Place old dice][8-CA][16-Remove dice][32-CP][64-Place old dice][128-CA]"
+        );
+        String message = "{\"name\":\"Lathekin\",\"token\":0}";
         JSONParser jsonParser = new JSONParser();
-        try {
-            assertTrue((Objects.requireNonNull(ToolCard.toObject((JSONObject) jsonParser.parse(message)))).equals(trueToolCard));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        assertTrue((Objects.requireNonNull(ToolCard.toObject((JSONObject) jsonParser.parse(message)))).equals(trueToolCard));
     }
 
     @Test

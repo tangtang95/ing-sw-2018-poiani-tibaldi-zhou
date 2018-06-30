@@ -215,14 +215,4 @@ public class RoundTrackTest {
             assertEquals(list1, list2);
         }
     }
-
-    @Test(expected = Exception.class)
-    public void testAddNull() {
-        roundTrack.addDiceToRound(null, 0);
-    }
-
-    @Test(expected = Exception.class)
-    public void testAddsNull() {
-        roundTrack.addDicesToRound(null, 0);
-    }
 }
