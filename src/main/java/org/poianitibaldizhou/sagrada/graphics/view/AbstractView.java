@@ -17,12 +17,19 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
+import org.poianitibaldizhou.sagrada.graphics.utils.AlertBox;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Abstract class with generic implementation of method that inherit all
@@ -40,6 +47,8 @@ public abstract class AbstractView extends UnicastRemoteObject {
 
     /**
      * Constructor.
+     * Create an abstract view with the controller and two fundamental panes and initialize a thread that
+     * takes care of the message showed on the panes.
      *
      * @param controller graphic controller.
      * @param corePane principal screen panel
@@ -77,12 +86,14 @@ public abstract class AbstractView extends UnicastRemoteObject {
         Label label = new Label(text);
         label.setStyle("-fx-font-size: 1.6em");
         container.getChildren().add(label);
+        container.setVisible(false);
         if (messageType == MessageType.ERROR)
             label.setTextFill(Color.ORANGERED);
         else
             label.setTextFill(Color.DEEPSKYBLUE);
+
         ParallelTransition parallelTransition = new ParallelTransition(label);
-        Duration duration = Duration.millis(1500);
+        Duration duration = Duration.millis(2500);
         FadeTransition fadeTransition = new FadeTransition(duration, label);
         fadeTransition.setFromValue(1);
         fadeTransition.setToValue(0);
@@ -92,9 +103,10 @@ public abstract class AbstractView extends UnicastRemoteObject {
         translateTransition.toYProperty().bind(getHeight().subtract(PADDING*2));
         parallelTransition.getChildren().addAll(fadeTransition, translateTransition);
         parallelTransition.setOnFinished(event -> pane.getChildren().remove(container));
-        parallelTransition.play();
 
+        container.setUserData(parallelTransition);
         pane.getChildren().add(container);
+        controller.pushMessage(container);
     }
 
     /**
@@ -153,7 +165,12 @@ public abstract class AbstractView extends UnicastRemoteObject {
      * @param text to show
      */
     protected void showCrashErrorMessage(String text) {
-        // TODO
+        AlertBox.displayBox("Errore di connessione", text);
+        try {
+            controller.quitGame();
+        } catch (IOException e) {
+            controller.popGameScene();
+        }
     }
 
     /**

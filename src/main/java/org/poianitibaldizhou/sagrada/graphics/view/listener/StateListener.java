@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -15,10 +16,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import org.json.simple.JSONObject;
@@ -114,7 +112,7 @@ public class StateListener extends AbstractView implements IStateObserver {
         Platform.runLater(() -> {
             clearNotifyPane(false);
             activateNotifyPane();
-            Label stateMessageLabel = createLabelMessage("Setup Player");
+            Node stateMessageLabel = createLabelMessage("Setup Player");
             notifyPane.getChildren().add(stateMessageLabel);
             if (controller.getGameViewStrategy().hasTimeout()) {
                 timeoutView.startTimeout(getTimeout());
@@ -183,6 +181,7 @@ public class StateListener extends AbstractView implements IStateObserver {
                 });
 
                 helperBox.getChildren().addAll(spacer, placeDiceButton, useCardButton, endTurnButton);
+
             } else {
                 helperBox = showHelperText(corePane, String.format(ClientMessage.PLAYER_TURN,
                         getOrdinalNumberStrings().get(turn - 1), turnUser.getUsername()));
@@ -215,9 +214,19 @@ public class StateListener extends AbstractView implements IStateObserver {
         ClientGetMessage parser = new ClientGetMessage();
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
-            Label stateMessageLabel = createLabelMessage(String.format(ClientMessage.PLAYER_SKIP_TURN,
+            Node stateMessageLabel = createLabelMessage(String.format(ClientMessage.PLAYER_SKIP_TURN,
                     turnUser.getUsername()));
+            PauseTransition timeTransition = new PauseTransition(Duration.millis(DURATION_IN_MILLIS));
+            FadeTransition transition = new FadeTransition(Duration.millis(DURATION_IN_MILLIS), stateMessageLabel);
+            transition.setFromValue(1);
+            transition.setToValue(0);
+            transition.setInterpolator(Interpolator.LINEAR);
+            transition.setOnFinished(event -> corePane.getChildren().remove(stateMessageLabel));
+
+            sequentialTransition.getChildren().addAll(timeTransition, transition);
+            sequentialTransition.play();
             corePane.getChildren().add(stateMessageLabel);
+            controller.addMessageToLoggerTextArea(String.format(ClientMessage.PLAYER_SKIP_TURN, turnUser.getUsername().toUpperCase()));
         });
     }
 
@@ -234,7 +243,11 @@ public class StateListener extends AbstractView implements IStateObserver {
      */
     @Override
     public void onUseCardState(String message) throws IOException {
-        /*NOT IMPORTANT FOR THE GUI*/
+        ClientGetMessage parser = new ClientGetMessage();
+        UserWrapper turnUser = parser.getTurnUserWrapper(message);
+        Platform.runLater(() -> {
+            controller.addMessageToLoggerTextArea(String.format(ClientMessage.INFO_MESSAGE_USE_CARD, turnUser.getUsername().toUpperCase()));
+        });
     }
 
     /**
@@ -245,9 +258,8 @@ public class StateListener extends AbstractView implements IStateObserver {
         ClientGetMessage parser = new ClientGetMessage();
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
         Platform.runLater(() -> {
-            // TODO
-            // DEACTIVATE COMMANDS
             corePane.getChildren().remove(helperBox);
+            controller.addMessageToLoggerTextArea(String.format(ClientMessage.INFO_MESSAGE_END_TURN, turnUser.getUsername().toUpperCase()));
         });
     }
 
@@ -279,7 +291,7 @@ public class StateListener extends AbstractView implements IStateObserver {
      */
     @Override
     public void onGameTerminationBeforeStarting() throws IOException {
-        // TODO :)
+        Platform.runLater(controller::popGameScene);
     }
 
     @Override
@@ -396,8 +408,8 @@ public class StateListener extends AbstractView implements IStateObserver {
     private void onSchemaCardDragDropped(DragEvent event, SchemaCardView schemaCardView) {
         schemaCardView.removeShadow();
         final Dragboard dragboard = event.getDragboard();
-        double x = event.getX();
-        double y = event.getY();
+        double x = schemaCardView.getShadowPosition().getX();
+        double y = schemaCardView.getShadowPosition().getY();
         PositionWrapper positionWrapper = schemaCardView.getTilePosition(x, y);
         JSONParser parser = new JSONParser();
         try {
@@ -525,25 +537,20 @@ public class StateListener extends AbstractView implements IStateObserver {
      * @param text text of the label
      * @return label that will be created
      */
-    private Label createLabelMessage(String text) {
+    private Node createLabelMessage(String text) {
+        VBox container = new VBox();
+        container.setAlignment(Pos.CENTER);
+        container.prefWidthProperty().bind(corePane.widthProperty());
+        container.setFillWidth(true);
+        container.setStyle("-fx-background-color: black; -fx-opacity: 0.5");
+
         Label label = new Label(text);
         label.getStyleClass().add("state-message");
         label.setTextFill(Color.SNOW);
         label.translateXProperty().bind(getPivotX(getCenterX(), label.widthProperty(), 0.5));
         label.translateYProperty().bind(getCenterY().subtract(getCenterY().divide(1.3)));
-        label.setOpacity(1);
 
-        FadeTransition transition = new FadeTransition(Duration.millis(DURATION_IN_MILLIS), label);
-        transition.setFromValue(0.6);
-        transition.setToValue(1);
-        transition.setInterpolator(Interpolator.LINEAR);
-        transition.setCycleCount(4);
-        transition.setAutoReverse(true);
-
-        sequentialTransition.getChildren().add(transition);
-        sequentialTransition.play();
-
-        return label;
+        return container;
     }
 
     /**

@@ -47,7 +47,7 @@ public class GraphicsUtils {
     }
 
     /**
-     * Convert the of a general card into the its image name
+     * Convert the name of a general card into its image name
      *
      * @param name the card name
      * @return the name of the image
@@ -78,6 +78,9 @@ public class GraphicsUtils {
     }
 
     /**
+     * Change the viewport of the imageView with the view of the image defined by keyName, jsonResourcePath and scale
+     * the size of the imageView by the scale value
+     *
      * @param imageView        the image view to change viewport
      * @param keyName          the name of the image
      * @param jsonResourcePath the resource path of the json linked to the image

@@ -19,8 +19,7 @@
         <maven.compiler.target>1.7</maven.compiler.target>
         <sonar.language>java</sonar.language>
         <sonar.coverage.exclusions>
-            **/exception/**, **/graphics/**, **/view/**, **/socket/**, **/strategycontroller/**, **/utilities/**,
-            **/cli/**, **/network/*.java, **/sagrada/*.java, **/fakeobservers/**
+            **/exception/**, **/graphics/**, **/utilities/**, **/cli/**, **/network/**, **/sagrada/*.java
         </sonar.coverage.exclusions>
         <sonar.core.codeCoveragePlugin>cobertura</sonar.core.codeCoveragePlugin>
         <argLine>-Xmx128m</argLine>
