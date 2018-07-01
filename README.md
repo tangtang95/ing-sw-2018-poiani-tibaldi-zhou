@@ -14,8 +14,8 @@
 
 ## Coverage dei test
 
-![Copertura di tutte le classi](coverage_all_packages.png)
-![Copertura con escluso rete, gui e client](coverage_exclude_client_and_network.png)
+![Copertura di tutte le classi](/images/coverage_all_packages.png)
+![Copertura con escluso rete, gui e client](/images/coverage_exclude_client_and_network.png)
 
 ## Diagramma UML
 
