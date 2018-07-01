@@ -14,6 +14,9 @@
 
 ## Coverage dei test
 
+![Copertura di tutte le classi](coverage_all_packages.png)
+![Copertura con escluso rete, gui e client](coverage_exclude_client_and_network.png)
+
 ## Diagramma UML
 
 Link alla [cartella uml]()
@@ -49,8 +52,8 @@ da ricreare lo stesso comportamento e sfruttare la reusability del codice. Per q
 qui discroso sulla reflection)
 
 - Tutti i messaggi che il server invia ai client vengono inviati all'interno di un thread creato appositamente,
-in quanto, se la connessione veniva stabilita con RMI risultava essere bloccante. Tutti i messaggi che il client
-invia al server, di conseguenza, sono stati gestiti in una coda di thread (una per ogni client), con un massimo di un
+in quanto, se la connessione veniva stabilita con RMI risultava essere bloccante. Tutti i messaggi che il server
+invia ai client, di conseguenza, sono stati gestiti in una coda di thread (una per ogni client), con un massimo di un
 thread attivo, in modo da assicurare che tutti i messaggi arrivino nel corretto ordine.
 
 - Le tool card sono state realizzate tramite dei comandi, che svolgono micro funzionalità individuate in fase di 
