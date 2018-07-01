@@ -165,7 +165,6 @@ public class SchemaCardTest {
         }
 
         try{
-            System.out.print(schemaCard);
             schemaCard.setDice(d3,0,0);
             fail("no exception launched");
         } catch(RuleViolationException e){

@@ -90,7 +90,6 @@ public class LobbyManager {
     private synchronized void createLobby() {
         lobby = new Lobby(UUID.randomUUID().toString());
         lobbyObserverManager = new LobbyObserverManager();
-        setTimeout();
     }
 
     /**
@@ -139,6 +138,8 @@ public class LobbyManager {
             createGame();
             createLobby();
         }
+        if(lobby.getUserList().size() == 2)
+            setTimeout();
     }
 
     /**
@@ -158,7 +159,8 @@ public class LobbyManager {
             lobby = null;
             timeoutThread = null;
             lobbyObserverManager = null;
-        }
+        } else if(lobby.getUserList().size() == 1)
+            resetTimeout();
     }
 
     /**
@@ -249,9 +251,15 @@ public class LobbyManager {
         if (lobby != null && lobby.getUserList().size() >= 2) {
             createGame();
             createLobby();
-        } else {
-            setTimeout();
         }
+    }
+
+    /**
+     * Reset the timeout due to the fact that the number of player in the lobby is now less then 2
+     */
+    private synchronized void resetTimeout() {
+        timeoutThread.interrupt();
+        timeoutThread = null;
     }
 
     /**
@@ -269,6 +277,8 @@ public class LobbyManager {
     public synchronized long getTimeToTimeout() {
         if (lobby == null)
             throw new IllegalStateException(ServerMessage.NO_LOBBY_ACTIVE);
+        if (timeoutThread == null)
+            return DELAY_TIME;
         long currTime = System.currentTimeMillis();
         return DELAY_TIME - (currTime - timeoutStart);
     }

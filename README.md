@@ -14,7 +14,10 @@
 
 ## Coverage dei test
 
+Copertura dei test di tutte le classi: 
 ![Copertura di tutte le classi](/images/coverage_all_packages.png)
+
+Copertura dei test (escluso CLI, GUI e rete):
 ![Copertura con escluso rete, gui e client](/images/coverage_exclude_client_and_network.png)
 
 ## Diagramma UML

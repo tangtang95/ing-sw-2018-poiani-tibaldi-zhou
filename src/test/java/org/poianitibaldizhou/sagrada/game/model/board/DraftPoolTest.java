@@ -123,10 +123,6 @@ public class DraftPoolTest {
         for (Dice d : newList) {
             newcolors[d.getColor().ordinal()] += 1;
         }
-
-        for (int i = 0; i < prevcolors.length; i++) {
-            System.out.println(prevcolors[i] + "  " + newcolors[i]);
-        }
         assertArrayEquals(prevcolors, newcolors);
         dp.getObserverMap().forEach((key, value) -> verify(value, times(1)).onDraftPoolReroll(dp.getDices()));
     }

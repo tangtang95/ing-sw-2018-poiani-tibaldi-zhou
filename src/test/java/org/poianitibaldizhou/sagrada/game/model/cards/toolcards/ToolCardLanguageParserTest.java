@@ -73,7 +73,6 @@ public class ToolCardLanguageParserTest {
             actualCommands = toolCardLanguageParser.parseToolCard(commandsString);
             assertEquals(commands, actualCommands);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
             fail("Exception not expected");
         }
     }
