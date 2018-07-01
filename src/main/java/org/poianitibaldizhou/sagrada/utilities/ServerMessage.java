@@ -85,7 +85,6 @@ public final class ServerMessage {
      * Network error message.
      */
     public static final String INVALID_ACTION = "Impossible because have to happen in this way.";
-    public static final String INVOCATION_ERROR = "Invocation failed, cannot find method from all the target's method.";
     public static final String CLIENT_HANDLER_ILLEGAL_ARGUMENT = "The object passed is not a Response or a NotifyMessage.";
     public static final String NOT_FIND_RMI_REGISTRY = "Cannot find RMI registry.";
     public static final String NOT_FIND_RMI_CONTROLLER = "Cannot find RMI controller.";

@@ -451,7 +451,6 @@ public class GameModel {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createGameNameMessage(gameName).buildMessage();
         connectionManager.getGameController().quitGame(request);
-        connectionManager.close();
     }
 
     /**

@@ -108,7 +108,6 @@ public class LobbyModel {
         ClientCreateMessage builder = new ClientCreateMessage();
         String request = builder.createTokenMessage(token).createUsernameMessage(username).buildMessage();
         connectionManager.getLobbyController().leave(request);
-        connectionManager.close();
     }
 
     /**

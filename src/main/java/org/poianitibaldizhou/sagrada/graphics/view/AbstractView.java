@@ -23,13 +23,8 @@ import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayDeque;
-import java.util.Deque;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Abstract class with generic implementation of method that inherit all

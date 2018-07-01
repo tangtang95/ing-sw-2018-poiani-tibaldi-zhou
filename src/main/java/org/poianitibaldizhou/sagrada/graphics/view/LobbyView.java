@@ -178,6 +178,10 @@ public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobby
      * Clear the lobby user.
      */
     private void clearGrid(){
+        userViews.forEach(pane -> {
+            UserView userView = (UserView) pane;
+            userView.drawRetro();
+        });
         numberOfUsers = 0;
     }
 
@@ -191,7 +195,7 @@ public class LobbyView extends UnicastRemoteObject implements ILobbyView, ILobby
         if(numberOfUsers > 1){
             setTimeoutLabel();
         }
-        else if(numberOfUsers == 0){
+        else if(numberOfUsers == 1){
             hideTimeoutLabel();
         }
     }

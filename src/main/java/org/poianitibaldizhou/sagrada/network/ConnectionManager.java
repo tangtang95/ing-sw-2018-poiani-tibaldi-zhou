@@ -15,7 +15,7 @@ public class ConnectionManager implements NetworkStrategyController {
 
     private ConnectionType networkType;
     private NetworkStrategyController strategyController;
-    private final String ipAddress;
+    private String ipAddress;
     private int port;
 
     /**
@@ -56,17 +56,19 @@ public class ConnectionManager implements NetworkStrategyController {
     }
 
     /**
-     * Set the network type if it is different from the current one. If it's different then
-     * the strategyController will be updated
+     * Set the network type
      *
      * @param networkType the new network type
      * @throws IllegalArgumentException if the network type is something different from RMI or SOCKET
      */
     public void setNetworkType(ConnectionType networkType) {
-        if (networkType == this.networkType)
-            return;
         this.networkType = networkType;
-        this.port = networkType.getPort();
+    }
+
+    /**
+     * Activate the strategy controller by creating them
+     */
+    public void activateStrategyController(){
         if (strategyController != null)
             strategyController.close();
         switch (networkType) {
@@ -102,5 +104,23 @@ public class ConnectionManager implements NetworkStrategyController {
      */
     public int getPort() {
         return port;
+    }
+
+    /**
+     * Set the new ip address of the server
+     *
+     * @param ipAddress the new ip address of the server
+     */
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    /**
+     * Set the new port of the server
+     *
+     * @param port the new port of the server
+     */
+    public void setPort(int port) {
+        this.port = port;
     }
 }

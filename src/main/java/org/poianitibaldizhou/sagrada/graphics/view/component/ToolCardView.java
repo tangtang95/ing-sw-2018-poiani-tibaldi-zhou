@@ -68,7 +68,7 @@ public class ToolCardView extends Pane{
         toolCardWrapper = new ToolCardWrapper(toolCardWrapper.getName(),
                 toolCardWrapper.getDescription(), toolCardWrapper.getColor(), toolCardWrapper.getToken() + value);
         this.getChildren().remove(tokenView);
-        tokenView = drawToken(value);
+        tokenView = drawToken(toolCardWrapper.getToken());
 
         tokenView.setTranslateX(imageView.getFitWidth() - tokenView.getWidth()/2);
         tokenView.setTranslateY(- tokenView.getHeight()/2);

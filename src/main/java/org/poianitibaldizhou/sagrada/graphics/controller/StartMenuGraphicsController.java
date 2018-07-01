@@ -17,6 +17,8 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -101,6 +103,8 @@ public class StartMenuGraphicsController extends GraphicsController implements I
 
     private ConnectionModel connectionModel;
 
+    private ConnectionManager connectionManager;
+
     /**
      * {@inheritDoc}
      */
@@ -110,6 +114,8 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         initializeSinglePlayerView();
         initializeMultiPlayerView();
         initializeReconnectView();
+        connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
+                connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
     }
 
 
@@ -118,6 +124,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
      */
     private void initializeReconnectView() {
         reconnectUsernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
+        reconnectUsernameTextField.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER)){
+                onReconnectPlayButton(null);
+            }
+        });
     }
 
     /**
@@ -125,6 +136,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
      */
     private void initializeMultiPlayerView() {
         usernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
+        usernameTextField.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER)){
+                onMultiPlayerPlayButton(null);
+            }
+        });
     }
 
     /**
@@ -171,6 +187,11 @@ public class StartMenuGraphicsController extends GraphicsController implements I
      */
     private void initializeSinglePlayerView() {
         singlePlayerUsernameTextField.setValidators(getRequiredFieldValidator(), getUsernameFieldValidator());
+        singlePlayerUsernameTextField.setOnKeyPressed(event -> {
+            if(event.getCode().equals(KeyCode.ENTER)){
+                onSinglePlayerPlayButton(null);
+            }
+        });
 
         difficultyToggleGroup = new ToggleGroup();
         radioButtonVeryEasy.setUserData(Difficulty.VERY_EASY);
@@ -306,8 +327,10 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 Parent root = loader.load();
                 GameGraphicsController controller = loader.getController();
                 controller.setSceneManager(sceneManager);
-                ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
-                        connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                connectionManager.setIpAddress(connectionModel.getIpAddress());
+                connectionManager.setPort(connectionModel.getPort());
+                connectionManager.setNetworkType(ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                connectionManager.activateStrategyController();
                 controller.initReconnectMultiPlayerGame(reconnectUsernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
@@ -347,8 +370,10 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 Parent root = loader.load();
                 LobbyGraphicsController controller = loader.getController();
                 controller.setSceneManager(sceneManager);
-                ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
-                        connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                connectionManager.setIpAddress(connectionModel.getIpAddress());
+                connectionManager.setPort(connectionModel.getPort());
+                connectionManager.setNetworkType(ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                connectionManager.activateStrategyController();
                 controller.initLobbyModel(usernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
@@ -390,8 +415,10 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 Pane root = loader.load();
                 GameGraphicsController controller = loader.getController();
                 controller.setSceneManager(sceneManager);
-                ConnectionManager connectionManager = new ConnectionManager(connectionModel.getIpAddress(),
-                        connectionModel.getPort(), ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                connectionManager.setIpAddress(connectionModel.getIpAddress());
+                connectionManager.setPort(connectionModel.getPort());
+                connectionManager.setNetworkType(ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
+                connectionManager.activateStrategyController();
                 Difficulty difficulty = (Difficulty) difficultyToggleGroup.getSelectedToggle().getUserData();
                 controller.initSinglePlayerGame(singlePlayerUsernameTextField.getText(), difficulty, connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));

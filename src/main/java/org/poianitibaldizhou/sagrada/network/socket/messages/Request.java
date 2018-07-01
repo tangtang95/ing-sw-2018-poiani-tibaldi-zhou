@@ -19,6 +19,8 @@ public class Request implements Serializable {
     private final String methodName;
     private final Object[] methodParameters;
 
+    private static final String INVOCATION_ERROR = "Invocation failed, cannot find method from all the target's method.";
+
     /**
      * Constructor.
      * Encapsulate the values necessary to invoke the method of the other side
@@ -71,7 +73,7 @@ public class Request implements Serializable {
                 }
             }
         }
-        throw new IOException(ServerMessage.INVOCATION_ERROR);
+        throw new IOException(INVOCATION_ERROR);
     }
 
     /**

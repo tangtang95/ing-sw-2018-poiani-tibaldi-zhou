@@ -1,6 +1,5 @@
 package org.poianitibaldizhou.sagrada.cli;
 
-import org.poianitibaldizhou.sagrada.game.model.board.RoundTrack;
 import org.poianitibaldizhou.sagrada.network.protocol.wrapper.*;
 
 import java.util.ArrayList;
@@ -272,7 +271,7 @@ public class BuildGraphic {
     public BuildGraphic buildGraphicRoundTrack(RoundTrackWrapper roundTrack) {
         if (roundTrack != null) {
             buildMessage("----------------------------ROUND TRACK---------------------------");
-            for (int i = 0; i < RoundTrack.NUMBER_OF_TRACK; i++) {
+            for (int i = 0; i < RoundTrackWrapper.NUMBER_OF_TRACK; i++) {
                 buildMessage("Round " + "[" + (i + 1) + "]");
                 buildGraphicDices(roundTrack.getDicesForRound(i));
             }
