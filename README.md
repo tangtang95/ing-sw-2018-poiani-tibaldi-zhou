@@ -22,7 +22,47 @@ Copertura dei test (escluso CLI, GUI e rete):
 
 ## Diagramma UML
 
-Link alla [cartella uml]()
+Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
+
+- [Package principale](/images/uml/class__package.jpg):
+![Package principale del progetto](/images/uml/class__package.jpg)
+
+- [Lobby](/images/uml/class__lobby__lobby.jpg):
+![Package della lobby](/images/uml/class__lobby__lobby.jpg)
+
+- Network:
+![Package della network](/images/uml/class__network__network.jpg)
+    - Observers:
+    ![Package di tutti gli observer nel progetto](/images/uml/class__observers__observers.jpg)
+    - Protocol:
+    ![Package del protocollo di comunicazione di rete](/images/uml/class__protocol__protocol.jpg)
+
+- CLI:
+![Package della CLI](/images/uml/class__cli__cli.jpg)
+
+- GUI:
+![Package della GUI](/images/uml/class__graphics__graphics.jpg)
+    - Controller:
+    ![Package dei controller della GUI](/images/uml/class__controller__controller2.jpg)
+    - Listeners:
+    ![Package dei listener della GUI](/images/uml/class__listener__listener.jpg)
+    - Component:
+    ![Package dei component della GUI](/images/uml/class__component__component.jpg)
+    
+- Game:
+![Package del Game](/images/uml/class__game__game.jpg)
+    - Model:
+    ![Package del modello del Game](/images/uml/class__model__model.jpg)
+        - Cards:
+        ![Package delle cards](/images/uml/class__cards__cards.jpg)
+            - ToolCards:
+            ![Package delle tool cards](/images/uml/class__toolcards__toolcards.jpg)
+                - Commands:
+                ![Package dei commands delle toolCards](/images/uml/class__commands__commands.jpg)
+            - ObjectiveCards:
+            ![Package delle objectiveCards](/images/uml/class__objectivecards__objectivecards.jpg)
+        - States:
+        ![Package degli state del Game](/images/uml/class__state__state.jpg)
 
 ## Funzionalità implementate
 
