@@ -114,9 +114,9 @@ all'interno del ToolCardLanguageParser)e x è un numero intero positivo che spec
 comando all'interno di un albero di esecuzione binario. Avere un albero di esecuzione binario consente di distringuere
 flussi di esecuzioni a seconda di scelte dell'utente o condizioni di vario tipo.
 
-## JAR
+## CLIENT JAR
 
-- [Client App](/jars/client)
+- [Client App](/jars/client) oppure link al [zip](https://github.com/tangtang95/ing-sw-2018-poiani-tibaldi-zhou/releases/) 
 
 Requisiti:
  - Cartella resources presente con 1 file json:
@@ -127,7 +127,9 @@ Per avviare l'app è necessario la cartella resources presente:
 java -jar sagrada_client.jar
 ``
 
-- [Server App](/jars/server)
+## SERVER JAR
+
+- [Server App](/jars/server) oppure link al [zip](https://github.com/tangtang95/ing-sw-2018-poiani-tibaldi-zhou/releases/)
 
 Requisiti:
  - WebServer attivo: ``java -cp nanohttpd-webserver-2.3.2-snap.jar org.nanohttpd.webserver.SimpleWebServer --dir ./target/classes/``
