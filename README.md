@@ -24,17 +24,17 @@ Copertura dei test (escluso CLI, GUI e rete):
 
 Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
 
-- [Package principale](/images/uml/class__package.jpg):
+- Package principale:
 ![Package principale del progetto](/images/uml/class__package.jpg)
 
-- [Lobby](/images/uml/class__lobby__lobby.jpg):
+- Lobby:
 ![Package della lobby](/images/uml/class__lobby__lobby.jpg)
 
 - Network:
 ![Package della network](/images/uml/class__network__network.jpg)
-    - Observers:
+    1. Observers:
     ![Package di tutti gli observer nel progetto](/images/uml/class__observers__observers.jpg)
-    - Protocol:
+    2. Protocol:
     ![Package del protocollo di comunicazione di rete](/images/uml/class__protocol__protocol.jpg)
 
 - CLI:
@@ -42,26 +42,26 @@ Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
 
 - GUI:
 ![Package della GUI](/images/uml/class__graphics__graphics.jpg)
-    - Controller:
+    1. Controller:
     ![Package dei controller della GUI](/images/uml/class__controller__controller2.jpg)
-    - Listeners:
+    2. Listeners:
     ![Package dei listener della GUI](/images/uml/class__listener__listener.jpg)
-    - Component:
+    3. Component:
     ![Package dei component della GUI](/images/uml/class__component__component.jpg)
     
 - Game:
 ![Package del Game](/images/uml/class__game__game.jpg)
-    - Model:
+    1. Model:
     ![Package del modello del Game](/images/uml/class__model__model.jpg)
-        - Cards:
+        - Cards (il package all'interno del modello):
         ![Package delle cards](/images/uml/class__cards__cards.jpg)
-            - ToolCards:
+            - ToolCards (il package all'interno delle cards):
             ![Package delle tool cards](/images/uml/class__toolcards__toolcards.jpg)
-                - Commands:
+                - Commands (il package all'interno delle toolcards):
                 ![Package dei commands delle toolCards](/images/uml/class__commands__commands.jpg)
-            - ObjectiveCards:
+            - ObjectiveCards (il package all'interno delle cards):
             ![Package delle objectiveCards](/images/uml/class__objectivecards__objectivecards.jpg)
-        - States:
+        - States (il package all'interno del modello):
         ![Package degli state del Game](/images/uml/class__state__state.jpg)
 
 ## Funzionalità implementate
