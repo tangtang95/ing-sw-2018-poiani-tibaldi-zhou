@@ -78,7 +78,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         loggerTextArea.setMaxWidth(400);
         loggerTextArea.setMinHeight(70);
         loggerTextArea.setMaxHeight(70);
-        loggerTextArea.setTranslateX(PADDING*3);
+        loggerTextArea.setTranslateX(PADDING*2);
         loggerTextArea.getStyleClass().add("logger-text-area");
         loggerTextArea.setEditable(false);
         loggerTextArea.setFocusTraversable(false);

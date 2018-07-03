@@ -39,11 +39,11 @@ public class SocketStrategyController implements NetworkStrategyController {
         }
         serverHandler = new ServerHandler(socket);
         new Thread(serverHandler).start();
-        lobbyController = (ILobbyController) Proxy.newProxyInstance(LobbyController.class.getClassLoader(),
-                LobbyController.class.getInterfaces(),
+        lobbyController = (ILobbyController) Proxy.newProxyInstance(ILobbyController.class.getClassLoader(),
+                new Class[]{ILobbyController.class},
                 new ProxyControllerInvocationHandler(serverHandler, ControllerType.LOBBY_CONTROLLER));
-        gameController = (IGameController) Proxy.newProxyInstance(GameController.class.getClassLoader(),
-                GameController.class.getInterfaces(),
+        gameController = (IGameController) Proxy.newProxyInstance(IGameController.class.getClassLoader(),
+                new Class[]{IGameController.class},
                 new ProxyControllerInvocationHandler(serverHandler, ControllerType.GAME_CONTROLLER));
     }
 

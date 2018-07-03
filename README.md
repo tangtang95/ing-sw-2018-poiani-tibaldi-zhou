@@ -25,12 +25,15 @@ Copertura dei test (escluso CLI, GUI e rete):
 Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
 
 - Package principale:
+
 ![Package principale del progetto](/images/uml/class__package.jpg)
 
 - Lobby:
+
 ![Package della lobby](/images/uml/class__lobby__lobby.jpg)
 
 - Network:
+
 ![Package della network](/images/uml/class__network__network.jpg)
     1. Observers:
     ![Package di tutti gli observer nel progetto](/images/uml/class__observers__observers.jpg)
@@ -38,9 +41,11 @@ Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
     ![Package del protocollo di comunicazione di rete](/images/uml/class__protocol__protocol.jpg)
 
 - CLI:
+
 ![Package della CLI](/images/uml/class__cli__cli.jpg)
 
 - GUI:
+
 ![Package della GUI](/images/uml/class__graphics__graphics.jpg)
     1. Controller:
     ![Package dei controller della GUI](/images/uml/class__controller__controller2.jpg)
@@ -50,6 +55,7 @@ Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
     ![Package dei component della GUI](/images/uml/class__component__component.jpg)
     
 - Game:
+
 ![Package del Game](/images/uml/class__game__game.jpg)
     1. Model:
     ![Package del modello del Game](/images/uml/class__model__model.jpg)
@@ -107,6 +113,37 @@ sintassi: [x-nome_comando], dove nome_comando è il nome del comando all'interno
 all'interno del ToolCardLanguageParser)e x è un numero intero positivo che specifica la posizioni di esecuzione del 
 comando all'interno di un albero di esecuzione binario. Avere un albero di esecuzione binario consente di distringuere
 flussi di esecuzioni a seconda di scelte dell'utente o condizioni di vario tipo.
+
+## JAR
+
+- [Client App](/jars/client)
+
+Requisiti:
+ - Cartella resources presente con 1 file json:
+    - clientSettings.json
+    
+Per avviare l'app è necessario la cartella resources presente:
+``
+java -jar sagrada_client.jar
+``
+
+- [Server App](/jars/server)
+
+Requisiti:
+ - WebServer attivo: ``java -cp nanohttpd-webserver-2.3.2-snap.jar org.nanohttpd.webserver.SimpleWebServer --dir ./target/classes/``
+ - RMI attivo: ``rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false``
+ - Cartella resources presente con 5 file json:
+    - privateObjectiveCards.json
+    - publicObjectiveCards.json
+    - schemaCards.json
+    - settings.json
+    - toolCards.json
+    
+Dopo aver fatto partire il WebServer con nanohttpd e rmiregistry, per avviare l'app:
+``
+java -Djava.rmi.server.codebase=http://localhost:8080/ -jar sagrada_server.jar 
+``
+
 
 
 
