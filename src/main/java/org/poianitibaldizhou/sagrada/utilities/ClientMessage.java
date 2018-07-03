@@ -47,8 +47,8 @@ public final class ClientMessage {
     public static final String CHOOSE_COLOR_ITA = "Devi scegliere un colore.";
     public static final String CHOOSE_POSITION_ITA = "Devi scegliere una posizione.";
     public static final String CHOOSE_VALUE = "Devi scegliere un valore.";
-    public static final String INFO_MESSAGE_END_TURN = "%s: ha terminato il suo turno\n";
-    public static final String INFO_MESSAGE_USE_CARD = "%s: sta utilizzando una Carta Utensile\n";
+    public static final String INFO_MESSAGE_END_TURN = "%s: ha terminato il suo turno";
+    public static final String INFO_MESSAGE_USE_CARD = "%s: sta utilizzando una Carta Utensile";
 
     /**
      * Graphics error messages.

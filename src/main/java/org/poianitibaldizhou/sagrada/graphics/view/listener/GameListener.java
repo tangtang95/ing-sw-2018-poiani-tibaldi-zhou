@@ -6,15 +6,15 @@ import javafx.application.Platform;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.TextFlow;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import org.poianitibaldizhou.sagrada.game.view.IGameView;
 import org.poianitibaldizhou.sagrada.graphics.controller.GameGraphicsController;
 import org.poianitibaldizhou.sagrada.graphics.utils.GraphicsUtils;
@@ -74,11 +74,11 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
         toolCardListeners = new ArrayList<>();
         playerListenerMap = new HashMap<>();
         loggerTextArea = new JFXTextArea();
-        loggerTextArea.setMinWidth(300);
-        loggerTextArea.setMaxWidth(300);
-        loggerTextArea.setMinHeight(100);
-        loggerTextArea.setMaxHeight(100);
-        loggerTextArea.setTranslateX(PADDING);
+        loggerTextArea.setMinWidth(400);
+        loggerTextArea.setMaxWidth(400);
+        loggerTextArea.setMinHeight(70);
+        loggerTextArea.setMaxHeight(70);
+        loggerTextArea.setTranslateX(PADDING*3);
         loggerTextArea.getStyleClass().add("logger-text-area");
         loggerTextArea.setEditable(false);
         loggerTextArea.setFocusTraversable(false);
@@ -694,7 +694,7 @@ public class GameListener extends AbstractView implements IGameView, IGameObserv
      * @param text the message to add
      */
     public void addLoggerMessage(String text) {
-        loggerTextArea.appendText(text);
+        loggerTextArea.appendText(text + "\n");
     }
 
     /**
