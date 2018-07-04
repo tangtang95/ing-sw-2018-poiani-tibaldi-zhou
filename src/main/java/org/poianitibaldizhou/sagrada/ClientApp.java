@@ -13,8 +13,9 @@ import java.util.logging.Logger;
 public class ClientApp {
 
     public static void main(String[] args) {
-        ConnectionManager networkManager = new ConnectionManager(ClientSettings.getIP(), ConnectionType.RMI.getPort(),
-                ConnectionType.RMI);
+        ConnectionManager networkManager = new ConnectionManager(ClientSettings.getIP(), ConnectionType.SOCKET.getPort(),
+                ConnectionType.SOCKET);
+        networkManager.activateConnection();
         ScreenManager screenManager = new ScreenManager();
         try {
             screenManager.pushScreen(new CLIGraphicModeScreen(networkManager,screenManager));

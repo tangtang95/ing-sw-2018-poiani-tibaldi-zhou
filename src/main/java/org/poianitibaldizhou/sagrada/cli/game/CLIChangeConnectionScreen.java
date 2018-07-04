@@ -4,6 +4,7 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
+import org.poianitibaldizhou.sagrada.utilities.ClientSettings;
 
 import java.rmi.RemoteException;
 import java.util.*;
@@ -74,6 +75,7 @@ public class CLIChangeConnectionScreen extends CLIBasicScreen {
      * @param type the type of connection to switch.
      */
     private void changeConnection(String type) {
+        connectionManager.setPort(ConnectionType.valueOf(type).getPort());
         connectionManager.setNetworkType(ConnectionType.valueOf(type));
         screenManager.popScreen();
     }

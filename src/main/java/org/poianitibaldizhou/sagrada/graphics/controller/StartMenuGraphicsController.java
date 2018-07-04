@@ -18,7 +18,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -330,7 +329,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 connectionManager.setIpAddress(connectionModel.getIpAddress());
                 connectionManager.setPort(connectionModel.getPort());
                 connectionManager.setNetworkType(ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
-                connectionManager.activateStrategyController();
+                connectionManager.activateConnection();
                 controller.initReconnectMultiPlayerGame(reconnectUsernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
@@ -373,7 +372,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 connectionManager.setIpAddress(connectionModel.getIpAddress());
                 connectionManager.setPort(connectionModel.getPort());
                 connectionManager.setNetworkType(ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
-                connectionManager.activateStrategyController();
+                connectionManager.activateConnection();
                 controller.initLobbyModel(usernameTextField.getText(), connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));
             } catch (IOException e) {
@@ -418,7 +417,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
                 connectionManager.setIpAddress(connectionModel.getIpAddress());
                 connectionManager.setPort(connectionModel.getPort());
                 connectionManager.setNetworkType(ConnectionType.valueOf(connectionModel.getConnectionType().toUpperCase()));
-                connectionManager.activateStrategyController();
+                connectionManager.activateConnection();
                 Difficulty difficulty = (Difficulty) difficultyToggleGroup.getSelectedToggle().getUserData();
                 controller.initSinglePlayerGame(singlePlayerUsernameTextField.getText(), difficulty, connectionManager);
                 playSceneTransition(sceneManager.getCurrentScene(), event -> sceneManager.pushScene(root));

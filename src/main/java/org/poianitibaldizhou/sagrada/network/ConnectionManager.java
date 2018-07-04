@@ -28,7 +28,7 @@ public class ConnectionManager implements NetworkStrategyController {
     public ConnectionManager(String ipAddress, int port, ConnectionType networkType) {
         this.ipAddress = ipAddress;
         this.port = port;
-        setNetworkType(networkType);
+        this.networkType = networkType;
     }
 
     /**
@@ -63,12 +63,13 @@ public class ConnectionManager implements NetworkStrategyController {
      */
     public void setNetworkType(ConnectionType networkType) {
         this.networkType = networkType;
+        activateConnection();
     }
 
     /**
      * Activate the strategy controller by creating them
      */
-    public void activateStrategyController(){
+    public void activateConnection(){
         if (strategyController != null)
             strategyController.close();
         switch (networkType) {
