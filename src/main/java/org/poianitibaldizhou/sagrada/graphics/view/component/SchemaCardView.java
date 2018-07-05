@@ -151,6 +151,10 @@ public class SchemaCardView extends Pane {
         DiceView diceView = new DiceView(diceWrapper, scale * DICE_SCALE);
         diceView.setTranslateX(centerX - diceView.getImageWidth() / 2);
         diceView.setTranslateY(centerY - diceView.getImageHeight() / 2);
+        if(diceViews[pos.getRow()][pos.getColumn()] != null){
+            this.getChildren().remove(diceViews[pos.getRow()][pos.getColumn()]);
+            diceViews[pos.getRow()][pos.getColumn()] = null;
+        }
         this.getChildren().add(diceView);
         diceViews[pos.getRow()][pos.getColumn()] = diceView;
     }
