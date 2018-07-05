@@ -52,7 +52,7 @@ public class RoundTrackView extends Pane {
         this.scale = scale;
         diceViewList = new ArrayList<>();
         roundTrack = new RoundTrackWrapper(new ArrayList<>());
-        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
+        Image image = new Image(getClass().getClassLoader().getResourceAsStream("src/test/images/board/round-track.png"));
         roundTrackImage = new ImageView(image);
         roundTrackImage.setPreserveRatio(true);
         roundTrackImage.setFitWidth(image.getWidth() * scale);
@@ -70,7 +70,7 @@ public class RoundTrackView extends Pane {
     public RoundTrackView(RoundTrackWrapper roundTrack, double scale) {
         this.scale = scale;
         diceViewList = new ArrayList<>();
-        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/board/round-track.png"));
+        Image image = new Image(getClass().getClassLoader().getResourceAsStream("src/test/images/board/round-track.png"));
         roundTrackImage = new ImageView(image);
         roundTrackImage.setPreserveRatio(true);
         roundTrackImage.setFitWidth(image.getWidth() * scale);

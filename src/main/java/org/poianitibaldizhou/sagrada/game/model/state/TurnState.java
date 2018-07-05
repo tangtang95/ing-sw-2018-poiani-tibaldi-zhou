@@ -346,6 +346,10 @@ public class TurnState extends IStateGame implements ICurrentRoundPlayer {
 
     // NOTIFIERS
 
+    public void notifyOnSelectActionState(){
+        game.getStateObservers().forEach((key, value) -> value.onSelectActionState(currentTurnPlayer.getUser()));
+    }
+
     /**
      * Notifies to the observers that a player wants to place a dice and has, therefore, entered the player state
      * of placing a dice

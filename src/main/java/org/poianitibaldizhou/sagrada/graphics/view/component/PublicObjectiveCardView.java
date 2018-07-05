@@ -10,8 +10,8 @@ import org.poianitibaldizhou.sagrada.network.protocol.wrapper.PublicObjectiveCar
  */
 public class PublicObjectiveCardView extends Pane {
 
-    private static final String CARD_IMAGE_PATH = "images/cards/public-objective-cards.png";
-    private static final String CARD_JSON_PATH = "images/cards/public-objective-cards.json";
+    private static final String CARD_IMAGE_PATH = "src/test/images/cards/public-objective-cards.png";
+    private static final String CARD_JSON_PATH = "src/test/images/cards/public-objective-cards.json";
 
     /**
      * Constructor.

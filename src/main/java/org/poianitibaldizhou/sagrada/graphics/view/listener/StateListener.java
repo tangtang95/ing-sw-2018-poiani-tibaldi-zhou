@@ -59,7 +59,7 @@ public class StateListener extends AbstractView implements IStateObserver {
 
     private transient Map<UserWrapper, Integer> victoryPoints;
 
-    private static final double DURATION_IN_MILLIS = 1500;
+    private static final double FADE_DURATION_IN_MILLIS = 1500;
 
     private static final double SCHEMA_CARD_SHOW_SIZE = 1;
     private static final double TOOL_CARD_SHOW_SIZE = 1;
@@ -161,6 +161,16 @@ public class StateListener extends AbstractView implements IStateObserver {
             }
 
             if (turnUser.getUsername().equals(controller.getUsername())) {
+                Node stateMessageLabel = createLabelMessage("Tocca a te");
+                FadeTransition transition = new FadeTransition(Duration.millis(FADE_DURATION_IN_MILLIS), stateMessageLabel);
+                transition.setToValue(0);
+                transition.setInterpolator(Interpolator.LINEAR);
+                transition.setOnFinished(event -> corePane.getChildren().remove(stateMessageLabel));
+
+                transition.play();
+
+                corePane.getChildren().add(stateMessageLabel);
+
                 //SHOW COMMANDS
                 helperBox = showHelperText(corePane, ClientMessage.CHOOSE_ACTION_ITA);
 
@@ -216,15 +226,12 @@ public class StateListener extends AbstractView implements IStateObserver {
         Platform.runLater(() -> {
             Node stateMessageLabel = createLabelMessage(String.format(ClientMessage.PLAYER_SKIP_TURN,
                     turnUser.getUsername()));
-            PauseTransition timeTransition = new PauseTransition(Duration.millis(DURATION_IN_MILLIS));
-            FadeTransition transition = new FadeTransition(Duration.millis(DURATION_IN_MILLIS), stateMessageLabel);
-            transition.setFromValue(1);
+            FadeTransition transition = new FadeTransition(Duration.millis(FADE_DURATION_IN_MILLIS), stateMessageLabel);
             transition.setToValue(0);
             transition.setInterpolator(Interpolator.LINEAR);
             transition.setOnFinished(event -> corePane.getChildren().remove(stateMessageLabel));
 
-            sequentialTransition.getChildren().addAll(timeTransition, transition);
-            sequentialTransition.play();
+            transition.play();
             corePane.getChildren().add(stateMessageLabel);
             controller.addMessageToLoggerTextArea(String.format(ClientMessage.PLAYER_SKIP_TURN, turnUser.getUsername().toUpperCase()));
         });
@@ -291,6 +298,18 @@ public class StateListener extends AbstractView implements IStateObserver {
     @Override
     public void onGameTerminationBeforeStarting() throws IOException {
         Platform.runLater(controller::popGameScene);
+    }
+
+    @Override
+    public void onSelectActionState(String message) throws IOException {
+        Platform.runLater(() -> {
+            try {
+                controller.updateAllViews();
+            } catch (IOException e) {
+                showCrashErrorMessage(ClientMessage.CONNECTION_ERROR);
+                Logger.getAnonymousLogger().log(Level.SEVERE, ClientMessage.CONNECTION_ERROR);
+            }
+        });
     }
 
     @Override
@@ -541,13 +560,13 @@ public class StateListener extends AbstractView implements IStateObserver {
         container.setAlignment(Pos.CENTER);
         container.prefWidthProperty().bind(corePane.widthProperty());
         container.setFillWidth(true);
-        container.setStyle("-fx-background-color: black; -fx-opacity: 0.5");
+        container.setStyle("-fx-background-color: black; -fx-opacity: 0.8");
 
         Label label = new Label(text);
         label.getStyleClass().add("state-message");
         label.setTextFill(Color.SNOW);
-        label.translateXProperty().bind(getPivotX(getCenterX(), label.widthProperty(), 0.5));
-        label.translateYProperty().bind(getCenterY().subtract(getCenterY().divide(1.3)));
+        container.getChildren().add(label);
+        container.translateYProperty().bind(getCenterY().subtract(getCenterY().divide(1.3)));
 
         return container;
     }

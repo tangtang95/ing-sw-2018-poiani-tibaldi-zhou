@@ -13,8 +13,8 @@ public class DiceView extends Pane {
     private DiceWrapper diceWrapper;
     private double scale;
 
-    private static final String DICE_IMAGE_PATH = "images/board/dices.png";
-    private static final String DICE_JSON_PATH = "images/board/dices.json";
+    private static final String DICE_IMAGE_PATH = "src/test/images/board/dices.png";
+    private static final String DICE_JSON_PATH = "src/test/images/board/dices.json";
     private static final String DICE_IMAGE_NAME = "dice-%s-%s.png";
 
     /**
@@ -85,6 +85,6 @@ public class DiceView extends Pane {
     public Image getImage() {
         String imageKey = String.format(DICE_IMAGE_NAME, diceWrapper.getColor().name().toLowerCase(),
                 String.valueOf(diceWrapper.getNumber()));
-        return GraphicsUtils.getImage("images/dices/", imageKey, diceImage.getFitWidth(), diceImage.getFitHeight());
+        return GraphicsUtils.getImage("src/test/images/dices/", imageKey, diceImage.getFitWidth(), diceImage.getFitHeight());
     }
 }

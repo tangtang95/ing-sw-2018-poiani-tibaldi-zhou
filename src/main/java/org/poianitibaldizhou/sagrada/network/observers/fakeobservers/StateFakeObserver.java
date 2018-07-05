@@ -268,4 +268,18 @@ public class StateFakeObserver implements IStateFakeObserver {
 
         observerManager.pushThreadInQueue(token, runnable);
     }
+
+    @Override
+    public void onSelectActionState(User user) {
+        Runnable runnable = () -> {
+            try {
+                ServerCreateMessage serverCreateMessage = new ServerCreateMessage();
+                realObserver.onSelectActionState(serverCreateMessage.createTurnUserMessage(user).buildMessage());
+            } catch(IOException e) {
+                observerManager.signalDisconnection(token);
+            }
+        };
+
+        observerManager.pushThreadInQueue(token, runnable);
+    }
 }

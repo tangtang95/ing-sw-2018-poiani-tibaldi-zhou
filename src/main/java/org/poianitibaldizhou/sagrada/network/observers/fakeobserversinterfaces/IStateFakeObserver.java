@@ -108,4 +108,11 @@ public interface IStateFakeObserver {
      * join
      */
     void onGameTerminationBeforeStarting();
+
+    /**
+     * Notify that the turnUser is in the select action state
+     *
+     * @param user the turn user
+     */
+    void onSelectActionState(User user);
 }

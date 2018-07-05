@@ -20,8 +20,8 @@ public class UserView extends Pane {
     private ImageView imageView;
     private Canvas canvas;
 
-    private static final String RETRO_IMAGE_PATH = "images/cards/tool-cards.png";
-    private static final String RETRO_JSON_PATH = "images/cards/tool-cards.json";
+    private static final String RETRO_IMAGE_PATH = "src/test/images/cards/tool-cards.png";
+    private static final String RETRO_JSON_PATH = "src/test/images/cards/tool-cards.json";
 
     /**
      * Constructor.

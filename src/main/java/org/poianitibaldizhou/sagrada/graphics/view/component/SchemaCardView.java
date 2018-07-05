@@ -52,9 +52,9 @@ public class SchemaCardView extends Pane {
     private static final int NUMBER_OF_ROWS = 4;
     private static final int NUMBER_OF_COLUMNS = 5;
 
-    private static final String SCHEMA_CARD_IMAGE_PATH = "images/schemaCards/SchemaCard.png";
-    private static final String TILE_IMAGE_PATH = "images/schemaCards/tiles.png";
-    private static final String TILE_JSON_PATH = "images/schemaCards/tiles.json";
+    private static final String SCHEMA_CARD_IMAGE_PATH = "src/test/images/schemaCards/SchemaCard.png";
+    private static final String TILE_IMAGE_PATH = "src/test/images/schemaCards/tiles.png";
+    private static final String TILE_JSON_PATH = "src/test/images/schemaCards/tiles.json";
 
     /**
      * Constructor.
@@ -256,7 +256,7 @@ public class SchemaCardView extends Pane {
      * @return image drawn
      */
     private ImageView drawDifficultyToken(double scale) {
-        Image difficultyImage = new Image(getClass().getClassLoader().getResourceAsStream("images/schemaCards/difficulty.png"));
+        Image difficultyImage = new Image(getClass().getClassLoader().getResourceAsStream("src/test/images/schemaCards/difficulty.png"));
         ImageView imageView = new ImageView(difficultyImage);
         imageView.setFitWidth(difficultyImage.getWidth() * scale);
         imageView.setFitHeight(difficultyImage.getHeight() * scale);

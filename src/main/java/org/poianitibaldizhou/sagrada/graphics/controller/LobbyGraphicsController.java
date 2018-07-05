@@ -102,7 +102,7 @@ public class LobbyGraphicsController extends GraphicsController implements Initi
      * @param gameName the name of the game
      */
     public void gameStart(String gameName) {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("src/test/fxml/game.fxml"));
 
         try {
             Parent root = loader.load();

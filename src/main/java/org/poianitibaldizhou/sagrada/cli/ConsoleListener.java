@@ -3,8 +3,10 @@ package org.poianitibaldizhou.sagrada.cli;
 import org.poianitibaldizhou.sagrada.exception.CommandNotFoundException;
 import org.poianitibaldizhou.sagrada.cli.game.CLIBasicScreen;
 import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
+import sun.security.provider.NativePRNG;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -14,13 +16,12 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * ConsoleListener is a singleton class that rule the input stream from the console command.
- *
  */
 public class ConsoleListener {
 
     /**
      * private instance of ConsoleListener (singleton pattern).
-    */
+     */
     private static ConsoleListener ourInstance;
 
     /**
@@ -65,12 +66,16 @@ public class ConsoleListener {
     /**
      * Pause keyboard listener thread.
      */
-    public void stopCommandConsole() { needToPause = true; }
+    public void stopCommandConsole() {
+        needToPause = true;
+    }
 
     /**
      * Stop keyboard Reader number.
      */
-    public void stopReadNumber() {needToStop = true; }
+    public void stopReadNumber() {
+        needToStop = true;
+    }
 
     /**
      * Wake up keyboard listener thread.
@@ -160,7 +165,7 @@ public class ConsoleListener {
      */
     private class CommandConsole extends Thread {
 
-        private Scanner console = new Scanner(System.in);
+        private BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
         private BuildGraphic buildGraphic = new BuildGraphic();
         boolean exit = true;
         int key;
@@ -170,12 +175,11 @@ public class ConsoleListener {
             while (exit) {
                 try {
                     consoleReady();
-                    String read = console.nextLine();
+                    String read = console.readLine();
                     if (read.equals("help")) {
                         CLIBasicScreen.clearScreen();
                         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.STANDARD);
-                    }
-                    else {
+                    } else {
                         key = Integer.parseInt(read);
                         if (key > 0 && key <= commandMap.keySet().size()) {
                             commandMap.get(commandMap.keySet().toArray()[key - 1].toString()).executeCommand();
@@ -214,8 +218,8 @@ public class ConsoleListener {
         /**
          * Control that the input stream is ready.
          */
-        void consoleReady() {
-            while (!console.hasNext())
+        void consoleReady() throws IOException {
+            while (!console.ready())
                 pausePoint();
         }
 

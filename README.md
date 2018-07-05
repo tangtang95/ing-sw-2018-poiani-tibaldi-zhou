@@ -123,7 +123,7 @@ Requisiti:
  - Cartella resources presente con 1 file json:
     - clientSettings.json
     
-Per avviare l'app è necessario la cartella resources presente:
+Per avviare l'app:
 ``
 java -jar sagrada_client.jar
 ``

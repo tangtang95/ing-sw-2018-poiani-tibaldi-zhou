@@ -216,6 +216,11 @@ public class TimeOutFakeObserver implements IStateFakeObserver {
         stopTimeout();
     }
 
+    @Override
+    public void onSelectActionState(User user) {
+        // DO NOTHING
+    }
+
     // PRIVATE METHODS FOR HANDLING TIMEOUT
 
     /**

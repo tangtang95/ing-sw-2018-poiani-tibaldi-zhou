@@ -146,4 +146,9 @@ public class ForceSkipTurnFakeObserver implements IStateFakeObserver {
     public void onGameTerminationBeforeStarting() {
         // DO NOTHING
     }
+
+    @Override
+    public void onSelectActionState(User user) {
+        // DO NOTHING
+    }
 }

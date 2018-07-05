@@ -370,6 +370,11 @@ public class CLIStateView extends UnicastRemoteObject implements IStateObserver 
         screenManager.popScreen();
     }
 
+    @Override
+    public void onSelectActionState(String message) throws IOException {
+        /*NOT IMPORTANT FOR THE CLI*/
+    }
+
     /**
      * @param o the other object to compare.
      * @return true if the CLIStateView is the same or myUser is the same and the game name is the same.

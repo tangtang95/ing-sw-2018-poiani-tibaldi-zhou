@@ -110,4 +110,12 @@ public interface IStateObserver extends Remote {
      * Notify that a game has terminated before starting because some player failed to join the game
      */
     void onGameTerminationBeforeStarting() throws IOException;
+
+    /**
+     * Notify that the turnUser is in select action state
+     *
+     * @param message the message containing the turn user
+     * @throws IOException network error
+     */
+    void onSelectActionState(String message) throws IOException;
 }
