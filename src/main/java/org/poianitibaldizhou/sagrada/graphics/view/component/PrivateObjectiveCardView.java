@@ -14,8 +14,8 @@ public class PrivateObjectiveCardView extends Pane {
 
     private PrivateObjectiveCardWrapper privateObjectiveCardWrapper;
 
-    private static final String CARD_IMAGE_PATH = "src/test/images/cards/private-objective-cards.png";
-    private static final String CARD_JSON_PATH = "src/test/images/cards/private-objective-cards.json";
+    private static final String CARD_IMAGE_PATH = "images/cards/private-objective-cards.png";
+    private static final String CARD_JSON_PATH = "images/cards/private-objective-cards.json";
 
     /**
      * Constructor.

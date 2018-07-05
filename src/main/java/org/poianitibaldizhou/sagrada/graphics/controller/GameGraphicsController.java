@@ -121,7 +121,7 @@ public class GameGraphicsController extends GraphicsController implements Initia
      * @param victoryPoints the final points of each player
      */
     public void pushScorePlayerScene(UserWrapper winner, Map<UserWrapper, Integer> victoryPoints) {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("src/test/fxml/score_scene.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/score_scene.fxml"));
 
         try {
             Parent root = loader.load();

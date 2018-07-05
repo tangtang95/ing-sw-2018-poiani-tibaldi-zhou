@@ -320,7 +320,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
     public void onReconnectPlayButton(ActionEvent actionEvent) {
         if (reconnectUsernameTextField.validate()) {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("src/test/fxml/game.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
             try {
                 Parent root = loader.load();
@@ -363,7 +363,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
     public void onMultiPlayerPlayButton(ActionEvent actionEvent) {
         if (usernameTextField.validate()) {
 
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("src/test/fxml/lobby.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/lobby.fxml"));
 
             try {
                 Parent root = loader.load();
@@ -408,7 +408,7 @@ public class StartMenuGraphicsController extends GraphicsController implements I
         if (difficultyToggleGroup.getSelectedToggle() == null)
             return;
         if (singlePlayerUsernameTextField.validate()) {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("src/test/fxml/game.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/game.fxml"));
 
             try {
                 Pane root = loader.load();

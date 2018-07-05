@@ -9,8 +9,8 @@ public final class ColorView extends Pane {
 
     private final ColorWrapper colorWrapper;
 
-    private static final String TILE_IMAGE_PATH = "src/test/images/schemaCards/tiles.png";
-    private static final String TILE_JSON_PATH = "src/test/images/schemaCards/tiles.json";
+    private static final String TILE_IMAGE_PATH = "images/schemaCards/tiles.png";
+    private static final String TILE_JSON_PATH = "images/schemaCards/tiles.json";
 
     /**
      * Create a ColorView Pane containing an imageView of the color chosen

@@ -18,6 +18,7 @@ public class SelectActionState extends IPlayerState {
      */
     public SelectActionState(TurnState turnState) {
         super(turnState);
+        turnState.notifyOnSelectActionState();
     }
 
     /**

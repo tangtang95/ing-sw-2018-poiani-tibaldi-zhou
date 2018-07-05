@@ -21,7 +21,7 @@ public class DraftPoolView extends Pane {
     private final double scale;
 
 
-    private static final String IMAGE_PATH = "src/test/images/board/draftpool.png";
+    private static final String IMAGE_PATH = "images/board/draftpool.png";
     private static final int COLUMNS = 3;
 
     private static final double PADDING_X_PERCENT = 0.12;

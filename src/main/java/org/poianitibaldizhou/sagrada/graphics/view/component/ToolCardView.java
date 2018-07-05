@@ -23,8 +23,8 @@ public class ToolCardView extends Pane{
     //Based on toolCardWidth
     private static final double ICON_PERCENT_RADIUS = 0.14;
 
-    private static final String CARD_IMAGE_PATH = "src/test/images/cards/tool-cards.png";
-    private static final String CARD_JSON_PATH = "src/test/images/cards/tool-cards.json";
+    private static final String CARD_IMAGE_PATH = "images/cards/tool-cards.png";
+    private static final String CARD_JSON_PATH = "images/cards/tool-cards.json";
 
 
     /**

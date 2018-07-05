@@ -33,7 +33,7 @@ public class ClientGUIApp extends Application {
         SceneManager sceneManager = new SceneManager(scenes, fixedSize);
 
         // Add the start scene (menu)
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("src/test/fxml/start_menu.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/start_menu.fxml"));
         Parent root = loader.load();
         StartMenuGraphicsController controller = loader.getController();
         controller.setSceneManager(sceneManager);
@@ -42,7 +42,7 @@ public class ClientGUIApp extends Application {
 
         Scene scene = new Scene(scenes, startSize.getWidth(), startSize.getHeight());
         scene.setCamera(new PerspectiveCamera());
-        String css = Objects.requireNonNull(this.getClass().getClassLoader().getResource("src/test/stylesheet/visible-big.css")).toExternalForm();
+        String css = Objects.requireNonNull(this.getClass().getClassLoader().getResource("stylesheet/visible-big.css")).toExternalForm();
         scene.getStylesheets().add(css);
 
         // auto scale property (keep aspect ratio)

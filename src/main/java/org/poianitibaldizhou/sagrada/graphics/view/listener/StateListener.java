@@ -51,7 +51,6 @@ import java.util.logging.Logger;
  */
 public class StateListener extends AbstractView implements IStateObserver {
 
-    private final transient SequentialTransition sequentialTransition;
     private final transient TimeoutView timeoutView;
 
     private transient HBox helperBox;
@@ -79,7 +78,6 @@ public class StateListener extends AbstractView implements IStateObserver {
      */
     public StateListener(GameGraphicsController controller, Pane corePane, Pane notifyPane) throws RemoteException {
         super(controller, corePane, notifyPane);
-        sequentialTransition = new SequentialTransition();
         timeoutView = new TimeoutView();
     }
 
