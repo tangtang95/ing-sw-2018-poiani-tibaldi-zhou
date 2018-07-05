@@ -90,6 +90,10 @@ attraverso le quali il server manda semplici stringhe, di errore o di acknowledg
 In ogni caso, lo scambio di questi oggetti è stato limitato alle fasi di connessione, riconessione e "binding" fra gli 
 observer e gli oggetti osservati. 
 
+- Nella CLI dal terminale di Windows, l'inserimento di alcuni valori da tastiera non viene mostrato immediatamente ma solo
+dopo il tasto invio. Per evitare questo problema su Windows, abbiamo utilizzato un altro terminale chiamato Cygwin. Mentre
+su MacOS funziona correttamente
+
 - Per tutta la comunicazione di rete esclusa dal punto precedente, è stato creato un protocollo, basato su JSON, 
 per lo scambio di informazioni. 
 
@@ -98,8 +102,8 @@ di fare ciò, sono stati creati delle classi (FakeObserver) che contengono al lo
 dovute alla comunicazione. 
 
 - La parte di rete, per quanto riguarda RMI e socket, è stata gestita al piu' possibile in maniera uguale, in modo 
-da ricreare lo stesso comportamento e sfruttare la reusability del codice. Per quanto riguarda i socket... (inserire
-qui discroso sulla reflection)
+da ricreare lo stesso comportamento e sfruttare la reusability del codice. Per quanto riguarda i socket è stato usato 
+la reflection usando la classe Proxy che praticamente è un modo veloce per scrivere un oggetto del Proxy Pattern.
 
 - Tutti i messaggi che il server invia ai client vengono inviati all'interno di un thread creato appositamente,
 in quanto, se la connessione veniva stabilita con RMI risultava essere bloccante. Tutti i messaggi che il server
