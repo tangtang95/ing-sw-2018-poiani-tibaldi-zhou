@@ -163,7 +163,6 @@ public class RoundTrackView extends Pane {
      * @param numberOfDices number of dices present in a certain round of the round track
      */
     private void drawNumberOfDicesIcon(DiceView diceView, int numberOfDices) {
-        // TODO REFACTOR there are duplicates
         Canvas canvas = new Canvas(diceView.getImageWidth() * ICON_PERCENT_RADIUS * 1.5,
                 diceView.getImageHeight() * ICON_PERCENT_RADIUS * 1.5);
         GraphicsContext gc = canvas.getGraphicsContext2D();

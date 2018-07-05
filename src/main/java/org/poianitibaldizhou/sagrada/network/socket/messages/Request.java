@@ -1,7 +1,5 @@
 package org.poianitibaldizhou.sagrada.network.socket.messages;
 
-import org.poianitibaldizhou.sagrada.utilities.ServerMessage;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
@@ -68,12 +66,17 @@ public class Request implements Serializable {
             if (method.getName().equals(methodName)) {
                 try {
                     return method.invoke(target, methodParameters);
-                } catch (IllegalAccessException | InvocationTargetException e) {
+                } catch (IllegalAccessException e) {
                     Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
+                } catch (InvocationTargetException e) {
+                    Logger.getAnonymousLogger().log(Level.SEVERE, e.getMessage());
+                    if(e.getTargetException() instanceof IOException){
+                        throw (IOException) e.getTargetException();
+                    }
                 }
             }
         }
-        throw new IOException(INVOCATION_ERROR);
+        throw new IllegalStateException(INVOCATION_ERROR);
     }
 
     /**

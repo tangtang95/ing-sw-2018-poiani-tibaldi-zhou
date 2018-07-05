@@ -245,9 +245,8 @@ public class StateListener extends AbstractView implements IStateObserver {
     public void onUseCardState(String message) throws IOException {
         ClientGetMessage parser = new ClientGetMessage();
         UserWrapper turnUser = parser.getTurnUserWrapper(message);
-        Platform.runLater(() -> {
-            controller.addMessageToLoggerTextArea(String.format(ClientMessage.INFO_MESSAGE_USE_CARD, turnUser.getUsername().toUpperCase()));
-        });
+        Platform.runLater(() -> controller.addMessageToLoggerTextArea(String.format(ClientMessage.INFO_MESSAGE_USE_CARD,
+                turnUser.getUsername().toUpperCase())));
     }
 
     /**

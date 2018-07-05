@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class ExpendableDice implements ICoin {
 
-    private final transient Game game;
+    private final Game game;
 
     /**
      * Constructor.
