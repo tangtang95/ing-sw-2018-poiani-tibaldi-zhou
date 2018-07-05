@@ -33,7 +33,7 @@ public class TextureJSONParser {
     public TextureJSONParser(String resourcePath) throws ParseException, IOException {
         JSONParser parser = new JSONParser();
         root = (JSONObject) parser.parse(new InputStreamReader(getClass().getClassLoader()
-                .getResourceAsStream(resourcePath)));
+                .getResourceAsStream(resourcePath),"UTF-8"));
 
     }
 

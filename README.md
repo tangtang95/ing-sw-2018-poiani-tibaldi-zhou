@@ -22,7 +22,8 @@ Copertura dei test (escluso CLI, GUI e rete):
 
 ## Diagramma UML
 
-Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/)
+Tutte le immagini si trovano nella seguente cartella: [UML](/images/uml/), invece il primo diagramma UML 
+si trova in questa cartella: [OLD UML](/images/old_uml/)
 
 - Package principale:
 
@@ -132,7 +133,7 @@ java -jar sagrada_client.jar
 - [Server App](/jars/server) oppure link al [zip](https://github.com/tangtang95/ing-sw-2018-poiani-tibaldi-zhou/releases/)
 
 Requisiti:
- - WebServer attivo: ``java -cp nanohttpd-webserver-2.3.2-snap.jar org.nanohttpd.webserver.SimpleWebServer --dir ./target/classes/``
+ - WebServer attivo: ``java -cp nanohtt-webserver-2.3.2-snap.jar org.nanohttpd.webserver.SimpleWebServer --dir jars/server/``
  - RMI attivo: ``rmiregistry -J-Djava.rmi.server.useCodebaseOnly=false``
  - Cartella resources presente con 5 file json:
     - privateObjectiveCards.json
@@ -143,7 +144,7 @@ Requisiti:
     
 Dopo aver fatto partire il WebServer con nanohttpd e rmiregistry, per avviare l'app:
 ``
-java -Djava.rmi.server.codebase=http://localhost:8080/ -jar sagrada_server.jar 
+java -Djava.rmi.server.codebase=http://localhost:8080/sagrada_server.jar -jar sagrada_server.jar 
 ``
 
 
