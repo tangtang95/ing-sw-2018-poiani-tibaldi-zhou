@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -159,7 +160,7 @@ public class ConsoleListener {
      */
     private class CommandConsole extends Thread {
 
-        private BufferedReader console = new BufferedReader(new InputStreamReader(System.in));
+        private Scanner console = new Scanner(System.in);
         private BuildGraphic buildGraphic = new BuildGraphic();
         boolean exit = true;
         int key;
@@ -169,7 +170,7 @@ public class ConsoleListener {
             while (exit) {
                 try {
                     consoleReady();
-                    String read = console.readLine();
+                    String read = console.nextLine();
                     if (read.equals("help")) {
                         CLIBasicScreen.clearScreen();
                         PrinterManager.consolePrint(buildGraphic.buildGraphicHelp(commandMap).toString(), Level.STANDARD);
@@ -211,10 +212,10 @@ public class ConsoleListener {
         }
 
         /**
-         * @throws IOException is launched by the ready function (BufferReader class).
+         * Control that the input stream is ready.
          */
-        void consoleReady() throws IOException {
-            while (!console.ready())
+        void consoleReady() {
+            while (!console.hasNext())
                 pausePoint();
         }
 
