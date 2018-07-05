@@ -4,7 +4,6 @@ import org.poianitibaldizhou.sagrada.cli.*;
 import org.poianitibaldizhou.sagrada.network.ConnectionManager;
 import org.poianitibaldizhou.sagrada.network.ConnectionType;
 import org.poianitibaldizhou.sagrada.utilities.ClientMessage;
-import org.poianitibaldizhou.sagrada.utilities.ClientSettings;
 
 import java.rmi.RemoteException;
 import java.util.*;
