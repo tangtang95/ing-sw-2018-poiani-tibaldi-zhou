@@ -121,7 +121,7 @@ flussi di esecuzioni a seconda di scelte dell'utente o condizioni di vario tipo.
 
 Requisiti:
  - Cartella resources presente con 1 file json:
-    - clientSettings.json
+    - clientSettings.json: questo file contiene l'ip del server, la porta RMI e la porta SOCKET del server
     
 Per avviare l'app:
 ``
@@ -139,7 +139,7 @@ Requisiti:
     - privateObjectiveCards.json
     - publicObjectiveCards.json
     - schemaCards.json
-    - settings.json
+    - settings.json: contiene tutte le impostazioni di timeout, porta RMI e porta SOCKET
     - toolCards.json
     
 Dopo aver fatto partire il WebServer con nanohttpd e rmiregistry, per avviare l'app:
