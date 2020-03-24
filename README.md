@@ -3,14 +3,8 @@
 ## Membri del gruppo
 
 - Poiani Riccardo
-    - Matricola: 846379
-    - Codice persona: 10533902
 - Tibaldi Mattia
-    - Matricola: 843840
-    - Codice persona: 10521778
 - Zhou Tang-tang
-    - Matricola: 847685
-    - Codice persona: 10540904
 
 ## Coverage dei test
 
